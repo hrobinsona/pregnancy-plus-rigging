@@ -12,8 +12,8 @@ import * as legs from './parts/legs.js';
 const J = { ...params.joints };
 const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far) };
 Object.assign(J, hands.near.joints, hands.far.joints);
-J.handNearTip = params.lm('fingertipNear');
-J.handFarTip = params.lm('fingertipFar');
+J.handNearTip = J['hand.near.f2t'];
+J.handFarTip = J['hand.far.f2t'];
 
 // angle limits: screen-plane bones in degrees relative to rest; sagittal bones are ANATOMICAL (+ = forward/flexion)
 const bones = [
@@ -29,7 +29,9 @@ const bones = [
     const S = s === 'near' ? 'Near' : 'Far';
     return [
       { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -10, max: 10 },
-      { id: `upperArm.${s}`, parent: `clavicle.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'sagittal', restAnat: 0, min: -60, max: 170, cap: 0.2 },
+      // abduction (frontal plane ≈ picture plane in ¾) as a screen rotation, then flexion/extension in the sagittal plane
+      { id: `shoulderAbd.${s}`, parent: `clavicle.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, min: -30, max: 30 },
+      { id: `upperArm.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'sagittal', restAnat: 0, min: -60, max: 170, cap: 0.2 },
       { id: `forearm.${s}`, parent: `upperArm.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, plane: 'sagittal', restAnat: 0, min: -5, max: 150, cap: 0.18 },
       { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'sagittal', restAnat: 0, min: -70, max: 70, cap: 0.08 },
     ];
@@ -38,7 +40,8 @@ const bones = [
   ...['far', 'near'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
-      { id: `thigh.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 115, cap: 0.3 },
+      { id: `hipAbd.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, min: -20, max: 20 },
+      { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 115, cap: 0.3 },
       { id: `shin.${s}`, parent: `thigh.${s}`, joint: `knee${S}`, aim: `ankle${S}`, plane: 'sagittal', restAnat: 0, min: -150, max: 5, cap: 0.26 },
       { id: `foot.${s}`, parent: `shin.${s}`, joint: `ankle${S}`, aim: `ball${S}`, plane: 'sagittal', restAnat: 90, min: -45, max: 40, cap: 0.12 },
       { id: `toe.${s}`, parent: `foot.${s}`, joint: `ball${S}`, aim: `toe${S}`, plane: 'sagittal', restAnat: 90, min: -20, max: 60 },
@@ -52,6 +55,7 @@ export default {
   name: 'mum2',
   params, hands,
   handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point'],
+  handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,
   palette: params.palette,
@@ -62,9 +66,9 @@ export default {
   roles: {
     spine: ['pelvis', 'spineLower', 'spineUpper', 'chest', 'neck', 'head'], belly: 'belly', breathBone: 'spineUpper',
     arms: Object.fromEntries(['near', 'far'].map((s) => { const S = s === 'near' ? 'Near' : 'Far';
-      return [s, { clavicle: `clavicle.${s}`, upper: `upperArm.${s}`, fore: `forearm.${s}`, hand: `hand.${s}`, shoulder: `shoulder${S}`, elbow: `elbow${S}`, wrist: `wrist${S}` }]; })),
+      return [s, { clavicle: `clavicle.${s}`, abd: `shoulderAbd.${s}`, upper: `upperArm.${s}`, fore: `forearm.${s}`, hand: `hand.${s}`, shoulder: `shoulder${S}`, elbow: `elbow${S}`, wrist: `wrist${S}` }]; })),
     legs: Object.fromEntries(['near', 'far'].map((s) => { const S = s === 'near' ? 'Near' : 'Far';
-      return [s, { thigh: `thigh.${s}`, shin: `shin.${s}`, foot: `foot.${s}`, toe: `toe.${s}`, hip: `hip${S}`, knee: `knee${S}`, ankle: `ankle${S}`, ball: `ball${S}` }]; })),
+      return [s, { abd: `hipAbd.${s}`, thigh: `thigh.${s}`, shin: `shin.${s}`, foot: `foot.${s}`, toe: `toe.${s}`, hip: `hip${S}`, knee: `knee${S}`, ankle: `ankle${S}`, ball: `ball${S}` }]; })),
   },
   /** flat contact shadow under the feet (SVG string; model px) */
   ground(pose, fill, Hpx) {

@@ -1,20 +1,26 @@
 // handlib.js — expand named hand-library poses into finger bone angles (the library is the animator's interface;
 // bones are the implementation). pose.hands = { near: 'relaxed' | {pose:'cup', mix:{fist:0.3}}, far: ... }
-export function handBones(prefix, entry, lib) {
+// Library entry: { f1..f4: [flexKnuckle, flexMid], s: [spread x4, + = away from the thumb], t: [flex1, flex2], ts: thumb spread }
+export function handBones(prefix, entry, lib, spreadSign = 1) {
   const blendOf = (e) => (typeof e === 'string' ? { [e]: 1 } : { [e.pose]: 1 - Object.values(e.mix || {}).reduce((a, b) => a + b, 0), ...(e.mix || {}) });
   const w = blendOf(entry), out = {};
+  const acc = (k, v) => { out[k] = (out[k] || 0) + v; };
   for (const [name, k] of Object.entries(w)) {
     const L = lib[name];
     if (!L) throw new Error(`hand library: no pose "${name}"`);
-    for (let i = 1; i <= 4; i++) { out[`${prefix}.f${i}a`] = (out[`${prefix}.f${i}a`] || 0) + k * L['f' + i][0]; out[`${prefix}.f${i}b`] = (out[`${prefix}.f${i}b`] || 0) + k * L['f' + i][1]; }
-    out[`${prefix}.t1`] = (out[`${prefix}.t1`] || 0) + k * L.t[0]; out[`${prefix}.t2`] = (out[`${prefix}.t2`] || 0) + k * L.t[1];
+    for (let i = 1; i <= 4; i++) {
+      acc(`${prefix}.f${i}a`, k * L['f' + i][0]); acc(`${prefix}.f${i}b`, k * L['f' + i][1]);
+      acc(`${prefix}.f${i}s`, k * spreadSign * (L.s?.[i - 1] || 0));
+    }
+    acc(`${prefix}.t1`, k * L.t[0]); acc(`${prefix}.t2`, k * L.t[1]); acc(`${prefix}.ts`, k * spreadSign * -(L.ts || 0));
   }
   return out;
 }
-/** returns a copy of pose with pose.hands expanded into pose.bones (explicit bone values win) */
-export function expandHands(pose, lib, sides = { near: 'hand.near', far: 'hand.far' }) {
-  if (!pose.hands) return pose;
+/** copy of pose with pose.hands expanded into pose.bones (explicit bone values win).
+ *  sides: { near: {prefix:'hand.near', spreadSign}, far: {...} } — from the character (C.handSides) */
+export function expandHands(pose, lib, sides) {
+  if (!pose.hands || !lib) return pose;
   const bones = {};
-  for (const [side, prefix] of Object.entries(sides)) if (pose.hands[side] && lib) Object.assign(bones, handBones(prefix, pose.hands[side], lib));
+  for (const [side, sd] of Object.entries(sides || {})) if (pose.hands[side]) Object.assign(bones, handBones(sd.prefix, pose.hands[side], lib, sd.spreadSign));
   return { ...pose, bones: { ...bones, ...(pose.bones || {}) } };
 }

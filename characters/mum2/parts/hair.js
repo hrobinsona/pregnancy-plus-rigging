@@ -28,7 +28,7 @@ export function build({ P: C, C: char, pose }) {
   // back mass: round cranium + back of head, tucked behind the jaw/neck (z under face and neck)
   out.push(part('hair.back', 18, C.hair, ensureCW(loop([
     [top[0] + 0.02, top[1] - 0.005], [top[0] + 0.28, top[1] + 0.05], [f.far[0] + 0.05, f.part[1] + 0.06], [f.far[0] + 0.04, f.far[1] - 0.03],
-    [f.far[0] - 0.12, f.chin[1] - 0.04], [-0.18, f.chin[1] - 0.02], [back[0] + 0.22, f.chin[1] - 0.12],
+    [f.far[0] - 0.2, f.chin[1] - 0.1], [-0.14, f.chin[1] - 0.07], [back[0] + 0.22, f.chin[1] - 0.12],
     [back[0] + 0.07, f.chin[1] - 0.3], [back[0] + 0.01, back[1] + 0.02], [back[0] + 0.14, top[1] + 0.2], [top[0] - 0.26, top[1] + 0.05]]))));
   // bun + its shade crescent; loop above it; one flyaway
   const b = [h.bun[0] + 0.03, h.bun[1] + 0.05], r = h.bunR;

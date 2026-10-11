@@ -27,10 +27,11 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('face', 50, C.skin, ensureCW(loop(faceA, 1.05))));
   // jaw shadow on the neck just under the chin (reads the chin; ¾ view)
   // crescent under the jaw line (ear → chin), deepest under the jaw corner: shortens the neck read, seats the head
-  const ch = f.chin, jn = f.jawNear, e0 = [X.ear[0] + 0.07, X.ear[1] + 0.07];
+  // wedge under the jaw, inside the neck: deepest behind the jaw corner, tapering to nothing at the chin
+  const ch = f.chin, jn = f.jawNear, nk = X.neck;
   out.push(part('jaw.shadow', 41, C.skinShade, ensureCW(loop([
-    [e0[0], e0[1]], [jn[0] - 0.01, jn[1] + 0.01], [ch[0] - 0.05, ch[1] + 0.005], [ch[0] + 0.02, ch[1] + 0.02, { c: true, t: 0.5 }],
-    [ch[0] - 0.04, ch[1] + 0.085], [jn[0] + 0.01, jn[1] + 0.12], [e0[0] + 0.02, e0[1] + 0.12]]))));
+    [nk.back[0] + 0.02, jn[1] - 0.01], [jn[0] + 0.02, jn[1] + 0.012], [ch[0] - 0.06, ch[1] + 0.012], [ch[0] - 0.01, ch[1] + 0.03, { c: true, t: 0.5 }],
+    [ch[0] - 0.06, ch[1] + 0.1], [jn[0] + 0.02, jn[1] + 0.17], [nk.back[0] + 0.03, jn[1] + 0.15]]))));
   // ear (near side), inner fold
   out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.06, rxl: 0.055, ryt: 0.095, ryb: 0.085, rot: 12 })));
   out.push(part('ear.inner', 49.5, C.skinShade, taper([[X.ear[0] - 0.012, X.ear[1] - 0.05], [X.ear[0] + 0.012, X.ear[1] - 0.005], [X.ear[0] - 0.005, X.ear[1] + 0.045]], [0.006, 0.022, 0.004])));
@@ -38,10 +39,10 @@ export function build({ P: C, C: char, pose }) {
   const sick = wsum(pose.face?.cheek, 'sick'), warm = wsum(pose.face?.mouth, 'warm');
   const cheekFill = mix(C.cheek, C.sick, sick), lift = -0.012 * warm;
   out.push(part('cheek.near', 51, cheekFill, ellipse([X.cheeks.near[0], X.cheeks.near[1] + lift], 0.068, 0.042)));
-  out.push(part('cheek.far', 51, cheekFill, ellipse([X.cheeks.far[0], X.cheeks.far[1] + lift], 0.045, 0.04)));
+  out.push(part('cheek.far', 51, cheekFill, ellipse([X.cheeks.far[0] - 0.02, X.cheeks.far[1] + lift], 0.045, 0.04)));
   // nose: small hook (skinLine)
   const n = X.nose;
-  out.push(part('nose', 52, C.skinLine, taper([[n[0] - 0.025, n[1] - 0.13], [n[0] - 0.008, n[1] - 0.06], [n[0] + 0.004, n[1] - 0.012], [n[0] - 0.04, n[1] + 0.006]], [0.004, 0.02, 0.024, 0.012])));
+  out.push(part('nose', 52, C.skinShade, taper([[n[0] - 0.025, n[1] - 0.13], [n[0] - 0.008, n[1] - 0.06], [n[0] + 0.004, n[1] - 0.012], [n[0] - 0.04, n[1] + 0.006]], [0.004, 0.02, 0.024, 0.012])));
   // eyes: dark ovals; lids close by squashing toward the eye's lower third; gaze slides them inside the socket
   const open = pose.face?.lid ? wsum(pose.face.lid, 'open') : 1, g = pose.face?.gaze || [0, 0];
   for (const side of ['near', 'far']) {

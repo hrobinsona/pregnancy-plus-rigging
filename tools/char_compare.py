@@ -18,7 +18,7 @@ sd = np.full(a.shape, 255, np.uint8); sd[ma & mb] = (160, 160, 160); sd[ma & ~mb
 W, H = box[2] - box[0], box[3] - box[1]; sc = 700 / H
 tiles = [R, M, Image.fromarray(ov), Image.fromarray(sd)]
 F = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 20)
-sheet = Image.new('RGB', (max(int(W * sc) * 4 + 30, 4 * 370), 34 + 700 + 20 + 360 + 40), 'white'); d = ImageDraw.Draw(sheet)
+sheet = Image.new('RGB', (max(int(W * sc) * 4 + 30, 2 * 730), 34 + 700 + 20 + 2 * 370 + 40), 'white'); d = ImageDraw.Draw(sheet)
 for i, (t, n) in enumerate(zip(tiles, ['reference (landmarks only)', 'render (code)', 'overlay', 'silhouette diff (red ref / blue render)'])):
     sheet.paste(t.crop(box).resize((int(W * sc), 700)), (i * (int(W * sc) + 10), 34)); d.text((i * (int(W * sc) + 10) + 4, 6), n, fill='#111', font=F)
 # zoom row: face, near hand, far hand, feet (reference above-left / render right)
@@ -29,8 +29,8 @@ def zoom(c, half):
 zs = [zoom(P['eyeNear'][:1] + [P['eyeNear'][1] + 20] if False else [(P['eyeNear'][0] + P['eyeFar'][0]) / 2, P['eyeNear'][1] + 40], 170),
       zoom([P['wristNear'][0], P['wristNear'][1] + 90], 130), zoom([P['wristFar'][0] + 20, P['wristFar'][1] + 80], 120),
       zoom([(P['heelNear'][0] + P['toeFar'][0]) / 2, P['toeNear'][1] - 150], 300)]
-for i, z in enumerate(zs): sheet.paste(z.resize((360, 360 // 2 * 2)), (i * 370, 760))
-d.text((4, 1130), 'zoom pairs (reference | render): face · near hand · far hand · feet', fill='#333', font=F)
+for i, z in enumerate(zs): sheet.paste(z.resize((720, 360)), ((i % 2) * 730, 760 + (i // 2) * 370))
+d.text((4, 760 + 2 * 370 + 4), 'zoom pairs (reference | render): face · near hand · far hand · feet', fill='#333', font=F)
 sheet.save(f'out/{char}_compare.png')
 prof = subprocess.run(['python3', 'tools/profile_cmp.py', f'characters/{char}/ref/{L["image"]}', f'out/{char}_{pose}_ref.png', str(Hpx), '60'], capture_output=True, text=True).stdout
 flag = [l for l in prof.splitlines()[1:] if '*' in l]

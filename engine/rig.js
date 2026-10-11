@@ -86,6 +86,30 @@ export function createRig(C) {
     return out;
   }
 
+  /** Chain-skinned part (rest world), e.g. a torso over pelvis→spineLower→spineUpper→chest: each anchor finds the
+   *  furthest joint it has passed (or is within `zone` of) and blends that joint's parent/child as in skinGeom.
+   *  Mid-segment anchors therefore follow their own bone rigidly; only the joint zones bend. */
+  function chainSkinGeom(g, sk, st) {
+    const ch = sk.chain, zr = sk.zone ?? 0.25;
+    const seg = ch.map((id) => { const b = BONE[id], j = J[b.joint], a = J[b.aim], L = Math.hypot(a[0] - j[0], a[1] - j[1]); return { id, j, d: [(a[0] - j[0]) / L, (a[1] - j[1]) / L], L }; });
+    const xf = (v) => {
+      for (let k = ch.length - 1; k >= 1; k--) {
+        const sg = seg[k], s = (v[0] - sg.j[0]) * sg.d[0] + (v[1] - sg.j[1]) * sg.d[1], z = zr * Math.min(sg.L, seg[k - 1].L);
+        if (s > -z) {
+          const wc = smooth(-z, z, s), wp = 1 - wc, pb = st[ch[k - 1]], cb = st[ch[k]];
+          const th = pb.rot + wc * wrap(cb.rot - pb.rot);
+          const A = mul(R(th), pb.Sb.map((x, i) => wp * x + wc * cb.Sb[i]));
+          return (p) => add(cb.pos, ap(A, sub(p, sg.j)));
+        }
+      }
+      const b0 = st[ch[0]], j0 = seg[0].j;
+      return (p) => add(b0.pos, ap(b0.lin, sub(p, j0)));
+    };
+    const out = { P: [], hin: [], hout: [] };
+    g.P.forEach((v, k) => { const f = xf(v); out.P.push(f(v)); out.hin.push(f(g.hin[k])); out.hout.push(f(g.hout[k])); });
+    return out;
+  }
+
   /** All parts, z-sorted, each with a final matrix M (rigid) or posed geometry (skinned). */
   function build(pose = {}) {
     const st = solve(pose);
@@ -97,7 +121,7 @@ export function createRig(C) {
         const want = mod.ANCHORS?.[p.id];
         if (want !== undefined && want !== p.geom.P.length) throw new Error(`${p.id}: ${p.geom.P.length} anchors, documented ${want}`);
         if (!st[p.bone]) throw new Error(`${p.id}: unknown bone ${p.bone}`);
-        if (p.skin) parts.push({ ...p, module: name, anchors: p.geom.P.length, geom: skinGeom(p.geom, p.skin, st), M: F });
+        if (p.skin) parts.push({ ...p, module: name, anchors: p.geom.P.length, geom: p.skin.chain ? chainSkinGeom(p.geom, p.skin, st) : skinGeom(p.geom, p.skin, st), M: F });
         else {
           const j = J[BONE[p.bone].joint];
           parts.push({ ...p, module: name, anchors: p.geom.P.length, M: mul(F, mul(st[p.bone].M, T(-j[0], -j[1]))) });

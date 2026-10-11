@@ -25,10 +25,12 @@ export function makeHand(spec) {
   // knuckles spread across the palm's end (index on the thumb side)
   spec.fingers.forEach((f, i) => {
     const across = spec.palmW * (0.5 - f.at) * 0.92, k = P(palmL * (1 - 0.06 * Math.abs(f.at - 0.35)), across);
-    const d = rot(u, f.spread * spec.thumbSide * -1);
+    const d = rot(u, f.spread * spec.thumbSide);   // spread < 0 fans toward the thumb side, > 0 away from it
     const L = fingL * f.len, m = add(k, mulS(d, L * 0.52)), t = add(k, mulS(d, L));
     Object.assign(joints, { [`${id}.f${i + 1}k`]: k, [`${id}.f${i + 1}m`]: m, [`${id}.f${i + 1}t`]: t });
-    bones.push({ id: `${id}.f${i + 1}a`, parent: spec.parentBone, joint: `${id}.f${i + 1}k`, aim: `${id}.f${i + 1}m`, plane, restAnat: 0, min: -20, max: 100 });
+    // spread (abduction) is a picture-plane rotation at the knuckle; flexion (a, b) is out-of-plane and projected
+    bones.push({ id: `${id}.f${i + 1}s`, parent: spec.parentBone, joint: `${id}.f${i + 1}k`, aim: `${id}.f${i + 1}m`, min: -25, max: 25 });
+    bones.push({ id: `${id}.f${i + 1}a`, parent: `${id}.f${i + 1}s`, joint: `${id}.f${i + 1}k`, aim: `${id}.f${i + 1}m`, plane, restAnat: 0, min: -20, max: 100 });
     bones.push({ id: `${id}.f${i + 1}b`, parent: `${id}.f${i + 1}a`, joint: `${id}.f${i + 1}m`, aim: `${id}.f${i + 1}t`, plane, restAnat: 0, min: -10, max: 110 });
   });
   const th = spec.thumb;
@@ -36,7 +38,8 @@ export function makeHand(spec) {
     const b = P(palmL * th.at[0], spec.palmW * th.at[1]), d = rot(u, -th.dir * spec.thumbSide);
     const L = spec.length * th.len, m = add(b, mulS(d, L * 0.5)), t = add(b, mulS(d, L));
     Object.assign(joints, { [`${id}.tb`]: b, [`${id}.tm`]: m, [`${id}.tt`]: t });
-    bones.push({ id: `${id}.t1`, parent: spec.parentBone, joint: `${id}.tb`, aim: `${id}.tm`, plane: `${id}.thumb`, restAnat: 0, min: -30, max: 70 });
+    bones.push({ id: `${id}.ts`, parent: spec.parentBone, joint: `${id}.tb`, aim: `${id}.tm`, min: -45, max: 45 });
+    bones.push({ id: `${id}.t1`, parent: `${id}.ts`, joint: `${id}.tb`, aim: `${id}.tm`, plane: `${id}.thumb`, restAnat: 0, min: -30, max: 70 });
     bones.push({ id: `${id}.t2`, parent: `${id}.t1`, joint: `${id}.tm`, aim: `${id}.tt`, plane: `${id}.thumb`, restAnat: 0, min: -20, max: 90 });
   }
   const planes = { [plane]: spec.flexFx, [`${id}.thumb`]: spec.thumbFx ?? spec.flexFx };
@@ -66,7 +69,7 @@ export function makeHand(spec) {
       out.push({ id: `${id}.f${i + 1}a`, bone: `${id}.f${i + 1}a`, z: zf, fill, geom: ensureCW(limb(k, m, [{ t: 0, r: w0, l: w0 }, { t: 1, r: w1, l: w1 }], { capK: 1.0 })) });
       out.push({ id: `${id}.f${i + 1}b`, bone: `${id}.f${i + 1}b`, z: zf + 0.001, fill, geom: ensureCW(limb(m, t, [{ t: 0, r: w1, l: w1 }, { t: 1, r: w2, l: w2 }], { capK: 1.0 })) });
       // crease on the side facing the finger behind it (skinned across the middle joint so it bends with the finger)
-      if (spec.crease !== false && rank > 0) {
+      if (spec.crease !== false && rank > 0 && (spec.crease !== 'one' || rank === Math.floor(order.length / 2))) {
         const side = mulS(norm(perpL(sub(t, k))), spec.creaseSide ?? -spec.thumbSide);
         const c0 = add(add(k, mulS(sub(m, k), 0.12)), mulS(side, w0 * 0.72)), c1 = add(m, mulS(side, w1 * 0.8)), c2 = add(add(m, mulS(sub(t, m), 0.8)), mulS(side, w2 * 0.72));
         out.push({ id: `${id}.f${i + 1}.crease`, bone: `${id}.f${i + 1}b`, z: zf + 0.002, fill: line,
@@ -82,7 +85,9 @@ export function makeHand(spec) {
     }
     return out;
   }
-  return { joints, bones, planes, ANCHORS, parts };
+  // library spread values are 'away from the thumb'; this sign maps them onto screen rotation for this hand
+  const spreadSign = spec.thumbSide;
+  return { joints, bones, planes, ANCHORS, parts, spreadSign, id };
 }
 
 /** keep every loop clockwise on screen (y down) so offsets/outsets behave; deterministic for a given construction */
