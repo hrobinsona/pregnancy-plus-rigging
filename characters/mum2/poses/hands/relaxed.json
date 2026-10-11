@@ -1,32 +1,32 @@
 {
  "name": "relaxed",
  "f1": [
-  12,
-  18
+  8,
+  12
  ],
  "f2": [
-  15,
-  21
+  10,
+  14
  ],
  "f3": [
-  18,
-  24
+  12,
+  16
  ],
  "f4": [
-  21,
-  27
+  15,
+  18
  ],
  "s": [
-  4,
+  -1,
+  0,
   1,
-  -2,
-  -6
+  2.5
  ],
  "t": [
   0,
-  4
+  6
  ],
  "to": 0,
  "ts": 0,
- "_note": "hanging relaxed: fingers TOGETHER \u2014 parallel, overlapping in a stagger to the tips (rim between), tips stepping by finger length + curl cascade; spread cancels the rest fan. Never a slow-opening hairline gap."
+ "_note": "hanging relaxed: gentle curl cascade index \u2192 pinky; slight fan so the tips separate"
 }

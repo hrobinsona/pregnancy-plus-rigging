@@ -9,7 +9,7 @@ export const at = ([X, Y]) => [(X - G[0]) / Hpx, (Y - G[1]) / Hpx];
 export const lm = (k) => at(L.points[k]);
 
 export const palette = {
-  skin: '#d48055', skinShade: '#c76a47', skinLine: '#c76a47', cheek: '#e37158',   // skinLine = skinShade: one base + one shade
+  skin: '#d48055', skinShade: '#c76a47', skinLine: '#c76a47', cheek: '#e37158', nail: '#e7a27c',   // nail: a light tint of the skin (back-of-hand views only)   // skinLine = skinShade: one base + one shade
   hair: '#5e3424', hairShade: '#4a2718',
   top: '#b99dd7', topShade: '#a685cb',            // lilac top (value ladder: cardigan 81 > top 69 > joggers 50 > hair 27)
   bottoms: '#9c7fb5', bottomsShade: '#8467a0',     // mauve joggers (lightened 11 Oct: large area, keep the ladder gentle)
@@ -81,16 +81,19 @@ export const P = {
 // Rebuilt 11 Oct after "hands look a mess — they should be separate fingers and feel like real hands": three phalanges,
 // tapering separate fingers on a knuckle arc, a real thumb with its thenar pad, shade rims only where fingers overlap.
 // Character-specific: size (hand ≈ face), palm width, finger slimness (fingerK), and how each hand is seen.
+// 14:24 user: "fingers look like weird sausages; cupping bends the wrong way" → women's hands: long fingers tapering to a
+// soft point (tip 0.58 of base), nails on the back-of-hand view; flexion mostly FORESHORTENS (flexFx 0.18 / −0.22: a
+// finger curling toward the palm seen from the back gets shorter, it does not swing sideways); curled poses converge.
 // Fingers held together OVERLAP in a stagger (~20% of a width, rim between) — never edge-to-edge: abutting fingers leave
 // hairline slivers and enclosed gaps (detail audit). Spread poses open real gaps.
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward the body side)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 8,
-          length: 0.65, palmFrac: 0.555, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: 0.45, thumbFx: -0.35, thumb: { mcp: [0.72, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          length: 0.66, palmFrac: 0.52, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.34, 0.115, -0.115, -0.34], fan: [-3, -1, 1, 4], flexFx: 0.18, nails: true, thumbFx: -0.35, thumb: { mcp: [0.72, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: we see more of the palm side; thumb forward
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 8,
-         length: 0.6, palmFrac: 0.555, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.28], flexFx: -0.45, thumbFx: 0.35, thumb: { mcp: [0.66, 0.74], dir: 36 }, thumbLine: false, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
+         length: 0.61, palmFrac: 0.52, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.0, across: [0.34, 0.115, -0.115, -0.28], fan: [-3, -1, 1, 4], flexFx: -0.22, thumbFx: 0.35, thumb: { mcp: [0.66, 0.74], dir: 36 }, thumbLine: false, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

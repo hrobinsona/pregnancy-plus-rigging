@@ -23,7 +23,7 @@ const dirv = (deg) => [Math.cos(deg * DEG), Math.sin(deg * DEG)];
 const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG); return [c * v[0] - s * v[1], s * v[0] + c * v[1]]; };
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
-  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.93, 0.87, 0.82], fingerK: 0.9, rim: 0.022, rootIn: 0.05,
+  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.88, 0.76, 0.58], fingerK: 0.9, rim: 0.022, rootIn: 0.05,
   thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
@@ -69,7 +69,7 @@ export function makeHand(spec) {
 
   const cap = (a, b, ra, rb) => ensureCW(limb(a, b, [{ t: 0, r: ra, l: ra }, { t: 1, r: rb, l: rb }], { capK: 1.0 }));
   /** parts in rest world space. fill = skin, line = shade (rims) */
-  function parts(ctx, { fill, line, zBase }) {
+  function parts(ctx, { fill, line, zBase, nail = S.nails ? ctx.P?.nail : null }) {
     const out = [], z = zBase ?? S.z ?? 0, wW = S.wristW / 2;
     // palm: wrist → knuckle arc. Pinky side a long gentle curve; the heel of the hand on the thumb side is carried by
     // the thenar pad; the distal edge hides under the finger roots.
@@ -87,15 +87,15 @@ export function makeHand(spec) {
     // fingers, back → front. Each finger is ONE tapered tube along its joints (root → PIP → DIP → tip), chain-skinned
     // over its three phalanx bones: a continuous outline that bends only at the joints (no bead/sausage segments).
     // Knuckle discs under the tube (circles centred on PIP/DIP) keep the outer corner round when the finger curls hard.
-    const tubeOf = (pts, rs, extra = 0) => ensureCW(tube(pts, rs.map((r) => ({ r: r + extra, l: r + extra })), { capK: 1.0 }));
+    const tubeOf = (pts, rs, extra = 0, k = 1.0) => ensureCW(tube(pts, rs.map((r) => ({ r: r + extra, l: r + extra })), { capK: k }));
     const order = S.order || [3, 2, 1, 0], behind = [];
     order.forEach((i, rank) => {
       const f = F[i], fid = `${id}.f${i + 1}`, zf = z + 0.05 + rank * 0.01;
       const root = add(f.k, mulS(norm(sub(f.k, f.p)), S.rootIn)), chain = [`${fid}a`, `${fid}b`, `${fid}c`];
       const skin = { chain, zone: 0.5 };
-      out.push({ id: fid, bone: `${fid}c`, z: zf, fill, geom: tubeOf([root, f.p, f.q, f.t], f.r), skin });
-      out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, geom: ellipse(f.p, f.r[1] * 0.8, f.r[1] * 0.8) });
-      out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, geom: ellipse(f.q, f.r[2] * 0.8, f.r[2] * 0.8) });
+      out.push({ id: fid, bone: `${fid}c`, z: zf, fill, geom: tubeOf([root, f.p, f.q, f.t], f.r, 0, 0.85), skin });   // tip: softly pointed, not a round cap
+      out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, geom: ellipse(f.p, f.r[1] * 0.7, f.r[1] * 0.7) });
+      out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, geom: ellipse(f.q, f.r[2] * 0.7, f.r[2] * 0.7) });
       // separation line: ONE continuous round-capped stroke along the side that faces the finger behind, from the
       // knuckle to just before the tip arc, chain-skinned with the finger and clipped to the fingers behind — so it
       // shows only where this finger overlaps them (no outline against the background, no hooks round the tips)
@@ -110,6 +110,15 @@ export function makeHand(spec) {
         const segL = [0, 1].map((j) => Math.hypot(pts[j + 1][0] - pts[j][0], pts[j + 1][1] - pts[j][1])), Lk = (segL[0] + segL[1]) * keepF;
         const cut = Lk <= segL[0] ? [pts[0], lerp(pts[0], pts[1], Lk / segL[0] * 0.5), lerp(pts[0], pts[1], Lk / segL[0])] : [pts[0], pts[1], lerp(pts[1], pts[2], (Lk - segL[0]) / segL[1])];
         if (Lk >= 0.04) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(cut, cut.map(() => S.rim), 'round'), skin, clip: [...behind] });
+      }
+      if (nail) {
+        const tot = curlOf(i) + (ctx.pose?.bones?.[`${fid}c`] ?? curlOf(i) * 0.4), vis = Math.max(0, Math.min(1, 1 - (tot - 70) / 45));
+        if (vis > 0.05) {
+          const dq = norm(sub(f.t, f.q)), Lq = Math.hypot(f.t[0] - f.q[0], f.t[1] - f.q[1]), c = add(f.q, mulS(dq, Lq * 0.66));
+          const ang = Math.atan2(dq[1], dq[0]);
+          out.push({ id: `${fid}.nail`, bone: `${fid}c`, z: zf + 0.003, fill: nail, clip: fid,
+                     geom: ellipse(c, Lq * 0.36 * vis, f.r[3] * 0.62, ang) });
+        }
       }
       behind.push(fid, `${fid}.j1`, `${fid}.j2`);
     });
