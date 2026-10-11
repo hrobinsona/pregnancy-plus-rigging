@@ -1,0 +1,43 @@
+{
+ "name": "queasy",
+ "bones": {
+  "spineUpper": 2,
+  "chest": 3,
+  "neck": 4,
+  "head": 7,
+  "clavicle.near": 5,
+  "clavicle.far": -4,
+  "forearm.far": -4,
+  "hand.far": 3
+ },
+ "ik": {
+  "near": {
+   "palmOn": "mouth",
+   "palmOffset": [
+    8,
+    10
+   ],
+   "handDeg": -16,
+   "upperLen": 0.62,
+   "foreLen": 1.2
+  }
+ },
+ "face": {
+  "lid": {
+   "squeeze": 1
+  },
+  "brow": {
+   "worried": 1
+  },
+  "mouth": {
+   "queasy": 1
+  },
+  "cheek": {
+   "sick": 0.6,
+   "blush": 0.4
+  }
+ },
+ "fx": {
+  "handRim": 1
+ }
+}

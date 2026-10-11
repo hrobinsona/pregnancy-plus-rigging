@@ -1,0 +1,68 @@
+{
+ "name": "queasy-wave",
+ "bones": {
+  "spineUpper": 4,
+  "chest": 7,
+  "neck": 7,
+  "head": 14,
+  "clavicle.near": 7,
+  "clavicle.far": -6,
+  "forearm.far": -6,
+  "hand.far": 5,
+  "upperArm.near": -68.76,
+  "forearm.near": -33.46,
+  "hand.near": 70.23
+ },
+ "scale": {
+  "upperArm.near": [
+   0.6,
+   1
+  ],
+  "forearm.near": [
+   1.2,
+   1
+  ]
+ },
+ "lattice": {
+  "belly": null
+ },
+ "face": {
+  "lid": {
+   "squeeze": 1
+  },
+  "brow": {
+   "worried": 1
+  },
+  "mouth": {
+   "queasy": 1
+  },
+  "cheek": {
+   "sick": 0.8,
+   "blush": 0.2
+  }
+ },
+ "fx": {
+  "handRim": 1
+ },
+ "hands": {
+  "near": "cupping-belly",
+  "far": "cupping-belly"
+ },
+ "facing": "right",
+ "_ik": {
+  "near": {
+   "elbow": [
+    538,
+    451
+   ],
+   "wrist": [
+    612,
+    292
+   ],
+   "palm": [
+    666,
+    286
+   ]
+  }
+ }
+}

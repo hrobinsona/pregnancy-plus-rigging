@@ -1,0 +1,8 @@
+{
+ "name": "relief",
+ "bones": { "spineUpper": 0, "chest": 0, "neck": 1, "head": 2, "clavicle.near": -2, "clavicle.far": 2 },
+ "scale": { "spineUpper": [0.992, 0.985] },
+ "ik": { "near": { "palmOn": [592, 408], "handDeg": -12, "upperLen": 0.8, "foreLen": 1.05 } },
+ "face": { "lid": { "soft": 1 }, "brow": { "relaxed": 1 }, "mouth": { "exhale": 1 }, "cheek": { "sick": 0.25, "blush": 0.75 } },
+ "fx": { "handRim": 0.6 }
+}

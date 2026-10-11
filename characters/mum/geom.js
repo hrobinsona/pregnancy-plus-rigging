@@ -122,3 +122,17 @@ export function pathD(g, s = 1) {
   }
   return d + 'Z';
 }
+
+/** Approximate outward offset of a clockwise loop by d (anchors move along their outward normal, handles follow). */
+export function outset(g, d, shift = [0, 0]) {
+  const n = g.P.length;
+  const P = [], hin = [], hout = [];
+  for (let i = 0; i < n; i++) {
+    let t = sub(g.hout[i], g.hin[i]);
+    if (len(t) < 1e-9) t = sub(g.P[(i + 1) % n], g.P[(i - 1 + n) % n]);
+    const nn = norm(perpL(t));
+    const o = [nn[0] * d + shift[0], nn[1] * d + shift[1]];
+    P.push(add(g.P[i], o)); hin.push(add(g.hin[i], o)); hout.push(add(g.hout[i], o));
+  }
+  return { P, hin, hout };
+}

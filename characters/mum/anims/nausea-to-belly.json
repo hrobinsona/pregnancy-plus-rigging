@@ -1,0 +1,226 @@
+{
+ "name": "nausea-to-belly",
+ "fps": 30,
+ "duration": 9.2,
+ "exposure": "ones",
+ "story": "A wave of morning sickness: hand over mouth, it peaks, she rides it out, takes a long calming breath, exhales in relief, then lowers her hand back onto the bump and settles into a smile.",
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "queasy",
+   "note": "open on the nausea (hand over mouth, eyes squeezed)"
+  },
+  {
+   "t": 0.45,
+   "pose": "queasy",
+   "ease": "inOut",
+   "note": "moving hold: drift + shallow quick breaths"
+  },
+  {
+   "t": 0.85,
+   "pose": "queasy-pre",
+   "ease": "inOut",
+   "note": "anticipation: sharp little intake, shoulders up, head draws back"
+  },
+  {
+   "t": 1.15,
+   "pose": "queasy-wave",
+   "ease": "reaction",
+   "note": "the heave: fast drop into the hunch, long settle"
+  },
+  {
+   "t": 1.65,
+   "pose": "queasy-wave",
+   "ease": "inOut",
+   "note": "ride it out"
+  },
+  {
+   "t": 3.0,
+   "pose": "breath-in",
+   "ease": "breath",
+   "note": "long calming inhale: chest lifts, head rises, lids soften"
+  },
+  {
+   "t": 3.4,
+   "pose": "breath-in",
+   "ease": "inOut",
+   "note": "top of the breath"
+  },
+  {
+   "t": 4.2,
+   "pose": "relief",
+   "ease": "reaction",
+   "note": "phew: exhale, hand slides down to the chest"
+  },
+  {
+   "t": 4.6,
+   "pose": "relief",
+   "ease": "inOut"
+  },
+  {
+   "t": 5.4,
+   "pose": "hand-down",
+   "ease": "settle",
+   "note": "eyes open, hand lands back on the bump"
+  },
+  {
+   "t": 6.4,
+   "pose": "rest-smile",
+   "ease": "inOut",
+   "note": "settles into a smile"
+  },
+  {
+   "t": 7.2,
+   "pose": "rest-smile",
+   "ease": "inOut"
+  },
+  {
+   "t": 7.95,
+   "pose": "rub",
+   "ease": "inOut",
+   "note": "one slow stroke across the bump"
+  },
+  {
+   "t": 8.7,
+   "pose": "rest-smile",
+   "ease": "inOut"
+  }
+ ],
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 1,
+  "spineUpper": 2,
+  "chest": 3,
+  "clavicle.near": 3,
+  "clavicle.far": 3,
+  "neck": 5,
+  "head": 7,
+  "upperArm.near": 2,
+  "forearm.near": 3,
+  "hand.near": 5,
+  "forearm.far": 3,
+  "hand.far": 5,
+  "face": 0,
+  "fx": 2
+ },
+ "breath": [
+  {
+   "t": 0.0,
+   "period": 2.2,
+   "amp": 0.55
+  },
+  {
+   "t": 1.6,
+   "period": 2.2,
+   "amp": 0.5
+  },
+  {
+   "t": 2.0,
+   "period": 2.6,
+   "amp": 0.0
+  },
+  {
+   "t": 4.6,
+   "period": 4.6,
+   "amp": 0.0
+  },
+  {
+   "t": 5.5,
+   "period": 4.6,
+   "amp": 1.0
+  },
+  {
+   "t": 9.2,
+   "period": 4.6,
+   "amp": 1.0
+  }
+ ],
+ "breathGain": {
+  "chestAlong": 0.01,
+  "chestAcross": 0.014,
+  "shoulderDeg": 1.2,
+  "headDeg": 0.6,
+  "belly": 0.004
+ },
+ "drift": [
+  {
+   "t": 0.0,
+   "amp": 1.5
+  },
+  {
+   "t": 1.7,
+   "amp": 1.5
+  },
+  {
+   "t": 3.0,
+   "amp": 0.9
+  },
+  {
+   "t": 5.0,
+   "amp": 0.7
+  },
+  {
+   "t": 9.2,
+   "amp": 0.7
+  }
+ ],
+ "driftBones": {
+  "head": 1.0,
+  "neck": 0.5,
+  "chest": 0.5,
+  "spineUpper": 0.35,
+  "clavicle.near": 0.6,
+  "clavicle.far": 0.6,
+  "hand.far": 1.2,
+  "hand.near": 0.6
+ },
+ "driftHz": 0.38,
+ "springs": {
+  "hair": {
+   "near": {
+    "f": 2.2,
+    "zeta": 0.4,
+    "kRot": 0.9,
+    "kGrav": 0.25
+   },
+   "far": {
+    "f": 2.0,
+    "zeta": 0.38,
+    "kRot": 0.9,
+    "kGrav": 0.25
+   }
+  },
+  "belly": {
+   "f": 4.0,
+   "zeta": 0.7
+  }
+ },
+ "contact": [
+  1.3,
+  2.2
+ ],
+ "events": [
+  {
+   "type": "press",
+   "t": 5.32,
+   "amp": 0.012,
+   "dir": [
+    -0.45,
+    -0.9
+   ],
+   "note": "near hand lands on the bump"
+  },
+  {
+   "type": "blink",
+   "t": 5.62
+  },
+  {
+   "type": "blink",
+   "t": 8.35
+  }
+ ],
+ "render": {
+  "bg": "#fbf3ea",
+  "ground": "#efe0d0"
+ }
+}

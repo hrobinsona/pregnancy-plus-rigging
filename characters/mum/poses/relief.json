@@ -1,0 +1,70 @@
+{
+ "name": "relief",
+ "bones": {
+  "spineUpper": 0,
+  "chest": 0,
+  "neck": 1,
+  "head": 2,
+  "clavicle.near": -2,
+  "clavicle.far": 2,
+  "upperArm.near": -18.73,
+  "forearm.near": -67.69,
+  "hand.near": 76.42
+ },
+ "scale": {
+  "spineUpper": [
+   0.992,
+   0.985
+  ],
+  "upperArm.near": [
+   0.8,
+   1
+  ],
+  "forearm.near": [
+   1.05,
+   1
+  ]
+ },
+ "lattice": {
+  "belly": null
+ },
+ "face": {
+  "lid": {
+   "soft": 1
+  },
+  "brow": {
+   "relaxed": 1
+  },
+  "mouth": {
+   "exhale": 1
+  },
+  "cheek": {
+   "sick": 0.25,
+   "blush": 0.75
+  }
+ },
+ "fx": {
+  "handRim": 0.6
+ },
+ "hands": {
+  "near": "cupping-belly",
+  "far": "cupping-belly"
+ },
+ "facing": "right",
+ "_ik": {
+  "near": {
+   "elbow": [
+    483,
+    556
+   ],
+   "wrist": [
+    538,
+    412
+   ],
+   "palm": [
+    592,
+    408
+   ]
+  }
+ }
+}

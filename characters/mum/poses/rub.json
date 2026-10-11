@@ -1,0 +1,62 @@
+{
+ "name": "rub",
+ "bones": {
+  "neck": 1.5,
+  "head": 4.5,
+  "upperArm.near": -2.66,
+  "forearm.near": -2.67,
+  "hand.near": 9.33
+ },
+ "scale": {
+  "upperArm.near": [
+   1,
+   1
+  ],
+  "forearm.near": [
+   1,
+   1
+  ]
+ },
+ "lattice": {
+  "belly": null
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.4,
+   "relaxed": 0.6
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0
+ },
+ "hands": {
+  "near": "cupping-belly",
+  "far": "cupping-belly"
+ },
+ "facing": "right",
+ "_ik": {
+  "near": {
+   "elbow": [
+    429,
+    591
+   ],
+   "wrist": [
+    571,
+    626
+   ],
+   "palm": [
+    624,
+    637
+   ]
+  }
+ }
+}

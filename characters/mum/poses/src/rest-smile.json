@@ -1,0 +1,6 @@
+{
+ "name": "rest-smile",
+ "bones": { "neck": 1, "head": 3 },
+ "face": { "lid": { "open": 1 }, "brow": { "neutral": 0.5, "relaxed": 0.5 }, "mouth": { "smile": 1 }, "cheek": { "blush": 1 } },
+ "fx": { "handRim": 0 }
+}

@@ -41,6 +41,7 @@ export const design = {
   tension: 1.05,            // default Bézier tension for smooth anchors
   headScale: 1.0,           // scales all head parts about the head joint
   facing: 'right',          // reference faces screen-right; 'left' mirrors the whole rig
+  rimOffset: [-1.5 / 210, 2 / 210, 2.6 / 210],  // contact-shadow rim: drop [x, y] + outward offset (H units) for skin-on-skin overlaps
 };
 
 // ---------------------------------------------------------------- HEAD (bone: head)
@@ -81,6 +82,35 @@ export const head = {
 export const expressions = {
   'soft-smile': { mouth: line('head', [[586, 238], [596, 244], [606, 246], [617, 243.5], [626, 237]], [2.5, 4.5, 5, 4.5, 2.5]), eyeSquash: 1.0 },  // round caps
   neutral: { mouth: line('head', [[589, 242], [598, 244], [607, 245], [616, 244], [624, 241]], [3, 4.5, 5, 4.5, 3]), eyeSquash: 1.0 },
+};
+
+// ---------------------------------------------------------------- FACE RIG (blend-shape targets, shared anchor counts)
+// A pose's face is a set of weights per channel, e.g. { lid: {squeeze: 1}, brow: {worried: 1}, mouth: {queasy: 1}, cheek: {sick: 1} }.
+// Each target is a stroke with the same point count as its siblings, so blends are point-to-point.
+export const faceShapes = {
+  lid: {
+    open: head.lids,
+    // squeezed shut (discomfort): a tight arch across the eye's middle
+    squeeze: { near: line('head', [[556, 197.5], [562, 193.5], [570, 193], [577, 196]], [2.5, 4.2, 4.2, 3]),
+               far: line('head', [[628, 188.5], [634, 184.5], [642, 184.5], [648, 188.5]], [2.5, 4.2, 4.2, 3]) },
+    // softly closed (content): a gentle smile-shaped lid line
+    soft: { near: line('head', [[556, 193.5], [562, 197.5], [570, 198], [577, 194.5]], [2.5, 3.6, 3.6, 2.5]),
+            far: line('head', [[628, 184.5], [634, 189], [642, 189], [648, 185]], [2.5, 3.6, 3.6, 2.5]) },
+  },
+  // eye squash target line (where the iris collapses to when the lid closes)
+  eyeCloseY: { near: shape('head', [[565, 195.5]])[0][1], far: shape('head', [[636.5, 187]])[0][1] },  // local H units
+  brow: {
+    neutral: head.brows,
+    worried: { near: line('head', [[553, 168.5], [567, 162.5], [582, 155]], [5, 8, 5.5]), far: line('head', [[626, 150], [638, 151], [651, 157.5]], [5, 7.5, 5]) },
+    relaxed: { near: line('head', [[553, 165], [567, 156.5], [583, 159.5]], [5, 8, 5.5]), far: line('head', [[625, 154.5], [638, 149.5], [651, 154.5]], [5, 7.5, 5]) },
+  },
+  mouth: {
+    smile: expressions['soft-smile'].mouth,
+    neutral: expressions.neutral.mouth,
+    queasy: line('head', [[590, 244], [597, 241], [605, 244], [613, 241], [621, 244]], [2.5, 3.6, 3.6, 3.6, 2.5]),
+    // relieved exhale: small pursed 'o'
+    exhale: line('head', [[603, 243.5], [605, 240], [609, 239.5], [611.5, 242.5], [608.5, 246]], [5, 5.5, 5.5, 5.5, 5]),
+  },
 };
 
 // ---------------------------------------------------------------- NECK & CHEST
@@ -142,6 +172,8 @@ export const cardigan = {
   // sleeve-opening shadow just behind the forearm's rounded end
   nearCuffRim: line('elbowNear', [[509, 591], [493, 604], [484, 626], [487, 650]], [0, 6, 6, 0]),
   nearSleeveShadow: line('spineUpper', [[426, 646], [444, 652], [466, 657], [486, 657]], [0, 8, 7, 0]),
+  // corrective (smart-bone): outer edge of the forearm sleeve, fades in as the arm lifts so the forearm reads against the upper sleeve
+  nearForearmEdge: line('elbowNear', [[487, 642], [452, 641], [416, 629], [389, 607]], [0, 7, 7, 0]),
   nearForearmFolds: [
     line('elbowNear', [[406, 568], [440, 551], [481, 538]], [0, 8, 0]),
     line('elbowNear', [[428, 531], [452, 534], [472, 527]], [0, 6, 0]),

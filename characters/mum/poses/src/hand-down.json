@@ -1,0 +1,6 @@
+{
+ "name": "hand-down",
+ "bones": { "neck": 0.5, "head": 1 },
+ "face": { "lid": { "open": 1 }, "brow": { "relaxed": 0.6, "neutral": 0.4 }, "mouth": { "neutral": 0.6, "smile": 0.4 }, "cheek": { "blush": 0.9, "sick": 0.1 } },
+ "fx": { "handRim": 0 }
+}

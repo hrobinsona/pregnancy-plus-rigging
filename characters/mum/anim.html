@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>mum — animation</title>
+<style>html,body{margin:0;padding:0;background:#fff;overflow:hidden}#stage svg{display:block}</style></head>
+<body><div id="stage"></div>
+<script type="module">
+// renderAt(t) is a pure function of t: every layer (keys, breath, drift, baked springs, belly response) is looked up by t.
+import { toSVG } from './rig.js';
+import { makeAnim } from './anim.js';
+const q = new URLSearchParams(location.search);
+const name = q.get('anim') || 'nausea-to-belly';
+const spec = await (await fetch(`./anims/${name}.json`)).json();
+const lib = {};
+for (const p of new Set(spec.keys.map((k) => k.pose))) lib[p] = await (await fetch(`./poses/${p}.json`)).json();
+const A = makeAnim(spec, lib);
+const R = spec.render || {};
+const opts = { frame: 'still', bg: q.get('bg') || R.bg || '#ffffff', ground: R.ground, silhouette: q.get('sil') === '1' };
+const stage = document.getElementById('stage');
+window.anim = { fps: A.fps, duration: A.duration, frames: Math.round(A.duration * A.fps) };
+window.renderAt = (t) => { stage.innerHTML = toSVG(A.poseAt(t), opts); };
+window.poseAt = (t) => A.poseAt(t);
+window.renderAt(+(q.get('t') || 0));
+window.__ready = true;
+</script></body></html>

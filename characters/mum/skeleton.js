@@ -15,12 +15,12 @@ export const BONES = [
   { id: 'head', parent: 'neck', joint: 'head', aim: 'headTip', min: -18, max: 18, cap: 0.14 },
   { id: 'belly', parent: 'pelvis', joint: 'bellyBase', aim: 'bellyApex', min: -5, max: 5 },
 
-  { id: 'clavicle.near', parent: 'chest', joint: 'clavicleNear', aim: 'shoulderNear', min: -6, max: 6 },
-  { id: 'upperArm.near', parent: 'clavicle.near', joint: 'shoulderNear', aim: 'elbowNear', min: -25, max: 25, cap: 0.17 },
-  { id: 'forearm.near', parent: 'upperArm.near', joint: 'elbowNear', aim: 'wristNear', min: -40, max: 40, cap: 0.16 },
-  { id: 'hand.near', parent: 'forearm.near', joint: 'wristNear', aim: 'handNearTip', min: -25, max: 25, cap: 0.1 },
+  { id: 'clavicle.near', parent: 'chest', joint: 'clavicleNear', aim: 'shoulderNear', min: -8, max: 8 },
+  { id: 'upperArm.near', parent: 'clavicle.near', joint: 'shoulderNear', aim: 'elbowNear', min: -85, max: 25, cap: 0.17 },
+  { id: 'forearm.near', parent: 'upperArm.near', joint: 'elbowNear', aim: 'wristNear', min: -75, max: 40, cap: 0.16 },
+  { id: 'hand.near', parent: 'forearm.near', joint: 'wristNear', aim: 'handNearTip', min: -35, max: 80, cap: 0.1 },
 
-  { id: 'clavicle.far', parent: 'chest', joint: 'clavicleFar', aim: 'shoulderFar', min: -6, max: 6 },
+  { id: 'clavicle.far', parent: 'chest', joint: 'clavicleFar', aim: 'shoulderFar', min: -8, max: 8 },
   { id: 'upperArm.far', parent: 'clavicle.far', joint: 'shoulderFar', aim: 'elbowFar', min: -25, max: 25 },
   { id: 'forearm.far', parent: 'upperArm.far', joint: 'elbowFar', aim: 'wristFar', min: -40, max: 40, cap: 0.1 },
   { id: 'hand.far', parent: 'forearm.far', joint: 'wristFar', aim: 'handFarTip', min: -25, max: 25, cap: 0.08 },

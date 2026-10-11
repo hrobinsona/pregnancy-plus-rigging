@@ -7,4 +7,5 @@ export const P = {
   cardigan: '#feb8c3', cardiganShade: '#fb9caf',   // pink cardigan
   accent: '#fee076', accentShade: '#facb4b',       // yellow socks
   line: '#070201', mouth: '#763519',               // eyes / mouth
+  sick: '#b3ad6c',                                  // queasy cheek tint (animation only; blends with cheek)
 };

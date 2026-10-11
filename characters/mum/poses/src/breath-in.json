@@ -1,0 +1,51 @@
+{
+ "name": "breath-in",
+ "bones": {
+  "spineUpper": -2,
+  "chest": -3,
+  "neck": -2,
+  "head": -5,
+  "clavicle.near": 3,
+  "clavicle.far": -3,
+  "forearm.far": -3,
+  "hand.far": 2
+ },
+ "scale": {
+  "spineUpper": [
+   1.02,
+   1.035
+  ]
+ },
+ "ik": {
+  "near": {
+   "palmOn": "mouth",
+   "palmOffset": [
+    6,
+    8
+   ],
+   "handDeg": -20,
+   "upperLen": 0.62,
+   "foreLen": 1.18
+  }
+ },
+ "face": {
+  "lid": {
+   "squeeze": 0.25,
+   "soft": 0.75
+  },
+  "brow": {
+   "worried": 0.4,
+   "relaxed": 0.6
+  },
+  "mouth": {
+   "queasy": 1
+  },
+  "cheek": {
+   "sick": 0.5,
+   "blush": 0.5
+  }
+ },
+ "fx": {
+  "handRim": 1
+ }
+}

@@ -1,0 +1,7 @@
+{
+ "name": "rub",
+ "bones": { "neck": 1.5, "head": 4.5 },
+ "ik": { "near": { "palmOn": [624, 637], "handDeg": 4, "upperLen": 1, "foreLen": 1 } },
+ "face": { "lid": { "open": 1 }, "brow": { "neutral": 0.4, "relaxed": 0.6 }, "mouth": { "smile": 1 }, "cheek": { "blush": 1 } },
+ "fx": { "handRim": 0 }
+}

@@ -1,0 +1,72 @@
+{
+ "name": "queasy-pre",
+ "bones": {
+  "spineUpper": 0.5,
+  "chest": 1,
+  "neck": 2,
+  "head": 3,
+  "clavicle.near": 7.5,
+  "clavicle.far": -6.5,
+  "forearm.far": -3,
+  "hand.far": 2,
+  "upperArm.near": -80.28,
+  "forearm.near": -31.65,
+  "hand.near": 84.93
+ },
+ "scale": {
+  "spineUpper": [
+   1.008,
+   1.012
+  ],
+  "upperArm.near": [
+   0.62,
+   1
+  ],
+  "forearm.near": [
+   1.2,
+   1
+  ]
+ },
+ "lattice": {
+  "belly": null
+ },
+ "face": {
+  "lid": {
+   "squeeze": 1
+  },
+  "brow": {
+   "worried": 1
+  },
+  "mouth": {
+   "queasy": 1
+  },
+  "cheek": {
+   "sick": 0.65,
+   "blush": 0.35
+  }
+ },
+ "fx": {
+  "handRim": 1
+ },
+ "hands": {
+  "near": "cupping-belly",
+  "far": "cupping-belly"
+ },
+ "facing": "right",
+ "_ik": {
+  "near": {
+   "elbow": [
+    551,
+    441
+   ],
+   "wrist": [
+    570,
+    267
+   ],
+   "palm": [
+    624,
+    257
+   ]
+  }
+ }
+}
