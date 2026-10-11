@@ -124,7 +124,10 @@ export function createRig(C) {
         if (p.skin) parts.push({ ...p, module: name, anchors: p.geom.P.length, geom: p.skin.chain ? chainSkinGeom(p.geom, p.skin, st) : skinGeom(p.geom, p.skin, st), M: F });
         else {
           const j = J[BONE[p.bone].joint];
-          parts.push({ ...p, module: name, anchors: p.geom.P.length, M: mul(F, mul(st[p.bone].M, T(-j[0], -j[1]))) });
+          // rigid: rotate + translate with the bone but never take its stretch (a knuckle disc on a foreshortening phalanx
+          // must stay a circle — squashed, it becomes a lobe sticking out of the hand)
+          const Mb = p.rigid ? mul(T(st[p.bone].pos[0], st[p.bone].pos[1]), R(st[p.bone].rot)) : st[p.bone].M;
+          parts.push({ ...p, module: name, anchors: p.geom.P.length, M: mul(F, mul(Mb, T(-j[0], -j[1]))) });
         }
       }
     }

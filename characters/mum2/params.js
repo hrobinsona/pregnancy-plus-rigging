@@ -9,7 +9,7 @@ export const at = ([X, Y]) => [(X - G[0]) / Hpx, (Y - G[1]) / Hpx];
 export const lm = (k) => at(L.points[k]);
 
 export const palette = {
-  skin: '#d48055', skinShade: '#c76a47', skinLine: '#c76a47', cheek: '#e37158', nail: '#e7a27c',   // nail: a light tint of the skin (back-of-hand views only)   // skinLine = skinShade: one base + one shade
+  skin: '#d48055', skinShade: '#c76a47', skinLine: '#b05a3a', cheek: '#e37158', nail: '#e7a27c',   // nail: a light tint of the skin (back-of-hand views only)   // skinLine: drawn creases (finger lines, nose) — darker than the shade, as sampled from the reference (#a14e32 on #c87754)
   hair: '#5e3424', hairShade: '#4a2718',
   top: '#b99dd7', topShade: '#a685cb',            // lilac top (value ladder: cardigan 81 > top 69 > joggers 50 > hair 27)
   bottoms: '#9c7fb5', bottomsShade: '#8467a0',     // mauve joggers (lightened 11 Oct: large area, keep the ladder gentle)
@@ -71,6 +71,7 @@ export const P = {
   hem: { near: lm('hemNear'), front: lm('hemFront'), far: lm('hemFar') },
   shoulderTop: { near: lm('shoulderTopNear'), far: lm('shoulderTopFar') },
   // sleeves: half-widths along shoulder → elbow → cuff
+  cuffEnd: { near: 0.92, far: 0.84 },   // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
   // legs (jogger half-widths at hip, knee, above cuff) and centre offsets measured as widths
   leg: { near: { hip: 0.34, knee: 0.3, cuff: 0.2, calfK: 1.06, outer: [1.06, 1.2, 1.06, 1.0, 1], inner: [1.12, 1.16, 1.08, 0.94, 1] }, far: { hip: 0.32, knee: 0.28, cuff: 0.18, cuffK: 0.92, calfK: 1.06, outer: [1.02, 1.16, 1.02, 0.94, 1], inner: [1.0, 1.08, 1.05, 0.94, 1] } },   // ¾: legs nearly touch at the crotch and open as a narrow wedge (measured ref gap 0.05 H @-2.0 → 0.16 @-1.2); far ≈ 0.94× near; the near knee bulges inward
@@ -88,12 +89,17 @@ export const P = {
 // hairline slivers and enclosed gaps (detail audit). Spread poses open real gaps.
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
-  // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward the body side)
-  near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 8,
-          length: 0.66, palmFrac: 0.52, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.34, 0.115, -0.115, -0.34], fan: [-3, -1, 1, 4], flexFx: 0.18, nails: true, thumbFx: -0.35, thumb: { mcp: [0.72, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
-  // far (her left) hand: we see more of the palm side; thumb forward
-  far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 8,
-         length: 0.61, palmFrac: 0.52, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.0, across: [0.34, 0.115, -0.115, -0.28], fan: [-3, -1, 1, 4], flexFx: -0.22, thumbFx: 0.35, thumb: { mcp: [0.66, 0.74], dir: 36 }, thumbLine: false, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
+  // Measured, not eyeballed (tools/hand_fit.py vs the reference): wrist(cuff)→fingertip 0.45 H near / 0.38 H far; palm
+  // incl. thumb ≈ 0.33 H wide; fingers grouped (one skin run across them), chunky (width ≈ 0.075 H, ≈ 1:3), round tips.
+  // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
+  near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
+          length: 0.47, palmFrac: 0.5, wristW: 0.26, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          thumbFx: -0.15, thumb: { mcp: [0.6, 0.95], dir: 8, w: 1.05 }, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+  // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
+  // inner edge is drawn as a line over the palm (as in the reference)
+  far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 7, view: 'palm',
+         length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.28, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,
+         thumbFx: -0.35, thumb: { cmc: [0.02, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, order: [3, 2, 1, 0] },   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

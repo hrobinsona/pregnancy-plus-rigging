@@ -44,7 +44,7 @@ border = set(np.unique(np.concatenate([bl[0], bl[-1], bl[:, 0], bl[:, -1]])))
 for i, sl in enumerate(ndi.find_objects(bl), 1):
     if i in border: continue
     area = (bl[sl] == i).sum()
-    if 2 < area < (0.06 * ppH) ** 2: findings.append(('pinhole/gap', 'bg', sl, area))
+    if 4 < area < (0.06 * ppH) ** 2: findings.append(('pinhole/gap', 'bg', sl, area))   # ≤ 4 px = antialias seam noise
 # 2. specks + 3. spurs, per colour
 r = max(2, int(round(a.thin * ppH))); yy, xx = np.ogrid[-r:r + 1, -r:r + 1]; disk = xx * xx + yy * yy <= r * r
 ign = set(a.ignore.split(','))

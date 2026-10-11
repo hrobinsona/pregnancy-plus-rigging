@@ -33,13 +33,15 @@ export function build(ctx) {
     if (side === 'near' && X.detail.sleeveFold) out.push({ id: `sleeve.${side}.fold`, bone: `forearm.${side}`, z: zb + 0.2, fill: C.cardiganShade, geom: taper([f0, f1, f2, f3], [0.003, 0.02, 0.016, 0.003]),
       skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     // bunched cuff + rib line
-    const c0 = lerp(el, wr, 0.8), c1 = lerp(el, wr, 0.97), cw = w[3] * 1.04;
-    out.push({ id: `cuff.${side}`, bone: `forearm.${side}`, z: zb + 0.4, fill, geom: ensureCW(limb(c0, c1, [{ t: 0, r: cw, l: cw }, { t: 1, r: cw * 0.92, l: cw * 0.92 }], { capK: 0.5 })) });
+    // the cuff's rounded end sits ON the wrist landmark (measured: the reference cuff edge is the wrist), so the whole back
+    // of the hand / palm shows below it (hand_fit: the old cuff hid the top 0.08 H of the hand and the palm crease)
+    const cE = X.cuffEnd?.[side] ?? 0.92, c0 = lerp(el, wr, cE - 0.14), c1 = lerp(el, wr, cE), cw = w[3] * 1.04;
+    out.push({ id: `cuff.${side}`, bone: `forearm.${side}`, z: zb + 0.4, fill, geom: ensureCW(limb(c0, c1, [{ t: 0, r: cw, l: cw }, { t: 1, r: cw * 0.92, l: cw * 0.92 }], { capK: 0.4 })) });
     const cn = perpL(norm(sub(c1, c0))), cm = lerp(c0, c1, 0.3);
     if (X.detail.cuffRib) out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
     // wrist skin between cuff and palm, skinned across the wrist so a bent wrist stays filled (wrist corrective base)
     out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zb + 0.3, fill: C.skin,
-      geom: ensureCW(limb(lerp(el, wr, 0.9), add(wr, mulS(norm(sub(wr, el)), 0.05)), [{ t: 0, r: 0.09, l: 0.09 }, { t: 1, r: char.params.handSpecs[side].wristW / 2, l: char.params.handSpecs[side].wristW / 2 }], { capK: 0.6 })),   // R11: hand end = the palm's wrist width (no step below the cuff)
+      geom: ensureCW(limb(lerp(el, wr, 0.9), add(wr, mulS(norm(sub(wr, el)), 0.05)), [{ t: 0, r: char.params.handSpecs[side].wristW * 0.42, l: char.params.handSpecs[side].wristW * 0.42 }, { t: 1, r: char.params.handSpecs[side].wristW / 2, l: char.params.handSpecs[side].wristW / 2 }], { capK: 0.6 })),   // hand end = the palm's wrist width (no step below the cuff); the hand flares straight out of the cuff (no thin wrist)
       skin: { parent: `forearm.${side}`, child: `hand.${side}`, zone: 0.5 } });
     // hand
     const hand = char.hands[side];

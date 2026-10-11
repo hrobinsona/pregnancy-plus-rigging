@@ -1,0 +1,22 @@
+hand-library silhouette IoU (near hand), most similar first; acceptance < 0.90
+relaxed  cup      0.822
+cup      grip     0.805
+relaxed  press    0.787
+grip     fist     0.783
+fist     point    0.782
+grip     point    0.767
+cup      point    0.736
+cup      press    0.707
+relaxed  open     0.707
+relaxed  point    0.705
+relaxed  grip     0.702
+open     press    0.678
+open     cup      0.674
+cup      fist     0.668
+press    grip     0.626
+press    point    0.615
+open     grip     0.606
+relaxed  fist     0.596
+open     point    0.568
+open     fist     0.536
+press    fist     0.536
