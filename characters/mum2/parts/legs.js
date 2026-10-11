@@ -4,7 +4,7 @@ import { tube, limb, taper, loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
 
-export const ANCHORS = { 'sock.near.ribs': 8, 'sock.far.ribs': 8, 'sock.near.heel': 4, 'sock.far.heel': 4, 'sock.near.toe': 4, 'sock.far.toe': 4, 'leg.near': 12, 'leg.far': 12, 'cuffleg.near': 6, 'cuffleg.far': 6, 'cuffleg.near.line': 4, 'cuffleg.far.line': 4,
+export const ANCHORS = { 'sock.near.heel': 4, 'sock.far.heel': 4, 'sock.near.toe': 4, 'sock.far.toe': 4, 'leg.near': 12, 'leg.far': 12, 'cuffleg.near': 6, 'cuffleg.far': 6, 'cuffleg.near.line': 4, 'cuffleg.far.line': 4,
   'ankle.near': 6, 'ankle.far': 6, 'sock.near': 10, 'sock.far': 10, 'sock.near.band': 4, 'sock.far.band': 4 };
 
 export function build({ P: C, C: char }) {
@@ -35,16 +35,12 @@ export function build({ P: C, C: char }) {
     // rib cuff a little narrower than the foot; waist at the ankle; heel bulges back; instep slopes to a rounded toe
     const fw = (toe[0] - heel[0]), cw = 0.13;
     const sock = [
-      [top[0] - cw, top[1] + 0.005], [top[0] + cw, top[1] + 0.005], [top[0] + cw * 0.95, top[1] + 0.2], [heel[0] + fw * 0.7, toe[1] - 0.15],
-      [toe[0] + 0.005, toe[1] - 0.045], [toe[0] - 0.03, toe[1] + 0.03], [heel[0] + fw * 0.45, heel[1] + 0.135], [heel[0] + 0.05, heel[1] + 0.105],
+      [top[0] - cw, top[1] - 0.055], [top[0] + cw, top[1] - 0.055], [top[0] + cw * 0.95, top[1] + 0.2], [heel[0] + fw * 0.7, toe[1] - 0.15],
+      [toe[0] + 0.005, toe[1] - 0.045 * (X.foot[side].round || 1)], [toe[0] - 0.03 * (X.foot[side].round || 1), toe[1] + 0.03], [heel[0] + fw * 0.45, heel[1] + 0.135], [heel[0] + 0.05, heel[1] + 0.105],
       [heel[0] - 0.015, heel[1] + 0.01], [top[0] - cw * 0.92, top[1] + 0.22]];
     out.push({ id: `sock.${side}`, bone: `toe.${side}`, z: z + 0.5, fill: C.sock, geom: ensureCW(loop(sock)),
       skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
     out.push({ id: `sock.${side}.band`, bone: `foot.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[top[0] - cw * 0.92, top[1] + 0.13], [top[0], top[1] + 0.145], [top[0] + cw * 0.92, top[1] + 0.125]], [0.003, 0.018, 0.003]) });
-    // rib lines on the cuff (short vertical strokes, uneven spacing so they don't read as a barcode)
-    const ribs = [-0.07, -0.015, 0.045, 0.09].map((dx) => [[top[0] + dx, top[1] + 0.025], [top[0] + dx + 0.004, top[1] + 0.105]]);
-    out.push({ id: `sock.${side}.ribs`, bone: `foot.${side}`, z: z + 0.6, fill: C.sockShade,
-      geom: ensureCW(loop(ribs.flatMap(([a, b], i) => (i % 2 ? [] : [a, b])).concat([[top[0] + 0.05, top[1] + 0.105], [top[0] + 0.045, top[1] + 0.03], [top[0] + 0.0, top[1] + 0.03], [top[0] - 0.01, top[1] + 0.11], [top[0] - 0.06, top[1] + 0.11], [top[0] - 0.07, top[1] + 0.03]]).slice(0, 8))) });
     // heel and toe seams (short arcs), as in the reference's sock construction
     out.push({ id: `sock.${side}.heel`, bone: `foot.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[heel[0] + 0.0, heel[1] - 0.06], [heel[0] + 0.1, heel[1] + 0.0], [heel[0] + 0.14, heel[1] + 0.11]], [0.003, 0.02, 0.003]) });
     out.push({ id: `sock.${side}.toe`, bone: `toe.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[toe[0] - 0.13, toe[1] + 0.03], [toe[0] - 0.12, toe[1] - 0.05], [toe[0] - 0.05, toe[1] - 0.12]], [0.003, 0.02, 0.003]) });

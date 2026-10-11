@@ -11,8 +11,8 @@ export const lm = (k) => at(L.points[k]);
 export const palette = {
   skin: '#d48055', skinShade: '#c76a47', skinLine: '#c76a47', cheek: '#e37158',   // skinLine = skinShade: one base + one shade
   hair: '#5e3424', hairShade: '#4a2718',
-  top: '#cbaee9', topShade: '#b695dc',            // lilac top
-  bottoms: '#9b7cb5', bottomsShade: '#82659c',     // mauve joggers: ΔL* ≈ 10 below the top's shade (bump underside reads; darker base)
+  top: '#b99dd7', topShade: '#a685cb',            // lilac top (value ladder: cardigan 81 > top 69 > joggers 50 > hair 27)
+  bottoms: '#896ba3', bottomsShade: '#74578d',     // mauve joggers
   cardigan: '#feb8c3', cardiganShade: '#f79caf',   // pink cardigan: one base + one shade
   sock: '#f2cf6e', sockShade: '#dcaa45',            // lower chroma than the face's focal colours; ΔL* ≈ 6 vs floor           // yellow socks
   eye: '#2a1611', mouth: '#7a3a1e',                // no pure black (ONS / Headspace practice)
@@ -30,8 +30,8 @@ export const joints = {
   bellyBase: [0.22, -3.42], bellyApex: lm('bellyApex'),
   clavicleNear: [-0.16, -4.76], shoulderNear: lm('shoulderNear'), elbowNear: lm('elbowNear'), wristNear: lm('wristNear'),
   clavicleFar: [0.06, -4.76], shoulderFar: lm('shoulderFar'), elbowFar: lm('elbowFar'), wristFar: lm('wristFar'),
-  hipNear: lm('hipNear'), kneeNear: lm('kneeNear'), ankleNear: lm('ankleNear'), ballNear: [-0.04, -0.03], toeNear: [lm('toeNear')[0] - 0.18, lm('toeNear')[1]],
-  hipFar: lm('hipFar'), kneeFar: lm('kneeFar'), ankleFar: lm('ankleFar'), ballFar: [0.75, -0.1], toeFar: lm('toeFar'),
+  hipNear: lm('hipNear'), kneeNear: lm('kneeNear'), ankleNear: lm('ankleNear'), ballNear: [-0.03, -0.01], toeNear: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05],
+  hipFar: lm('hipFar'), kneeFar: [lm('kneeFar')[0], lm('kneeFar')[1] - 0.03], ankleFar: [lm('ankleFar')[0], lm('ankleFar')[1] - 0.07], ballFar: [0.75, -0.17], toeFar: [lm('toeFar')[0], lm('toeFar')[1] - 0.07],   // far foot sits back in depth
 };
 
 // ---------------------------------------------------------------- shape parameters
@@ -55,7 +55,7 @@ export const P = {
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
   // legs (jogger half-widths at hip, knee, above cuff) and centre offsets measured as widths
   leg: { near: { hip: 0.34, knee: 0.285, cuff: 0.2, outer: 1.08, inner: 0.92 }, far: { hip: 0.3, knee: 0.245, cuff: 0.17, outer: 1.08, inner: 0.92 } },  // far ≈ 0.88× near (no twins); outer side fuller, inner straighter
-  foot: { near: { heel: lm('heelNear'), toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1]] }, far: { heel: lm('heelFar'), toe: lm('toeFar') } },   // near foot turned toward camera (shorter)
+  foot: { near: { heel: [lm('heelNear')[0] + 0.04, lm('heelNear')[1]], toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05], round: 1.3 }, far: { heel: [lm('heelFar')[0], lm('heelFar')[1] - 0.07], toe: [lm('toeFar')[0], lm('toeFar')[1] - 0.07], round: 1 } },   // near foot toward camera (shorter, toe lower); far foot back in depth
 };
 
 // ---------------------------------------------------------------- hands (generator specs; finger counts fixed at 4)
@@ -66,14 +66,14 @@ const fingers = (w) => [
   { len: 0.95, w: w * 0.98, spread: 2, at: 0.62 }, { len: 0.8, w: w * 0.9, spread: 6, at: 0.86 },
 ];
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
-// Critic B R1: hands were 0.67 × face → 0.56 H; fingers narrower than their spacing so gaps can open; fingertips turned
+// Critic B R1–R3: hands grew toward 'hand ≈ face' (0.64 H near, 0.58 far); fingers narrower than their spacing so gaps can open; fingertips turned
 // 10° away from the body so the thumb never touches the cardigan (keeps the arm–body negative space).
 export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 10,
-          length: 0.56, palmFrac: 0.56, wristW: 0.17, palmW: 0.27, thumbSide: 1, fingers: fingers(0.06), crease: 'one',
-          thumb: { at: [0.26, 0.42], dir: -14, len: 0.32, w: 0.07 }, flexFx: 0.45, order: [3, 2, 1, 0] },
+          length: 0.64, palmFrac: 0.52, wristW: 0.18, palmW: 0.29, thumbSide: 1, fingers: fingers(0.064), crease: 'one',
+          thumb: { at: [0.26, 0.42], dir: -14, len: 0.26, w: 0.072 }, flexFx: 0.45, order: [3, 2, 1, 0] },
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 10,
-         length: 0.5, palmFrac: 0.56, wristW: 0.16, palmW: 0.25, thumbSide: -1, fingers: fingers(0.056), crease: 'one',
+         length: 0.58, palmFrac: 0.52, wristW: 0.17, palmW: 0.27, thumbSide: -1, fingers: fingers(0.06), crease: 'one',
          thumb: { at: [0.3, 0.42], dir: -4, len: 0.3, w: 0.064 }, flexFx: -0.45, order: [0, 1, 2, 3], creaseSide: -1 },
 };
 

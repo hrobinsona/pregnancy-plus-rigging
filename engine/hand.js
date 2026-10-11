@@ -66,7 +66,8 @@ export function makeHand(spec) {
       const f = spec.fingers[i], k = joints[`${id}.f${i + 1}k`], m = joints[`${id}.f${i + 1}m`], t = joints[`${id}.f${i + 1}t`];
       const w0 = f.w / 2, w1 = f.w * 0.46, w2 = f.w * 0.42;
       const zf = z + 0.05 + rank * 0.01;
-      out.push({ id: `${id}.f${i + 1}a`, bone: `${id}.f${i + 1}a`, z: zf, fill, geom: ensureCW(limb(k, m, [{ t: 0, r: w0, l: w0 }, { t: 1, r: w1, l: w1 }], { capK: 1.0 })) });
+      const root = add(k, mulS(norm(sub(k, m)), spec.rootIn ?? 0.03));   // root sinks into the palm: no gaps at the knuckles
+      out.push({ id: `${id}.f${i + 1}a`, bone: `${id}.f${i + 1}a`, z: zf, fill, geom: ensureCW(limb(root, m, [{ t: 0, r: w0, l: w0 }, { t: 1, r: w1, l: w1 }], { capK: 1.0 })) });
       out.push({ id: `${id}.f${i + 1}b`, bone: `${id}.f${i + 1}b`, z: zf + 0.001, fill, geom: ensureCW(limb(m, t, [{ t: 0, r: w1, l: w1 }, { t: 1, r: w2, l: w2 }], { capK: 1.0 })) });
       // crease on the side facing the finger behind it (skinned across the middle joint so it bends with the finger)
       if (spec.crease !== false && rank > 0 && (spec.crease !== 'one' || rank === Math.floor(order.length / 2))) {

@@ -1,6 +1,6 @@
 {
  "name": "stand",
- "note": "master standing pose = rest drawing + pregnancy posture + hand library. Posture (research \u00a73): lumbar extension (spineLower +4), upper trunk counter-leans back (spineUpper/chest -4 each), head/neck compensate to keep the gaze level and the ear over the feet (head x within 6 px of rest). Pelvis tilt is NOT a screen rotation in \u00be (it is about the hip axis), so it is suggested by tipping the bump (belly +3) instead of rotating the pelvis \u2014 keeps the feet planted. Clavicles level the shoulder line the chest rotation tilted. Arms hang plumb: upperArm -5.6 (anatomical) cancels the -4\u00b0 trunk lean through the \u00be projection. R2: stronger counter-lean (spineUpper -6, chest -5; head/neck +7 keep the gaze level); far arm swings forward (-1) to clear the bump; far leg splayed 3\u00b0 (wider pregnant base).",
+ "note": "master standing pose = rest drawing + pregnancy posture + hand library. Posture (research \u00a73): lumbar extension (spineLower +4), upper trunk counter-leans back (spineUpper/chest -4 each), head/neck compensate to keep the gaze level and the ear over the feet (head x within 6 px of rest). Pelvis tilt is NOT a screen rotation in \u00be (it is about the hip axis), so it is suggested by tipping the bump (belly +3) instead of rotating the pelvis \u2014 keeps the feet planted. Clavicles level the shoulder line the chest rotation tilted. Arms hang plumb: upperArm -5.6 (anatomical) cancels the -4\u00b0 trunk lean through the \u00be projection. R2: stronger counter-lean (spineUpper -6, chest -5; head/neck +7 keep the gaze level); far arm swings forward (-1) to clear the bump; far leg splayed 3\u00b0 (wider pregnant base). R3: slight A-pose (shoulderAbd far -12 / near +6, asymmetric) opens negative space so the bump reads in silhouette; far leg splay -5.",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -12,7 +12,11 @@
   "clavicle.near": 1,
   "upperArm.near": -5.6,
   "upperArm.far": -1,
-  "hipAbd.far": -3
+  "hipAbd.far": -3,
+  "shoulderAbd.far": -6,
+  "shoulderAbd.near": 5,
+  "forearm.far": 4,
+  "forearm.near": 4
  },
  "hands": {
   "near": "relaxed",
