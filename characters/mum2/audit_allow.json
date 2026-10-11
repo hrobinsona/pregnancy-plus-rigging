@@ -106,5 +106,14 @@
   ],
   "r": 0.04,
   "why": "near ring-finger tip beside the separation line (0.025 H, an overlap stagger; critic R10: negligible)"
+ },
+ {
+  "colour": "skin",
+  "at": [
+   -1.647,
+   -2.617
+  ],
+  "r": 0.05,
+  "why": "near pinky: its visible strip beside the ring finger tapers into the tip (overlap stagger, not a sliver between parts)"
  }
 ]
