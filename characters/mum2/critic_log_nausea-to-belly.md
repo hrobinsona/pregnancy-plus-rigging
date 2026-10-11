@@ -56,3 +56,23 @@ Asks, and what was done:
    fingers curl once, eyes down via `face-tender`), held to f222, then eases back to f0 (wrap ease slowIn).
 5. [low] Chain order → effective offsets now ribcage +3, shoulders +5, neck +5, head +7; upper arm +2, forearm +4,
    hand +6. The metrics now print EFFECTIVE offsets (lag + shift) — R3 read the raw per-key shifts as totals.
+
+## Round 4 — NOT YET
+Scores: timing 4 · spacing 3 · arcs 4 · overlap 3 · breath 4 · staging 3 · appeal 3 · technical 5
+Asks, and what was done:
+1. [high] Gag read as a neck peck with a double jerk → wind-up `gag-wind` f69 (shoulders +10°, head back), HELD f72–75
+   (0 px/f); heave `gag` f80 over 8f on a new `heave` ease (quick build, firm landing, no overshoot — the old settle ease
+   re-hit on every lagged link); neck and head land together (+5); the heave is in the trunk (upper spine folds 12°,
+   ribcage 0.94/0.95, head 1° relative) not the neck. Head spacing now 11/44/57/37/22/13/6 px/f. Retch held to f87
+   before the first breath (f105).
+2. [med] Tail look-down didn't read → head 15° down (`relief-look`, f226, held to f247), eyes lowered: the lid channel
+   was NORMALISED, so `{open: 0.75}` was still fully open — every half-lid (relief, tender, look-down) and the "wide"
+   uneasy eyes had silently rendered as plain open eyes. Lids now mix open/closed/wide; tender = 42% open with gaze
+   down; slow blink f236; bump-hold key moved to f8 so the return f247→f8 is 16f on slowIn. Loop is 8.5 s (period 4.25).
+3. [med] Jolt was symmetric → new `snap` ease (largest spacing first) and the startle fires nearly together
+   (ribcage +1, shoulders/neck/head +2, the calm key before it shifted the same so every link keeps 6f): head 11/31/25/16/9/4.
+   Recoil head back further (spine −9, head −3), shoulders +10°, ribcage 1.05/1.03. Uneasy eyes now actually widen.
+4. [low] Hair rigid → strand springs kRot near 1.2→1.8, far 1.5→2.2 (the spring was already −12°/+15° on the gag).
+   The bun stays rigid by design (tied up).
+5. [low] Breath shifts on the sigh and the relief look → applied (wave set). NOT on the jolt: a startle fires
+   head/shoulders together (ask 3 wins over ask 5).

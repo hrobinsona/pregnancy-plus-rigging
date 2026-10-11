@@ -1,5 +1,5 @@
 // head.js — face, ear, features (bone: head). Construction points come from landmarks + design offsets.
-// Face rig channels (pose.face): lid {open|closed}, gaze [dx,dy] (H), mouth {smile|neutral|warm|open}, cheek {blush|sick}.
+// Face rig channels (pose.face): lid {open|closed|wide} (normalised weights), gaze [dx,dy] (H), mouth {smile|neutral|warm|open}, cheek {blush|sick}.
 import { loop, taper, ellipse, egg } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { mapGeom, lerp } from '../../../engine/geom.js';
@@ -51,14 +51,17 @@ export function build({ P: C, C: char, pose }) {
   const n = X.nose;
   out.push(part('nose', 52, C.skinShade, taper([[n[0] - 0.025, n[1] - 0.13], [n[0] - 0.008, n[1] - 0.06], [n[0] + 0.004, n[1] - 0.012], [n[0] - 0.04, n[1] + 0.006]], [0.004, 0.02, 0.024, 0.012])));
   // eyes: dark ovals; lids close by squashing toward the eye's lower third; gaze slides them inside the socket
-  const open = pose.face?.lid ? wsum(pose.face.lid, 'open') : 1, g = pose.face?.gaze || [0, 0];
+  // lid weights blend shapes: open (1), closed / soft (0), wide (1.2: startle). The weights are normalised, so a lone
+  // {open: 0.75} is still fully open — half-lids are {open, closed} mixes (R4: relief / tender / uneasy all read wide open)
+  const lw = pose.face?.lid, open = lw ? wsum(lw, 'open') + 1.2 * wsum(lw, 'wide') : 1, g = pose.face?.gaze || [0, 0];
   for (const side of ['near', 'far']) {
     const e = X.eyes[side], c = [e.c[0] + g[0], e.c[1] + g[1]];
     let geo = ellipse(c, e.rx, e.ry);
     if (open < 0.999) { const yc = c[1] + e.ry * 0.35, k = Math.max(0.06, open); geo = mapGeom(geo, (p) => [p[0], yc + (p[1] - c[1]) * k + (c[1] - yc) * open]); }
+    else if (open > 1.001) geo = mapGeom(geo, (p) => [c[0] + (p[0] - c[0]) * (1 + (open - 1) * 0.4), c[1] + (p[1] - c[1]) * open]);   // wide: taller, a touch wider
     out.push(part(`eye.${side}`, 53, C.eye, geo));
     // brows: tapered arcs, follow the lids a little
-    const b = X.brows[side], L = X.brows.len[side === 'near' ? 0 : 1], dy = (1 - open) * 0.012;
+    const b = X.brows[side], L = X.brows.len[side === 'near' ? 0 : 1], dy = open > 1 ? (1 - open) * 0.06 : (1 - open) * 0.012;   // wide eyes lift the brows
     out.push(part(`brow.${side}`, 54, C.hair, taper([[b[0] - L / 2, b[1] + 0.012 + dy], [b[0], b[1] - 0.008 + dy], [b[0] + L / 2, b[1] + 0.006 + dy]], [0.014, X.brows.w, 0.012], 'round')));
   }
   // mouth: blend of library shapes (same point counts)

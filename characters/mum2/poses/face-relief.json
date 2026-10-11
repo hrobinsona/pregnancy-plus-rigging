@@ -1,18 +1,1 @@
-{
- "name": "face-relief",
- "face": {
-  "lid": {
-   "open": 0.75
-  },
-  "gaze": [
-   -0.004,
-   0.01
-  ],
-  "mouth": {
-   "warm": 1
-  },
-  "cheek": {
-   "blush": 1
-  }
- }
-}
+{"name": "face-relief", "face": {"lid": {"open": 0.75, "closed": 0.25}, "gaze": [-0.004, 0.01], "mouth": {"warm": 1}, "cheek": {"blush": 1}}}

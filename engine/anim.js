@@ -42,6 +42,8 @@ export const EASES = {
   settle: [0.3, 0.0, 0.2, 1.08],      // slight overshoot then settle
   breath: [0.42, 0, 0.36, 1],
   dart: [0.25, 0, 0.1, 1],            // eye darts: fast start, soft landing
+  snap: [0.15, 0.25, 0.3, 1],         // a jolt / startle: leaves at speed (largest spacing first), long soft landing
+  heave: [0.35, 0, 0.2, 1],           // a body heave: quick build, firm landing, no overshoot (lagged links don't each re-hit)
 };
 function easeFn(e) {
   const c = Array.isArray(e) ? e : EASES[e || 'inOut'];
