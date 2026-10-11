@@ -25,7 +25,7 @@ mid = lambda p, q, t=0.5: (p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t)
 # (label, centre in H, half-size in H)
 R = [('head', (g('head')[0] + 0.1, g('head')[1] - 0.45), 0.6), ('neck & collars', (g('neck')[0] + 0.05, g('neck')[1] + 0.05), 0.42),
      ('near shoulder', g('upperArm.near'), 0.4), ('far shoulder', g('upperArm.far'), 0.4),
-     ('bust → bump', (g('belly')[0] + 0.2, g('chest')[1] + 0.35), 0.5), ('hem & crotch', (g('pelvis')[0] + 0.1, g('pelvis')[1] + 0.35), 0.55),
+     ('bust → bump', (g('belly')[0] + 0.2, g('chest')[1] + 0.35), 0.5), ('hem & crotch', (g('pelvis')[0] - 0.05, g('pelvis')[1] + 0.3), 0.75),
      ('near hand', mid(g('hand.near'), g('hand.near.f2b'), 0.6), 0.4), ('far hand', mid(g('hand.far'), g('hand.far.f2b'), 0.6), 0.4),
      ('knees', mid(g('shin.near'), g('shin.far')), 0.5), ('near foot', mid(g('foot.near'), g('toe.near')), 0.4), ('far foot', mid(g('foot.far'), g('toe.far')), 0.4),
      ('full figure', ((x0 + x1) / 2, (y0 + y1) / 2), (y1 - y0) / 2)]

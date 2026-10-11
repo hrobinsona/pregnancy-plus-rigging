@@ -98,11 +98,16 @@ export function makeHand(spec) {
       // separation line: ONE continuous round-capped stroke along the side that faces the finger behind, from the
       // knuckle to just before the tip arc, chain-skinned with the finger and clipped to the fingers behind — so it
       // shows only where this finger overlaps them (no outline against the background, no hooks round the tips)
-      if (behind.length) {
+      // hard-curled fingers (grip/fist) read by their knuckle silhouette and lines there only fragment: the line SHORTENS
+      // continuously from its tip end as the finger curls past ~55° (no pop between frames), and is dropped below 0.03 H
+      const curl = (ctx.pose?.bones?.[`${fid}a`] ?? 0) + (ctx.pose?.bones?.[`${fid}b`] ?? 0), keepF = Math.max(0, Math.min(1, 1 - (curl - 55) / 35));
+      if (behind.length && keepF > 0) {
         const bk = F[order[rank - 1]], d = norm(sub(f.t, f.k)), pl = perpL(d), side = Math.sign((bk.k[0] - f.k[0]) * pl[0] + (bk.k[1] - f.k[1]) * pl[1]) || 1;   // toward the finger behind
         const nn = mulS(perpL(d), side), off = (pt, r) => add(pt, mulS(nn, r + S.rim * 0.4));   // just OUTSIDE the edge (the finger itself is drawn over the line's inner half)
         const pts = [off(lerp(f.k, f.p, 0.3), lerp([f.r[0]], [f.r[1]], 0.3)[0]), off(f.p, f.r[1]), off(f.q, f.r[2])];   // R9: from 30% down the first segment to the DIP — no tip curl (no J/S), no clutter at the knuckles
-        out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(pts, pts.map(() => S.rim), 'round'), skin, clip: [...behind] });
+        const segL = [0, 1].map((j) => Math.hypot(pts[j + 1][0] - pts[j][0], pts[j + 1][1] - pts[j][1])), Lk = (segL[0] + segL[1]) * keepF;
+        const cut = Lk <= segL[0] ? [pts[0], lerp(pts[0], pts[1], Lk / segL[0] * 0.5), lerp(pts[0], pts[1], Lk / segL[0])] : [pts[0], pts[1], lerp(pts[1], pts[2], (Lk - segL[0]) / segL[1])];
+        if (Lk >= 0.03) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(cut, cut.map(() => S.rim), 'round'), skin, clip: [...behind] });
       }
       behind.push(fid, `${fid}.j1`, `${fid}.j2`);
     });
@@ -120,7 +125,7 @@ export function makeHand(spec) {
       // fades by LENGTH (never by opacity — partial opacity renders off-palette tints): the line shortens toward its
       // base as the thumb folds, and is dropped below 0.03 H
       const flex = (ctx.pose?.bones?.[`${id}.t1`] ?? 0) + (ctx.pose?.bones?.[`${id}.t2`] ?? 0) + (ctx.pose?.bones?.[`${id}.t0`] ?? 0);
-      const keep = Math.max(0, Math.min(1, 1 - (flex - 35) / 30)), t0 = -0.25, t1 = t0 + (1.02 - t0) * keep;   // full length runs INTO the thumb–index notch
+      const keep = Math.max(0, Math.min(1, 1 - (flex - 35) / 30)), t0 = -0.25, t1 = t0 + (0.78 - t0) * keep;   // ends short of the notch: never shares an endpoint with a finger line (no λ fork)
       const Ltip = Math.hypot(tt[0] - ip[0], tt[1] - ip[1]) * (t1 - t0);
       const pts = [t0, (t0 + t1) / 2, t1].map((t) => add(lerp(ip, tt, t), mulS(nn, lerp([tr[1]], [tr[2]], Math.max(0, t))[0] + S.rim * 0.4)));
       if (Ltip >= 0.03) out.push({ id: `${id}.thumb.rim`, bone: `${id}.t2`, z: zt - 0.004, fill: line, geom: taper(pts, pts.map(() => S.rim), 'round'), clip: [...behind, `${id}.palm`] });

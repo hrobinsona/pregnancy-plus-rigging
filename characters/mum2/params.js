@@ -74,7 +74,7 @@ export const P = {
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
   // legs (jogger half-widths at hip, knee, above cuff) and centre offsets measured as widths
   leg: { near: { hip: 0.34, knee: 0.3, cuff: 0.2, calfK: 1.06, outer: [1.06, 1.2, 1.06, 1.0, 1], inner: [1.12, 1.16, 1.08, 0.94, 1] }, far: { hip: 0.32, knee: 0.28, cuff: 0.18, cuffK: 0.92, calfK: 1.06, outer: [1.02, 1.16, 1.02, 0.94, 1], inner: [1.0, 1.08, 1.05, 0.94, 1] } },   // ¾: legs nearly touch at the crotch and open as a narrow wedge (measured ref gap 0.05 H @-2.0 → 0.16 @-1.2); far ≈ 0.94× near; the near knee bulges inward
-  foot: { near: { heel: [lm('heelNear')[0] + 0.04, lm('heelNear')[1]], toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05], round: 1.3 }, far: { heel: [lm('heelFar')[0], lm('heelFar')[1] - 0.07], toe: [lm('toeFar')[0], lm('toeFar')[1] - 0.07], round: 1 } },   // near foot toward camera (shorter, toe lower); far foot back in depth
+  foot: { near: { heel: [lm('heelNear')[0] + 0.04, lm('heelNear')[1]], toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05], round: 1.3 }, far: { heel: [lm('heelFar')[0], lm('heelFar')[1] - 0.07], toe: [lm('toeFar')[0] - 0.1, lm('toeFar')[1] - 0.07], round: 1.3 } },   // near foot toward camera (shorter, toe lower); far foot back in depth
 };
 
 // ---------------------------------------------------------------- hands (generator v2: engine/hand.js anatomy defaults)
@@ -87,10 +87,10 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward the body side)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 8,
-          length: 0.65, palmFrac: 0.555, wristW: 0.19, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: 0.45, thumbFx: -0.35, thumb: { mcp: [0.66, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          length: 0.65, palmFrac: 0.555, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: 0.45, thumbFx: -0.35, thumb: { mcp: [0.66, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: we see more of the palm side; thumb forward
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 8,
-         length: 0.6, palmFrac: 0.555, wristW: 0.2, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.31], flexFx: -0.45, thumbFx: 0.35, thumb: { mcp: [0.6, 0.74], dir: 36 }, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
+         length: 0.6, palmFrac: 0.555, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.31], flexFx: -0.45, thumbFx: 0.35, thumb: { mcp: [0.6, 0.74], dir: 36 }, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

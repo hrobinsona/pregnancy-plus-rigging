@@ -82,7 +82,7 @@ export function build({ P: C, C: char, pose }) {
   const hn = X.hem.near, hf = X.hem.front;
   out.push(part('cardigan.near', 'spineLower', 70, C.cardigan, ensureCW(loop([
     [collarN[0], collarN[1]], X.shoulderLine.near[0], X.shoulderLine.near[1], [hn[0] - 0.08, -4.15],
-    [hn[0] - 0.0, -3.45], [hn[0] - 0.09, hn[1] - 0.32], [hn[0] - 0.04, hn[1] + 0.01, { t: 0.45 }], [(hn[0] + hf[0]) / 2, hf[1] + 0.035, { a: 175 }],
+    [hn[0] - 0.0, -3.45], [hn[0] - 0.09, hn[1] - 0.32], [hn[0] - 0.04, hn[1] + 0.01, { t: 0.45 }], [(hn[0] + hf[0]) / 2, hf[1] + 0.035],
     [hf[0], hf[1], { t: 0.4 }], [hf[0] + 0.04, -3.2], [hf[0] + 0.03, -4.0], [nl[0] - 0.2, nl[1] + 0.02], [collarN[0] + 0.05, collarN[1] + 0.12]])),   // R9: soft-rounded hem corners, smooth mid-hem
     { skin: spineSkin }));
   // far panel: hangs on the far side BEHIND the bust and bump (they project past it); its inner edge is hidden behind
@@ -95,8 +95,8 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('cardigan.far.lapel', 'spineLower', 36.5, C.cardigan, ensureCW(loop([
     // a confident collar band over the far shoulder that ENDS above the bust with one rounded end (no tooth on the bust);
     // R8: the rounded end stays INSIDE the cap/sleeve silhouette (no knob, no tangent notch)
-    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.7, shF[1] - 0.04, { a: 95 }],
-    [shF[0] + capF * 0.62, shF[1] + 0.03], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
+    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.55, shF[1] - 0.05, { a: 95 }],
+    [shF[0] + capF * 0.48, shF[1] + 0.02], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
     { skin: spineSkin }));
   return out;
 }

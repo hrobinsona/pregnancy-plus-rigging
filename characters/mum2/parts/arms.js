@@ -4,7 +4,7 @@ import { tube, limb, taper, ellipse } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
 
-export const ANCHORS = { 'cap.near': 4, 'cap.far': 4, 'cast.near': 9, 'sleeve.near': 10, 'sleeve.far': 10, 'cuff.near': 6, 'cuff.far': 6, 'cuff.near.rib': 4, 'cuff.far.rib': 4,
+export const ANCHORS = { 'cap.near': 4, 'cap.far': 4, 'cast.near': 7, 'sleeve.near': 10, 'sleeve.far': 10, 'cuff.near': 6, 'cuff.far': 6, 'cuff.near.rib': 4, 'cuff.far.rib': 4,
   'wrist.near': 6, 'wrist.far': 6, 'sleeve.near.fold': 6, 'sleeve.far.fold': 6 };
 
 export function build(ctx) {
@@ -21,7 +21,7 @@ export function build(ctx) {
       // cardigan panel — it only ever lands on the body, so it can never outline the arm against the background
       // (replaces the old opacity fade, which rendered off-palette pinks)
       out.push({ id: `cast.${side}`, bone: `forearm.${side}`, z: 70.5, fill: C.cardiganShade, clip: 'cardigan.near',
-        geom: ensureCW(tube(axis, w.map((v, i) => ({ r: v + [0, 0.03, 0.07, 0.07][i], l: v * 0.6 })), { capA: 'none', capK: 0.8 })),   // R9: a wedge (thin at the shoulder, wider down the arm), starting inside the cap — not a constant stripe
+        geom: ensureCW(tube([sh, lerp(sh, el, 0.5), lerp(sh, el, 0.85)], [0, 1, 2].map((i) => ({ r: w[i] + [-0.03, 0.01, 0.06][i], l: w[i] * 0.6 })), { capA: 'none', capK: 0.8 })),   // R10: emerges from under the sleeve at zero width; ends above the armpit window   // R9: a wedge (thin at the shoulder, wider down the arm), starting inside the cap — not a constant stripe
         skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     }
     out.push({ id: `sleeve.${side}`, bone: `forearm.${side}`, z: zb, fill,

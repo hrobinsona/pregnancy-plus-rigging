@@ -22,7 +22,7 @@ export function build({ P: C, C: char, pose }) {
   const faceA = [
     [f.part[0] - 0.05, f.part[1] - 0.03], [f.far[0] - 0.04, f.part[1] + 0.09], [f.far[0], f.far[1], 1.1],
     [f.far[0] - 0.07, f.chin[1] - 0.11], [f.chin[0], f.chin[1], 0.9], [f.jawNear[0] - 0.02, f.jawNear[1] + 0.005, 1.0],
-    [X.ear[0] + 0.1, f.far[1] + 0.06], [X.ear[0] + 0.05, f.nearEye[1] - 0.07], [f.part[0] - 0.22, f.part[1] + 0.06],
+    [X.ear[0] + 0.1, f.far[1] + 0.06], [X.ear[0] + 0.15, f.nearEye[1] - 0.07], [f.part[0] - 0.22, f.part[1] + 0.06],
   ];
   const faceG = loop(faceA, 1.05);
   out.push(part('face', 50, C.skin, ensureCW(faceG)));
@@ -39,7 +39,7 @@ export function build({ P: C, C: char, pose }) {
       return k <= ic ? [p[0], p[1] + js.front] : lerp(B0, B1, (k - ic) / (last - ic)); }).reverse().slice(1, -1)])),   // R9: bottom = ONE straight chord chin → jaw corner (a wedge under the curved jaw, not a band)
     { clip: 'neck' }));
   // ear (near side), inner fold
-  out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.06, rxl: 0.055, ryt: 0.095, ryb: 0.085, rot: 12 })));
+  out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.075, rxl: 0.055, ryt: 0.1, ryb: 0.085, rot: 12 })));
   out.push(part('ear.inner', 49.5, C.skinShade, taper([[X.ear[0] - 0.012, X.ear[1] - 0.05], [X.ear[0] + 0.012, X.ear[1] - 0.005], [X.ear[0] - 0.005, X.ear[1] + 0.045]], [0.006, 0.022, 0.004])));
   // cheeks
   const sick = wsum(pose.face?.cheek, 'sick'), warm = wsum(pose.face?.mouth, 'warm');

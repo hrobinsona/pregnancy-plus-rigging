@@ -54,7 +54,7 @@ export function build({ P: C, C: char, pose }) {
   // loose strands: wavy tapered strokes from the temples; spring channel pose.fx.hair.{near,far} bends them
   const hx = pose.fx?.hair || {};
   const sN = bend(wave([f.nearEye[0] - 0.06, f.nearEye[1] + 0.06], 97, 0.32, 8, { amp: 0.015, wl: 0.4, ph: 0.4 }), hx.near || 0);   // R8: root on the hair edge, ends above the jaw (no knot at the nape), no jog   // curve radius > stroke half-width: no cusps
-  const sF = bend(wave([f.far[0] + 0.035, f.far[1] - 0.1], 84, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
+  const sF = bend(wave([f.far[0] + 0.035, f.far[1] - 0.1], 74, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
   out.push(part('hair.strand.near', 61, C.hair, taper(sN, X.hair.strandW, 'round')));   // round tails, never needles
   out.push(part('hair.strand.far', 61, C.hair, taper(sF, X.hair.strandW, 'round')));
   return out;
