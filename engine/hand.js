@@ -23,7 +23,7 @@ const dirv = (deg) => [Math.cos(deg * DEG), Math.sin(deg * DEG)];
 const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG); return [c * v[0] - s * v[1], s * v[0] + c * v[1]]; };
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
-  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.93, 0.87, 0.82], fingerK: 0.9, rim: 0.022, rootIn: 0.03,
+  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.93, 0.87, 0.82], fingerK: 0.9, rim: 0.022, rootIn: 0.05,
   thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
@@ -113,9 +113,14 @@ export function makeHand(spec) {
     out.push({ id: `${id}.thumb`, bone: `${id}.t2`, z: zt, fill, geom: tubeOf([tb0, ip, tt], tr), skin: tskin });
     out.push({ id: `${id}.thumb.j`, bone: `${id}.t2`, z: zt - 0.0005, fill, geom: ellipse(ip, tr[1] * 0.98, tr[1] * 0.98) });
     if (!S.thumbBehind) {
-      const d = norm(sub(tt, mcp)), hc = P(palmL * 0.7, 0), pl = perpL(d), side = Math.sign((hc[0] - mcp[0]) * pl[0] + (hc[1] - mcp[1]) * pl[1]) || 1, nn = mulS(pl, side);   // toward the palm
-      const pts = [add(lerp(mcp, ip, 0.35), mulS(nn, tr[0] * 0.95 + S.rim * 0.4)), add(ip, mulS(nn, tr[1] + S.rim * 0.4)), add(lerp(ip, tt, 0.55), mulS(nn, (tr[1] + tr[2]) / 2 + S.rim * 0.4))];
-      out.push({ id: `${id}.thumb.rim`, bone: `${id}.t2`, z: zt - 0.004, fill: line, geom: taper(pts, pts.map(() => S.rim), 'round'), skin: tskin, clip: [...behind, `${id}.palm`] });   // free thumb, inner side only
+      // ONE straight line along the inner side of the free thumb tip (rigid on t2: it can never S-bend or hook
+      // round the tip). It fades out as the thumb folds across the palm (grip/fist/point), where the thumb's own outline
+      // against the fingers reads without it.
+      const d = norm(sub(tt, ip)), hc = P(palmL * 0.9, 0), pl = perpL(d), side = Math.sign((hc[0] - ip[0]) * pl[0] + (hc[1] - ip[1]) * pl[1]) || 1, nn = mulS(pl, side);
+      const pts = [-0.25, 0.35, 0.9].map((t) => add(lerp(ip, tt, t), mulS(nn, lerp([tr[1]], [tr[2]], Math.max(0, t))[0] + S.rim * 0.4)));   // along the free tip: runs into the thumb–index notch
+      const flex = (ctx.pose?.bones?.[`${id}.t1`] ?? 0) + (ctx.pose?.bones?.[`${id}.t2`] ?? 0) + (ctx.pose?.bones?.[`${id}.t0`] ?? 0);
+      const op = Math.max(0, Math.min(1, 1 - (flex - 35) / 30));
+      if (op > 0.002) out.push({ id: `${id}.thumb.rim`, bone: `${id}.t2`, z: zt - 0.004, fill: line, opacity: op, geom: taper(pts, pts.map(() => S.rim), 'round'), clip: [...behind, `${id}.palm`] });
     }
     return out;
   }

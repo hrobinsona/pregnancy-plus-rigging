@@ -25,11 +25,11 @@ export function build({ P: C, C: char }) {
       skin: { parent: `thigh.${side}`, child: `shin.${side}`, zone: 0.25 } });
     // gathered cuff band
     const c0 = lerp(knee, ank, 0.8), c1 = lerp(knee, ank, 0.95);
-    out.push({ id: `cuffleg.${side}`, bone: `shin.${side}`, z: z + 1, fill: C.bottoms, geom: ensureCW(limb(c0, c1, [{ t: 0, r: w.cuff * 0.93, l: w.cuff * 0.93 }, { t: 1, r: w.cuff * 0.93, l: w.cuff * 0.93 }], { capA: 'none', capK: 0.45, capB: 'round' })) });   // band starts INSIDE the leg; the leg's rounded end blouses over it
+    out.push({ id: `cuffleg.${side}`, bone: `shin.${side}`, z: z + 1, fill: C.bottoms, geom: ensureCW(limb(c0, c1, [{ t: 0, r: w.cuff * 0.86 * (w.cuffK ?? 1), l: w.cuff * 0.86 * (w.cuffK ?? 1) }, { t: 1, r: w.cuff * 0.86 * (w.cuffK ?? 1), l: w.cuff * 0.86 * (w.cuffK ?? 1) }], { capA: 'none', capK: 0.22, capB: 'round' })) });   // R8: a flatter band (straight-ish bottom) under one blouse curve, not a second ball   // band starts INSIDE the leg; the leg's rounded end blouses over it
     const n = perpL(norm(sub(c1, c0))), m = lerp(c0, c1, 0.15);
     if (X.detail.legCuffLine) out.push({ id: `cuffleg.${side}.line`, bone: `shin.${side}`, z: z + 1.1, fill: C.bottomsShade, geom: taper([add(m, mulS(n, w.cuff * 0.85)), add(m, [0, 0.012]), add(m, mulS(n, -w.cuff * 0.85))], [0.003, 0.016, 0.003]) });
     // ankle skin
-    out.push({ id: `ankle.${side}`, bone: `shin.${side}`, z: z - 0.5, fill: C.skin, geom: ensureCW(limb(lerp(knee, ank, 0.9), add(ank, [0, 0.03]), [{ t: 0, r: 0.13, l: 0.13 }, { t: 1, r: 0.125, l: 0.125 }], { capK: 0.5 })) });
+    out.push({ id: `ankle.${side}`, bone: `shin.${side}`, z: z - 0.5, fill: C.skin, geom: ensureCW(limb(lerp(knee, ank, 0.9), add(ank, [0, 0.03]), [{ t: 0, r: 0.115, l: 0.115 }, { t: 1, r: 0.11, l: 0.11 }], { capK: 0.5 })) });   // narrower than band and sock top: never peeks between them
     // sock: ankle top → heel → sole → toe (built from heel/toe landmarks and the ankle joint), skinned at the ball
     const heel = X.foot[side].heel, toe = X.foot[side].toe, top = add(ank, [0, 0.0]);
     // ankle-top rib band is a bit wider than the ankle; heel bulges back; instep slopes to a rounded toe

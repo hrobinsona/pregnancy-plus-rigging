@@ -88,5 +88,23 @@
   ],
   "r": 0.05,
   "why": "far hand: palm edge tapering out where the thumb crosses the silhouette (a crossing, not a tangent)"
+ },
+ {
+  "colour": "bg",
+  "at": [
+   -0.243,
+   -6.24
+  ],
+  "r": 0.08,
+  "why": "the eye of the hair loop (a deliberate hole)"
+ },
+ {
+  "colour": "skin",
+  "at": [
+   -1.647,
+   -2.617
+  ],
+  "r": 0.05,
+  "why": "near pinky: its visible strip beside the ring finger tapers into the tip (overlap stagger, not a sliver between parts)"
  }
 ]
