@@ -25,7 +25,7 @@ const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG)
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
   across: [0.37, 0.125, -0.125, -0.37], fan: 'touch', touch: 0.9, taper: [1.0, 0.94, 0.88, 0.82], tipK: 0.95, fingerK: 0.9, rim: 0.02, rootIn: 0.05,
-  view: 'back', webK: 0.3, lineTipGap: 2.6, crease: [[-0.25, 0.23], [0.32, 0.8], [0.87, 1.05]],   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
+  view: 'back', thenarEdge: [0.84, 0.9], webK: 0.3, lineTipGap: 2.6, crease: [[-0.25, 0.23], [0.32, 0.8], [0.87, 1.05]],   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
   thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
@@ -102,7 +102,7 @@ export function makeHand(spec) {
     const palm = [
       P(-0.12, -wW), add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -0.006)), [...pinkyRoot, { c: true, ai: inA(pinkyRoot, add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -0.006)), pinkyA + 180, pkCurl), ti: 1.05 - 0.5 * pkCurl, ao: Math.atan2(F[3].k[1] - pinkyRoot[1], F[3].k[0] - pinkyRoot[0]) * 180 / Math.PI }],   // corner: arrives along the pinky's edge, leaves ACROSS the knuckle (never bulges past it when the pinky curls)   // arrives tangent to the pinky's outer edge   // R9: one convex edge from the wrist to the pinky's root (no dent, no step)
       ...[3, 2, 1].map(webAt), add(kn[0], mulS(u, 0.018)),   // WEBBING: between two knuckles the palm's edge dips to where the fingers meet (≈ webK of the first phalanx) — hidden when the fingers are together, the V of skin between spread fingers, and no enclosed gap at the roots
-      P(palmL * S.knuckleArc[0] * 0.95, pW * 0.86), P(palmL * 0.62, pW * 0.9), P(palmL * 0.3, pW * 0.84), P(-0.12, wW * 1.0), P(-0.13, 0),   // wrist end tucks well under the cuff (its corners never peek past the cuff's rounded end)
+      P(palmL * S.knuckleArc[0] * 0.95, pW * 0.86), P(palmL * 0.62, pW * S.thenarEdge[1]), P(palmL * 0.3, pW * S.thenarEdge[0]), P(-0.12, wW * 1.0), P(-0.13, 0),   // thumb side envelops the ball of the thumb: one convex edge cuff → thumb (no corner where the thenar pad pokes out)   // wrist end tucks well under the cuff (its corners never peek past the cuff's rounded end)
     ];
     out.push({ id: `${id}.palm`, bone: S.parentBone, z, fill, geom: ensureCW(loop(palm)) });
     // thenar pad on the thumb metacarpal (moves with opposition)

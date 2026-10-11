@@ -1,7 +1,7 @@
-near hand: IoU 0.71   length along axis ref 0.479 H  render 0.496 H  (1.04×)
+near hand: IoU 0.70   length along axis ref 0.479 H  render 0.496 H  (1.04×)
    station   width ref  render  ratio   runs ref render
-    0.05      0.277   0.283   1.02      1      1
-    0.15      0.308   0.277   0.90      1      1
+    0.05      0.277   0.294   1.06      1      1
+    0.15      0.308   0.291   0.95      1      1
     0.25      0.329   0.297   0.90      1      1
     0.35      0.344   0.312   0.91      1      1
     0.45      0.330   0.321   0.97      2      1

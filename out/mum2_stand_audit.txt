@@ -1,2 +1,1 @@
-detail audit mum2/stand: 1 findings (3 allowed by audit_allow.json) (render 2686x4590, 692 px/H, thin < 0.024 H)
-  1 spur/thin     skin          at (-1.213, -3.007) H  size 0.023×0.019 H  area 95 px
+detail audit mum2/stand: 0 findings (3 allowed by audit_allow.json) (render 2686x4590, 692 px/H, thin < 0.024 H)
