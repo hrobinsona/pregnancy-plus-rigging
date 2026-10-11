@@ -1,0 +1,46 @@
+{
+ "name": "recoil-swallow",
+ "note": "after the jolt: a swallow \u2014 the chin dips, eyes drop to the belly",
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -8,
+  "chest": -6,
+  "neck": 4,
+  "head": 3,
+  "belly": 3,
+  "clavicle.far": 0,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 5,
+  "upperArm.near": 8.2,
+  "forearm.near": 41.1,
+  "shoulderAbd.near": -28,
+  "hand.near": -1.6
+ },
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.35
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
+ },
+ "scale": {
+  "spineUpper": [
+   1.05,
+   1.03
+  ]
+ },
+ "targets": [],
+ "fx": {
+  "armFree": 1
+ }
+}

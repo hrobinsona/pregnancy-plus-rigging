@@ -1,36 +1,55 @@
 {
  "name": "hunch-out",
- "note": "riding it out: hunched, the breath OUT (ribcage settles, shoulders drop a little)",
+ "note": "breath OUT: shoulders drop, ribcage settles, she sags a little",
  "hands": {
   "near": "press",
-  "far": "relaxed"
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.75
+   }
+  }
  },
  "scale": {
   "spineUpper": [
    0.97,
-   0.98
+   0.99
   ],
   "belly": [
    0.99,
    1
   ]
  },
+ "root": [
+  0,
+  0.0087
+ ],
+ "fx": {
+  "armFree": 0
+ },
  "bones": {
-  "spineLower": 4,
-  "spineUpper": -4,
-  "chest": -2,
-  "neck": 5,
-  "head": 12,
+  "spineLower": 5,
+  "spineUpper": -3.0999999999999996,
+  "chest": -4.9,
+  "neck": 8.5,
+  "head": 18.5,
   "belly": 3,
   "clavicle.far": 8,
-  "upperArm.far": -2,
-  "forearm.far": 14,
-  "shoulderAbd.far": 8,
-  "hand.far": -8,
+  "upperArm.far": 2,
+  "forearm.far": 22,
+  "shoulderAbd.far": 16,
+  "hand.far": 6,
   "clavicle.near": -3,
-  "upperArm.near": 82.1,
-  "forearm.near": 99.6,
-  "shoulderAbd.near": 4.8,
+  "upperArm.near": 85.3,
+  "forearm.near": 102.9,
+  "pelvis": 0.5,
+  "thigh.near": 2,
+  "thigh.far": 2,
+  "shin.near": -3.4,
+  "shin.far": -3.4,
+  "foot.near": 1.5,
+  "foot.far": 1.5,
+  "shoulderAbd.near": 13.5,
   "hand.near": -50
  },
  "_ik": [

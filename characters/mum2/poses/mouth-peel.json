@@ -1,0 +1,78 @@
+{
+ "name": "mouth-peel",
+ "note": "via on the return: the hand peels off the lips, palm still toward the face",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "press": 0.4
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
+ },
+ "fx": {
+  "armFree": 1
+ },
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -7,
+  "chest": -7,
+  "neck": 6,
+  "head": 9,
+  "belly": 3,
+  "clavicle.far": 1,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 4,
+  "upperArm.near": 76.9,
+  "forearm.near": 91.1,
+  "shoulderAbd.near": 1.4,
+  "hand.near": -40
+ },
+ "_ik": [
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2k",
+   "to": {
+    "bone": "head",
+    "point": "mouth",
+    "offset": [
+     0.2,
+     0.1
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ]
+  },
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2t",
+   "to": {
+    "bone": "head",
+    "point": "cheekFar",
+    "offset": [
+     0.14,
+     0.12
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ],
+   "w": 0.4
+  }
+ ]
+}

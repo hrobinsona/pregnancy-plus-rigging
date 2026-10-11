@@ -27,6 +27,14 @@
  },
  "hands": {
   "near": "relaxed",
-  "far": "relaxed"
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
+ },
+ "fx": {
+  "armFree": 1
  }
 }

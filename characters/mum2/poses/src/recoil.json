@@ -3,10 +3,10 @@
  "note": "anticipation: a jolt of unease \u2014 sharp intake (ribcage up), head pulls back, shoulders jump, hands still on the bump (near arm IK-held on the bump so the plant lets go without a snap)",
  "bones": {
   "spineLower": 4,
-  "spineUpper": -9,
+  "spineUpper": -8,
   "chest": -6,
   "neck": -2,
-  "head": -3,
+  "head": -1,
   "belly": 3,
   "clavicle.far": 0,
   "upperArm.far": -2,
@@ -14,14 +14,24 @@
   "shoulderAbd.far": 8,
   "hand.far": -8,
   "clavicle.near": 5,
-  "upperArm.near": 8.9,
-  "forearm.near": 40.7,
-  "shoulderAbd.near": -27.8,
-  "hand.near": 11.8
+  "upperArm.near": 8.2,
+  "forearm.near": 41.1,
+  "shoulderAbd.near": -28,
+  "hand.near": -1.6
  },
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.35
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
  },
  "scale": {
   "spineUpper": [
@@ -29,5 +39,8 @@
    1.03
   ]
  },
- "targets": []
+ "targets": [],
+ "fx": {
+  "armFree": 1
+ }
 }

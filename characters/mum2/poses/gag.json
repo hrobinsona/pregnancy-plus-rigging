@@ -1,13 +1,23 @@
 {
  "name": "gag",
- "note": "gag heave from the gut: upper spine folds 14° forward, ribcage squeezes, shoulders jump up and forward, head goes with the trunk, chin into the hand",
+ "note": "the hit: shoulders shoot up, upper back curls, head drives down into the hand, elbow squeezes in, knees soften",
  "hands": {
-  "near": "press",
-  "far": "relaxed"
+  "near": {
+   "pose": "press",
+   "mix": {
+    "grip": 0.3
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.75
+   }
+  }
  },
  "scale": {
   "spineUpper": [
-   0.9,
+   0.92,
    0.95
   ],
   "belly": [
@@ -15,22 +25,36 @@
    1
   ]
  },
+ "root": [
+  0,
+  0.025
+ ],
+ "fx": {
+  "armFree": 0
+ },
  "bones": {
-  "spineLower": 8.5,
-  "spineUpper": 5,
-  "chest": -3,
-  "neck": 3,
-  "head": 10,
+  "spineLower": 6.1,
+  "spineUpper": -2.1,
+  "chest": -2.8,
+  "neck": 8.1,
+  "head": 16,
   "belly": 3,
-  "clavicle.far": -2,
-  "upperArm.far": -2,
-  "forearm.far": 14,
-  "shoulderAbd.far": 8,
-  "hand.far": -8,
-  "clavicle.near": 7,
-  "upperArm.near": 83.9,
-  "forearm.near": 108.2,
-  "shoulderAbd.near": 3,
+  "clavicle.far": -5.3,
+  "upperArm.far": 2,
+  "forearm.far": 22,
+  "shoulderAbd.far": 16,
+  "hand.far": 6,
+  "clavicle.near": 10.3,
+  "upperArm.near": 89.1,
+  "forearm.near": 112.3,
+  "pelvis": 1,
+  "shoulderAbd.near": 12,
+  "thigh.near": 5.6,
+  "thigh.far": 5.6,
+  "shin.near": -9.8,
+  "shin.far": -9.8,
+  "foot.near": 4.2,
+  "foot.far": 4.2,
   "hand.near": -50
  },
  "_ik": [
@@ -46,7 +70,6 @@
     ]
    },
    "solve": [
-    "shoulderAbd.near",
     "upperArm.near",
     "forearm.near",
     "hand.near"
@@ -64,7 +87,6 @@
     ]
    },
    "solve": [
-    "shoulderAbd.near",
     "upperArm.near",
     "forearm.near",
     "hand.near"

@@ -10,14 +10,14 @@
   "belly": 3,
   "clavicle.far": 8,
   "clavicle.near": -3,
-  "upperArm.near": 8.9,
-  "forearm.near": 40.7,
+  "upperArm.near": 8.2,
+  "forearm.near": 41.1,
   "upperArm.far": -2,
   "forearm.far": 14,
   "hand.far": -8,
   "shoulderAbd.far": 8,
-  "hand.near": 11.8,
-  "shoulderAbd.near": -27.8
+  "hand.near": -1.6,
+  "shoulderAbd.near": -28
  },
  "hands": {
   "near": {
@@ -26,7 +26,15 @@
     "cup": 0.25
    }
   },
-  "far": "relaxed"
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
  },
- "targets": []
+ "targets": [],
+ "fx": {
+  "armFree": 1
+ }
 }

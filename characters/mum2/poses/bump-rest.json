@@ -2,8 +2,21 @@
  "name": "bump-rest",
  "note": "standing idle base: near hand resting flat on the lower front of the bump (fingers following the curve, thumb on top), far arm hanging soft at her side as in the reference",
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.3
+   }
+  }
+ },
+ "fx": {
+  "armFree": 1
  },
  "bones": {
   "spineLower": 4,
@@ -18,10 +31,10 @@
   "forearm.far": 14,
   "hand.far": -8,
   "shoulderAbd.far": 8,
-  "upperArm.near": 8.9,
-  "forearm.near": 40.7,
-  "shoulderAbd.near": -27.8,
-  "hand.near": 11.8
+  "upperArm.near": 8.2,
+  "forearm.near": 41.1,
+  "shoulderAbd.near": -28,
+  "hand.near": -1.6
  },
  "_ik": [
   {
@@ -49,8 +62,8 @@
     "bone": "belly",
     "point": "bellyBottom",
     "offset": [
-     0.39,
-     -0.33
+     0.37,
+     -0.22
     ]
    },
    "solve": [

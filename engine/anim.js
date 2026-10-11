@@ -112,7 +112,8 @@ const synth = (C, T, t) => {
 };
 
 // ---------------------------------------------------------------- the animation
-export function makeAnim(spec, lib, { rig, C } = {}) {
+export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
+  const opts = { quiet };
   if (!rig || !C) throw new Error('makeAnim(spec, lib, { rig, C }): the rig and character are required');
   const solve = rig.solve, J = C.joints, BONE = rig.BONE;
   const fps = spec.fps, D = spec.duration, loop = !!spec.loop;
@@ -143,6 +144,15 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     keyCache.set(ch, ks);
     return ks;
   };
+  // LINT: per-key shifts that differ between neighbouring keys can squeeze a channel's segment to a frame or two — a pop
+  // (R7: the head went 5° → 15° in one frame between a +7 wind-up and a +1 spasm). Warn at build time.
+  if (!opts.quiet) for (let i = 0; i < keys.length - 1; i++) {
+    const a = keys[i], b = keys[i + 1];
+    for (const nm of new Set([...Object.keys(a.shift || {}), ...Object.keys(b.shift || {})])) {
+      const L = (b.t - a.t) * fps + ((b.shift?.[nm] || 0) - (a.shift?.[nm] || 0));
+      if (L < 3 && (b.t - a.t) * fps >= 3) console.warn(`anim ${spec.name}: channel ${nm} between ${a.pose}@f${Math.round(a.t * fps)} and ${b.pose}@f${Math.round(b.t * fps)} squeezed to ${L.toFixed(1)}f by shifts`);
+    }
+  }
   const allCh = [...new Set([...keys.flatMap((k) => Object.keys(k.ch)),
     ...groups.flatMap((g) => g.keys.flatMap((k) => Object.keys(k.ch)).filter((ch) => owns(g, ch)))])];
   const lagOf = (ch) => {
@@ -300,6 +310,7 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     }
     // REACH: goal-directed hand moves planned in HAND space (spec.reach[side]) — the arm is solved to the hand
     for (const side of Object.keys(spec.reach || {})) reachArm(pose, tt, side);
+    fidgetAt(pose, tt);
     for (const [b, a] of Object.entries(DR.bones || {})) if (b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     return pose;
   }
@@ -322,21 +333,45 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
     return { p: apM(st[on].M, apM(inv(ref[on].M), ref[ha].pos)), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
   }
+  // A MOVE runs from one stop entry to the next; entries marked via:true in between shape the path without stopping (one
+  // movement, one bell-shaped speed profile over the whole move): the wrist follows a Catmull-Rom curve through the
+  // contacts, parameterised by chord length, at s = minjerk(warp(u)); skew > 0 front-loads it (fast off, cushion in).
+  // The hand's wrist angle (local to the forearm) and its ROLL (across-scale: <1 = turned toward edge-on, thumb up)
+  // interpolate along the same curve, trailing by handLag; at the two stops the hand matches its contact.
   function reachTarget(side, tt, st) {
-    const L = RC[side];
-    let i = -1; for (let k = 0; k < L.length; k++) if (L[k].t <= tt + 1e-9) i = k;
-    let a, b, ta, tb;
-    if (i >= 0 && i < L.length - 1) { a = L[i]; b = L[i + 1]; ta = a.t; tb = b.t; }
-    else if (loop) { a = L[(i + L.length) % L.length]; b = L[(i + 1) % L.length]; ta = i < 0 ? a.t - D : a.t; tb = i < 0 ? b.t : b.t + D; }
-    else { const e = L[Math.max(0, i)]; const c = contact(st, side, e); return c; }
+    const L = RC[side], n = L.length, stops = L.map((e, k) => (e.via ? -1 : k)).filter((k) => k >= 0);
+    let i = -1; for (const k of stops) if (L[k].t <= tt + 1e-9) i = k;
+    let s0, s1, t0, t1;
+    const si = stops.indexOf(i);
+    if (i >= 0 && si < stops.length - 1) { s0 = i; s1 = stops[si + 1]; t0 = L[s0].t; t1 = L[s1].t; }
+    else if (loop) { s0 = i >= 0 ? i : stops[stops.length - 1]; s1 = stops[(stops.indexOf(s0) + 1) % stops.length]; t0 = L[s0].t - (i < 0 ? D : 0); t1 = L[s1].t + (i >= 0 ? D : 0); }
+    else return contact(st, side, L[Math.max(0, i)]);
+    const idx = []; for (let k = s0; ; k = (k + 1) % n) { idx.push(k); if (k === s1) break; }
+    const E = idx.map((k) => L[k]), a = E[0], b = E[E.length - 1];
     const A = contact(st, side, a);
-    if (a.pose === b.pose && a.on === b.on) return A;                     // a hold: the hand stays where it was put
-    const B = contact(st, side, b), u = (tt - ta) / (tb - ta), sP = mj(u);
-    const d = [B.p[0] - A.p[0], B.p[1] - A.p[1]], Ld = Math.hypot(d[0], d[1]) || 1, n = [d[1] / Ld, -d[0] / Ld];
-    const bow = (b.curve ?? 0.08) * Ld * 4 * sP * (1 - sP);
-    const p = [A.p[0] + sP * d[0] + n[0] * bow, A.p[1] + sP * d[1] + n[1] * bow];
-    const sH = mj(u - (b.handLag ?? 2) / fps / (tb - ta));
-    return { p, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180) };
+    if (E.length === 2 && a.pose === b.pose && a.on === b.on) return A;  // a hold: the hand stays where it was put
+    const P = E.map((e, k) => (k === 0 ? A : contact(st, side, e)));
+    const u = clamp01((tt - t0) / (t1 - t0)), warp = (x) => Math.pow(clamp01(x), 1 - (b.skew ?? 0)), sP = mj(warp(u));
+    const ch = [0]; for (let k = 1; k < P.length; k++) ch.push(ch[k - 1] + Math.hypot(P[k].p[0] - P[k - 1].p[0], P[k].p[1] - P[k - 1].p[1]));
+    const tot = ch[ch.length - 1] || 1, cf = ch.map((c) => c / tot);
+    const seg = (x) => { let k = 0; while (k < P.length - 2 && x > cf[k + 1]) k++; return [k, (x - cf[k]) / ((cf[k + 1] - cf[k]) || 1)]; };
+    let p;
+    if (P.length === 2) {                                                  // a single move: straight, gently bowed (b.curve)
+      const d = [P[1].p[0] - A.p[0], P[1].p[1] - A.p[1]], Ld = Math.hypot(d[0], d[1]) || 1, nn = [d[1] / Ld, -d[0] / Ld];
+      const bow = (b.curve ?? 0.08) * Ld * 4 * sP * (1 - sP);
+      p = [A.p[0] + sP * d[0] + nn[0] * bow, A.p[1] + sP * d[1] + nn[1] * bow];
+    } else {                                                               // through vias: Catmull-Rom
+      const [k, v] = seg(sP), q = (j) => P[Math.max(0, Math.min(P.length - 1, j))].p, v2 = v * v, v3 = v2 * v;
+      const p0 = q(k - 1), p1 = q(k), p2 = q(k + 1), p3 = q(k + 2);
+      p = [0, 1].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * v + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * v2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * v3));
+    }
+    const sH = mj(warp(u - (b.handLag ?? 2) / fps / (t1 - t0)));
+    const [kh, vh] = seg(sH), loc = (e) => lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
+    const ea = E[kh], eb = E[Math.min(E.length - 1, kh + 1)];
+    let local = loc(ea) + vh * (loc(eb) - loc(ea)), roll = rl(ea) + vh * (rl(eb) - rl(ea));
+    if (P.length === 2) local *= 1 - (b.neutral ?? 0.5) * Math.sin(Math.PI * u);
+    const B = P[P.length - 1];
+    return { p, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)) };
   }
   function reachArm(pose, tt, side) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
@@ -357,7 +392,20 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
       const hp = { ...pose, bones: { ...pose.bones, [ha]: (pose.bones[ha] || 0) + h } }, slope = (((solve(hp)[ha].rot - c2[ha].rot) + 540) % 360 - 180) / h;
       if (Math.abs(slope) > 1e-6) pose.bones[ha] = (pose.bones[ha] || 0) + Math.max(-40, Math.min(40, e0 / slope));
     }
+    if (T.m) pose.bones[ha] = (1 - T.m) * pose.bones[ha] + T.m * T.local;
+    if (T.roll !== undefined && Math.abs(T.roll - 1) > 1e-4) { const sc = (pose.scale[ha] ||= [1, 1]); sc[1] *= T.roll; }
   }
+
+  // FIDGET: small human life on top of the keys — a thumb stroke on the bump, fingers pressing — as smooth out-and-back
+  // bumps: spec.fidget = [{t0, t1, cycles, bones: {bone: deg}}] adds deg·½(1 − cos 2π·cycles·u) over [t0, t1].
+  const fidgetAt = (pose, tt) => {
+    for (const F of spec.fidget || []) {
+      let u = (tt - F.t0) / (F.t1 - F.t0); if (loop && u < 0) u = (tt + D - F.t0) / (F.t1 - F.t0);
+      if (u <= 0 || u >= 1) continue;
+      const w = 0.5 * (1 - Math.cos(2 * Math.PI * (F.cycles ?? 1) * u));
+      for (const [b, a] of Object.entries(F.bones)) pose.bones[b] = (pose.bones[b] || 0) + a * w;
+    }
+  };
 
   // CONTACT PIN (projected-plane arms): a planted hand keeps its KEYED contact on the surface it rests on while breath and
   // drift move the shoulder. The keyed wrist is carried into the frame of the bone it rests on (spec.pins.on, default the
@@ -405,12 +453,27 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
   const SP = spec.springs || {};
   const K = SP.harmonics || 24, M = SP.samples || 512;
   const headWorld = (t) => solve(basePose(t)).head.rot;
-  const hairC = {}, bellyC = { amp: null };
+  const hairC = {}, bellyC = { amp: null }, armC = {};
   if (loop) {
     // drive signals sampled once over one period → Fourier coefficients → through each spring's H(jω)
-    const th = [], bb = [];
-    for (let n = 0; n < M; n++) { const t = n * D / M; th.push(headWorld(t)); bb.push(basePose(t)._breathBelly); }
+    const th = [], bb = [], ad = Object.fromEntries(Object.keys(SP.arms || {}).map((sd) => [sd, []]));
+    const armChain = (sd) => ['pelvis', 'spineLower', 'spineUpper', 'chest', 'clavicle.' + sd];
+    for (let n = 0; n < M; n++) {
+      const t = n * D / M, bp = basePose(t);
+      th.push(solve(bp).head.rot); bb.push(bp._breathBelly);
+      for (const sd of Object.keys(ad)) ad[sd].push(armChain(sd).reduce((a, b) => a + (bp.bones[b] || 0), 0));
+    }
     const Th = fourier(th, K), Bb = fourier(bb, K);
+    // a free arm is a PENDULUM hanging from the shoulder: gravity keeps it vertical when the torso tilts (static gain −1:
+    // full counter-rotation), its inertia makes it lag and swing a little at its own frequency, damped. Same closed-form
+    // spring as the hair, driven by the torso's rotation (relative to the rest pose) — no flapping on a fixed pin.
+    for (const [sd, s] of Object.entries(SP.arms || {})) {
+      const rest = armChain(sd).reduce((a, b) => a + (lib[s.rest]?.bones?.[b] ?? 0), 0);
+      armC[sd] = fourier(ad[sd].map((v) => v - rest), K).map(([re, im], k) => {
+        const [hr, hi] = springH(s.f, s.zeta, TAU * k / D, -(s.kGrav ?? 1), s.kRot === undefined ? 0 : -s.kRot);
+        return [re * hr - im * hi, re * hi + im * hr];
+      });
+    }
     for (const [name, s] of Object.entries(SP.hair || {})) {
       hairC[name] = Th.map(([re, im], k) => {
         // hanging strand: gravity holds it part-way to vertical (−kGrav·θ), inertia resists head angular accel (−kRot·θ'')
@@ -467,6 +530,7 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
       pose.face.lid.soft = (pose.face.lid.soft || 0) + bk;
     }
     pose.fx.hair = Object.fromEntries(Object.keys(SP.hair || {}).map((k) => [k, hairAt(k, tt)]));
+    for (const sd of Object.keys(armC)) pose.bones['shoulderAbd.' + sd] = (pose.bones['shoulderAbd.' + sd] || 0) + clamp01(pose.fx.armFree ?? 1) * synth(armC[sd], D, tt);   // fx.armFree: 0 while the hand holds on to something (no pendulum)
     // belly lattice (4x4, parented to the pelvis via the belly bone): breathing swell through the firm belly spring,
     // plus press responses under the contact point
     const br = bellyBreathAt(tt, pose._breathBelly) * (BR.gain.belly || 0), resp = pressAt(tt), c = spec.contact || [1.5, 1.5];

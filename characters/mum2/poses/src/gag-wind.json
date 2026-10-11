@@ -1,25 +1,30 @@
 {
  "name": "gag-wind",
- "note": "gag wind-up: the throat clenches \u2014 spine extends, shoulders lift, head comes up, ribcage swells",
+ "note": "wind-up: chin tucks, hard swallow, shoulders creep up",
  "bones": {
   "spineLower": 4,
-  "spineUpper": -10,
+  "spineUpper": -7,
   "chest": -7,
-  "neck": 6,
-  "head": 5,
+  "neck": 7,
+  "head": 11,
   "belly": 3,
-  "clavicle.far": -4,
-  "upperArm.far": -2,
-  "forearm.far": 14,
-  "shoulderAbd.far": 8,
-  "hand.far": -8,
-  "clavicle.near": 9,
+  "clavicle.far": -2,
+  "upperArm.far": 2,
+  "forearm.far": 22,
+  "shoulderAbd.far": 16,
+  "hand.far": 6,
+  "clavicle.near": 7,
   "upperArm.near": 70,
   "forearm.near": 110
  },
  "hands": {
   "near": "press",
-  "far": "relaxed"
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "grip": 0.75
+   }
+  }
  },
  "targets": [
   {
@@ -62,8 +67,11 @@
  ],
  "scale": {
   "spineUpper": [
-   1.03,
-   1.02
+   1.0,
+   1.0
   ]
+ },
+ "fx": {
+  "armFree": 0
  }
 }
