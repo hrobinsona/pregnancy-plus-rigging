@@ -39,3 +39,20 @@ Asks, and what was done:
 5. [low] Recoil read as head only → ribcage 1.03/1.02 intake, clavicles +7°, held f45–48; the near hand lets go f48–50
    (plant released by the contact track, no snap: departure 3→13→19→26 px/f).
 Engine: plant release is now explicit (contact track) — the proximity release is optional per pin.
+
+## Round 3 — NOT YET
+Scores: timing 3 · spacing 4 · arcs 3 · overlap 3 · breath 2 · staging 3 · appeal 3 · technical 4
+Asks, and what was done:
+1. [high] Two slow breaths → loop is now 8.0 s (240f, breath period 4.0 s so it still holds whole breaths): gag f73 ·
+   in f95 (22f) · out f113 (18f) · in f135 (22f) · out f153 (18f, face contact held to f155) · sigh to relief-heart f169.
+   Shrug range raised; the clavicle limits were ±10° and CLAMPED every earlier shrug (that is why R2/R3 measured ~18 px):
+   limits now ±18°, measured near-shoulder breath travel 50 px, headTip 41 px. Also found: + LOWERS the far clavicle,
+   so every earlier "far shoulder up" had been pushing it down — all poses now mirror the near value.
+2. [med] Gag had no retch → `gag-wind` f69 (spine extends 3°, shoulders up, head up 3°, ribcage 1.03) then `gag` f73
+   (upper spine folds 8° forward, ribcage 0.93/0.95, shoulders jump, head pitches 8° down; settle ease, overshoot).
+3. [med] Return still slid down the bump → `down-bd` 70 px further toward the hip and 40 px lower (f2k at bellyBottom
+   −0.58/+0.20): the hand leaves the bump, sinks by the hip and swings in.
+4. [med] Tail was a still frame → `relief-look` f216 (head 7° down to the bump, shoulders settle 4° on an out-breath, near
+   fingers curl once, eyes down via `face-tender`), held to f222, then eases back to f0 (wrap ease slowIn).
+5. [low] Chain order → effective offsets now ribcage +3, shoulders +5, neck +5, head +7; upper arm +2, forearm +4,
+   hand +6. The metrics now print EFFECTIVE offsets (lag + shift) — R3 read the raw per-key shifts as totals.

@@ -28,7 +28,7 @@ const bones = [
   ...['near', 'far'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
-      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -10, max: 10 },
+      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -18, max: 18 },   // ±18°: a full breath shrug / gag jump (±10 clamped the R3 shrug to ~20 px)
       // abduction (frontal plane ≈ picture plane in ¾) as a screen rotation, then flexion/extension in the sagittal plane
       { id: `shoulderAbd.${s}`, parent: `clavicle.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, min: -30, max: 30 },
       { id: `upperArm.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'sagittal', restAnat: 0, min: -60, max: 170, cap: 0.2 },

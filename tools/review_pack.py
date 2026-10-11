@@ -103,8 +103,12 @@ def metrics():
     bd = [f"{k['pose']}@{k['t']}s" for k in keys if k.get('kind') == 'breakdown']
     if bd: L.append('breakdowns (curve passes through, cubic Hermite in angle space): ' + ', '.join(bd))
     for g, tr_ in spec.get('tracks', {}).items(): L.append(f'track {g}: ' + ', '.join(f"{k['pose']}@{k['t']}s/{k.get('ease','inOut')}" for k in (tr_ if isinstance(tr_, list) else tr_['keys'])))
-    sh = [f"{k['pose']}@{k['t']}s {k['shift']}" for k in keys if k.get('shift')]
-    if sh: L.append('per-key channel shifts (frames): ' + '; '.join(sh))
+    # report the EFFECTIVE offset of each channel at each shifted key (global lag + per-key shift): R3's critic read the raw
+    # shifts as total offsets and saw children leading parents that in fact trail them
+    lags = spec.get('lags', {})
+    sh = [f"{k['pose']}@f{round(k['t'] * fps)} " + ', '.join(f"{b} {lags.get(b, 0) + v:+d}" for b, v in k['shift'].items()) for k in keys if k.get('shift')]
+    if sh: L.append('channel timing offsets at shifted keys (frames after the key = global lag + per-key shift): ' + '; '.join(sh))
+    if lags: L.append('global lags (frames, every key): ' + ', '.join(f'{b} {v:+d}' for b, v in lags.items() if v))
     for jn in JOINTS:
         a = np.array([tr(i)[jn] for i in rng])
         v = np.diff(np.vstack([a, a[:1]]) if loop else a, axis=0); sp = np.hypot(*v.T)

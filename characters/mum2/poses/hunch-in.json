@@ -25,18 +25,18 @@
   "spineUpper": -4,
   "chest": -3,
   "neck": 8,
-  "head": 10,
+  "head": 7,
   "belly": 3,
-  "clavicle.far": 13,
+  "clavicle.far": -11,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 9,
-  "upperArm.near": 77,
-  "forearm.near": 93.8,
-  "shoulderAbd.near": -6.2,
-  "hand.near": -49.7
+  "clavicle.near": 16,
+  "upperArm.near": 71.7,
+  "forearm.near": 93.1,
+  "shoulderAbd.near": -16.7,
+  "hand.near": -43.2
  },
  "_ik": [
   {

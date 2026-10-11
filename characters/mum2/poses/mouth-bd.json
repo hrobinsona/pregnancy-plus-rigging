@@ -26,7 +26,7 @@
   "neck": 4,
   "head": 5,
   "belly": 3,
-  "clavicle.far": 4,
+  "clavicle.far": 2,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
