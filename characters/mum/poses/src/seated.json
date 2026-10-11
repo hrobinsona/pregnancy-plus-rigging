@@ -1,0 +1,64 @@
+{
+ "name": "seated",
+ "note": "idle base = measured rest + pregnancy posture on top: pelvis anteverted +2.5 deg (the bump tips with it), lumbar pushed forward (deeper lordosis), upper trunk and shoulders lean back 3 deg net, neck/head compensate so the gaze stays level; legs counter-rotated to stay planted; both palms re-planted on the belly surface by IK",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -3,
+  "chest": -2.5,
+  "neck": 1.5,
+  "head": 1.5
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     612,
+     645
+    ]
+   },
+   "handDeg": 3,
+   "upperLen": 1,
+   "foreLen": 1
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.6,
+   "relaxed": 0.4
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ }
+}

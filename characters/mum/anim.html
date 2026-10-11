@@ -9,6 +9,8 @@ import { makeAnim } from './anim.js';
 const q = new URLSearchParams(location.search);
 const name = q.get('anim') || 'nausea-to-belly';
 const spec = await (await fetch(`./anims/${name}.json`)).json();
+// review-only overrides (e.g. isolate one layer): ?mods={"keys":[...],"drift":{...}}
+if (q.get('mods')) Object.assign(spec, JSON.parse(q.get('mods')));
 const lib = {};
 for (const p of new Set(spec.keys.map((k) => k.pose))) lib[p] = await (await fetch(`./poses/${p}.json`)).json();
 const A = makeAnim(spec, lib);

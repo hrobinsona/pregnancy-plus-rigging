@@ -1,5 +1,6 @@
 // Render an animation: Playwright frames (1080x1920) -> ffmpeg MP4 (30 fps), frame hashes, joint tracks for arc/spacing review.
-// usage: node tools/render_anim.mjs [--anim nausea-to-belly] [--every 1] [--from 0] [--to N] [--no-mp4] [--verify 5]
+// usage: node tools/render_anim.mjs [--anim idle-seated] [--every 1] [--from 0] [--to N] [--no-mp4] [--verify 5]
+//   loops render frames 0..N-1 (frame N is frame 0: the seam is checked, not duplicated)
 //   --verify k : re-render every k-th frame in a FRESH browser and compare PNG hashes (determinism check)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
@@ -14,13 +15,14 @@ import { ap } from '../characters/mum/geom.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const flag = (k) => process.argv.includes('--' + k);
-const name = arg('anim', 'nausea-to-belly');
+const name = arg('anim', 'idle-seated');
 const D = 'characters/mum/';
 const spec = JSON.parse(fs.readFileSync(`${D}anims/${name}.json`));
 const lib = {};
 for (const k of spec.keys) lib[k.pose] = JSON.parse(fs.readFileSync(`${D}poses/${k.pose}.json`));
 const A = makeAnim(spec, lib);
 const N = Math.round(spec.duration * spec.fps);
+const LAST = spec.loop ? N - 1 : N;
 const every = +arg('every', 1), from = +arg('from', 0), to = +arg('to', N);
 const frameDir = `out/frames/${name}`;
 fs.mkdirSync(frameDir, { recursive: true });
@@ -44,7 +46,8 @@ for (let i = 0; i <= N; i++) {
   tracks.push(row);
   svgHash.push(sha(toSVG(pose, { frame: 'still', bg: spec.render?.bg, ground: spec.render?.ground })));
 }
-fs.writeFileSync(`out/${name}_tracks.json`, JSON.stringify({ fps: spec.fps, N, keys: spec.keys, tracks }));
+fs.writeFileSync(`out/${name}_tracks.json`, JSON.stringify({ fps: spec.fps, N, loop: !!spec.loop, keys: spec.keys, events: spec.events || [], breath: spec.breath, tracks }));
+if (spec.loop) console.log(`loop seam: frame ${N} ${svgHash[N] === svgHash[0] ? '==' : '!='} frame 0`);
 // determinism at the SVG level: a second, independent makeAnim must give byte-identical frames
 const A2 = makeAnim(JSON.parse(fs.readFileSync(`${D}anims/${name}.json`)), lib);
 let svgMismatch = 0;
@@ -69,7 +72,7 @@ async function renderFrames(frames, dir) {
 }
 
 const frames = [];
-for (let i = from; i <= Math.min(to, N); i += every) frames.push(i);
+for (let i = from; i <= Math.min(to, LAST); i += every) frames.push(i);
 const t0 = Date.now();
 const hashes = await renderFrames(frames, frameDir);
 console.log(`rendered ${frames.length} frames in ${((Date.now() - t0) / 1000).toFixed(1)}s -> ${frameDir}`);
@@ -83,9 +86,14 @@ if (vk) {
   console.log(`png determinism: ${bad.length} mismatches over ${sub.length} re-rendered frames${bad.length ? ' ' + bad.join(',') : ''}`);
 }
 
-if (!flag('no-mp4') && every === 1 && from === 0 && to >= N) {
+if (!flag('no-mp4') && every === 1 && from === 0 && to >= LAST) {
   const mp4 = `out/${name}.mp4`;
   execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(spec.fps), '-i', `${frameDir}/f%04d.png`,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
+  if (spec.loop) {
+    const rep = `out/${name}_x3.mp4`;
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-stream_loop', '2', '-i', mp4, '-c', 'copy', rep]);
+    console.log('wrote', rep, '(3 loops, for judging the seam)');
+  }
 }

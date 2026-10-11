@@ -1,0 +1,141 @@
+{
+ "name": "idle-seated",
+ "story": "Seated breathing idle: one slow breath per loop, ribcage-led; while she breathes, her near hand makes one slow stroke across the bump and her head tips toward it.",
+ "fps": 30,
+ "duration": 4.5,
+ "loop": true,
+ "exposure": "ones",
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "seated",
+   "ease": "inOut",
+   "note": "base: measured rest + pregnancy posture"
+  },
+  {
+   "t": 2.4,
+   "pose": "seated-b",
+   "ease": "inOut",
+   "note": "caress: palm strokes forward, head tips toward the bump"
+  }
+ ],
+ "wrapEase": "inOut",
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 0,
+  "chest": 0,
+  "neck": 2,
+  "head": 4,
+  "clavicle.near": 0,
+  "upperArm.near": 0,
+  "forearm.near": 2,
+  "hand.near": 4,
+  "clavicle.far": 0,
+  "upperArm.far": 0,
+  "forearm.far": 2,
+  "hand.far": 4,
+  "face": 0,
+  "fx": 0
+ },
+ "breath": {
+  "period": 4.5,
+  "phase0": 0,
+  "amp": 1,
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.012,
+   "chestAcross": 0.016,
+   "chestDeg": -0.6,
+   "shoulderDeg": 0.7,
+   "headDeg": -0.5,
+   "belly": 0.0035
+  }
+ },
+ "drift": {
+  "amp": 1,
+  "seed": 7,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.3,
+   "clavicle.near": 0.25,
+   "clavicle.far": 0.25,
+   "hand.near": 0.3,
+   "hand.far": 0.4
+  }
+ },
+ "springs": {
+  "harmonics": 24,
+  "samples": 512,
+  "hair": {
+   "near": {
+    "f": 2.2,
+    "zeta": 0.4,
+    "kRot": 0.9,
+    "kGrav": 0.3
+   },
+   "far": {
+    "f": 2.0,
+    "zeta": 0.38,
+    "kRot": 0.9,
+    "kGrav": 0.3
+   }
+  },
+  "belly": {
+   "f": 4.0,
+   "zeta": 0.7
+  }
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 2.75,
+   "note": "as the head turns back from the bump"
+  }
+ ],
+ "render": {
+  "bg": "#fbf3ea",
+  "ground": "#efe0d0"
+ },
+ "pins": {
+  "near": "twoBone",
+  "far": "reach",
+  "note": "pinned hands (pose fx.pinNear/pinFar) stay on the bump while breath and drift move the shoulders"
+ }
+}
