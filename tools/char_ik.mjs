@@ -17,7 +17,7 @@ const [char, specPath] = process.argv.slice(2);
 const C = (await import(`../characters/${char}/character.js`)).default;
 const rig = createRig(C), { J, BONE } = rig;
 const lib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`characters/${char}/poses/hands/${h}.json`))]));
-const spec = JSON.parse(fs.readFileSync(specPath));
+const spec = JSON.parse(fs.readFileSync(specPath)); spec.targets ||= [];   // a plain pose source (no targets) is copied through
 const lm = C.params.lm;
 const restPoint = (p) => (Array.isArray(p) ? p : J[p] ?? lm(p));
 const carried = (st, bone, p) => { const v = restPoint(p), j = J[BONE[bone].joint], M = st[bone].M; return [M[0] * (v[0] - j[0]) + M[2] * (v[1] - j[1]) + M[4], M[1] * (v[0] - j[0]) + M[3] * (v[1] - j[1]) + M[5]]; };
@@ -49,7 +49,9 @@ for (const t of spec.targets) {
   const a = carried(st, t.bone, t.point), tb = carried(st, t.to.bone, t.to.point), o = t.to.offset || [0, 0];
   console.log(`${t.bone}:${t.point} → ${t.to.bone}:${t.to.point}  residual ${Math.hypot(a[0] - tb[0] - o[0], a[1] - tb[1] - o[1]).toFixed(4)} H`);
 }
-const out = { name: spec.name, note: spec.note, ...(spec.root ? { root: spec.root } : {}), bones: { ...base, ...Object.fromEntries(vars.map((b, i) => [b, Math.round(x[i] * 10) / 10])) },
-              ...(spec.hands ? { hands: spec.hands } : {}), ...(spec.zBias ? { zBias: spec.zBias } : {}), ...(spec.handView ? { handView: spec.handView } : {}), _ik: spec.targets };
+// every other pose field (hands, scale, fx, face, zBias, handView, root, lattice…) passes through untouched — R1 of the
+// nausea shot lost the gag's chest squash and the pins because only a whitelist was copied.
+const { targets: _t, bones: _b, ...rest } = spec;
+const out = { ...rest, bones: { ...base, ...Object.fromEntries(vars.map((b, i) => [b, Math.round(x[i] * 10) / 10])) }, _ik: spec.targets };
 fs.writeFileSync(`characters/${char}/poses/${spec.name}.json`, JSON.stringify(out, null, 1));
 console.log('wrote', `characters/${char}/poses/${spec.name}.json`, vars.map((b, i) => `${b} ${x[i].toFixed(1)}`).join(', '));

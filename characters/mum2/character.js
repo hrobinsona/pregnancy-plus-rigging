@@ -66,6 +66,8 @@ export default {
     { match: /^(hand\.near\.|wrist\.near$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },
     { match: /^(hand\.far\.|hand\.farB\.|wrist\.far$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },
     // the near jogger leg where it crosses the far one (walk, crossed legs): same purple, told apart by the shade line
+    // the near sleeve where it crosses the cardigan front (an arm raised across the body): pink on pink, told apart by the shade
+    { match: /^(sleeve\.near|sleeve\.near\.fore|cuff\.near)$/, material: params.palette.cardigan, line: params.palette.cardiganShade, w: 0.014 },
     { match: /^(leg\.near|cuffleg\.near)$/, material: params.palette.bottoms, line: params.palette.bottomsShade, w: 0.014 },
   ],
   frame: params.frame,

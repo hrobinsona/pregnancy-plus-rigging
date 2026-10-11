@@ -1,0 +1,55 @@
+{
+ "name": "down-bd",
+ "note": "breakdown down: the hand sags low and outside on its way back to the bump",
+ "hands": {
+  "near": "cup",
+  "far": "cup"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.hand": 60
+ },
+ "fx": {
+  "pinFar": 1
+ },
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -6,
+  "chest": -5,
+  "neck": 3,
+  "head": 4,
+  "belly": 3,
+  "clavicle.far": 4,
+  "upperArm.far": -10.4,
+  "forearm.far": 116.6,
+  "shoulderAbd.far": 30,
+  "hand.far": -70,
+  "clavicle.near": 0,
+  "upperArm.near": 21.5,
+  "forearm.near": 41.4,
+  "shoulderAbd.near": -20,
+  "hand.near": -65.4
+ },
+ "_ik": [
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2k",
+   "to": {
+    "bone": "belly",
+    "point": "bellyApex",
+    "offset": [
+     -0.42,
+     0.1
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ]
+  }
+ ]
+}

@@ -52,6 +52,7 @@ function easeFn(e) {
 export const smoothstep = (x) => x * x * (3 - 2 * x);
 export const smoother = (x) => x * x * x * (x * (x * 6 - 15) + 10);
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const smooth01 = (x) => smoothstep(clamp01(x));
 const TAU = 2 * Math.PI;
 
 // ---------------------------------------------------------------- seeded hashing (deterministic phases)
@@ -271,44 +272,46 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     return pose;
   }
 
-  // closed-form two-bone IK: wrist back to its keyed position, hand keeps its keyed world angle
-  const wrapDeg = (a) => ((a + 540) % 360) - 180;
-  const angOf = (v) => Math.atan2(v[1], v[0]) * 180 / Math.PI;
+  // CONTACT PIN (projected-plane arms): a planted hand keeps its KEYED contact on the surface it rests on while breath and
+  // drift move the shoulder. The keyed wrist is carried into the frame of the bone it rests on (spec.pins.on, default the
+  // belly), then ONE linear (Jacobian) step on upperArm/forearm brings the wrist there, and one more on the hand restores the
+  // keyed world angle of the hand. Closed form: a fixed handful of rig evaluations per frame — no iteration, no state.
+  const inv = (m) => { const d = m[0] * m[3] - m[1] * m[2]; return [m[3] / d, -m[1] / d, -m[2] / d, m[0] / d, (m[2] * m[5] - m[3] * m[4]) / d, (m[1] * m[4] - m[0] * m[5]) / d]; };
+  const apM = (m, p) => [m[0] * p[0] + m[2] * p[1] + m[4], m[1] * p[0] + m[3] * p[1] + m[5]];
+  const plantCache = {};
+  const plantRef = (side) => {
+    const nm = spec.pins?.plant?.[side]; if (!nm) return null;
+    if (!lib[nm]) throw new Error(`pins.plant.${side}: missing pose ${nm}`);
+    return (plantCache[side] ||= solve({ ...lib[nm], bones: { ...lib[nm].bones }, scale: { ...(lib[nm].scale || {}) } }));
+  };
   function pinArm(pose, keyed, side, w) {
-    const S = side === 'near' ? 'Near' : 'Far', ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
-    const ref = solve(keyed), cur = solve(pose);
-    const ride = (spec.pins?.ride || 0) * (pose._breathBelly || 0);   // hands on the bump rise with it (H units, up = -y)
-    const W = [ref[ha].pos[0], ref[ha].pos[1] - ride], Eref = cur[fa].pos, Sh = cur[ua].pos, pr = cur['clavicle.' + side].rot;
-    const u0 = [J['elbow' + S][0] - J['shoulder' + S][0], J['elbow' + S][1] - J['shoulder' + S][1]];
-    const f0 = [J['wrist' + S][0] - J['elbow' + S][0], J['wrist' + S][1] - J['elbow' + S][1]];
-    const lu = Math.hypot(...u0) * (pose.scale[ua]?.[0] ?? 1), lf = Math.hypot(...f0) * (pose.scale[fa]?.[0] ?? 1);
-    const bl = (b, v) => { const c = pose.bones[b] || 0; pose.bones[b] = c + wrapDeg(v - c) * w; };
-    if ((spec.pins?.[side] || 'twoBone') === 'reach') {
-      // foreshortened arm: forearm keeps its keyed angle; the upper arm re-aims and stretches along itself (closed form)
-      const df = pose.bones[fa] || 0, V = [W[0] - Sh[0], W[1] - Sh[1]];
-      const r = df * Math.PI / 180, c = [Math.cos(r) * f0[0] - Math.sin(r) * f0[1], Math.sin(r) * f0[0] + Math.cos(r) * f0[1]];
-      const fs = pose.scale[fa]?.[0] ?? 1; c[0] *= fs; c[1] *= fs;
-      const A = u0[0] ** 2 + u0[1] ** 2, B = 2 * (u0[0] * c[0] + u0[1] * c[1]), C = c[0] ** 2 + c[1] ** 2 - (V[0] ** 2 + V[1] ** 2);
-      const sAlong = (-B + Math.sqrt(Math.max(0, B * B - 4 * A * C))) / (2 * A);
-      const du = wrapDeg(angOf(V) - angOf([sAlong * u0[0] + c[0], sAlong * u0[1] + c[1]]) - pr);
-      const dh = wrapDeg(ref[ha].rot - (pr + du + df));
-      const s0 = pose.scale[ua]?.[0] ?? 1;
-      pose.scale[ua] = [s0 + (sAlong - s0) * w, pose.scale[ua]?.[1] ?? 1];
-      bl(ua, du); bl(ha, dh);
-      return;
+    const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side, on = spec.pins?.on || C.roles?.belly || 'belly';
+    // the contact comes from the PLANT pose when the spec names one (spec.pins.plant[side]): the hand stays where it was put
+    // on the surface while the torso keys change under it (gag, hunch, breaths); otherwise from the keyed pose itself.
+    const kst = solve({ ...pose, bones: { ...pose.bones, ...keyed.bones }, scale: keyed.scale }), ref = plantRef(side) || kst, cur = solve(pose);
+    if (ref !== kst) {   // a plant holds only while the KEYED hand is at it: it lets go smoothly as the keys lift the hand off
+      const a = apM(inv(kst[on].M), kst[ha].pos), b = apM(inv(ref[on].M), ref[ha].pos), R = spec.pins?.release, [d0, d1] = (Array.isArray(R) ? R : R?.[side]) || [0.1, 0.4];
+      w *= 1 - smooth01((Math.hypot(a[0] - b[0], a[1] - b[1]) - d0) / (d1 - d0));
+      if (w <= 0) return;
     }
-    let dx = W[0] - Sh[0], dy = W[1] - Sh[1], d = Math.hypot(dx, dy);
-    const dc = Math.min(lu + lf - 1e-6, Math.max(Math.abs(lu - lf) + 1e-6, d));
-    const ex = [dx / d, dy / d], a = (lu * lu - lf * lf + dc * dc) / (2 * dc), h = Math.sqrt(Math.max(0, lu * lu - a * a));
-    const m = [Sh[0] + ex[0] * a, Sh[1] + ex[1] * a];
-    const E1 = [m[0] - ex[1] * h, m[1] + ex[0] * h], E2 = [m[0] + ex[1] * h, m[1] - ex[0] * h];
-    const dist = (P) => Math.hypot(P[0] - Eref[0], P[1] - Eref[1]);
-    const E = dist(E1) <= dist(E2) ? E1 : E2;                     // continuity: the branch nearest the current elbow
-    const Wc = [Sh[0] + ex[0] * dc, Sh[1] + ex[1] * dc];
-    const du = wrapDeg(angOf([E[0] - Sh[0], E[1] - Sh[1]]) - angOf(u0) - pr);
-    const df = wrapDeg(angOf([Wc[0] - E[0], Wc[1] - E[1]]) - angOf(f0) - (pr + du));
-    const dh = wrapDeg(ref[ha].rot - (pr + du + df));
-    bl(ua, du); bl(fa, df); bl(ha, dh);
+    const T = apM(cur[on].M, apM(inv(ref[on].M), ref[ha].pos));          // planted wrist, carried with the surface
+    const h = 0.5, at = (b, d, P) => { const p = { ...P, bones: { ...P.bones, [b]: (P.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
+    const target = { ...pose, bones: { ...pose.bones } };
+    for (let it = 0; it < 3; it++) {                                        // three Newton steps: a fixed cost, no state
+      const W0 = solve(target)[ha].pos, ex = T[0] - W0[0], ey = T[1] - W0[1];
+      if (Math.hypot(ex, ey) < 1e-5) break;
+      const Wu = at(ua, h, target), Wf = at(fa, h, target);
+      const J = [(Wu[0] - W0[0]) / h, (Wu[1] - W0[1]) / h, (Wf[0] - W0[0]) / h, (Wf[1] - W0[1]) / h], det = J[0] * J[3] - J[2] * J[1];
+      if (Math.abs(det) < 1e-9) break;
+      let du = (J[3] * ex - J[2] * ey) / det, df = (-J[1] * ex + J[0] * ey) / det;
+      const m = Math.hypot(du, df); if (m > 25) { du *= 25 / m; df *= 25 / m; }
+      target.bones[ua] = (target.bones[ua] || 0) + du; target.bones[fa] = (target.bones[fa] || 0) + df;
+      pose.bones[ua] = (pose.bones[ua] || 0) + w * du; pose.bones[fa] = (pose.bones[fa] || 0) + w * df;
+    }
+    // hand: restore its keyed world angle relative to the surface (one secant step on the hand bone)
+    const c2 = solve(pose), want = ref[ha].rot + (cur[on].rot - ref[on].rot), e0 = ((want - c2[ha].rot + 540) % 360) - 180;
+    const hp = { ...pose, bones: { ...pose.bones, [ha]: (pose.bones[ha] || 0) + h } }, slope = (((solve(hp)[ha].rot - c2[ha].rot) + 540) % 360 - 180) / h;
+    if (Math.abs(slope) > 1e-6) pose.bones[ha] = (pose.bones[ha] || 0) + w * Math.max(-20, Math.min(20, e0 / slope));
   }
 
   // ---- springs (closed form)

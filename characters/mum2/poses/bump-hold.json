@@ -1,6 +1,20 @@
 {
  "name": "bump-hold",
  "note": "standing, both hands resting on the bump (the idle base): near hand under the bump, far hand on top, backs of both hands to us",
+ "hands": {
+  "near": "cup",
+  "far": "cup"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.hand": 60
+ },
+ "fx": {
+  "pinFar": 1,
+  "pinNear": 1
+ },
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -18,16 +32,6 @@
   "hand.near": -7.9,
   "shoulderAbd.far": 30,
   "hand.far": -70
- },
- "hands": {
-  "near": "cup",
-  "far": "cup"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "handView": {
-  "far": "back"
  },
  "_ik": [
   {

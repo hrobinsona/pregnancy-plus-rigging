@@ -1,0 +1,65 @@
+{
+ "name": "relief-heart",
+ "note": "relief sigh: the hand comes to the heart, shoulders drop, head tips back and settles",
+ "hands": {
+  "near": {
+   "pose": "press",
+   "mix": {
+    "cup": 0.3
+   }
+  },
+  "far": "cup"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.hand": 60
+ },
+ "fx": {
+  "pinFar": 1
+ },
+ "scale": {
+  "spineUpper": [
+   0.97,
+   0.98
+  ]
+ },
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -6,
+  "chest": -6,
+  "neck": 2,
+  "head": 1,
+  "belly": 3,
+  "clavicle.far": 0,
+  "upperArm.far": -10.4,
+  "forearm.far": 116.6,
+  "shoulderAbd.far": 30,
+  "hand.far": -70,
+  "clavicle.near": -2,
+  "shoulderAbd.near": 2,
+  "upperArm.near": 8.3,
+  "forearm.near": 125.7,
+  "hand.near": -21.9
+ },
+ "_ik": [
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2k",
+   "to": {
+    "bone": "chest",
+    "point": "neck",
+    "offset": [
+     0.02,
+     0.42
+    ]
+   },
+   "solve": [
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ]
+  }
+ ]
+}

@@ -12,10 +12,12 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-name = sys.argv[1] if len(sys.argv) > 1 else 'idle-seated'
+# usage (engine characters): python3 tools/review_pack.py <char> <anim>   (v1 legacy: python3 tools/review_pack.py <anim>)
+if len(sys.argv) > 2: CHAR, ANIM = sys.argv[1], sys.argv[2]; name = f'{CHAR}_{ANIM}'; specp = f'characters/{CHAR}/anims/{ANIM}.json'
+else: ANIM = sys.argv[1] if len(sys.argv) > 1 else 'idle-seated'; name = ANIM; specp = f'characters/mum/anims/{ANIM}.json'
 FR = f'out/frames/{name}'
 T = json.load(open(f'out/{name}_tracks.json'))
-spec = json.load(open(f'characters/mum/anims/{name}.json'))
+spec = json.load(open(specp))
 fps, N, loop, tracks = T['fps'], T['N'], T.get('loop'), T['tracks']
 LAST = N - 1 if loop else N
 
@@ -132,6 +134,8 @@ def metrics():
     return L
 
 if __name__ == '__main__':
+    import glob
+    for old in glob.glob(f"out/{name}_strip_*.png"): os.remove(old)      # stale strips from an earlier timeline would reach the critic
     for mv, a, b, _ in moves: strip(mv, a, b)
     arcs()
     print('\n'.join(metrics()))

@@ -1,0 +1,61 @@
+{
+ "name": "gag",
+ "note": "gag heave: chest pulls in, shoulders jump up, head pitches forward-down into the hand",
+ "hands": {
+  "near": "press",
+  "far": "cup"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.hand": 60
+ },
+ "fx": {
+  "pinFar": 1
+ },
+ "scale": {
+  "spineUpper": [
+   0.96,
+   0.97
+  ]
+ },
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -3,
+  "chest": -2,
+  "neck": 9,
+  "head": 13,
+  "belly": 3,
+  "clavicle.far": 12,
+  "upperArm.far": -10.4,
+  "forearm.far": 116.6,
+  "shoulderAbd.far": 30,
+  "hand.far": -70,
+  "clavicle.near": 9,
+  "upperArm.near": 79.2,
+  "forearm.near": 97.3,
+  "shoulderAbd.near": 7.5,
+  "hand.near": 6.3
+ },
+ "_ik": [
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2k",
+   "to": {
+    "bone": "head",
+    "point": "mouth",
+    "offset": [
+     0.02,
+     -0.03
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ]
+  }
+ ]
+}

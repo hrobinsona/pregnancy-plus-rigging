@@ -1,6 +1,6 @@
 {
  "name": "mouth-cover",
- "note": "nausea: near hand pressed over the mouth, head drops a little, shoulders rise; far hand stays on the bump",
+ "note": "the hand lands over the mouth; head dips into it",
  "bones": {
   "spineLower": 4,
   "spineUpper": -7,
@@ -26,6 +26,9 @@
  },
  "zBias": {
   "arm.far.hand": 60
+ },
+ "fx": {
+  "pinFar": 1
  },
  "targets": [
   {

@@ -1,21 +1,22 @@
 {
  "name": "mouth-bd",
- "note": "breakdown on the way up: the hand rises in front of the chest (an arc, not a straight line to the mouth)",
+ "note": "breakdown up: elbow leads forward close to the body, the hand rises in front of the chest",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
   "chest": -6,
   "neck": 4,
-  "head": 6,
+  "head": 5,
   "belly": 3,
   "clavicle.far": 4,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 2,
-  "upperArm.near": 45,
-  "forearm.near": 100
+  "clavicle.near": 3,
+  "shoulderAbd.near": 2,
+  "upperArm.near": 40,
+  "forearm.near": 110
  },
  "hands": {
   "near": {
@@ -32,6 +33,9 @@
  "zBias": {
   "arm.far.hand": 60
  },
+ "fx": {
+  "pinFar": 1
+ },
  "targets": [
   {
    "bone": "hand.near",
@@ -40,12 +44,11 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     -0.05,
-     0.55
+     0.0,
+     0.45
     ]
    },
    "solve": [
-    "shoulderAbd.near",
     "upperArm.near",
     "forearm.near",
     "hand.near"
