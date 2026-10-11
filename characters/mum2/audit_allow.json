@@ -115,5 +115,14 @@
   ],
   "r": 0.05,
   "why": "near pinky: its visible strip beside the ring finger tapers into the tip (overlap stagger, not a sliver between parts)"
+ },
+ {
+  "colour": "skinShade",
+  "at": [
+   -0.219,
+   -5.253
+  ],
+  "r": 0.05,
+  "why": "the jaw-shadow wedge's thin end tucking under the nape hair (a wedge tip, by design)"
  }
 ]

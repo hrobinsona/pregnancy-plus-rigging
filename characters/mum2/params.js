@@ -54,7 +54,7 @@ export const P = {
              frontBase: [lm('neckFront')[0] + 0.1, lm('neckBase')[1] + 0.05], backBase: [lm('neckBack')[0] - 0.1, lm('neckBase')[1] + 0.03],
              nape: 0.05 },   // R7: wider base (nape sweeps back into the trapezius under the strand tail; throat flares into the far collar), concave nape
   // jaw/chin shadow on the throat: thickest at the front under the chin (the chin projects), thin toward the ear
-  jawShade: { front: 0.1, back: 0.02 },
+  jawShade: { front: 0.1, back: 0.04 },
   shoulderCap: { near: 0.2, far: 0.205 },   // R8: far cap a touch larger: collar → cap → sleeve reads as one convex shoulder arc    // circle radius at the shoulder pivot (joint = circle) = sleeve half-width
   // trapezius slope (measured as silhouette extents at three heights, then used as construction points)
   shoulderLine: { near: [[-0.42, -4.965], [-0.725, -4.845, { a: 150 }]], far: [[0.26, -4.965], [0.54, -4.8, { a: 47 }]] },   // zoom tour: slopes DOWN from the high collar to the cap (no hump)   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
