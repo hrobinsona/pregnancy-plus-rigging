@@ -33,7 +33,7 @@ export function build({ P: C, C: char, pose }) {
   // nape hair: the lower edge of the back mass drawn OVER the neck top (hair falls over the nape), so the neck's top
   // corner always tucks under hair — no skin corner or seam where neck meets hair, whatever the head/neck rotation
   out.push(part('hair.nape', 41, C.hair, ensureCW(loop([
-    [-0.14, f.chin[1] - 0.2], [-0.17, f.chin[1] - 0.085], [back[0] + 0.22, f.chin[1] - 0.112, { t: 1.1 }],   // R8: one convex edge meeting the nape once (no lobe on the neck)
+    [-0.16, f.chin[1] - 0.2], [-0.21, f.chin[1] - 0.085, { t: 0.9 }], [back[0] + 0.22, f.chin[1] - 0.112, { t: 1.1 }],   // R8: one convex edge meeting the nape once (no lobe on the neck)
     [back[0] + 0.075, f.chin[1] - 0.3], [back[0] + 0.12, f.chin[1] - 0.42], [-0.22, f.chin[1] - 0.36]]))));
   // bun + its shade crescent; loop above it; one flyaway
   const b = [h.bun[0] + 0.03, h.bun[1] + 0.05], r = h.bunR;
@@ -48,13 +48,13 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('hair.front', 60, C.hair, ensureCW(loop([
     [part0[0], part0[1], { c: true, t: 0.6 }], [part0[0] + 0.1, part0[1] + 0.02], [f.far[0] - 0.025, f.far[1] - 0.16], [f.far[0] + 0.01, f.far[1] - 0.115, { a: 20, t: 1.0 }],   // temple: rounded end, no needle
     [f.far[0] + 0.1, f.far[1] - 0.2], [top[0] + 0.32, top[1] + 0.1], [top[0] + 0.05, top[1] - 0.02], [top[0] - 0.3, top[1] + 0.07],
-    [f.nearEye[0] - 0.035, f.nearEye[1] - 0.22], [f.nearEye[0] - 0.02, f.nearEye[1] + 0.06], [f.nearEye[0] + 0.03, f.nearEye[1] - 0.12],
+    [f.nearEye[0] - 0.09, f.nearEye[1] - 0.12], [f.nearEye[0] - 0.02, f.nearEye[1] + 0.06], [f.nearEye[0] + 0.03, f.nearEye[1] - 0.12],
     [part0[0] - 0.08, part0[1] + 0.06]]))));
   out.push(part('hair.part', 60.5, C.hairShade, taper([[part0[0] + 0.01, part0[1] + 0.005], [part0[0] - 0.03, part0[1] - 0.09], [part0[0] - 0.09, part0[1] - 0.17]], [0.002, 0.016, 0.003])));
   // loose strands: wavy tapered strokes from the temples; spring channel pose.fx.hair.{near,far} bends them
   const hx = pose.fx?.hair || {};
-  const sN = bend(wave([f.nearEye[0] - 0.04, f.nearEye[1] + 0.04], 97, 0.4, 8, { amp: 0.015, wl: 0.4, ph: 0.4 }), hx.near || 0);   // R8: root on the hair edge, ends above the jaw (no knot at the nape), no jog   // curve radius > stroke half-width: no cusps
-  const sF = bend(wave([f.far[0] + 0.065, f.far[1] - 0.1], 84, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
+  const sN = bend(wave([f.nearEye[0] - 0.06, f.nearEye[1] + 0.06], 97, 0.32, 8, { amp: 0.015, wl: 0.4, ph: 0.4 }), hx.near || 0);   // R8: root on the hair edge, ends above the jaw (no knot at the nape), no jog   // curve radius > stroke half-width: no cusps
+  const sF = bend(wave([f.far[0] + 0.035, f.far[1] - 0.1], 84, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
   out.push(part('hair.strand.near', 61, C.hair, taper(sN, X.hair.strandW, 'round')));   // round tails, never needles
   out.push(part('hair.strand.far', 61, C.hair, taper(sF, X.hair.strandW, 'round')));
   return out;

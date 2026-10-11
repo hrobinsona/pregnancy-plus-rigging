@@ -2,7 +2,7 @@
 // Face rig channels (pose.face): lid {open|closed}, gaze [dx,dy] (H), mouth {smile|neutral|warm|open}, cheek {blush|sick}.
 import { loop, taper, ellipse, egg } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { mapGeom } from '../../../engine/geom.js';
+import { mapGeom, lerp } from '../../../engine/geom.js';
 
 const part = (id, z, fill, geom, extra = {}) => ({ id, bone: 'head', z, fill, geom, ...extra });
 const wsum = (w, k) => { const e = Object.entries(w || {}); const s = e.reduce((a, [, v]) => a + Math.max(0, v), 0); return s > 0 ? Math.max(0, w[k] || 0) / s : 0; };
@@ -22,7 +22,7 @@ export function build({ P: C, C: char, pose }) {
   const faceA = [
     [f.part[0] - 0.05, f.part[1] - 0.03], [f.far[0] - 0.04, f.part[1] + 0.09], [f.far[0], f.far[1], 1.1],
     [f.far[0] - 0.07, f.chin[1] - 0.11], [f.chin[0], f.chin[1], 0.9], [f.jawNear[0] - 0.02, f.jawNear[1] + 0.005, 1.0],
-    [X.ear[0] + 0.06, f.far[1] + 0.06], [X.ear[0] + 0.05, f.nearEye[1] - 0.07], [f.part[0] - 0.22, f.part[1] + 0.06],
+    [X.ear[0] + 0.1, f.far[1] + 0.06], [X.ear[0] + 0.05, f.nearEye[1] - 0.07], [f.part[0] - 0.22, f.part[1] + 0.06],
   ];
   const faceG = loop(faceA, 1.05);
   out.push(part('face', 50, C.skin, ensureCW(faceG)));
@@ -35,7 +35,8 @@ export function build({ P: C, C: char, pose }) {
   const dep = [js.front, js.front, js.front, js.front * 0.8, js.front * 0.55, js.back * 1.4, js.back, 0.004];
   out.push(part('jaw.shadow', 41, C.skinShade, ensureCW(loop([
     ...jaw.map((p, k) => [p[0], p[1] - 0.015, k === 0 || k === jaw.length - 1 ? { c: true, t: 0.5 } : undefined]),
-    ...jaw.map((p, k) => [p[0], p[1] + dep[k]]).reverse().slice(1, -1)])),
+    ...jaw.map((p, k) => { const ic = 2, last = jaw.length - 1, B0 = [jaw[ic][0], jaw[ic][1] + js.front], B1 = [jaw[last][0], jaw[last][1] + js.back];
+      return k <= ic ? [p[0], p[1] + js.front] : lerp(B0, B1, (k - ic) / (last - ic)); }).reverse().slice(1, -1)])),   // R9: bottom = ONE straight chord chin → jaw corner (a wedge under the curved jaw, not a band)
     { clip: 'neck' }));
   // ear (near side), inner fold
   out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.06, rxl: 0.055, ryt: 0.095, ryb: 0.085, rot: 12 })));
