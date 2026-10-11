@@ -1,11 +1,11 @@
 // body.js — neck + décolletage (skinned chest→neck), lilac top (chest), belly (belly bone, 4×4 lattice), hips block
 // (pelvis), cardigan panels (spine) with fold lines. Construction points come from joints/landmarks + offsets.
 import { loop, taper, egg } from '../../../engine/shapes.js';
-import { ffd } from '../../../engine/geom.js';
+import { ffd, add, lerp } from '../../../engine/geom.js';
 import { ensureCW } from '../../../engine/hand.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
-export const ANCHORS = { 'neck': 7, 'decollete': 6, 'top': 15, 'top.underbust': 4, 'belly': 11, 'belly.shade': 40, 'belly.cast': 48, 'hips': 10,
+export const ANCHORS = { 'neck': 8, 'decollete': 6, 'top': 15, 'top.underbust': 4, 'belly': 11, 'belly.shade': 40, 'belly.cast': 48, 'hips': 10,
   'cardigan.near': 13, 'cardigan.far': 13, 'cardigan.far.lapel': 8 };
 
 /** Lattice box for the bump's 4×4 FFD (pose.lattice.belly): covers the whole lower-front torso the belly bone carries. */
@@ -33,10 +33,12 @@ export function build({ P: C, C: char, pose }) {
   //  · décolletage (z 34.8, chest): skin behind the top; only the scoop shows it. The lapel (36.5) lies on top of it.
   const nc = X.neckCol;
   const napeA = Math.atan2(nc.backTop[1] - nc.backBase[1], nc.backTop[0] - nc.backBase[0]) * 180 / Math.PI;
+  const napeMid = add(lerp(nc.backTop, nc.backBase, 0.5), [nc.nape, 0]);   // concave: the nape dips in, then sweeps out into the shoulders
   out.push(part('neck', 'neck', 40, C.skin, ensureCW(loop([
     [nc.backTop[0], nc.backTop[1], { c: true, t: 0.5 }], [nc.frontTop[0] - 0.1, nc.frontTop[1] - 0.12], [nc.frontTop[0], nc.frontTop[1], { a: 92 }],
+    [nc.frontTop[0] + 0.012, nc.frontTop[1] + 0.13, { a: 86 }],                                            // throat: the straight side
     [nc.frontBase[0], nc.frontBase[1], { c: true, t: 0.6 }], [(nc.frontBase[0] + nc.backBase[0]) / 2, nc.frontBase[1] + 0.03],
-    [nc.backBase[0], nc.backBase[1], { c: true, t: 0.6 }], [(nc.backTop[0] + nc.backBase[0]) / 2 - 0.006, (nc.backTop[1] + nc.backBase[1]) / 2, { a: napeA }]])),   // nape: one gentle curve
+    [nc.backBase[0], nc.backBase[1], { c: true, t: 0.6 }], [napeMid[0], napeMid[1], { a: napeA, t: 1.2 }]])),   // nape: the curved side
     { skin: { parent: 'chest', child: 'neck', zone: 0.35 } }));
   out.push(part('decollete', 'chest', 34.8, C.skin, ensureCW(loop([
     [-0.3, nc.frontBase[1] - 0.08], [0.2, nc.frontBase[1] - 0.1], [0.42, -4.82], [0.3, nl[1] + 0.08], [0.0, nl[1] + 0.1], [-0.3, nl[1] + 0.06]]))));
@@ -46,7 +48,7 @@ export function build({ P: C, C: char, pose }) {
   const bz = X.bump, bu = X.bust;
   out.push(part('top', 'chest', 35, C.top, ensureCW(loop([
     [X.shoulderTop.near[0] + 0.12, X.shoulderTop.near[1] + 0.08], [nl[0] - 0.27, nl[1] - 0.1], [nl[0] - 0.15, nl[1] - 0.045], [nl[0] - 0.01, nl[1] + 0.01, { a: 0 }],   // near arm of the U meets the cardigan edge near-perpendicular (no lilac wedge)
-    [nl[0] + 0.15, nl[1] - 0.045], [nl[0] + 0.3, nl[1] - 0.13],   // far arm of the U runs into the lapel at a wide angle (no skin sliver)
+    [nl[0] + 0.15, nl[1] - 0.045], [nl[0] + 0.28, nl[1] - 0.19],   // far arm of the U runs into the lapel at a wide angle (no skin sliver)
     [bu[0] - 0.11, bu[1] - 0.37], [bu[0] - 0.025, bu[1] - 0.16], [bu[0], bu[1], { a: 95 }], [bz.dip[0] + 0.065, bz.dip[1] - 0.015], [bz.dip[0] + 0.02, bz.dip[1] + 0.06, { c: true, t: 0.7 }],   // bust rolls straight into the bump: a soft dip, no enclosed notch
     [0.3, -4.0], [0.1, -3.8], [-0.55, -3.75], [-0.66, -4.25]])), { skin: { chain: ['spineLower', 'spineUpper', 'chest'], zone: 0.3 } }));
   // near breast fold (rises toward the far side)
@@ -87,13 +89,13 @@ export function build({ P: C, C: char, pose }) {
   // the torso except below the bump. The lapel (over the top) carries the visible edge above the bust.
   const hfar = X.hem.far, shF = J.shoulderFar, capF = X.shoulderCap.far;
   out.push(part('cardigan.far', 'spineLower', 33, C.cardigan, ensureCW(loop([
-    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [bu[0] - 0.1, bu[1] - 0.17], [bz.dip[0] - 0.04, bz.dip[1]], [bz.apex[0] - 0.2, bz.apex[1]], [hfar[0] - 0.12, -3.3], [hfar[0] - 0.05, hfar[1] - 0.08],
+    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [bu[0] - 0.15, bu[1] - 0.17], [bz.dip[0] - 0.04, bz.dip[1]], [bz.apex[0] - 0.2, bz.apex[1]], [hfar[0] - 0.12, -3.3], [hfar[0] - 0.05, hfar[1] - 0.08],
     [hfar[0] - 0.11, hfar[1] + 0.03, { t: 0.9 }], [0.6, hfar[1] + 0.02, { c: true, t: 0.6 }], [0.6, bz.hemFront[1] + 0.12], [0.42, -3.4], [0.3, -4.4]])),
     { skin: spineSkin }));
   out.push(part('cardigan.far.lapel', 'spineLower', 36.5, C.cardigan, ensureCW(loop([
     // a confident collar band over the far shoulder that ENDS above the bust with one rounded end (no tooth on the bust)
     [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.98, shF[1] - 0.01, { a: 95 }],
-    [shF[0] + capF * 0.9, shF[1] + 0.09], [bu[0] - 0.06, bu[1] - 0.27, { t: 0.9 }], [bu[0] - 0.13, bu[1] - 0.35], [nl[0] + 0.25, nl[1] - 0.17]])),
+    [shF[0] + capF * 0.88, shF[1] + 0.05], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
     { skin: spineSkin }));
   return out;
 }

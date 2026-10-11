@@ -4,7 +4,7 @@ import { tube, limb, taper, loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
 
-export const ANCHORS = { 'sock.near.heel': 4, 'sock.far.heel': 4, 'sock.near.toe': 4, 'sock.far.toe': 4, 'leg.near': 12, 'leg.far': 12, 'cuffleg.near': 6, 'cuffleg.far': 6, 'cuffleg.near.line': 4, 'cuffleg.far.line': 4,
+export const ANCHORS = { 'sock.near.heel': 4, 'sock.far.heel': 4, 'sock.near.toe': 4, 'sock.far.toe': 4, 'leg.near': 12, 'leg.far': 12, 'cuffleg.near': 5, 'cuffleg.far': 5, 'cuffleg.near.line': 4, 'cuffleg.far.line': 4,
   'ankle.near': 6, 'ankle.far': 6, 'sock.near': 10, 'sock.far': 10, 'sock.near.band': 4, 'sock.far.band': 4 };
 
 export function build({ P: C, C: char }) {
@@ -12,20 +12,20 @@ export function build({ P: C, C: char }) {
   for (const side of ['far', 'near']) {
     const S = side === 'near' ? 'Near' : 'Far', z = side === 'near' ? 26 : 20, w = X.leg[side];
     const hip = J['hip' + S], knee = J['knee' + S], ank = J['ankle' + S];
-    const cuffTop = lerp(knee, ank, 0.84), calf = lerp(knee, ank, 0.62);
+    const cuffTop = lerp(knee, ank, 0.82), calf = lerp(knee, ank, 0.6);   // the leg's rounded end BLOUSES over the cuff band (a convex overhang, never a shelf)
     const axis = [add(hip, [0, -0.1]), lerp(hip, knee, 0.5), knee, calf, cuffTop];
     // straights against curves: the inner side tapers straight, the outer side carries the thigh/calf curve
     const inR = side === 'near';   // axis points down: r = screen right = inner for the near leg, outer for the far leg
-    const ws = [w.hip, w.hip * 0.93, w.knee, w.knee * (w.calfK ?? 1.02), w.cuff * 1.12].map((v, i) => {
+    const ws = [w.hip, w.hip * 0.93, w.knee, w.knee * (w.calfK ?? 1.02), w.cuff * 1.1].map((v, i) => {
       const pick = (f) => (Array.isArray(f) ? f[i] : i < 4 ? f : 1);   // per-station factor, or one factor for the top 4
       const o = pick(w.outer), n = pick(w.inner);
       return inR ? { r: v * n, l: v * o } : { r: v * o, l: v * n };
     });
-    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill: C.bottoms, geom: ensureCW(tube(axis, ws, { capK: 0.6 })),
+    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill: C.bottoms, geom: ensureCW(tube(axis, ws, { capK: 0.55 })),
       skin: { parent: `thigh.${side}`, child: `shin.${side}`, zone: 0.25 } });
     // gathered cuff band
-    const c0 = lerp(knee, ank, 0.83), c1 = lerp(knee, ank, 0.95);
-    out.push({ id: `cuffleg.${side}`, bone: `shin.${side}`, z: z + 1, fill: C.bottoms, geom: ensureCW(limb(c0, c1, [{ t: 0, r: w.cuff, l: w.cuff }, { t: 1, r: w.cuff * 0.97, l: w.cuff * 0.97 }], { capK: 0.4, capB: 'round' })) });
+    const c0 = lerp(knee, ank, 0.8), c1 = lerp(knee, ank, 0.95);
+    out.push({ id: `cuffleg.${side}`, bone: `shin.${side}`, z: z + 1, fill: C.bottoms, geom: ensureCW(limb(c0, c1, [{ t: 0, r: w.cuff * 0.93, l: w.cuff * 0.93 }, { t: 1, r: w.cuff * 0.93, l: w.cuff * 0.93 }], { capA: 'none', capK: 0.45, capB: 'round' })) });   // band starts INSIDE the leg; the leg's rounded end blouses over it
     const n = perpL(norm(sub(c1, c0))), m = lerp(c0, c1, 0.15);
     if (X.detail.legCuffLine) out.push({ id: `cuffleg.${side}.line`, bone: `shin.${side}`, z: z + 1.1, fill: C.bottomsShade, geom: taper([add(m, mulS(n, w.cuff * 0.85)), add(m, [0, 0.012]), add(m, mulS(n, -w.cuff * 0.85))], [0.003, 0.016, 0.003]) });
     // ankle skin

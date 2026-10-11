@@ -15,7 +15,7 @@
 //  · hands are animated through a pose LIBRARY (relaxed, open, cup, press, grip, fist, point), blended in angle space.
 // Everything is computed from the spec; nothing is sampled from an image.
 import { add, sub, mulS, norm, perpL, lerp } from './geom.js';
-import { limb, loop, tube } from './shapes.js';
+import { limb, loop, tube, taper } from './shapes.js';
 import { ellipse } from './geom.js';
 
 const DEG = Math.PI / 180;
@@ -23,8 +23,8 @@ const dirv = (deg) => [Math.cos(deg * DEG), Math.sin(deg * DEG)];
 const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG); return [c * v[0] - s * v[1], s * v[0] + c * v[1]]; };
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
-  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.93, 0.87, 0.82], fingerK: 0.9, rim: 0.015, rootIn: 0.03,
-  thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.39, dist: 0.33, w: 1.18, taper: [1.0, 0.9, 0.8] },
+  across: [0.37, 0.125, -0.125, -0.37], fan: [-5, -1, 3, 8], taper: [1.0, 0.93, 0.87, 0.82], fingerK: 0.9, rim: 0.022, rootIn: 0.03,
+  thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
 /** spec: { id, parentBone, wrist:[x,y], dir:deg (wrist→middle tip), length, palmFrac, wristW, palmW, thumbSide:+1|-1,
@@ -73,9 +73,9 @@ export function makeHand(spec) {
     const out = [], z = zBase ?? S.z ?? 0, wW = S.wristW / 2;
     // palm: wrist → knuckle arc. Pinky side a long gentle curve; the heel of the hand on the thumb side is carried by
     // the thenar pad; the distal edge hides under the finger roots.
-    const kn = F.map((f) => f.k);
+    const kn = F.map((f) => f.k), pinkyOut = -(S.palmW * S.across[3]) + F[3].r[0];   // distance of the pinky's outer edge from the hand axis
     const palm = [
-      P(-0.02, -wW), P(palmL * 0.45, -pW * 0.95), P(palmL * S.knuckleArc[3] * 0.93, -pW * 0.84),   // tucks inside the pinky's outer edge (no palm sliver)
+      P(-0.02, -wW), P(palmL * 0.45, -(pW + pinkyOut) / 2 * 0.98), sub(add(F[3].k, mulS(n, -F[3].r[0] * 0.96)), mulS(u, 0.05)),   // flows into the pinky's outer edge (no step, no sliver)
       add(kn[3], mulS(u, -0.01)), add(kn[2], mulS(u, 0.01)), add(kn[1], mulS(u, 0.012)), add(kn[0], mulS(u, 0.005)),
       P(palmL * S.knuckleArc[0] * 0.95, pW * 0.86), P(palmL * 0.62, pW * 0.9), P(palmL * 0.3, pW * 0.84), P(0.02, wW * 1.02), P(-0.03, 0),
     ];
@@ -95,8 +95,15 @@ export function makeHand(spec) {
       out.push({ id: fid, bone: `${fid}c`, z: zf, fill, geom: tubeOf([root, f.p, f.q, f.t], f.r), skin });
       out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, geom: ellipse(f.p, f.r[1] * 0.98, f.r[1] * 0.98) });
       out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, geom: ellipse(f.q, f.r[2] * 0.98, f.r[2] * 0.98) });
-      // separation rim: this finger's outline (outset by S.rim), shown ONLY over the fingers behind it
-      if (behind.length) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: tubeOf([f.k, f.p, f.q, f.t], f.r, S.rim), skin, clip: [...behind] });
+      // separation line: ONE continuous round-capped stroke along the side that faces the finger behind, from the
+      // knuckle to just before the tip arc, chain-skinned with the finger and clipped to the fingers behind — so it
+      // shows only where this finger overlaps them (no outline against the background, no hooks round the tips)
+      if (behind.length) {
+        const bk = F[order[rank - 1]], d = norm(sub(f.t, f.k)), pl = perpL(d), side = Math.sign((bk.k[0] - f.k[0]) * pl[0] + (bk.k[1] - f.k[1]) * pl[1]) || 1;   // toward the finger behind
+        const nn = mulS(perpL(d), side), off = (pt, r) => add(pt, mulS(nn, r + S.rim * 0.4));   // just OUTSIDE the edge (the finger itself is drawn over the line's inner half)
+        const pts = [off(f.k, f.r[0]), off(f.p, f.r[1]), off(f.q, f.r[2]), off(lerp(f.q, f.t, 0.5), (f.r[2] + f.r[3]) / 2)];
+        out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(pts, pts.map(() => S.rim), 'round'), skin, clip: [...behind] });
+      }
       behind.push(fid, `${fid}.j1`, `${fid}.j2`);
     });
     // thumb: one tube MCP → IP → tip over t1/t2 (in front of the fingers unless thumbBehind); its rim also shows over
@@ -105,7 +112,11 @@ export function makeHand(spec) {
     const tb0 = add(mcp, mulS(sub(cmc, mcp), 0.15));
     out.push({ id: `${id}.thumb`, bone: `${id}.t2`, z: zt, fill, geom: tubeOf([tb0, ip, tt], tr), skin: tskin });
     out.push({ id: `${id}.thumb.j`, bone: `${id}.t2`, z: zt - 0.0005, fill, geom: ellipse(ip, tr[1] * 0.98, tr[1] * 0.98) });
-    if (!S.thumbBehind) out.push({ id: `${id}.thumb.rim`, bone: `${id}.t2`, z: zt - 0.004, fill: line, geom: tubeOf([lerp(mcp, ip, 0.4), ip, tt], [lerp([tr[0]], [tr[1]], 0.4)[0], tr[1], tr[2]], S.rim), skin: tskin, clip: [...behind, `${id}.palm`] });   // outlines only the FREE thumb (no arc across its root)
+    if (!S.thumbBehind) {
+      const d = norm(sub(tt, mcp)), hc = P(palmL * 0.7, 0), pl = perpL(d), side = Math.sign((hc[0] - mcp[0]) * pl[0] + (hc[1] - mcp[1]) * pl[1]) || 1, nn = mulS(pl, side);   // toward the palm
+      const pts = [add(lerp(mcp, ip, 0.35), mulS(nn, tr[0] * 0.95 + S.rim * 0.4)), add(ip, mulS(nn, tr[1] + S.rim * 0.4)), add(lerp(ip, tt, 0.55), mulS(nn, (tr[1] + tr[2]) / 2 + S.rim * 0.4))];
+      out.push({ id: `${id}.thumb.rim`, bone: `${id}.t2`, z: zt - 0.004, fill: line, geom: taper(pts, pts.map(() => S.rim), 'round'), skin: tskin, clip: [...behind, `${id}.palm`] });   // free thumb, inner side only
+    }
     return out;
   }
   // library spread values are 'away from the thumb'; this sign maps them onto screen rotation for this hand

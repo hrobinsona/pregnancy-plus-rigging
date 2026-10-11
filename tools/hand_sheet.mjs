@@ -26,9 +26,9 @@ execFileSync('python3', ['-c', `
 import json
 from PIL import Image, ImageDraw, ImageFont
 m=json.load(open('${tmp}/meta.json')); F=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',22)
-R=Image.open(m['ref']).convert('RGB'); T=260
+R=Image.open(m['ref']).convert('RGB'); T=330
 def crop(im, c, s):  # box centred below the wrist
-    x,y=c[0]*s, c[1]*s; b=(int(x-T*s*0.55), int(y-T*s*0.25), int(x+T*s*0.55), int(y+T*s*0.85)); return im.crop(b).resize((300,330))
+    x,y=c[0]*s, c[1]*s; b=(int(x-T*s*0.5), int(y-T*s*0.15), int(x+T*s*0.5), int(y+T*s*0.95)); return im.crop(b).resize((300,330))
 cols=[('reference', R, 1)]+[(n, Image.open(p).convert('RGB'), 2) for n,p in m['shots']]
 sheet=Image.new('RGB',(300*len(cols), 34+330*2),'white'); d=ImageDraw.Draw(sheet)
 for i,(n,im,s) in enumerate(cols):

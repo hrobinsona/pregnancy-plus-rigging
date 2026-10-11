@@ -21,7 +21,7 @@ export function build(ctx) {
       // cardigan panel — it only ever lands on the body, so it can never outline the arm against the background
       // (replaces the old opacity fade, which rendered off-palette pinks)
       out.push({ id: `cast.${side}`, bone: `forearm.${side}`, z: 70.5, fill: C.cardiganShade, clip: 'cardigan.near',
-        geom: ensureCW(tube(axis, w.map((v) => ({ r: v + 0.055, l: v * 0.6 })), { capK: 0.4 })),
+        geom: ensureCW(tube(axis, w.map((v) => ({ r: v + 0.055, l: v * 0.6 })), { capK: 0.8 })),
         skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     }
     out.push({ id: `sleeve.${side}`, bone: `forearm.${side}`, z: zb, fill,
