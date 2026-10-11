@@ -1,0 +1,5 @@
+{
+ "name": "stand",
+ "note": "rest = relaxed standing ¾; hands from the library",
+ "hands": { "near": "relaxed", "far": { "pose": "relaxed", "mix": { "cup": 0.4 } } }
+}

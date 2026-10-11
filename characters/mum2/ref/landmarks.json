@@ -1,0 +1,260 @@
+{
+ "_note": "Landmarks read off a measurement grid over standing_34.jpg (1536x2752, generated character sheet). These are the ONLY numbers taken from the reference: named anatomical / garment points and a few widths. No contour is sampled; every shape is built from these + design parameters in code.",
+ "image": "standing_34.jpg",
+ "sizePx": [
+  1536,
+  2752
+ ],
+ "Hpx": 380,
+ "H_rule": "skull top (hair top over the cranium, not the bun) to chin",
+ "ground": [
+  765,
+  2615
+ ],
+ "points": {
+  "bunTop": [
+   610,
+   200
+  ],
+  "bunCentre": [
+   602,
+   262
+  ],
+  "loopTop": [
+   700,
+   178
+  ],
+  "skullTop": [
+   760,
+   275
+  ],
+  "hairPart": [
+   822,
+   360
+  ],
+  "hairBack": [
+   567,
+   440
+  ],
+  "chin": [
+   800,
+   655
+  ],
+  "jawNear": [
+   700,
+   600
+  ],
+  "faceFar": [
+   905,
+   520
+  ],
+  "faceNearAtEyes": [
+   705,
+   470
+  ],
+  "eyeNear": [
+   773,
+   497
+  ],
+  "eyeFar": [
+   873,
+   496
+  ],
+  "browNear": [
+   768,
+   455
+  ],
+  "browFar": [
+   878,
+   455
+  ],
+  "noseTip": [
+   842,
+   535
+  ],
+  "mouth": [
+   820,
+   585
+  ],
+  "cheekNear": [
+   755,
+   542
+  ],
+  "cheekFar": [
+   893,
+   542
+  ],
+  "ear": [
+   640,
+   520
+  ],
+  "neckBack": [
+   675,
+   690
+  ],
+  "neckFront": [
+   800,
+   705
+  ],
+  "neckBase": [
+   745,
+   765
+  ],
+  "shoulderTopNear": [
+   558,
+   736
+  ],
+  "shoulderTopFar": [
+   910,
+   736
+  ],
+  "shoulderNear": [
+   537,
+   837
+  ],
+  "shoulderFar": [
+   925,
+   837
+  ],
+  "elbowNear": [
+   423,
+   1152
+  ],
+  "elbowFar": [
+   1069,
+   1190
+  ],
+  "wristNear": [
+   385,
+   1490
+  ],
+  "wristFar": [
+   1150,
+   1480
+  ],
+  "fingertipNear": [
+   360,
+   1660
+  ],
+  "fingertipFar": [
+   1205,
+   1615
+  ],
+  "necklineFront": [
+   790,
+   850
+  ],
+  "bustFar": [
+   985,
+   985
+  ],
+  "underBust": [
+   980,
+   1075
+  ],
+  "bellyApex": [
+   1095,
+   1265
+  ],
+  "bellyBottom": [
+   920,
+   1445
+  ],
+  "hemNear": [
+   460,
+   1645
+  ],
+  "hemFront": [
+   700,
+   1650
+  ],
+  "hemFar": [
+   1095,
+   1630
+  ],
+  "hipNear": [
+   640,
+   1620
+  ],
+  "hipFar": [
+   905,
+   1610
+  ],
+  "kneeNear": [
+   635,
+   2010
+  ],
+  "kneeFar": [
+   905,
+   2000
+  ],
+  "ankleNear": [
+   630,
+   2400
+  ],
+  "ankleFar": [
+   900,
+   2390
+  ],
+  "heelNear": [
+   565,
+   2560
+  ],
+  "toeNear": [
+   850,
+   2600
+  ],
+  "heelFar": [
+   848,
+   2545
+  ],
+  "toeFar": [
+   1135,
+   2585
+  ]
+ },
+ "widths": {
+  "_note": "screen x extents [left, right] at a given y (ref px)",
+  "thighNear@1700": [
+   515,
+   785
+  ],
+  "calfNear@2150": [
+   520,
+   735
+  ],
+  "cuffNear@2340": [
+   555,
+   700
+  ],
+  "thighFar@1700": [
+   800,
+   1030
+  ],
+  "calfFar@2150": [
+   810,
+   1000
+  ],
+  "cuffFar@2340": [
+   835,
+   975
+  ],
+  "sleeveNear@1300": [
+   310,
+   470
+  ],
+  "sleeveFar@1300": [
+   1040,
+   1190
+  ],
+  "neck@720": [
+   672,
+   800
+  ],
+  "face@520": [
+   700,
+   905
+  ]
+ },
+ "_note2": "shoulder/elbow/hairBack corrected on 11 Oct from silhouette extents (tools/profile_cmp.py): arm axis = outer sleeve edge + half sleeve width. Still landmarks, not contours."
+}

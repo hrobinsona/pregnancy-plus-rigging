@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>character view</title>
+<style>html,body{margin:0;padding:0;background:#fff;overflow:hidden}#stage svg{display:block}</style></head>
+<body><div id="stage"></div>
+<script type="module">
+// Generic viewer: ?char=<name>&pose=<pose json name>&frame=still|ref&sil=1&bg=#hex&ground=#hex&bones={json}
+// window.renderPose(pose) is pure: same pose -> same SVG.
+import { createRig } from './rig.js';
+const q = new URLSearchParams(location.search);
+const C = (await import(`../characters/${q.get('char') || 'mum2'}/character.js`)).default;
+const rig = createRig(C);
+let pose = {};
+if (q.get('pose')) pose = await (await fetch(`../characters/${C.name}/poses/${q.get('pose')}.json`)).json();
+if (q.get('inline')) pose = JSON.parse(q.get('inline'));
+if (q.get('bones')) pose.bones = { ...(pose.bones || {}), ...JSON.parse(q.get('bones')) };
+// hand library: characters/<name>/poses/hands/*.json, listed in C.handLibrary
+const { expandHands } = await import('./handlib.js');
+const lib = {};
+for (const h of C.handLibrary || []) lib[h] = await (await fetch(`../characters/${C.name}/poses/hands/${h}.json`)).json();
+window.handLib = lib;
+pose = expandHands(pose, lib);
+const opts = { frame: q.get('frame') || 'still', silhouette: q.get('sil') === '1', bg: q.get('bg') || '#ffffff', ground: q.get('ground') || undefined };
+const stage = document.getElementById('stage');
+window.renderPose = (p) => { stage.innerHTML = rig.toSVG(expandHands(p, lib), opts); };
+window.rig = rig;
+window.renderPose(pose);
+window.__ready = true;
+</script></body></html>
