@@ -14,7 +14,7 @@ Why: R14 — the critic saw wrist teeth on every hand pose while the pixel audit
 import json, subprocess, argparse, numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFont
 ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('pose', nargs='?', default='stand')
-ap.add_argument('--px', type=int, default=1800); ap.add_argument('--turn', type=float, default=12); ap.add_argument('--turnConvex', type=float, default=35); ap.add_argument('--group', default='skin')
+ap.add_argument('--px', type=int, default=1800); ap.add_argument('--turn', type=float, default=12); ap.add_argument('--turnConvex', type=float, default=45); ap.add_argument('--group', default='skin')
 a = ap.parse_args()
 meta = json.loads(subprocess.run(['node', '-e', f"import('./characters/{a.char}/character.js').then(m=>console.log(JSON.stringify({{palette:m.default.palette}})))"], check=True, capture_output=True, text=True).stdout)
 pal = {k: v for k, v in meta['palette'].items() if isinstance(v, str) and v.startswith('#')}
@@ -52,8 +52,8 @@ for g in groups:
             # shallow? the outline within ±K stays near its chord
             seg = P[[(i + j) % n for j in range(-K, K + 1)]]; c0, c1 = seg[0], seg[-1]; dv = c1 - c0; L = np.hypot(*dv) + 1e-9
             depth = np.abs(dv[0] * (seg[:, 1] - c0[1]) - dv[1] * (seg[:, 0] - c0[0])).max() / L / ppH
-            if depth > 0.012: continue                                          # a deep V (fingertip or thumb notch): a deliberate separation
             mid = (prev[i] + nxt[i]) / 2; inside = mask[int(mid[1]) % Hh, int(mid[0]) % Ww] > 0
+            if not inside and depth > 0.012: continue                           # a deep concave V (fingertip / thumb notch): a separation by design (convex corners are never excused by depth: a flat-cut end has two)
             if inside and A[i] < a.turnConvex: continue                         # gentle convex = a fingertip / rounded end
             findings.append((('knob/spike' if inside else 'kink/tooth'), g, cx, cy, A[i], depth))
 lines = [f'corner audit {a.char}/{a.pose}: {len(findings)} findings (turn > {a.turn:.0f}° over ±{k_ / ppH:.3f} H, shallow < 0.012 H, groups {a.group})']

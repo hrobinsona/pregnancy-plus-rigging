@@ -95,12 +95,12 @@ export const handSpecs = {
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
           length: 0.47, palmFrac: 0.5, wristW: 0.29, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 15, w: 1.05 }, thenarEdge: [1.25, 1.15], thumbWeb: [0.9, 0.7], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.86, 0.9], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
   // inner edge is drawn as a line over the palm (as in the reference)
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
          length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,
-         thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.25, 1.2], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
+         thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.35, 1.32], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

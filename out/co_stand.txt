@@ -1,1 +1,0 @@
-corner audit mum2/stand: 0 findings (turn > 12° over ±0.007 H, shallow < 0.012 H, groups skin)

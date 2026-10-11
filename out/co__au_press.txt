@@ -1,3 +1,0 @@
-corner audit mum2/_au_press: 2 findings (turn > 12° over ±0.007 H, shallow < 0.012 H, groups skin)
-  1 kink/tooth  skin     at (+0.959, -2.805) H  turn   20°  depth 0.003 H
-  2 kink/tooth  skin     at (-0.220, -5.074) H  turn   22°  depth 0.003 H
