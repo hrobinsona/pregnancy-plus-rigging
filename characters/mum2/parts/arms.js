@@ -39,7 +39,7 @@ export function build(ctx) {
     if (X.detail.cuffRib) out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
     // wrist skin between cuff and palm, skinned across the wrist so a bent wrist stays filled (wrist corrective base)
     out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zb + 0.3, fill: C.skin,
-      geom: ensureCW(limb(lerp(el, wr, 0.9), add(wr, mulS(norm(sub(wr, el)), 0.05)), [{ t: 0, r: 0.075, l: 0.075 }, { t: 1, r: 0.072, l: 0.072 }], { capK: 0.8 })),
+      geom: ensureCW(limb(lerp(el, wr, 0.9), add(wr, mulS(norm(sub(wr, el)), 0.05)), [{ t: 0, r: 0.09, l: 0.09 }, { t: 1, r: char.params.handSpecs[side].wristW / 2, l: char.params.handSpecs[side].wristW / 2 }], { capK: 0.6 })),   // R11: hand end = the palm's wrist width (no step below the cuff)
       skin: { parent: `forearm.${side}`, child: `hand.${side}`, zone: 0.5 } });
     // hand
     const hand = char.hands[side];

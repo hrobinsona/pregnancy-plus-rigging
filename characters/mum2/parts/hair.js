@@ -27,7 +27,7 @@ export function build({ P: C, C: char, pose }) {
   const top = h.top, back = h.back;
   // back mass: round cranium + back of head, tucked behind the jaw/neck (z under face and neck)
   out.push(part('hair.back', 18, C.hair, ensureCW(loop([
-    [top[0] + 0.02, top[1] - 0.005], [top[0] + 0.28, top[1] + 0.05], [f.far[0] + 0.05, f.part[1] + 0.06], [f.far[0] + 0.04, f.far[1] - 0.03],
+    [top[0] + 0.02, top[1] - 0.005], [top[0] + 0.28, top[1] + 0.05], [f.far[0] + 0.05, f.part[1] + 0.06], [f.far[0] - 0.03, f.far[1] - 0.03],
     [f.far[0] - 0.2, f.chin[1] - 0.1], [-0.14, f.chin[1] - 0.07], [back[0] + 0.22, f.chin[1] - 0.12],
     [back[0] + 0.07, f.chin[1] - 0.3], [back[0] + 0.01, back[1] + 0.02], [back[0] + 0.02, top[1] + 0.2], [top[0] - 0.26, top[1] - 0.04]]))));   // last anchor tucks into the bun: no pinhole (detail audit)
   // nape hair: the lower edge of the back mass drawn OVER the neck top (hair falls over the nape), so the neck's top
@@ -48,7 +48,7 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('hair.front', 60, C.hair, ensureCW(loop([
     [part0[0], part0[1], { c: true, t: 0.6 }], [part0[0] + 0.1, part0[1] + 0.02], [f.far[0] - 0.025, f.far[1] - 0.16], [f.far[0] + 0.01, f.far[1] - 0.115, { a: 20, t: 1.0 }],   // temple: rounded end, no needle
     [f.far[0] + 0.1, f.far[1] - 0.2], [top[0] + 0.32, top[1] + 0.1], [top[0] + 0.05, top[1] - 0.02], [top[0] - 0.3, top[1] + 0.07],
-    [f.nearEye[0] - 0.09, f.nearEye[1] - 0.12], [f.nearEye[0] - 0.02, f.nearEye[1] + 0.06], [f.nearEye[0] + 0.03, f.nearEye[1] - 0.12],
+    [f.nearEye[0] - 0.09, f.nearEye[1] - 0.12], [f.nearEye[0] - 0.06, f.nearEye[1] + 0.06], [f.nearEye[0] + 0.03, f.nearEye[1] - 0.12],
     [part0[0] - 0.08, part0[1] + 0.06]]))));
   out.push(part('hair.part', 60.5, C.hairShade, taper([[part0[0] + 0.01, part0[1] + 0.005], [part0[0] - 0.03, part0[1] - 0.09], [part0[0] - 0.09, part0[1] - 0.17]], [0.002, 0.016, 0.003])));
   // loose strands: wavy tapered strokes from the temples; spring channel pose.fx.hair.{near,far} bends them

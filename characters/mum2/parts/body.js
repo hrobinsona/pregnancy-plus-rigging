@@ -95,8 +95,8 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('cardigan.far.lapel', 'spineLower', 36.5, C.cardigan, ensureCW(loop([
     // a confident collar band over the far shoulder that ENDS above the bust with one rounded end (no tooth on the bust);
     // R8: the rounded end stays INSIDE the cap/sleeve silhouette (no knob, no tangent notch)
-    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.55, shF[1] - 0.05, { a: 95 }],
-    [shF[0] + capF * 0.48, shF[1] + 0.02], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
+    [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.4, shF[1] - 0.06, { a: 95 }],
+    [shF[0] + capF * 0.34, shF[1] + 0.01], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
     { skin: spineSkin }));
   return out;
 }

@@ -57,7 +57,7 @@ export const P = {
   jawShade: { front: 0.1, back: 0.02 },
   shoulderCap: { near: 0.2, far: 0.205 },   // R8: far cap a touch larger: collar → cap → sleeve reads as one convex shoulder arc    // circle radius at the shoulder pivot (joint = circle) = sleeve half-width
   // trapezius slope (measured as silhouette extents at three heights, then used as construction points)
-  shoulderLine: { near: [[-0.42, -4.965], [-0.725, -4.845, { a: 150 }]], far: [[0.26, -4.965], [0.56, -4.81, { a: 47 }]] },   // zoom tour: slopes DOWN from the high collar to the cap (no hump)   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
+  shoulderLine: { near: [[-0.42, -4.965], [-0.725, -4.845, { a: 150 }]], far: [[0.26, -4.965], [0.54, -4.8, { a: 47 }]] },   // zoom tour: slopes DOWN from the high collar to the cap (no hump)   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
   // torso (top), belly, cardigan
   neckline: lm('necklineFront'), bust: lm('bustFar'), underBust: lm('underBust'),
   belly: { apex: lm('bellyApex'), bottom: lm('bellyBottom') },
@@ -87,10 +87,10 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward the body side)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 8,
-          length: 0.65, palmFrac: 0.555, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: 0.45, thumbFx: -0.35, thumb: { mcp: [0.66, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          length: 0.65, palmFrac: 0.555, wristW: 0.22, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: 0.45, thumbFx: -0.35, thumb: { mcp: [0.72, 0.6] }, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: we see more of the palm side; thumb forward
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 8,
-         length: 0.6, palmFrac: 0.555, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.31], flexFx: -0.45, thumbFx: 0.35, thumb: { mcp: [0.6, 0.74], dir: 36 }, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
+         length: 0.6, palmFrac: 0.555, wristW: 0.24, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.28], flexFx: -0.45, thumbFx: 0.35, thumb: { mcp: [0.66, 0.74], dir: 36 }, thumbLine: false, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)
