@@ -211,6 +211,18 @@
   "toeFar": [
    1135,
    2585
+  ],
+  "underBustDip": [
+   955,
+   1025
+  ],
+  "hemBumpFront": [
+   1040,
+   1425
+  ],
+  "topHemBack": [
+   700,
+   1400
   ]
  },
  "widths": {
@@ -256,5 +268,6 @@
    905
   ]
  },
- "_note2": "shoulder/elbow/hairBack corrected on 11 Oct from silhouette extents (tools/profile_cmp.py): arm axis = outer sleeve edge + half sleeve width. Still landmarks, not contours."
+ "_note2": "shoulder/elbow/hairBack corrected on 11 Oct from silhouette extents (tools/profile_cmp.py): arm axis = outer sleeve edge + half sleeve width. Still landmarks, not contours.",
+ "_note3": "underBustDip / hemBumpFront / topHemBack added 11 Oct (bump rebuild): the notch where the bump leaves the bust, the point where the top hem meets the bump underside, and the hem at the cardigan front edge. Named garment/anatomy points only."
 }

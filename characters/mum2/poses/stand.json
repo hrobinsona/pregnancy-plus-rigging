@@ -1,6 +1,6 @@
 {
  "name": "stand",
- "note": "master standing pose = rest drawing + pregnancy posture + hand library. Posture (research \u00a73): lumbar extension (spineLower +4), upper trunk counter-leans back (spineUpper/chest -4 each), head/neck compensate to keep the gaze level and the ear over the feet (head x within 6 px of rest). Pelvis tilt is NOT a screen rotation in \u00be (it is about the hip axis), so it is suggested by tipping the bump (belly +3) instead of rotating the pelvis \u2014 keeps the feet planted. Clavicles level the shoulder line the chest rotation tilted. Arms hang plumb: upperArm -5.6 (anatomical) cancels the -4\u00b0 trunk lean through the \u00be projection. R2: stronger counter-lean (spineUpper -6, chest -5; head/neck +7 keep the gaze level); far arm swings forward (-1) to clear the bump; far leg splayed 3\u00b0 (wider pregnant base). R3: slight A-pose (shoulderAbd far -12 / near +6, asymmetric) opens negative space so the bump reads in silhouette; far leg splay -5.",
+ "note": "master standing pose = rest drawing + pregnancy posture + hand library. Posture (research \u00a73): lumbar extension (spineLower +4), upper trunk counter-leans back (spineUpper/chest -4 each), head/neck compensate to keep the gaze level and the ear over the feet (head x within 6 px of rest). Pelvis tilt is NOT a screen rotation in \u00be (it is about the hip axis), so it is suggested by tipping the bump (belly +3) instead of rotating the pelvis \u2014 keeps the feet planted. Clavicles level the shoulder line the chest rotation tilted. Arms hang plumb: upperArm -5.6 (anatomical) cancels the -4\u00b0 trunk lean through the \u00be projection. R2: stronger counter-lean (spineUpper -6, chest -5; head/neck +7 keep the gaze level); far arm swings forward (-1) to clear the bump; far leg splayed 3\u00b0 (wider pregnant base). R3: slight A-pose (shoulderAbd far -12 / near +6, asymmetric) opens negative space so the bump reads in silhouette; far leg splay -5. 11 Oct: far leg splay -1.5 (thighs overlap in \u00be, no slot), far arm abduction -3 (hangs naturally; the far cardigan panel keeps the bump separate). R4: rig A-pose \u2014 far arm abduction -12, slight extension -4 and elbow 14 open a wedge of negative space so the bump's lower curve is on the solid silhouette (in \u00be the bump projects past a hanging far arm, so a plumb arm always hides it); near arm +9 opens the near armpit. R5: near arm +15 (armpit opens \u22650.1 H at the cuff).",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -11,11 +11,11 @@
   "clavicle.far": 4,
   "clavicle.near": 1,
   "upperArm.near": -5.6,
-  "upperArm.far": -1,
-  "hipAbd.far": -3,
-  "shoulderAbd.far": -6,
-  "shoulderAbd.near": 5,
-  "forearm.far": 4,
+  "upperArm.far": -4,
+  "hipAbd.far": -1.5,
+  "shoulderAbd.far": -12,
+  "shoulderAbd.near": 15,
+  "forearm.far": 14,
   "forearm.near": 4
  },
  "hands": {

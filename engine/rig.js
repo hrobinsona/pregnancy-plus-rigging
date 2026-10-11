@@ -154,12 +154,19 @@ export function createRig(C) {
     if (bg !== 'none') out += `<rect x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}" fill="${bg}"/>`;
     if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx);
     out += `<g id="${C.name}">`;
+    const tfOf = (m) => `matrix(${[m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx].map(f2).join(' ')})`;
+    const byId = Object.fromEntries(parts.map((p) => [p.id, p]));
     for (const p of parts) {
       if (p.opacity !== undefined && p.opacity <= 0.002) continue;
-      const m = p.M;
-      const tf = `matrix(${[m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx].map(f2).join(' ')})`;
       const op = !sil && p.opacity !== undefined && p.opacity < 0.998 ? ` opacity="${f2(p.opacity)}"` : '';
-      out += `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" fill="${sil ? '#000' : p.fill}" transform="${tf}"${op}/>`;
+      const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" fill="${sil ? '#000' : p.fill}" transform="${tfOf(p.M)}"${op}/>`;
+      // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
+      // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
+      const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
+      if (!clips.length) { out += path; continue; }
+      const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
+      out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
+      out += `<g clip-path="url(#${cid})">${path}</g>`;
     }
     return out + '</g></svg>';
   }

@@ -24,7 +24,7 @@ export const R = (deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DE
 export const S = (sx, sy = sx) => [sx, 0, 0, sy, 0, 0];
 export const ap = (m, p) => [m[0] * p[0] + m[2] * p[1] + m[4], m[1] * p[0] + m[3] * p[1] + m[5]];
 
-// anchor flag: 'c' = corner | number = tension | {t, a (tangent deg), c, ti, to}
+// anchor flag: 'c' = corner | number = tension | {t, a (tangent deg), c, ti, to, ai/ao (corner handle angles, deg)}
 function opts(f) {
   if (f === 'c') return { c: true };
   if (typeof f === 'number') return { t: f };
@@ -42,8 +42,8 @@ export function loop(anchors, k = 1.05) {
     const dIn = len(sub(p, prev)), dOut = len(sub(next, p));
     if (o.c) {
       const tc = o.t ?? 0.5;
-      hin[i] = add(p, mulS(norm(sub(prev, p)), dIn * tc / 3));
-      hout[i] = add(p, mulS(norm(sub(next, p)), dOut * tc / 3));
+      hin[i] = add(p, mulS(o.ai !== undefined ? dirOf(o.ai) : norm(sub(prev, p)), dIn * (o.ti ?? tc) / 3));
+      hout[i] = add(p, mulS(o.ao !== undefined ? dirOf(o.ao) : norm(sub(next, p)), dOut * (o.to ?? tc) / 3));
     } else {
       const t = o.t ?? k;
       const d = o.a !== undefined ? dirOf(o.a) : norm(sub(next, prev));

@@ -31,7 +31,7 @@ export function build({ P: C, C: char, pose }) {
   const ch = f.chin, jn = f.jawNear, nk = X.neck;
   out.push(part('jaw.shadow', 41, C.skinShade, ensureCW(loop([
     [nk.back[0] + 0.02, jn[1] - 0.01], [jn[0] + 0.02, jn[1] + 0.012], [ch[0] - 0.06, ch[1] + 0.012], [ch[0] - 0.01, ch[1] + 0.03, { c: true, t: 0.5 }],
-    [ch[0] - 0.06, ch[1] + 0.1], [jn[0] + 0.02, jn[1] + 0.17], [nk.back[0] + 0.03, jn[1] + 0.15]]))));
+    [ch[0] - 0.07, ch[1] + 0.05], [jn[0] + 0.04, jn[1] + 0.125], [nk.back[0] + 0.03, jn[1] + 0.13]])), { clip: 'neck' }));   // clipped to the neck: can never poke past it; wedge: ~0.12 H under the jaw corner → 0 at the chin
   // ear (near side), inner fold
   out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.06, rxl: 0.055, ryt: 0.095, ryb: 0.085, rot: 12 })));
   out.push(part('ear.inner', 49.5, C.skinShade, taper([[X.ear[0] - 0.012, X.ear[1] - 0.05], [X.ear[0] + 0.012, X.ear[1] - 0.005], [X.ear[0] - 0.005, X.ear[1] + 0.045]], [0.006, 0.022, 0.004])));

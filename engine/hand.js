@@ -74,7 +74,8 @@ export function makeHand(spec) {
         const side = mulS(norm(perpL(sub(t, k))), spec.creaseSide ?? -spec.thumbSide);
         const c0 = add(add(k, mulS(sub(m, k), 0.12)), mulS(side, w0 * 0.72)), c1 = add(m, mulS(side, w1 * 0.8)), c2 = add(add(m, mulS(sub(t, m), 0.8)), mulS(side, w2 * 0.72));
         out.push({ id: `${id}.f${i + 1}.crease`, bone: `${id}.f${i + 1}b`, z: zf + 0.002, fill: line,
-                   geom: taper([c0, c1, c2], [0.003, f.w * 0.26, 0.004]),
+                   geom: taper([c0, c1, c2], [0.003, f.w * 0.34, 0.004]),   // ≥ 0.025 H: no hair-thin lines (design bar)
+                   clip: [`${id}.f${i + 1}a`, `${id}.f${i + 1}b`],            // never leaks past the finger it sits on
                    skin: { parent: `${id}.f${i + 1}a`, child: `${id}.f${i + 1}b`, zone: 0.3 } });
       }
     });

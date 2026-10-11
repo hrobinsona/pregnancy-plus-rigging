@@ -17,10 +17,10 @@ export function build(ctx) {
     // shoulder = a circle centred on the shoulder pivot (rotation-invariant joint) reaching the shoulder top
     out.push({ id: `cap.${side}`, bone: `upperArm.${side}`, z: zb - 0.05, fill, geom: ellipse(sh, X.shoulderCap[side], X.shoulderCap[side]) });
     if (side === 'near') {
-      // cast shadow of the arm on the cardigan front: a shade band just inside the sleeve's inner edge; fades out as
-      // the arm swings away from the body (it would otherwise read as an outline against the background)
-      const sw = Math.abs(ctx.pose.bones?.[`upperArm.${side}`] ?? 0);
-      out.push({ id: `cast.${side}`, bone: `forearm.${side}`, z: 70.5, fill: C.cardiganShade, opacity: 1 - Math.max(0, Math.min(1, (sw - 4) / 10)),
+      // cast shadow of the arm on the cardigan front: a shade band just inside the sleeve's inner edge, CLIPPED to the
+      // cardigan panel — it only ever lands on the body, so it can never outline the arm against the background
+      // (replaces the old opacity fade, which rendered off-palette pinks)
+      out.push({ id: `cast.${side}`, bone: `forearm.${side}`, z: 70.5, fill: C.cardiganShade, clip: 'cardigan.near',
         geom: ensureCW(tube(axis, w.map((v) => ({ r: v + 0.055, l: v * 0.6 })), { capK: 0.4 })),
         skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     }
@@ -30,13 +30,13 @@ export function build(ctx) {
     // inner fold line along the sleeve (reads the arm against the cardigan of the same colour)
     const u = norm(sub(el, sh)), n = perpL(u), inner = side === 'near' ? 1 : -1;
     const f0 = add(lerp(sh, el, 0.15), mulS(n, inner * w[0] * 0.55)), f1 = add(lerp(sh, el, 0.75), mulS(n, inner * w[1] * 0.62)), f2 = add(lerp(el, wr, 0.25), mulS(perpL(norm(sub(wr, el))), inner * w[2] * 0.6)), f3 = add(lerp(el, wr, 0.6), mulS(perpL(norm(sub(wr, el))), inner * w[2] * 0.5));
-    if (side === 'near') out.push({ id: `sleeve.${side}.fold`, bone: `forearm.${side}`, z: zb + 0.2, fill: C.cardiganShade, geom: taper([f0, f1, f2, f3], [0.003, 0.02, 0.016, 0.003]),
+    if (side === 'near' && X.detail.sleeveFold) out.push({ id: `sleeve.${side}.fold`, bone: `forearm.${side}`, z: zb + 0.2, fill: C.cardiganShade, geom: taper([f0, f1, f2, f3], [0.003, 0.02, 0.016, 0.003]),
       skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     // bunched cuff + rib line
     const c0 = lerp(el, wr, 0.8), c1 = lerp(el, wr, 0.97), cw = w[3] * 1.04;
     out.push({ id: `cuff.${side}`, bone: `forearm.${side}`, z: zb + 0.4, fill, geom: ensureCW(limb(c0, c1, [{ t: 0, r: cw, l: cw }, { t: 1, r: cw * 0.92, l: cw * 0.92 }], { capK: 0.5 })) });
     const cn = perpL(norm(sub(c1, c0))), cm = lerp(c0, c1, 0.3);
-    out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
+    if (X.detail.cuffRib) out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
     // wrist skin between cuff and palm, skinned across the wrist so a bent wrist stays filled (wrist corrective base)
     out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zb + 0.3, fill: C.skin,
       geom: ensureCW(limb(lerp(el, wr, 0.9), add(wr, mulS(norm(sub(wr, el)), 0.05)), [{ t: 0, r: 0.075, l: 0.075 }, { t: 1, r: 0.072, l: 0.072 }], { capK: 0.8 })),
