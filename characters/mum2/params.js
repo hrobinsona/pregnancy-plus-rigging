@@ -76,24 +76,20 @@ export const P = {
   foot: { near: { heel: [lm('heelNear')[0] + 0.04, lm('heelNear')[1]], toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05], round: 1.3 }, far: { heel: [lm('heelFar')[0], lm('heelFar')[1] - 0.07], toe: [lm('toeFar')[0], lm('toeFar')[1] - 0.07], round: 1 } },   // near foot toward camera (shorter, toe lower); far foot back in depth
 };
 
-// ---------------------------------------------------------------- hands (generator specs; finger counts fixed at 4)
-// length 0.48 H: the reference hand measures 0.45 H; nudged toward "hand ≈ face" (design research §4) without
-// leaving the style. Fingers: index→pinky; `at` = position across the knuckle line from the thumb side.
-const fingers = (w) => [
-  { len: 0.92, w: w * 1.0, spread: -5, at: 0.12 }, { len: 1.0, w: w * 1.04, spread: -2, at: 0.38 },
-  { len: 0.95, w: w * 0.98, spread: 2, at: 0.62 }, { len: 0.8, w: w * 0.9, spread: 6, at: 0.86 },
-];
+// ---------------------------------------------------------------- hands (generator v2: engine/hand.js anatomy defaults)
+// Rebuilt 11 Oct after "hands look a mess — they should be separate fingers and feel like real hands": three phalanges,
+// tapering separate fingers on a knuckle arc, a real thumb with its thenar pad, shade rims only where fingers overlap.
+// Character-specific: size (hand ≈ face), palm width, finger slimness (fingerK), and how each hand is seen.
+// Fingers held together OVERLAP in a stagger (~20% of a width, rim between) — never edge-to-edge: abutting fingers leave
+// hairline slivers and enclosed gaps (detail audit). Spread poses open real gaps.
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
-// Critic B R1–R3: hands grew toward 'hand ≈ face'. 11 Oct (BUCK/Headspace bar): chunkified — fingers ≈ ¼ palm width so they
-// group at rest (no spidery gaps), shorter fingers, no crease lines; fingertips turned
-// 10° away from the body so the thumb never touches the cardigan (keeps the arm–body negative space).
 export const handSpecs = {
-  near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 10,
-          length: 0.68, palmFrac: 0.55, wristW: 0.2, palmW: 0.32, thumbSide: 1, fingers: fingers(0.09), crease: 'one',
-          thumb: { at: [0.42, 0.45], dir: 3, len: 0.36, w: 0.092 }, flexFx: 0.45, order: [3, 2, 1, 0] },
-  far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 10,
-         length: 0.63, palmFrac: 0.55, wristW: 0.19, palmW: 0.3, thumbSide: -1, fingers: fingers(0.08), crease: 'one',
-         thumb: { at: [0.3, 0.42], dir: -4, len: 0.29, w: 0.086 }, flexFx: -0.45, order: [0, 1, 2, 3], creaseSide: -1 },
+  // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward the body side)
+  near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 8,
+          length: 0.72, palmFrac: 0.5, wristW: 0.19, palmW: 0.3, thumbSide: 1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.375], flexFx: 0.45, thumbFx: -0.7, order: [3, 2, 1, 0] },   // thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+  // far (her left) hand: we see more of the palm side; thumb forward
+  far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 8,
+         length: 0.66, palmFrac: 0.5, wristW: 0.18, palmW: 0.28, thumbSide: -1, fingerK: 1.15, across: [0.34, 0.115, -0.115, -0.34], flexFx: -0.45, thumbFx: 0.7, thumb: { mcp: [0.42, 0.74] }, order: [0, 1, 2, 3] },   // far thumb's outer edge IS the silhouette (no palm sliver beside it)
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

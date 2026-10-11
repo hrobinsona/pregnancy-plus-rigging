@@ -63,7 +63,20 @@ for k, nm in enumerate(names[1:], 1):
     tl, n = ndi.label(thin)
     for i, sl in enumerate(ndi.find_objects(tl), 1):
         area = (tl[sl] == i).sum(); h, w = sl[0].stop - sl[0].start, sl[1].stop - sl[1].start
-        if area > (0.006 * ppH) ** 2 * 4 and max(h, w) > 0.02 * ppH: findings.append(('spur/thin', nm, sl, area))
+        if not (area > (0.006 * ppH) ** 2 * 4 and max(h, w) > 0.02 * ppH): continue
+        # what surrounds it? a thin shape lying on ONE other colour (a finger-separation rim, the nose wedge, a fold) is a
+        # deliberate drawn line — governed by the detail budget, not a fault. A thin shape between two different colours
+        # or against the background is a sliver/spur/tangent: a construction fault.
+        pad = 4; y0_, y1_ = max(0, sl[0].start - pad), min(Hh, sl[0].stop + pad); x0_, x1_ = max(0, sl[1].start - pad), min(Ww, sl[1].stop + pad)
+        comp = np.zeros((y1_ - y0_, x1_ - x0_), bool); comp[sl[0].start - y0_:sl[0].stop - y0_, sl[1].start - x0_:sl[1].stop - x0_] = tl[sl] == i
+        ring = ndi.binary_dilation(comp, iterations=3) & ~ndi.binary_dilation(comp, iterations=1)
+        labs, cnt = np.unique(lab[y0_:y1_, x0_:x1_][ring & core[y0_:y1_, x0_:x1_]], return_counts=True)
+        nb = {int(l): c for l, c in zip(labs, cnt) if l != k and c > 3}
+        if len(nb) == 1 and 0 not in nb: continue
+        # a SHADE line (e.g. a finger-separation rim) lying on its own base colour and running out to the silhouette
+        base = names.index(nm[:-5]) if nm.endswith('Shade') and nm[:-5] in names else None
+        if base is not None and set(nb) <= {base, 0} and base in nb: continue
+        findings.append(('spur/thin', nm, sl, area))
 # allowlist: characters/<char>/audit_allow.json = [{"colour": name, "at": [x, y], "r": H, "why": "..."}] — intentional thin features
 import os
 allow = json.load(open(f'characters/{a.char}/audit_allow.json')) if os.path.exists(f'characters/{a.char}/audit_allow.json') else []

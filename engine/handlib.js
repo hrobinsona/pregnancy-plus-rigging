@@ -1,6 +1,7 @@
 // handlib.js — expand named hand-library poses into finger bone angles (the library is the animator's interface;
 // bones are the implementation). pose.hands = { near: 'relaxed' | {pose:'cup', mix:{fist:0.3}}, far: ... }
-// Library entry: { f1..f4: [flexKnuckle, flexMid], s: [spread x4, + = away from the thumb], t: [flex1, flex2], ts: thumb spread }
+// Library entry: { f1..f4: [MCP, PIP, DIP?], s: [spread x4, + = away from the thumb], t: [thumb MCP, IP], to: thumb opposition
+// (CMC flex, moves the thenar pad), ts: thumb spread }. DIP defaults to 2/3 of PIP (the two are coupled in a real finger).
 export function handBones(prefix, entry, lib, spreadSign = 1) {
   const blendOf = (e) => (typeof e === 'string' ? { [e]: 1 } : { [e.pose]: 1 - Object.values(e.mix || {}).reduce((a, b) => a + b, 0), ...(e.mix || {}) });
   const w = blendOf(entry), out = {};
@@ -9,10 +10,11 @@ export function handBones(prefix, entry, lib, spreadSign = 1) {
     const L = lib[name];
     if (!L) throw new Error(`hand library: no pose "${name}"`);
     for (let i = 1; i <= 4; i++) {
-      acc(`${prefix}.f${i}a`, k * L['f' + i][0]); acc(`${prefix}.f${i}b`, k * L['f' + i][1]);
+      const fv = L['f' + i];
+      acc(`${prefix}.f${i}a`, k * fv[0]); acc(`${prefix}.f${i}b`, k * fv[1]); acc(`${prefix}.f${i}c`, k * (fv[2] ?? Math.round(fv[1] * 0.67)));
       acc(`${prefix}.f${i}s`, k * spreadSign * (L.s?.[i - 1] || 0));
     }
-    acc(`${prefix}.t1`, k * L.t[0]); acc(`${prefix}.t2`, k * L.t[1]); acc(`${prefix}.ts`, k * spreadSign * -(L.ts || 0));
+    acc(`${prefix}.t1`, k * L.t[0]); acc(`${prefix}.t2`, k * L.t[1]); acc(`${prefix}.t0`, k * (L.to || 0)); acc(`${prefix}.ts`, k * spreadSign * -(L.ts || 0));
   }
   return out;
 }
