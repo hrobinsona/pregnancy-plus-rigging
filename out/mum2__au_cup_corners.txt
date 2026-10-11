@@ -1,4 +1,3 @@
-corner audit mum2/_au_cup: 3 findings (turn > 12° over ±0.007 H, shallow < 0.012 H, groups skin)
-  1 kink/tooth  skin     at (-0.975, -2.616) H  turn   22°  depth 0.004 H
-  2 kink/tooth  skin     at (+1.196, -2.883) H  turn   33°  depth 0.009 H
-  3 kink/tooth  skin     at (-0.213, -5.158) H  turn   23°  depth 0.001 H
+corner audit mum2/_au_cup: 2 findings (turn > 12° over ±0.007 H, shallow < 0.012 H, groups skin)
+  1 kink/tooth  skin     at (+1.195, -2.879) H  turn   22°  depth 0.004 H
+  2 kink/tooth  skin     at (+0.979, -2.769) H  turn   17°  depth 0.004 H

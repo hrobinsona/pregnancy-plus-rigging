@@ -14,7 +14,7 @@ Why: R14 — the critic saw wrist teeth on every hand pose while the pixel audit
 import json, subprocess, argparse, numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFont
 ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('pose', nargs='?', default='stand')
-ap.add_argument('--px', type=int, default=1800); ap.add_argument('--turn', type=float, default=12); ap.add_argument('--turnConvex', type=float, default=45); ap.add_argument('--group', default='skin')
+ap.add_argument('--px', type=int, default=1800); ap.add_argument('--turn', type=float, default=12); ap.add_argument('--turnConvex', type=float, default=45); ap.add_argument('--group', default='skin'); ap.add_argument('--win', type=float, default=0.008)
 a = ap.parse_args()
 meta = json.loads(subprocess.run(['node', '-e', f"import('./characters/{a.char}/character.js').then(m=>console.log(JSON.stringify({{palette:m.default.palette}})))"], check=True, capture_output=True, text=True).stdout)
 pal = {k: v for k, v in meta['palette'].items() if isinstance(v, str) and v.startswith('#')}
@@ -27,7 +27,7 @@ best = np.full(im.shape[:2], 1 << 30, np.int32); lab = np.zeros(im.shape[:2], np
 for k, c in enumerate(cols):
     dk = ((im - c) ** 2).sum(-1, dtype=np.int32); u = dk < best; best[u] = dk[u]; lab[u] = k
 groups = [g for g in a.group.split(',')]; core = best < 14 ** 2
-k_ = max(3, int(0.008 * ppH)); K = int(0.04 * ppH); R = int(0.012 * ppH)
+k_ = max(3, int(a.win * ppH)); K = int(0.04 * ppH); R = int(0.012 * ppH)
 findings = []
 for g in groups:
     members = [i for i, n in enumerate(names) if n in (g, g + 'Shade', g + 'Line')]

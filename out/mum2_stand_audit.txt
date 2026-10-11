@@ -1,1 +1,1 @@
-detail audit mum2/stand: 0 findings (3 allowed by audit_allow.json) (render 2637x4589, 692 px/H, thin < 0.024 H)
+detail audit mum2/stand: 0 findings (3 allowed by audit_allow.json) (render 2635x4590, 692 px/H, thin < 0.024 H)

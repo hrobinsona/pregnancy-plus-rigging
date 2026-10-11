@@ -126,6 +126,7 @@ export function createRig(C) {
           const j = J[BONE[p.bone].joint];
           // rigid: rotate + translate with the bone but never take its stretch (a knuckle disc on a foreshortening phalanx
           // must stay a circle — squashed, it becomes a lobe sticking out of the hand)
+          if (p.world) { parts.push({ ...p, module: name, anchors: p.geom.P.length, M: F }); continue; }   // geometry already built in posed space
           if (p.rigidAt) {   // centre carried by the bone's full transform (incl. foreshortening), shape only rotated: a round end stays round
             const c = p.rigidAt, pc = ap(st[p.bone].M, sub(c, j));
             parts.push({ ...p, module: name, anchors: p.geom.P.length, M: mul(F, mul(mul(T(pc[0], pc[1]), R(st[p.bone].rot)), T(-c[0], -c[1]))) });

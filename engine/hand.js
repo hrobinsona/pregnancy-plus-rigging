@@ -16,7 +16,7 @@
 // Everything is computed from the spec; nothing is sampled from an image.
 import { add, sub, mulS, norm, perpL, lerp } from './geom.js';
 import { limb, loop, tube, taper } from './shapes.js';
-import { ellipse } from './geom.js';
+import { ellipse, ap } from './geom.js';
 
 const DEG = Math.PI / 180;
 const polyLen = (pts) => pts.slice(1).reduce((a, p, i) => a + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
@@ -42,7 +42,7 @@ const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG)
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
   across: [0.37, 0.125, -0.125, -0.37], fan: 'touch', touch: 0.9, taper: [1.0, 0.94, 0.88, 0.82], tipK: 0.95, fingerK: 0.9, rim: 0.02, rootIn: 0.05,
-  view: 'back', hypoWebStart: 0.35, hypo: 0.018, thenarEdge: [0.84, 0.9], webK: 0.3, lineTipGap: 1.0, lineEnd: 0.8, crease: [[0.1, 0.25]], creaseHook: [0.8, 0.5], thumbWeb: [0.95, 0.86],   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
+  view: 'back', hypoWebStart: 0.35, hypo: 0.018, thenarEdge: [0.84, 0.9], webK: 0.3, lineTipGap: 1.0, lineEnd: 0.8, crease: [[0.1, 0.25]], creaseHook: [0.9, 0.45], thumbWeb: [0.95, 0.86],   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
   thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
@@ -97,7 +97,7 @@ export function makeHand(spec) {
   const planes = { [plane]: S.flexFx, [tplane]: S.thumbFx ?? S.flexFx };
 
   const ANCHORS = { [`${id}.palm`]: 12, [`${id}.thenar`]: 6, [`${id}.thumb`]: 8 };
-  for (let i = 1; i <= 4; i++) ANCHORS[`${id}.f${i}`] = 9;   // tube: 4 stations × 2 + tip cap (root is flat, sunk in the palm)
+  for (let i = 1; i <= 4; i++) ANCHORS[`${id}.f${i}`] = 11;   // tube: 5 stations (root, MCP, PIP, mid, visible end) × 2 + tip cap (root flat, sunk in the palm)
 
   const cap = (a, b, ra, rb) => ensureCW(limb(a, b, [{ t: 0, r: ra, l: ra }, { t: 1, r: rb, l: rb }], { capK: 1.0 }));
   /** parts in rest world space. fill = skin, line = shade (rims) */
@@ -118,7 +118,8 @@ export function makeHand(spec) {
     };
     // the thumb-side envelope follows the thumb: as it ADDUCTS toward the palm (library ts < 0) the envelope pulls in with it
     // (continuous in the pose), so it never stands proud of a tucked thumb (R15 press kink)
-    const tsLib = -(ctx.pose?.bones?.[`${id}.ts`] ?? 0) * S.thumbSide, thE = S.thenarEdge.map((v, k) => (k === 0 ? v : v - (v - 1.0) * clamp01(-tsLib / 12)));   // only the distal anchor: the proximal one sits over the thenar pad, which stays put
+    const tsLib = -(ctx.pose?.bones?.[`${id}.ts`] ?? 0) * S.thumbSide, tFoldE = ['t0', 't1', 't2'].reduce((acc, b) => acc + (ctx.pose?.bones?.[`${id}.${b}`] ?? 0), 0);
+    const thE = S.thenarEdge.map((v, k) => (k === 0 ? v : v - (v - 1.0) * clamp01(Math.max(-tsLib / 12, tFoldE / 70))));   // follows adduction AND flexion of the thumb   // only the distal anchor: the proximal one sits over the thenar pad, which stays put
     const palm = [
       P(-0.7 * wW, -0.7 * wW), add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), [...pinkyRoot, { c: true, ai: inA(pinkyRoot, add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), pinkyA + 180, pkCurl), ti: 1.05 - 0.5 * pkCurl, ao: Math.atan2(F[3].k[1] - pinkyRoot[1], F[3].k[0] - pinkyRoot[0]) * 180 / Math.PI }],   // corner: arrives along the pinky's edge, leaves ACROSS the knuckle (never bulges past it when the pinky curls)   // arrives tangent to the pinky's outer edge   // R9: one convex edge from the wrist to the pinky's root (no dent, no step)
       ...[3, 2, 1].map(webAt), add(kn[0], mulS(u, 0.018)),   // WEBBING: between two knuckles the palm's edge dips to where the fingers meet (≈ webK of the first phalanx) — hidden when the fingers are together, the V of skin between spread fingers, and no enclosed gap at the roots
@@ -166,15 +167,24 @@ export function makeHand(spec) {
         sVis = Math.min(1 + vD, 0.1 + 1.9 * vM);
       }
       const dE = sVis <= 1 ? sVis * Lb : Lb + (sVis - 1) * Lc, wq = sVis <= 1 ? 0 : smooth01((sVis - 1) / 0.5), dM = lerp([dE / 2], [Lb], wq)[0];
-      out.push({ id: fid, bone: `${fid}c`, z: zf, fill, skin,
-                 geom: tubeOf([root, f.p, at(dM), at(dE)], [f.r[0] * 0.8, f.r[1], rAt(dM), rAt(dE)], 0, S.tipK, 'none') });   // round fingertip pad; FLAT root sunk in the palm (a round root bulges past the palm's edge)
-      out.push({ id: `${fid}.j0`, bone: `${fid}a`, z: zf - 0.0006, fill, rigid: true, geom: ellipse(f.k, f.r[0] * 0.84, f.r[0] * 0.84) });   // MCP knuckle: round outer corner when the knuckle flexes hard (fist = a row of round knuckles, no teeth)
-      out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, rigid: true, geom: ellipse(f.p, f.r[1], f.r[1]) });   // R15: full tube width (a foreshortened next phalanx ends round, not cut flat)
-      const j2k = smooth01((dE - 0.5 * Lb) / (0.5 * Lb));   // DIP disc: on its own joint (rigid), shrinking away as the middle phalanx folds behind
-      if (j2k > 0.05) out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, rigid: true, geom: ellipse(f.q, f.r[2] * j2k, f.r[2] * j2k) });
-      // R15: a rigid round TIP at the visible end — the tube's tip cap squashes with a foreshortened phalanx; this disc does not
-      const eC = at(dE), eR = rAt(dE) * Math.min(1, S.tipK + 0.05);
-      out.push({ id: `${fid}.j3`, bone: dE <= Lb ? `${fid}b` : `${fid}c`, rigidAt: eC, z: zf - 0.0003, fill, geom: ellipse(eC, eR, eR) });
+      // R16: the finger is built IN POSED SPACE — the joints are carried by the bones (so flexion foreshortens the finger), and a
+      // tube of TRUE radius is drawn through them. Stretching a rest-space tube along its bones (skinning) sheared its cross-
+      // section when the phalanx foreshortened: flat-cut ends, squashed caps, steps against the round joint discs.
+      const La = Math.hypot(f.p[0] - f.k[0], f.p[1] - f.k[1]), dK = norm(sub(f.p, f.k));
+      const posed = ctx.st ? (b, v, jv) => ap(ctx.st[b].M, sub(v, jv)) : (b, v) => v;
+      const PK = posed(`${fid}a`, f.k, f.k), PP = posed(`${fid}b`, f.p, f.p), PQ = posed(`${fid}c`, f.q, f.q), PT = posed(`${fid}c`, f.t, f.q), PR = posed(`${fid}s`, root, f.k);
+      const bdir = (b) => rot(dK, ctx.st ? ctx.st[b].rot : 0);
+      /** rest distance along the finger from the knuckle → posed point + posed direction */
+      const along = (dd) => dd <= La ? [lerp(PK, PP, clamp01(dd / La)), bdir(`${fid}a`)] : dd <= La + Lb ? [lerp(PP, PQ, (dd - La) / Lb), bdir(`${fid}b`)] : [lerp(PQ, PT, clamp01((dd - La - Lb) / Lc)), bdir(`${fid}c`)];
+      const EP = along(La + dE)[0], MP = along(La + dM)[0];
+      out.push({ id: fid, bone: `${fid}c`, z: zf, fill, world: true,
+                 geom: tubeOf([PR, PK, PP, MP, EP], [f.r[0] * 0.8, f.r[0], f.r[1], rAt(dM), rAt(dE)], 0, S.tipK, 'none') });   // round fingertip pad; FLAT root sunk in the palm (a round root bulges past the palm's edge)
+      out.push({ id: `${fid}.j0`, bone: `${fid}a`, z: zf - 0.0006, fill, world: true, geom: ellipse(PK, f.r[0] * 0.84, f.r[0] * 0.84) });   // MCP knuckle: round outer corner when the knuckle flexes hard (fist = a row of round knuckles, no teeth)
+      out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, world: true, geom: ellipse(PP, f.r[1], f.r[1]) });   // full tube width: a foreshortened next phalanx ends round
+      const j2k = smooth01((dE - 0.5 * Lb) / (0.5 * Lb));   // DIP disc, shrinking away as the middle phalanx folds behind
+      if (j2k > 0.05) out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, world: true, geom: ellipse(PQ, f.r[2] * j2k, f.r[2] * j2k) });
+      const eR = rAt(dE) * Math.min(1, S.tipK + 0.05);
+      out.push({ id: `${fid}.j3`, bone: `${fid}c`, z: zf - 0.0003, fill, world: true, geom: ellipse(EP, eR, eR) });   // round visible end
       // separation line: ONE continuous round-capped stroke along the side that faces the finger behind, from the
       // knuckle to just before the tip arc, chain-skinned with the finger and clipped to the fingers behind — so it
       // shows only where this finger overlaps them (no outline against the background, no hooks round the tips)
@@ -198,7 +208,8 @@ export function makeHand(spec) {
         // never clipped into a needle wedge in the V between them
         const spr = Math.abs((ctx.pose?.bones?.[`${fid}s`] ?? 0) - (ctx.pose?.bones?.[`${id}.f${bkI + 1}s`] ?? 0)), keepS = clamp01(1 - (spr - 3) / 5);
         const Lk = polyLen(pts) * Math.min(keepF, capF, keepS), cut = truncPoly(pts, Lk, 4);
-        if (Lk >= 0.04) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(cut, cut.map(() => S.rim), 'round'), skin, clip: [...behind] });
+        const toPosed = (pt) => { const dd = alongOf(pt), lat = (pt[0] - f.k[0]) * nn[0] + (pt[1] - f.k[1]) * nn[1], [c, dir] = along(dd); return add(c, mulS(perpL(dir), side * lat)); };
+        if (Lk >= 0.04) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, world: true, geom: taper(cut.map(toPosed), cut.map(() => S.rim), 'round'), clip: [...behind] });
       }
       if (nail) {
         const tot = curlOf(i) + (ctx.pose?.bones?.[`${fid}c`] ?? curlOf(i) * 0.4), vis = Math.max(0, Math.min(1, 1 - (tot - 70) / 45));
@@ -230,10 +241,12 @@ export function makeHand(spec) {
       const cD = add(lerp(ip, tt, 0.6), mulS(tnn, lerp([tr[1]], [tr[2]], 0.6)[0] + S.rim * 0.4));
       // R15: a J round the ball of the thumb — heel → down toward the index base → hooks at the thumb–index web → back UP the
       // thumb's inner edge (the reference's line encloses the thenar; a heel→thumb sweep made a "7")
-      const cB = P(palmL * S.creaseHook[0], pW * S.creaseHook[1]), cC2 = add(ip, mulS(tnn, tr[1] + S.rim * 0.4)), cD2 = add(lerp(ip, mcp, 0.85), mulS(tnn, lerp([tr[1]], [tr[0]], 0.85)[0] + S.rim * 0.4));
-      const cpts = [cA, cB, cC2, cD2], cL = polyLen(cpts) * keepT;
+      const cB = P(palmL * S.creaseHook[0], pW * S.creaseHook[1]), cC2 = add(ip, mulS(tnn, tr[1])), cD2 = add(lerp(ip, mcp, 0.75), mulS(tnn, lerp([tr[1]], [tr[0]], 0.75)[0]));   // up-arm ON the thumb's inner edge, most of the way to the MCP
+      // one smooth quadratic through the hook (a U, never a V): control point such that the curve's midpoint IS the hook
+      const ctl = sub(mulS(cB, 2), mulS(add(cA, cD2), 0.5)), q2 = (t) => add(add(mulS(cA, (1 - t) * (1 - t)), mulS(ctl, 2 * t * (1 - t))), mulS(cD2, t * t));
+      const cpts = [0, 0.2, 0.4, 0.6, 0.8, 1].map(q2), cL = polyLen(cpts) * keepT;
       if (cL >= 0.04) out.push({ id: `${id}.crease`, bone: `${id}.t2`, z: (S.thumbZ ?? z + 0.1) + 0.005, fill: line, skin: { chain: [`${id}.t0`, `${id}.t1`], zone: 0.5 },
-                                geom: taper(truncPoly(cpts, cL, 4), [S.rim * 0.8, S.rim, S.rim, S.rim], 'round'), clip: [`${id}.palm`, `${id}.thenar`, `${id}.thumb`] });
+                                geom: taper(truncPoly(cpts, cL, 6), [S.rim * 0.8, S.rim, S.rim, S.rim, S.rim, S.rim], 'round'), clip: [`${id}.palm`, `${id}.thenar`, `${id}.thumb`] });
       const sprD = Math.max(...[1, 2, 3].map((j) => Math.abs((ctx.pose?.bones?.[`${id}.f${j + 1}s`] ?? 0) - (ctx.pose?.bones?.[`${id}.f${j}s`] ?? 0))));
       const mcpAvg = [0, 1, 2, 3].reduce((acc, j) => acc + ang(j, 'a'), 0) / 4, keepB = clamp01(1 - (mcpAvg - 15) / 15) * clamp01(1 - (sprD - 3) / 5);   // spread: the comb's teeth fade, so does its spine
       // spans exactly from the first to the last separation line (their round starts ARE its ends: T/L joins, as in the

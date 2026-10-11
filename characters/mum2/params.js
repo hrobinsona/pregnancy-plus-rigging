@@ -95,7 +95,7 @@ export const handSpecs = {
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
           length: 0.47, palmFrac: 0.5, wristW: 0.29, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.86, 0.9], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.8, 0.86], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
   // inner edge is drawn as a line over the palm (as in the reference)
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
