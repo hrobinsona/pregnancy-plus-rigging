@@ -1,37 +1,93 @@
 {
  "name": "idle-seated",
- "story": "Seated breathing idle: one slow breath per loop, ribcage-led; while she breathes, her near hand makes one slow stroke across the bump and her head tips toward it.",
+ "story": "Seated breathing idle: one slow ribcage-led breath per loop. Her eyes drop to the bump, then her near hand strokes forward over its curve; her eyes follow the hand and her smile warms as her head tips toward it in the exhale. Her head leads the way back, a blink hides her eyes lifting, the hand releases along a lower path and settles.",
  "fps": 30,
  "duration": 4.5,
  "loop": true,
  "exposure": "ones",
  "keys": [
   {
-   "t": 0.0,
+   "t": 0.4,
    "pose": "seated",
    "ease": "inOut",
-   "note": "base: measured rest + pregnancy posture"
+   "note": "hand at rest; outbound starts 3f after the eyes drop (f15)"
   },
   {
-   "t": 2.4,
+   "t": 0.833,
+   "kind": "breakdown",
+   "pose": "seated-a0",
+   "only": [
+    "bone.upperArm.near",
+    "bone.forearm.near",
+    "bone.hand.near",
+    "scale.upperArm.near",
+    "scale.forearm.near"
+   ],
+   "note": "arm-only: the wrist hugs the curve of the bump"
+  },
+  {
+   "t": 1.3,
+   "kind": "breakdown",
+   "pose": "seated-a",
+   "note": "outbound rides up over the curve of the bump"
+  },
+  {
+   "t": 2.7,
    "pose": "seated-b",
    "ease": "inOut",
-   "note": "caress: palm strokes forward, head tips toward the bump"
+   "shift": {
+    "spineUpper": -5,
+    "chest": -15,
+    "neck": -11,
+    "head": -20
+   },
+   "note": "caress extreme (wrist turns at f87), lands at the end of the exhale; head/neck keys land early (measured local peaks f79/f79) so the head tip turns back at f83, ahead of the hand"
+  },
+  {
+   "t": 3.1,
+   "kind": "breakdown",
+   "pose": "seated-c0",
+   "only": [
+    "bone.upperArm.near",
+    "bone.forearm.near",
+    "bone.hand.near",
+    "scale.upperArm.near",
+    "scale.forearm.near"
+   ],
+   "note": "arm-only: the release stays low"
+  },
+  {
+   "t": 3.4,
+   "kind": "breakdown",
+   "pose": "seated-c",
+   "note": "release: lower hand path, fingers trailing; neck lengthens so the head lifts away on the next inhale"
+  },
+  {
+   "t": 3.9,
+   "pose": "seated-settle",
+   "ease": "inOut",
+   "note": "release lands: wrist 2 deg and head 1.2 deg past rest, both ease back"
+  },
+  {
+   "t": 4.2,
+   "pose": "seated",
+   "ease": "inOut",
+   "note": "wrist settles back; moving hold across the loop seam to 0.6 s"
   }
  ],
  "wrapEase": "inOut",
  "lags": {
   "pelvis": 0,
   "spineLower": 0,
-  "spineUpper": 0,
-  "chest": 0,
-  "neck": 2,
-  "head": 4,
-  "clavicle.near": 0,
+  "spineUpper": 2,
+  "chest": 4,
+  "neck": 6,
+  "head": 8,
+  "clavicle.near": 4,
   "upperArm.near": 0,
   "forearm.near": 2,
   "hand.near": 4,
-  "clavicle.far": 0,
+  "clavicle.far": 4,
   "upperArm.far": 0,
   "forearm.far": 2,
   "hand.far": 4,
@@ -40,12 +96,24 @@
  },
  "breath": {
   "period": 4.5,
-  "phase0": 0,
+  "phase0": 0.3278,
   "amp": 1,
   "shape": {
    "inhale": 0.55,
    "exhale": 0.35,
-   "pause": 0.1
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
   },
   "delays": {
    "belly": 0,
@@ -54,13 +122,14 @@
    "head": 7
   },
   "gain": {
-   "chestAlong": 0.012,
-   "chestAcross": 0.016,
-   "chestDeg": -0.6,
-   "shoulderDeg": 0.7,
-   "headDeg": -0.5,
+   "chestAlong": 0.026,
+   "chestAcross": 0.03,
+   "chestDeg": -1.1,
+   "shoulderDeg": 2.0,
+   "headDeg": -1.0,
    "belly": 0.0035
-  }
+  },
+  "note": "phase0: belly inhale peak at 1.0 s (f30), belly exhale ends f77 (chest +3f, head +7f), so the caress extreme sits in the breath pause and the head lifts away on the next inhale; f0 is a moving hold mid-inhale. Gains exaggerated past the pack (chest 2.6%) for phone legibility (critic R1-R2)"
  },
  "drift": {
   "amp": 1,
@@ -91,8 +160,8 @@
    "head": 0.3,
    "clavicle.near": 0.25,
    "clavicle.far": 0.25,
-   "hand.near": 0.3,
-   "hand.far": 0.4
+   "hand.near": 0.2,
+   "hand.far": 0.15
   }
  },
  "springs": {
@@ -100,22 +169,23 @@
   "samples": 512,
   "hair": {
    "near": {
-    "f": 2.2,
-    "zeta": 0.4,
-    "kRot": 0.9,
+    "f": 1.0,
+    "zeta": 0.55,
+    "kRot": 1.2,
     "kGrav": 0.3
    },
    "far": {
-    "f": 2.0,
-    "zeta": 0.38,
-    "kRot": 0.9,
-    "kGrav": 0.3
+    "f": 0.8,
+    "zeta": 0.5,
+    "kRot": 1.5,
+    "kGrav": 0.25
    }
   },
   "belly": {
    "f": 4.0,
    "zeta": 0.7
-  }
+  },
+  "note": "hair below the pack range (1.5-3 Hz) on purpose so the strand tips trail the slow head moves (screen-space tip extremes ~4-9f after the head tip); damping 0.5-0.55 so they settle before the seam"
  },
  "blink": {
   "close": 3,
@@ -125,8 +195,9 @@
  "events": [
   {
    "type": "blink",
-   "t": 2.75,
-   "note": "as the head turns back from the bump"
+   "t": 2.57,
+   "open": 8,
+   "note": "as the head starts back; hides the gaze returning; opens over 8f so tender eyes don't snap wide"
   }
  ],
  "render": {
@@ -136,6 +207,95 @@
  "pins": {
   "near": "twoBone",
   "far": "reach",
-  "note": "pinned hands (pose fx.pinNear/pinFar) stay on the bump while breath and drift move the shoulders"
+  "ride": 0.0036,
+  "note": "pinned hands (pose fx.pinNear/pinFar) stay on the bump while breath and drift move the shoulders; ride = they rise with the bump's breath (H units at full inhale)"
+ },
+ "tracks": {
+  "eyes": {
+   "channels": [
+    "face.gaze",
+    "face.lid"
+   ],
+   "keys": [
+    {
+     "t": 0.3,
+     "pose": "face-front-b",
+     "ease": "inOut"
+    },
+    {
+     "t": 0.433,
+     "pose": "face-look-bump",
+     "ease": "dart",
+     "note": "eyes drop to the bump, 3f before the hand moves"
+    },
+    {
+     "t": 1.4,
+     "pose": "face-look-bump",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.95,
+     "pose": "face-tender",
+     "ease": "inOut",
+     "note": "eyes follow the hand forward, lids soften"
+    },
+    {
+     "t": 2.62,
+     "pose": "face-tender",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.72,
+     "pose": "face-front",
+     "ease": "dart",
+     "note": "eyes come back up inside the blink's closed frames"
+    },
+    {
+     "t": 4.0,
+     "pose": "face-front",
+     "ease": "inOut"
+    },
+    {
+     "t": 4.067,
+     "pose": "face-front-b",
+     "ease": "dart",
+     "note": "2-frame micro-saccade, 1.2 px"
+    }
+   ]
+  },
+  "mouth": {
+   "channels": [
+    "face.mouth",
+    "face.cheek"
+   ],
+   "keys": [
+    {
+     "t": -0.2,
+     "pose": "face-front",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.7,
+     "pose": "face-front",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.05,
+     "pose": "face-tender",
+     "ease": "inOut",
+     "note": "smile warms: corners up ~4.5 px, ~12% wider, cheeks lift ~6 ref px (~8 output px), lower lids squint 3.5 ref px"
+    },
+    {
+     "t": 3.0,
+     "pose": "face-tender",
+     "ease": "inOut"
+    },
+    {
+     "t": 3.75,
+     "pose": "face-front",
+     "ease": "inOut"
+    }
+   ]
+  }
  }
 }

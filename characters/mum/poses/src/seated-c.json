@@ -1,0 +1,74 @@
+{
+ "name": "seated-c",
+ "note": "release breakdown (passed through): 55% back, palm 9 ref px below the outbound line, fingers trail 2 deg, wrist bowed down-right; neck lifts 0.8 deg past seated (chin up) so the head returns on a higher arc; head itself monotonic (5.0 -> 2.6 -> 1.8 -> 1.5); neck lengthens 6% (head lifts ~5 output px) so the return passes above the outbound",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -2.775,
+  "chest": -2.275,
+  "neck": 0.7,
+  "head": 2.6
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     627.98,
+     647.25
+    ]
+   },
+   "handDeg": 12.65,
+   "upperLen": 1,
+   "foreLen": 1,
+   "wristOffset": [
+    2.3,
+    3.9
+   ]
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.3,
+   "relaxed": 0.7
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ },
+ "scale": {
+  "neck": [
+   1.06,
+   1
+  ]
+ }
+}

@@ -1,0 +1,92 @@
+{
+ "name": "seated-settle",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -3,
+  "chest": -2.5,
+  "neck": 1.6,
+  "head": 0.3,
+  "upperArm.near": 4.1,
+  "forearm.near": -3.78,
+  "hand.near": 3.68,
+  "upperArm.far": 3.51,
+  "forearm.far": 0,
+  "hand.far": 2.49
+ },
+ "scale": {
+  "neck": [
+   1.035,
+   1
+  ],
+  "upperArm.near": [
+   1,
+   1
+  ],
+  "forearm.near": [
+   1,
+   1
+  ],
+  "upperArm.far": [
+   1.0631,
+   1
+  ]
+ },
+ "lattice": {
+  "belly": null
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.6,
+   "relaxed": 0.4
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ },
+ "hands": {
+  "near": "cupping-belly",
+  "far": "cupping-belly"
+ },
+ "facing": "right",
+ "_ik": {
+  "near": {
+   "elbow": [
+    423,
+    598
+   ],
+   "wrist": [
+    563,
+    640
+   ],
+   "palm": [
+    617,
+    647
+   ]
+  },
+  "far": {
+   "wrist": [
+    724,
+    570
+   ],
+   "palm": [
+    673,
+    562
+   ],
+   "upperStretch": 1.063
+  }
+ }
+}

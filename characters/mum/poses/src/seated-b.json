@@ -1,26 +1,26 @@
 {
  "name": "seated-b",
- "note": "caress key for the idle: from seated, the near palm strokes ~9 px forward along the bump, far fingers ease back, head tips 1.5 deg toward the bump",
+ "note": "caress extreme: near palm strokes ~38 ref px forward along the bump (fingers turn +17 deg to follow its curve, tips kept inside the edge), head tips 5 deg toward it, upper trunk leans 1 deg toward the bump; far hand stays planted",
  "bones": {
   "pelvis": 2.5,
   "thigh.near": -2.5,
   "thigh.far": -2.5,
   "spineLower": 0,
-  "spineUpper": -3,
-  "chest": -2.5,
-  "neck": 2.0,
-  "head": 3.0
+  "spineUpper": -2.5,
+  "chest": -2.0,
+  "neck": 3.0,
+  "head": 5.0
  },
  "ik": {
   "near": {
    "palmOn": {
     "bone": "belly",
     "at": [
-     621,
-     641
+     647.5,
+     630
     ]
    },
-   "handDeg": 7,
+   "handDeg": 20,
    "upperLen": 1,
    "foreLen": 1
   },
@@ -32,11 +32,11 @@
    "palmOn": {
     "bone": "belly",
     "at": [
-     668,
-     559
+     665,
+     556
     ]
    },
-   "handDeg": 1,
+   "handDeg": 3,
    "mode": "reach",
    "foreDeg": 0
   }

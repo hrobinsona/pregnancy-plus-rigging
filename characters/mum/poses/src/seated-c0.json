@@ -1,0 +1,68 @@
+{
+ "name": "seated-c0",
+ "note": "arm-only breakdown on the first leg of the release: wrist bowed ~5 ref px down-right (lower path)",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -2.775,
+  "chest": -2.275,
+  "neck": 0.7,
+  "head": 2.6
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     637.74,
+     638.62
+    ]
+   },
+   "handDeg": 16.32,
+   "upperLen": 1,
+   "foreLen": 1,
+   "wristOffset": [
+    4.15,
+    5.95
+   ]
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.3,
+   "relaxed": 0.7
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ }
+}

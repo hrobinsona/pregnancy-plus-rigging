@@ -30,7 +30,8 @@ export function armIK(pose, side, spec) {
   }
   target = add(target, spec.palmOffset || [0, 0]);
   const palmLocal = sub(at(spec.palm || [612, 645]), prop.joints['wrist' + S]);   // palm centre in hand-local (rest)
-  const W = sub(at(target), ap(R(spec.handDeg), palmLocal));                      // wrist position (H)
+  const W0 = sub(at(target), ap(R(spec.handDeg), palmLocal));                     // wrist position (H)
+  const W = spec.wristOffset ? add(W0, [spec.wristOffset[0] / H, spec.wristOffset[1] / H]) : W0;
   const Sh = st['upperArm.' + side].pos;
   const u0 = sub(prop.joints['elbow' + S], prop.joints['shoulder' + S]);
   const f0 = sub(prop.joints['wrist' + S], prop.joints['elbow' + S]);

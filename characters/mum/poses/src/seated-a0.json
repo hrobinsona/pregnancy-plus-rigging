@@ -1,0 +1,68 @@
+{
+ "name": "seated-a0",
+ "note": "arm-only breakdown on the first leg of the stroke: wrist bowed ~5 ref px up-left so the back of the hand hugs the curve of the bump",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -2.75,
+  "chest": -2.25,
+  "neck": 2.25,
+  "head": 3.25
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     620.52,
+     638.52
+    ]
+   },
+   "handDeg": 6.12,
+   "upperLen": 1,
+   "foreLen": 1,
+   "wristOffset": [
+    -4.1,
+    -5.87
+   ]
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.3,
+   "relaxed": 0.7
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ }
+}

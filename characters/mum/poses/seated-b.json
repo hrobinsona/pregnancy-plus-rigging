@@ -5,16 +5,16 @@
   "thigh.near": -2.5,
   "thigh.far": -2.5,
   "spineLower": 0,
-  "spineUpper": -3,
-  "chest": -2.5,
-  "neck": 2,
-  "head": 3,
-  "upperArm.near": 2.1,
-  "forearm.near": -5.65,
-  "hand.near": 13.55,
-  "upperArm.far": 2.64,
+  "spineUpper": -2.5,
+  "chest": -2,
+  "neck": 3,
+  "head": 5,
+  "upperArm.near": -7.03,
+  "forearm.near": -5.98,
+  "hand.near": 35.01,
+  "upperArm.far": 2.86,
   "forearm.far": 0,
-  "hand.far": 1.36
+  "hand.far": 2.14
  },
  "scale": {
   "upperArm.near": [
@@ -26,7 +26,7 @@
    1
   ],
   "upperArm.far": [
-   1.0727,
+   1.0522,
    1
   ]
  },
@@ -61,28 +61,28 @@
  "_ik": {
   "near": {
    "elbow": [
-    430,
+    458,
     599
    ],
    "wrist": [
-    572,
-    631
+    604,
+    610
    ],
    "palm": [
-    625,
-    645
+    652,
+    635
    ]
   },
   "far": {
    "wrist": [
-    727,
-    572
+    724,
+    570
    ],
    "palm": [
-    676,
-    565
+    673,
+    562
    ],
-   "upperStretch": 1.073
+   "upperStretch": 1.052
   }
  }
 }

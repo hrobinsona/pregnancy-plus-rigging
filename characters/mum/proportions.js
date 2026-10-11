@@ -97,6 +97,12 @@ export const faceShapes = {
     soft: { near: line('head', [[556, 193.5], [562, 197.5], [570, 198], [577, 194.5]], [2.5, 3.6, 3.6, 2.5]),
             far: line('head', [[628, 184.5], [634, 189], [642, 189], [648, 185]], [2.5, 3.6, 3.6, 2.5]) },
   },
+  // gaze: iris offset targets (ref px -> H). 'down' looks at the bump (down and a little forward); lids follow the iris.
+  gaze: { front: [0, 0], down: [2 / H, 3.5 / H], hand: [6 / H, 6.5 / H], back: [-1.2 / H, -0.3 / H] },
+  // cheeks rise with the warm smile (H units at full 'warm' weight)
+  cheekLift: [1 / H, -6 / H],
+  squintLift: 3.5 / H,          // lower lid pushes the iris bottom up at full 'warm'
+  gazeLidFollow: [0.5, 0.75],
   // eye squash target line (where the iris collapses to when the lid closes)
   eyeCloseY: { near: shape('head', [[565, 195.5]])[0][1], far: shape('head', [[636.5, 187]])[0][1] },  // local H units
   brow: {
@@ -106,6 +112,8 @@ export const faceShapes = {
   },
   mouth: {
     smile: expressions['soft-smile'].mouth,
+    // tender: corners lift ~4.5 px and the line widens ~12% (the cheeks rise with it, see cheekLift)
+    warm: line('head', [[583.2, 233.5], [594.5, 243.5], [606, 247.5], [618.5, 243], [628.8, 232.5]], [2.5, 4.8, 5.4, 4.8, 2.5]),
     neutral: expressions.neutral.mouth,
     queasy: line('head', [[590, 244], [597, 241], [605, 244], [613, 241], [621, 244]], [2.5, 3.6, 3.6, 3.6, 2.5]),
     // relieved exhale: small pursed 'o'

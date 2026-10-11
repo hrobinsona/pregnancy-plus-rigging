@@ -1,0 +1,70 @@
+{
+ "name": "seated-settle",
+ "note": "the release lands here with the wrist turned 2 deg past rest and the head 1.2 deg past rest toward the back (its own settle; the hair trails it); the neck still slightly lengthened; all ease back to \"seated\" by 4.2 s",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -3,
+  "chest": -2.5,
+  "neck": 1.6,
+  "head": 0.3
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     613.2,
+     644.2
+    ]
+   },
+   "handDeg": 1,
+   "upperLen": 1,
+   "foreLen": 1
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.6,
+   "relaxed": 0.4
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ },
+ "scale": {
+  "neck": [
+   1.035,
+   1
+  ]
+ }
+}

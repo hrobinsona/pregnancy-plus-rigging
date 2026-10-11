@@ -41,6 +41,7 @@ export const EASES = {
   reaction: [0.2, 0.0, 0.1, 1.0],     // fast-out, long settle
   settle: [0.3, 0.0, 0.2, 1.08],      // slight overshoot then settle
   breath: [0.42, 0, 0.36, 1],
+  dart: [0.25, 0, 0.1, 1],            // eye darts: fast start, soft landing
 };
 function easeFn(e) {
   const c = Array.isArray(e) ? e : EASES[e || 'inOut'];
@@ -73,6 +74,13 @@ function flatten(pose) {
   return c;
 }
 const DEFAULTS = (key) => (key.startsWith('scale.') ? 1 : 0);
+function flattenRaw(pose) {          // only the channels the pose actually sets (for channel-group tracks)
+  const c = {};
+  for (const [ch, w] of Object.entries(pose.face || {})) for (const [k, v] of Object.entries(w)) c[`face.${ch}.${k}`] = v;
+  for (const [b, v] of Object.entries(pose.bones || {})) c['bone.' + b] = v;
+  for (const [k, v] of Object.entries(pose.fx || {})) if (typeof v === 'number') c['fx.' + k] = v;
+  return c;
+}
 
 // ---------------------------------------------------------------- closed-form second-order spring
 /** Complex transfer function of x'' + 2ζω0 x' + ω0² x = (a·ω0² + b·d²/dt²) u, at angular frequency w. Returns [re, im]. */
@@ -103,26 +111,61 @@ const synth = (C, T, t) => {
 export function makeAnim(spec, lib) {
   const fps = spec.fps, D = spec.duration, loop = !!spec.loop;
   const wrapT = (t) => (loop ? ((t % D) + D) % D : t);
-  for (const k of spec.keys) if (!lib[k.pose]) throw new Error(`missing pose ${k.pose}`);
-  const keys = spec.keys.map((k) => ({ ...k, ch: flatten(lib[k.pose]), ease: easeFn(k.ease) }));
-  if (loop) {
-    // a loop closes back onto its first key (closing segment ease: spec.wrapEase, default inOut)
-    keys.push({ ...keys[0], t: keys[0].t + D, ease: easeFn(spec.wrapEase || 'inOut') });
-  }
-  const allCh = [...new Set(keys.flatMap((k) => Object.keys(k.ch)))];
+  // key lists: the main pose track (spec.keys) plus optional channel-group tracks (spec.tracks, e.g. {"face": [...]})
+  // that own every channel under their prefix — so the eyes can be keyed on their own timing.
+  // key.kind "breakdown": the curve passes THROUGH it (Catmull-Rom tangent, cubic Hermite in angle space) instead of
+  // stopping on it, so a move can travel a different path out and back without a hitch.
+  const buildKeys = (arr, raw) => {
+    for (const k of arr) if (!lib[k.pose]) throw new Error(`missing pose ${k.pose}`);
+    const ks = arr.map((k) => ({ ...k, ch: raw ? flattenRaw(lib[k.pose]) : flatten(lib[k.pose]), ease: easeFn(k.ease) }));
+    if (loop) ks.push({ ...ks[0], kind: undefined, t: ks[0].t + D, ease: easeFn(spec.wrapEase || 'inOut') });
+    for (let i = 1; i < ks.length; i++) if (ks[i].t <= ks[i - 1].t) throw new Error(`keys out of order at ${ks[i].t}`);
+    return ks;
+  };
+  const keys = buildKeys(spec.keys, false);
+  // a track is either [keys] (owns channels under its name) or {channels: [prefixes], keys: [...]}
+  const groups = Object.entries(spec.tracks || {}).map(([name, tr]) => Array.isArray(tr)
+    ? { prefixes: [name], keys: buildKeys(tr, true) } : { prefixes: tr.channels, keys: buildKeys(tr.keys, true) });
+  const owns = (g, ch) => g.prefixes.some((p) => ch === p || ch.startsWith(p + '.')) && g.keys.some((k) => ch in k.ch);
+  // key.only = [channel prefixes]: a key (usually a breakdown) that shapes just those curves, e.g. an arm-only arc
+  const keyCache = new Map();
+  const keysFor = (ch) => {
+    if (keyCache.has(ch)) return keyCache.get(ch);
+    let ks = keys;
+    for (const g of groups) if (owns(g, ch)) { ks = g.keys; break; }
+    ks = ks.filter((k) => !k.only || k.only.some((p) => ch === p || ch.startsWith(p + '.')));
+    keyCache.set(ch, ks);
+    return ks;
+  };
+  const allCh = [...new Set([...keys.flatMap((k) => Object.keys(k.ch)),
+    ...groups.flatMap((g) => g.keys.flatMap((k) => Object.keys(k.ch)).filter((ch) => owns(g, ch)))])];
   const lagOf = (ch) => {
     const m = ch.match(/^(?:bone|scale)\.(.+?)(?:\.[01])?$/);
     return ((m ? spec.lags?.[m[1]] : spec.lags?.[ch.split('.')[0]]) ?? 0) / fps;
   };
-  const sample = (ch, t) => {
+  // key.shift = {bone or group: frames}: that key lands earlier/later for those channels only (offset keys per curve),
+  // e.g. the head reaching an extreme before the hand so it can lead the way back.
+  const chName = (ch) => { const m = ch.match(/^(?:bone|scale)\.(.+?)(?:\.[01])?$/); return m ? m[1] : ch.split('.')[0]; };
+  const sample = (ch, t, ks) => {
     const v = (k) => (k.ch[ch] ?? DEFAULTS(ch));
-    if (loop) { t = ((t - keys[0].t) % D + D) % D + keys[0].t; }
-    if (t <= keys[0].t) return v(keys[0]);
-    for (let i = 0; i < keys.length - 1; i++) {
-      const a = keys[i], b = keys[i + 1];
-      if (t < b.t) return v(a) + (v(b) - v(a)) * b.ease((t - a.t) / (b.t - a.t));   // angle-space blend
+    const nm = chName(ch), T = (k) => k.t + ((k.shift && k.shift[nm]) || 0) / fps;
+    if (loop) { t = ((t - T(ks[0])) % D + D) % D + T(ks[0]); }
+    if (t <= T(ks[0])) return v(ks[0]);
+    const tan = (i) => {           // Catmull-Rom tangent (value per second) at a breakdown, 0 at a key
+      if (ks[i].kind !== 'breakdown') return 0;
+      const p = ks[i - 1], n = ks[i + 1];
+      return (v(n) - v(p)) / (T(n) - T(p));
+    };
+    for (let i = 0; i < ks.length - 1; i++) {
+      const a = ks[i], b = ks[i + 1];
+      if (t < T(b)) {
+        const L = T(b) - T(a), u = (t - T(a)) / L;
+        if (a.kind !== 'breakdown' && b.kind !== 'breakdown') return v(a) + (v(b) - v(a)) * b.ease(u);   // eased, angle space
+        const u2 = u * u, u3 = u2 * u;
+        return (2 * u3 - 3 * u2 + 1) * v(a) + (u3 - 2 * u2 + u) * tan(i) * L + (-2 * u3 + 3 * u2) * v(b) + (u3 - u2) * tan(i + 1) * L;
+      }
     }
-    return v(keys[keys.length - 1]);
+    return v(ks[ks.length - 1]);
   };
 
   // ---- parameter tracks: {t, value} pairs, smoothstep between (never linear)
@@ -160,9 +203,12 @@ export function makeAnim(spec, lib) {
     }
     return ph;
   };
+  // inhale / exhale profiles: cubic-bezier eases from the timeline (default smootherstep). Both meet the top with zero
+  // velocity, so the turn-over is smooth; a late-decelerating inhale + quick-recoil exhale keeps the top from parking.
+  const inF = shape.inEase ? cubicBezier(...shape.inEase) : smoother, outF = shape.outEase ? cubicBezier(...shape.outEase) : smoother;
   const wave = (p) => {
     const f = p - Math.floor(p), i = shape.inhale, e = shape.exhale;
-    return f < i ? smoother(f / i) : f < i + e ? 1 - smoother((f - i) / e) : 0;   // pause at the bottom
+    return f < i ? inF(f / i) : f < i + e ? 1 - outF((f - i) / e) : 0;   // pause at the bottom
   };
   const breathAt = (t) => { const tt = wrapT(t); return wave(phaseAt(tt)) * track(BR.amp ?? 1, tt, 'amp'); };
 
@@ -184,7 +230,7 @@ export function makeAnim(spec, lib) {
     const pose = { name: spec.name, bones: {}, scale: {}, face: {}, fx: {}, lattice: { belly: null },
                    hands: { near: 'cupping-belly', far: 'cupping-belly' }, facing: 'right' };
     for (const ch of allCh) {
-      const val = sample(ch, tt - lagOf(ch));
+      const val = sample(ch, tt - lagOf(ch), keysFor(ch));
       const [kind, a, b] = ch.split('.');
       if (kind === 'bone') pose.bones[ch.slice(5)] = val;
       else if (kind === 'scale') { const id = ch.slice(6, -2), ix = +ch.slice(-1); (pose.scale[id] ||= [1, 1])[ix] = val; }
@@ -225,7 +271,8 @@ export function makeAnim(spec, lib) {
   function pinArm(pose, keyed, side, w) {
     const S = side === 'near' ? 'Near' : 'Far', ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
     const ref = solve(keyed), cur = solve(pose);
-    const W = ref[ha].pos, Eref = cur[fa].pos, Sh = cur[ua].pos, pr = cur['clavicle.' + side].rot;
+    const ride = (spec.pins?.ride || 0) * (pose._breathBelly || 0);   // hands on the bump rise with it (H units, up = -y)
+    const W = [ref[ha].pos[0], ref[ha].pos[1] - ride], Eref = cur[fa].pos, Sh = cur[ua].pos, pr = cur['clavicle.' + side].rot;
     const u0 = [J['elbow' + S][0] - J['shoulder' + S][0], J['elbow' + S][1] - J['shoulder' + S][1]];
     const f0 = [J['wrist' + S][0] - J['elbow' + S][0], J['wrist' + S][1] - J['elbow' + S][1]];
     const lu = Math.hypot(...u0) * (pose.scale[ua]?.[0] ?? 1), lf = Math.hypot(...f0) * (pose.scale[fa]?.[0] ?? 1);

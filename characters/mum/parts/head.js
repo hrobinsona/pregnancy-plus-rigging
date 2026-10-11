@@ -3,7 +3,7 @@
 //   face.brow.* 8 (round caps) · face.eye.* 4 · face.lid.* 10 · face.nose 12 · face.cheek.* 4 · face.mouth 12 (round caps)
 //
 // Face rig: pose.face = { lid: {open|squeeze|soft: w}, brow: {neutral|worried|relaxed: w},
-//                         mouth: {smile|neutral|queasy|exhale: w}, cheek: {blush|sick: w} }.
+//                         mouth: {smile|warm|neutral|queasy|exhale: w}, cheek: {blush|sick: w}, gaze: {front|down|hand|back: w} }.
 // Weights are normalised per channel; strokes blend point-to-point (same point counts). Legacy pose.expression still works.
 import { part, lp, st, el, scaled } from './_util.js';
 import { mapGeom } from '../geom.js';
@@ -39,24 +39,37 @@ export function build({ P, prop, pose }) {
   const lidW = norm(face.lid, 'open'), browW = norm(face.brow, 'neutral'), cheekW = norm(face.cheek, 'blush');
   const open = lidW.reduce((a, [k, v]) => a + (k === 'open' ? v : 0), 0);
   const sick = cheekW.reduce((a, [k, v]) => a + (k === 'sick' ? v : 0), 0);
-  const lid = (side) => blendLine(Object.fromEntries(Object.entries(F.lid).map(([k, v]) => [k, v[side]])), lidW);
+  const gazeW = norm(face.gaze, 'front');
+  const gz = gazeW.reduce((a, [k, w]) => [a[0] + w * F.gaze[k][0], a[1] + w * F.gaze[k][1]], [0, 0]);
+  const lidShift = [gz[0] * F.gazeLidFollow[0], gz[1] * F.gazeLidFollow[1]];
+  const shiftLine = (ln, d) => (d[0] || d[1] ? { ...ln, pts: ln.pts.map((p) => [p[0] + d[0], p[1] + d[1]]) } : ln);
+  const lid = (side) => shiftLine(blendLine(Object.fromEntries(Object.entries(F.lid).map(([k, v]) => [k, v[side]])), lidW), lidShift);
   const brow = (side) => blendLine(Object.fromEntries(Object.entries(F.brow).map(([k, v]) => [k, v[side]])), browW);
   const mouth = blendLine(F.mouth, mouthW);
   // iris collapses toward the closed-lid line as the lid closes (same 4 anchors)
+  const warmW = mouthW.reduce((a, [k, v]) => a + (k === 'warm' ? v : 0), 0);
   const eye = (side) => {
-    const d = h.eyes[side], g = el(d);
+    const d0 = h.eyes[side], d = { ...d0, c: [d0.c[0] + gz[0], d0.c[1] + gz[1]] };
+    let g = el(d);
+    if (warmW > 0) {
+      // smiling squint: the lower lid pushes the bottom of the iris up (bottom anchor + its handles)
+      const up = F.squintLift * warmW, sh = (q) => [q[0], q[1] - up];
+      g = { P: g.P.map((q, i) => (i === 2 ? sh(q) : q)), hin: g.hin.map((q, i) => (i === 2 ? sh(q) : q)), hout: g.hout.map((q, i) => (i === 2 ? sh(q) : q)) };
+    }
     if (open > 0.999) return g;
-    const yc = F.eyeCloseY[side];
+    const yc = F.eyeCloseY[side] + lidShift[1];
     const k = Math.max(0.04, open);
     return mapGeom(g, (p) => [p[0], yc + (p[1] - d.c[1]) * k + (d.c[1] - yc) * open]);
   };
   const cheekFill = mixHex(P.cheek, P.sick, sick);
+  const warm = mouthW.reduce((a, [k, v]) => a + (k === 'warm' ? v : 0), 0);
+  const cheekG = (side) => { const d = h.cheeks[side]; return el({ ...d, c: [d.c[0] + F.cheekLift[0] * warm, d.c[1] + F.cheekLift[1] * warm] }); };
   const ex = pose.face?.extra || {};
   return [
     part('head.neckShadow', 'head', 70, P.skinShade, sc(lp(h.neckShadow))),
     part('head.face', 'head', 71, P.skin, sc(lp(h.face))),
-    part('face.cheek.near', 'head', 72, cheekFill, sc(el(h.cheeks.near))),
-    part('face.cheek.far', 'head', 72, cheekFill, sc(el(h.cheeks.far))),
+    part('face.cheek.near', 'head', 72, cheekFill, sc(cheekG('near'))),
+    part('face.cheek.far', 'head', 72, cheekFill, sc(cheekG('far'))),
     part('face.nose', 'head', 73, P.skinLine, sc(st(h.nose, 'round'))),
     part('face.eye.near', 'head', 74, P.line, sc(eye('near'))),
     part('face.eye.far', 'head', 74, P.line, sc(eye('far'))),

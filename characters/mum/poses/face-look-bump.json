@@ -1,0 +1,22 @@
+{
+ "name": "face-look-bump",
+ "face": {
+  "gaze": {
+   "front": 0,
+   "back": 0,
+   "down": 1,
+   "hand": 0
+  },
+  "lid": {
+   "open": 0.8,
+   "soft": 0.2
+  },
+  "mouth": {
+   "smile": 1,
+   "warm": 0
+  },
+  "cheek": {
+   "blush": 1
+  }
+ }
+}

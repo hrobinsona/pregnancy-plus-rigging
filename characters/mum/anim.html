@@ -12,7 +12,7 @@ const spec = await (await fetch(`./anims/${name}.json`)).json();
 // review-only overrides (e.g. isolate one layer): ?mods={"keys":[...],"drift":{...}}
 if (q.get('mods')) Object.assign(spec, JSON.parse(q.get('mods')));
 const lib = {};
-for (const p of new Set(spec.keys.map((k) => k.pose))) lib[p] = await (await fetch(`./poses/${p}.json`)).json();
+for (const p of new Set([...spec.keys, ...Object.values(spec.tracks || {}).flatMap((t) => (Array.isArray(t) ? t : t.keys))].map((k) => k.pose))) lib[p] = await (await fetch(`./poses/${p}.json`)).json();
 const A = makeAnim(spec, lib);
 const R = spec.render || {};
 const opts = { frame: 'still', bg: q.get('bg') || R.bg || '#ffffff', ground: R.ground, silhouette: q.get('sil') === '1' };

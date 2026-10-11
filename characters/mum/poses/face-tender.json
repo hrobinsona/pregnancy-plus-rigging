@@ -1,0 +1,22 @@
+{
+ "name": "face-tender",
+ "face": {
+  "gaze": {
+   "front": 0,
+   "back": 0,
+   "down": 0,
+   "hand": 1
+  },
+  "lid": {
+   "open": 0.72,
+   "soft": 0.28
+  },
+  "mouth": {
+   "smile": 0,
+   "warm": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ }
+}

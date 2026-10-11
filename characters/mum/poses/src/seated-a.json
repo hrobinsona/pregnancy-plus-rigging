@@ -1,0 +1,68 @@
+{
+ "name": "seated-a",
+ "note": "outbound breakdown (passed through): 50% of the way, palm rides 6 ref px up over the curve of the bump, fingers lead 2 deg, wrist bowed 4.5 ref px up-left of its travel line",
+ "bones": {
+  "pelvis": 2.5,
+  "thigh.near": -2.5,
+  "thigh.far": -2.5,
+  "spineLower": 0,
+  "spineUpper": -2.75,
+  "chest": -2.25,
+  "neck": 2.25,
+  "head": 3.25
+ },
+ "ik": {
+  "near": {
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     629.75,
+     631.5
+    ]
+   },
+   "handDeg": 9.5,
+   "upperLen": 1,
+   "foreLen": 1,
+   "wristOffset": [
+    -2.3,
+    -3.9
+   ]
+  },
+  "far": {
+   "palm": [
+    665,
+    556
+   ],
+   "palmOn": {
+    "bone": "belly",
+    "at": [
+     665,
+     556
+    ]
+   },
+   "handDeg": 3,
+   "mode": "reach",
+   "foreDeg": 0
+  }
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "brow": {
+   "neutral": 0.3,
+   "relaxed": 0.7
+  },
+  "mouth": {
+   "smile": 1
+  },
+  "cheek": {
+   "blush": 1
+  }
+ },
+ "fx": {
+  "handRim": 0,
+  "pinNear": 1,
+  "pinFar": 1
+ }
+}

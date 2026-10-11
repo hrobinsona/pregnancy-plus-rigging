@@ -12,6 +12,7 @@ import { solve, toScreen, toSVG } from '../characters/mum/rig.js';
 import { BONE } from '../characters/mum/skeleton.js';
 import * as prop from '../characters/mum/proportions.js';
 import { ap } from '../characters/mum/geom.js';
+import { bend } from '../characters/mum/parts/hair.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const flag = (k) => process.argv.includes('--' + k);
@@ -19,7 +20,8 @@ const name = arg('anim', 'idle-seated');
 const D = 'characters/mum/';
 const spec = JSON.parse(fs.readFileSync(`${D}anims/${name}.json`));
 const lib = {};
-for (const k of spec.keys) lib[k.pose] = JSON.parse(fs.readFileSync(`${D}poses/${k.pose}.json`));
+const poseNames = (sp) => [...new Set([...sp.keys, ...Object.values(sp.tracks || {}).flatMap((t) => (Array.isArray(t) ? t : t.keys))].map((k) => k.pose))];
+for (const p of poseNames(spec)) lib[p] = JSON.parse(fs.readFileSync(`${D}poses/${p}.json`));
 const A = makeAnim(spec, lib);
 const N = Math.round(spec.duration * spec.fps);
 const LAST = spec.loop ? N - 1 : N;
@@ -38,6 +40,12 @@ for (let i = 0; i <= N; i++) {
   for (const [jn, b] of Object.entries(TRACK)) {
     const j0 = prop.joints[BONE[b].joint], j = prop.joints[jn];
     row[jn] = toScreen(ap(st[b].M, [j[0] - j0[0], j[1] - j0[1]])).map((v) => +v.toFixed(2));
+  }
+  // loose strand tips in screen px (secondary motion read)
+  const hs = prop.design.headScale;
+  for (const [nm, ln, deg] of [['hairNearTip', prop.head.strandNear, pose.fx.hair?.near || 0], ['hairFarTip', prop.head.strandFar, pose.fx.hair?.far || 0]]) {
+    const b = bend(ln, deg), q = b.pts[b.pts.length - 1];
+    row[nm] = toScreen(ap(st.head.M, [q[0] * hs, q[1] * hs])).map((v) => +v.toFixed(2));
   }
   row.ch = { ...Object.fromEntries(Object.entries(pose.bones).map(([k, v]) => ['bone.' + k, +v.toFixed(3)])),
              hairNear: +pose.fx.hair.near.toFixed(3), hairFar: +pose.fx.hair.far.toFixed(3), breath: +A.breathAt(t).toFixed(4),

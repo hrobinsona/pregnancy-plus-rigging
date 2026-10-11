@@ -1,0 +1,22 @@
+{
+ "name": "face-front-b",
+ "face": {
+  "gaze": {
+   "front": 0,
+   "back": 1,
+   "down": 0,
+   "hand": 0
+  },
+  "lid": {
+   "open": 1,
+   "soft": 0
+  },
+  "mouth": {
+   "smile": 1,
+   "warm": 0
+  },
+  "cheek": {
+   "blush": 1
+  }
+ }
+}
