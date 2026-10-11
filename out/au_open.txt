@@ -1,1 +1,2 @@
-detail audit mum2/_au_open: 0 findings (4 allowed by audit_allow.json) (render 1926x4592, 692 px/H, thin < 0.024 H)
+detail audit mum2/_au_open: 1 findings (4 allowed by audit_allow.json) (render 1919x4592, 692 px/H, thin < 0.024 H)
+  1 spur/thin     cardigan      at (-0.879, -2.733) H  size 0.025×0.081 H  area 566 px

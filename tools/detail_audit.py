@@ -76,6 +76,11 @@ for k, nm in enumerate(names[1:], 1):
         # a SHADE line (e.g. a finger-separation rim) lying on its own base colour and running out to the silhouette
         base = names.index(nm[:-5]) if nm.endswith('Shade') and nm[:-5] in names else None
         if base is not None and set(nb) <= {base, 0} and base in nb: continue
+        # the short gap between a drawn LINE's end and the silhouette notch it points into (finger lines stop just above the
+        # notch between two fingertips, as in the reference): base colour bounded only by its own line colour and the
+        # background, small in BOTH dimensions. A long thin strip (a line running beside the silhouette) is still a fault.
+        lc = names.index(nm + 'Line') if nm + 'Line' in names else None
+        if lc is not None and set(nb) <= {lc, 0} and lc in nb and 0 in nb and max(h, w) <= 0.035 * ppH: continue
         findings.append(('spur/thin', nm, sl, area))
 # allowlist: characters/<char>/audit_allow.json = [{"colour": name, "at": [x, y], "r": H, "why": "..."}] — intentional thin features
 import os

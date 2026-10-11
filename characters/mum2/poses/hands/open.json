@@ -2,22 +2,22 @@
  "name": "open",
  "f1": [
   -6,
-  -3,
+  6,
   0
  ],
  "f2": [
   -6,
-  -3,
+  6,
   0
  ],
  "f3": [
   -5,
-  -3,
+  6,
   0
  ],
  "f4": [
   -4,
-  -2,
+  6,
   0
  ],
  "s": [
@@ -27,10 +27,10 @@
   12
  ],
  "t": [
-  -8,
-  0
+  4,
+  8
  ],
  "to": 0,
- "ts": 22,
- "_note": "open: fingers straight (slight back-bend), spread, thumb out"
+ "ts": 12,
+ "_note": "open: fingers spread with a slight natural curl at the PIP (dead-straight tubes read as sausages), thumb out"
 }

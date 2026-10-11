@@ -12,7 +12,7 @@ export function build(ctx) {
   for (const side of ['near', 'far']) {
     const S = side === 'near' ? 'Near' : 'Far', zb = side === 'near' ? 80 : 10;
     const sh = J['shoulder' + S], el = J['elbow' + S], wr = J['wrist' + S], w = X.sleeve[side];
-    const cuffEnd = lerp(el, wr, 0.84), axis = [sh, lerp(sh, el, 0.55), el, cuffEnd];
+    const cuffEnd = lerp(el, wr, (X.cuffEnd?.[side] ?? 0.9) - 0.06), axis = [sh, lerp(sh, el, 0.55), el, cuffEnd];
     const fill = side === 'near' ? C.cardigan : C.cardiganShade;     // far limbs one value darker (depth)
     // shoulder = a circle centred on the shoulder pivot (rotation-invariant joint) reaching the shoulder top
     out.push({ id: `cap.${side}`, bone: `upperArm.${side}`, z: zb - 0.05, fill, geom: ellipse(sh, X.shoulderCap[side], X.shoulderCap[side]) });
