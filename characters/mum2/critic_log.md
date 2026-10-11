@@ -29,3 +29,8 @@ Done: all five. Legs verified numerically (tools/leg_gap.py): render gap 0.047 /
 
 ## R6 — 4/4/4/4/4/4 — SHIP (no HIGH)
 Polish asked and applied: shoulder lines end ON the cap circles with the cap tangent (one convex shoulder arc); back of skull runs under the bun (V and pinhole gone); far tab hem flares 0.07 H (no strap/parallels); socks toned down (#e0c079 / #cea155: no longer the lightest, most saturated mass); lapel spur rounded in.
+
+## Between R6 and R7 (user: "the neck looks mega messed up — need more attention to detail")
+Root cause: the critic only saw the 1080 still; construction faults hid at that size. Process fix: every round now gets a ZOOM TOUR (3–4× close-ups of every region) and an automated pixel AUDIT (pinholes, specks, thin spurs).
+- Neck rebuilt: straight column (throat straight, nape one curve) + décolletage under the top; the visible neckline is the top's smooth U-scoop (no skin lobes); chin shadow follows the sampled jaw contour, deepest at the throat front.
+- Audit fixes: frame fits the posed bounds (hands were cropped); hair pinhole at the bun; far strand clear of the face edge; cheeks clipped to the face, far cheek inside the contour; far lapel is a collar band ending above the bust with a rounded end; far panel hidden behind bust/bump (no pink shards/strips); bust rolls into the bump (no enclosed notch); scoop ends meet the cardigan/lapel at wide angles; shoulder lines slope down from the collar (no humps); bump shade and cast shadow sampled finely, cast is a crescent with a short tip; finger crease is a short straight round-capped line on the proximal segment; near thumb visible below the cuff; crotch arch softened.

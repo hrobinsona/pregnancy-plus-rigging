@@ -13,11 +13,15 @@ run('python3', 'tools/char_compare.py', c, 'rest')              # rest pose = re
 os.replace(f'out/{c}_metrics.txt', f'out/{c}_rest_metrics.txt')
 run('python3', 'tools/char_compare.py', c, pose)                # designed pose: deliberate deviations expected
 run('node', 'tools/hand_sheet.mjs', '--char', c)
+run('python3', 'tools/zoom_tour.py', c, pose)                   # close-ups of every region (construction faults hide at 1080)
+run('python3', 'tools/detail_audit.py', c, pose)                # pixel audit: pinholes, slivers, spurs
 root = os.getcwd()
 files = [f'out/{c}_{pose}_still.png — the {pose} pose, full size (1080×1920)',
          f'out/{c}_{pose}_phone.png — the same at phone thumbnail size (360 px wide)',
          f'out/{c}_{pose}_sil.png — solid silhouette of the same pose',
          f'out/{c}_compare.png — reference | render | overlay | silhouette diff, then zoom pairs (reference | render): face, near hand, far hand, feet',
+         f'out/{c}_{pose}_tour.png — ZOOM TOUR: 3–4× close-ups of head, neck & collars, shoulders, bust→bump, hem & crotch, hands, knees, feet. Inspect every tile for construction faults (lumps, teeth, slivers, kinks, tangents)',
+         f'out/{c}_{pose}_audit.txt — automated pixel audit (pinholes, specks, thin spurs) after the allowlist of intentional thin features',
          f'out/{c}_hands.png — the hand pose library on the near (top) and far (bottom) hand, reference crop at the left',
          f'out/{c}_rest_metrics.txt — REST pose (reference-matched) silhouette IoU and row-extent deltas vs reference (H): the landmark-fidelity gate',
          f'out/{c}_metrics.txt — the {pose} pose vs reference: deviations here are partly deliberate (posture, A-pose arms)',

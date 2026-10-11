@@ -1,0 +1,11 @@
+[
+ {"colour": "skinShade", "at": [0.136, -5.543], "r": 0.06, "why": "nose wedge (one flat shape)"},
+ {"colour": "skinShade", "at": [0.124, -5.472], "r": 0.04, "why": "nose wedge base"},
+ {"colour": "skinShade", "at": [-0.385, -5.512], "r": 0.06, "why": "inner-ear fold"},
+ {"colour": "topShade", "at": [0.073, -4.12], "r": 0.16, "why": "near-breast fold line (the one torso detail in the budget)"},
+ {"colour": "topShade", "at": [0.869, -3.648], "r": 0.06, "why": "upper tip of the bump's form-shade crescent"},
+ {"colour": "topShade", "at": [0.683, -3.12], "r": 0.05, "why": "lower tip of the bump's form-shade crescent"},
+ {"colour": "bottomsShade", "at": [0.19, -3.1], "r": 0.16, "why": "tip of the bump's cast-shadow crescent"},
+ {"colour": "cardiganShade", "at": [0.587, -4.741], "r": 0.04, "why": "far sleeve leaves the lapel at the armhole (an overlap, not a tangent)"},
+ {"colour": "top", "at": [0.891, -3.493], "r": 0.03, "why": "antialiased rim at the bump apex"}
+]

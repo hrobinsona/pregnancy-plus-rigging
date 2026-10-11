@@ -14,7 +14,7 @@ const MOUTHS = {   // offsets from the mouth landmark (H): 5 centreline points +
 };
 
 export const ANCHORS = { 'face': 9, 'ear': 8, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'brow.near': 8, 'brow.far': 8,
-  'nose': 6, 'mouth': 12, 'cheek.near': 4, 'cheek.far': 4, 'jaw.shadow': 7 };
+  'nose': 6, 'mouth': 12, 'cheek.near': 4, 'cheek.far': 4, 'jaw.shadow': 14 };
 
 export function build({ P: C, C: char, pose }) {
   const X = char.params.P, f = X.face, out = [];
@@ -24,22 +24,28 @@ export function build({ P: C, C: char, pose }) {
     [f.far[0] - 0.07, f.chin[1] - 0.11], [f.chin[0], f.chin[1], 0.9], [f.jawNear[0] - 0.02, f.jawNear[1] + 0.005, 1.0],
     [X.ear[0] + 0.06, f.far[1] + 0.06], [X.ear[0] + 0.05, f.nearEye[1] - 0.07], [f.part[0] - 0.22, f.part[1] + 0.06],
   ];
-  out.push(part('face', 50, C.skin, ensureCW(loop(faceA, 1.05))));
-  // jaw shadow on the neck just under the chin (reads the chin; ¾ view)
-  // crescent under the jaw line (ear → chin), deepest under the jaw corner: shortens the neck read, seats the head
-  // wedge under the jaw, inside the neck: deepest behind the jaw corner, tapering to nothing at the chin
-  const ch = f.chin, jn = f.jawNear, nk = X.neck;
+  const faceG = loop(faceA, 1.05);
+  out.push(part('face', 50, C.skin, ensureCW(faceG)));
+  // chin shadow on the throat: a crescent that follows the ACTUAL jaw contour (sampled from the face's own Bézier
+  // segments far-cheek → chin → jaw corner) offset downward: deepest (~0.07 H) under the chin, because the chin projects
+  // past the throat in ¾, thinning to ~0.02 at the jaw corner. Top edge sits inside the face (hidden); clipped to the neck.
+  const js = X.jawShade, seg = (i, t) => { const n = faceG.P.length, j = (i + 1) % n, a = faceG.P[i], b = faceG.hout[i], c = faceG.hin[j], d = faceG.P[j], u = 1 - t;
+    return [0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]); };
+  const jaw = [[3, 0.55], [3, 0.8], [4, 0], [4, 0.3], [4, 0.6], [4, 0.85], [5, 0], [5, 0.15]].map(([i, t]) => seg(i, t));
+  const dep = [js.front, js.front, js.front, js.front * 0.8, js.front * 0.55, js.back * 1.4, js.back, 0.004];
   out.push(part('jaw.shadow', 41, C.skinShade, ensureCW(loop([
-    [nk.back[0] + 0.02, jn[1] - 0.01], [jn[0] + 0.02, jn[1] + 0.012], [ch[0] - 0.06, ch[1] + 0.012], [ch[0] - 0.01, ch[1] + 0.03, { c: true, t: 0.5 }],
-    [ch[0] - 0.07, ch[1] + 0.05], [jn[0] + 0.04, jn[1] + 0.125], [nk.back[0] + 0.03, jn[1] + 0.13]])), { clip: 'neck' }));   // clipped to the neck: can never poke past it; wedge: ~0.12 H under the jaw corner → 0 at the chin
+    ...jaw.map((p, k) => [p[0], p[1] - 0.015, k === 0 || k === jaw.length - 1 ? { c: true, t: 0.5 } : undefined]),
+    ...jaw.map((p, k) => [p[0], p[1] + dep[k]]).reverse().slice(1, -1)])),
+    { clip: 'neck' }));
   // ear (near side), inner fold
   out.push(part('ear', 49, C.skin, egg(X.ear, { rx: 0.06, rxl: 0.055, ryt: 0.095, ryb: 0.085, rot: 12 })));
   out.push(part('ear.inner', 49.5, C.skinShade, taper([[X.ear[0] - 0.012, X.ear[1] - 0.05], [X.ear[0] + 0.012, X.ear[1] - 0.005], [X.ear[0] - 0.005, X.ear[1] + 0.045]], [0.006, 0.022, 0.004])));
   // cheeks
   const sick = wsum(pose.face?.cheek, 'sick'), warm = wsum(pose.face?.mouth, 'warm');
   const cheekFill = mix(C.cheek, C.sick, sick), lift = -0.012 * warm;
-  out.push(part('cheek.near', 51, cheekFill, ellipse([X.cheeks.near[0], X.cheeks.near[1] + lift], 0.068, 0.042)));
-  out.push(part('cheek.far', 51, cheekFill, ellipse([X.cheeks.far[0] - 0.02, X.cheeks.far[1] + lift], 0.045, 0.04)));
+  // cheeks are clipped to the face; the far cheek sits clearly inside the far contour (no tangent with the face edge)
+  out.push(part('cheek.near', 51, cheekFill, ellipse([X.cheeks.near[0], X.cheeks.near[1] + lift], 0.068, 0.042), { clip: 'face' }));
+  out.push(part('cheek.far', 51, cheekFill, ellipse([X.cheeks.far[0] - 0.045, X.cheeks.far[1] + lift], 0.042, 0.038), { clip: 'face' }));
   // nose: small hook (skinLine)
   const n = X.nose;
   out.push(part('nose', 52, C.skinShade, taper([[n[0] - 0.025, n[1] - 0.13], [n[0] - 0.008, n[1] - 0.06], [n[0] + 0.004, n[1] - 0.012], [n[0] - 0.04, n[1] + 0.006]], [0.004, 0.02, 0.024, 0.012])));

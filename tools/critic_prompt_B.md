@@ -13,11 +13,13 @@ You see ONLY these files (read every image with the Read tool; do not open any o
 
 {HISTORY}
 
+Look at the ZOOM TOUR tile by tile before scoring: a lead inspects details at 3–4×, and a lumpy neck, a tooth where two shapes meet, a sliver of a part peeking out, a kinked line or a hairline gap are all blocking-level craft faults even when the full figure reads well. Name each one you find (tile + location) and include it in the fixes.
+
 Score each 1–5 with one sentence of evidence (5 = a BUCK/Headspace lead would sign it off today):
 1. Proportion & anatomy (head count, hand ≈ face, pregnancy posture, bump stage/shape: lower torso, egg with fuller lower curve)
 2. Silhouette clarity (reads as solid black; negative space; bump reads in ¾)
 3. Shape design & appeal (rounded confident shapes, straights against curves, no parallels/tangents/twins, big/medium/small, one line of action)
-4. Joint & rig readiness (circular overlapping joints, pivots at circle centres, no details near joints, complete pieces)
+4. Joint, rig & construction craft (circular overlapping joints, pivots at circle centres, no details near joints, complete pieces; clean junctions in the zoom tour — no lumps, teeth, slivers or kinks)
 5. Palette & value (one base + one shade per material, value ladder, focal contrast at face/chest)
 6. Face & hands (readable at phone size; hands geometric four-finger, chunky, not mittens or spiders; hand library distinct)
 

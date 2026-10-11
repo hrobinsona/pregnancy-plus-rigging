@@ -133,6 +133,10 @@ export function createRig(C) {
 
   /** Output frame: pixel size + viewBox in model px (H·Hpx). 'still' = 1080x1920 framed on C.frame.bbox; 'ref' = the reference image frame. */
   function view(opts = {}) {
+    if (opts.frame === 'box') {   // detail inspection: an H-unit box [[x0,y0],[x1,y1]] rendered at opts.width px wide
+      const [[x0, y0], [x1, y1]] = opts.box, W = opts.width || 1200, Ht = Math.round(W * (y1 - y0) / (x1 - x0));
+      return { W, Ht, vb: [x0 * Hpx, y0 * Hpx, (x1 - x0) * Hpx, (y1 - y0) * Hpx] };
+    }
     if ((opts.frame || 'still') === 'ref') {
       const [rw, rh] = C.ref.sizePx, g = C.ref.groundPx;
       return { W: rw, Ht: rh, vb: [-g[0], -g[1], rw, rh] };
@@ -142,6 +146,14 @@ export function createRig(C) {
     const s = (opts.fill || C.frame.fill || 0.8) * Ht / ((y1 - y0) * Hpx);
     const cx = (x0 + x1) / 2 * Hpx, cy = (y0 + y1) / 2 * Hpx + (C.frame.dy || 0) * Hpx;
     return { W, Ht, vb: [cx - W / s / 2, cy - Ht / s / 2, W / s, Ht / s] };
+  }
+  /** Posed bounds in H (all anchors + handles, flipped for facing): [[x0,y0],[x1,y1]]. Used to frame stills/tours so nothing is cropped. */
+  function bounds(pose = {}) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of build(pose)) for (const q of [...p.geom.P, ...p.geom.hin, ...p.geom.hout]) {
+      const v = ap(p.M, q); x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); y0 = Math.min(y0, v[1]); y1 = Math.max(y1, v[1]);
+    }
+    return [[x0, y0], [x1, y1]];
   }
   const toScreen = (p, opts = {}) => { const { W, vb } = view(opts), k = W / vb[2]; return [(p[0] * Hpx - vb[0]) * k, (p[1] * Hpx - vb[1]) * k]; };
   const f2 = (v) => (Math.round(v * 1000) / 1000).toString();
@@ -179,6 +191,6 @@ export function createRig(C) {
   /** World position (H) of any named joint carried by a bone in this pose. */
   const carry = (st, bone, jointName) => ap(st[bone].M, sub(J[jointName], J[BONE[bone].joint]));
 
-  const api = { C, J, BONES, BONE, restAngle, solve, build, view, toScreen, toSVG, jointWorld, carry, scrAng, projLen, planeFx, fx };
+  const api = { C, J, BONES, BONE, restAngle, solve, build, bounds, view, toScreen, toSVG, jointWorld, carry, scrAng, projLen, planeFx, fx };
   return api;
 }

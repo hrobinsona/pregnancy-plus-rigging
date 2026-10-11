@@ -48,9 +48,15 @@ export const P = {
           fly: false, strandW: [0.066, 0.062, 0.057, 0.052, 0.047, 0.042, 0.036, 0.03],   // tail ≥ 0.03 H
           loopW: [0.042, 0.056, 0.06, 0.056, 0.042], loopDrop: 0.07, strandFar: { amp: 0.014, len: 0.42 } },   // chunkify: no hair-thin strokes (BUCK/Blender 'illusion of simplicity')
   neck: { back: lm('neckBack'), front: lm('neckFront'), base: lm('neckBase'), w: 0.28 },
+  // neck column (rebuilt 11 Oct after "the neck looks messed up"): throat straight under the chin, nape gently curved, ~0.3 H
+  // wide; tops hidden under the face/hair, base hidden in the décolletage / under the near collar
+  neckCol: { backTop: [lm('neckBack')[0] + 0.08, lm('jawNear')[1] - 0.02], frontTop: [lm('neckFront')[0] + 0.02, lm('chin')[1] - 0.04],
+             frontBase: [lm('neckFront')[0] + 0.04, lm('neckBase')[1] + 0.05], backBase: [lm('neckBack')[0] + 0.04, lm('neckBase')[1] + 0.03] },
+  // jaw/chin shadow on the throat: thickest at the front under the chin (the chin projects), thin toward the ear
+  jawShade: { front: 0.07, back: 0.022 },
   shoulderCap: { near: 0.2, far: 0.19 },    // circle radius at the shoulder pivot (joint = circle) = sleeve half-width
   // trapezius slope (measured as silhouette extents at three heights, then used as construction points)
-  shoulderLine: { near: [[-0.42, -5.02], [-0.72, -4.84, { a: 143 }]], far: [[0.26, -5.02], [0.56, -4.81, { a: 47 }]] },   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
+  shoulderLine: { near: [[-0.42, -4.965], [-0.72, -4.84, { a: 143 }]], far: [[0.26, -4.965], [0.56, -4.81, { a: 47 }]] },   // zoom tour: slopes DOWN from the high collar to the cap (no hump)   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
   // torso (top), belly, cardigan
   neckline: lm('necklineFront'), bust: lm('bustFar'), underBust: lm('underBust'),
   belly: { apex: lm('bellyApex'), bottom: lm('bellyBottom') },
@@ -84,11 +90,11 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 10,
           length: 0.68, palmFrac: 0.55, wristW: 0.2, palmW: 0.32, thumbSide: 1, fingers: fingers(0.09), crease: 'one',
-          thumb: { at: [0.3, 0.45], dir: -7, len: 0.31, w: 0.092 }, flexFx: 0.45, order: [3, 2, 1, 0] },
+          thumb: { at: [0.42, 0.45], dir: 3, len: 0.36, w: 0.092 }, flexFx: 0.45, order: [3, 2, 1, 0] },
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 10,
          length: 0.63, palmFrac: 0.55, wristW: 0.19, palmW: 0.3, thumbSide: -1, fingers: fingers(0.08), crease: 'one',
          thumb: { at: [0.3, 0.42], dir: -4, len: 0.29, w: 0.086 }, flexFx: -0.45, order: [0, 1, 2, 3], creaseSide: -1 },
 };
 
-export const frame = { bbox: [[-1.25, -6.5], [1.3, 0.05]], fill: 0.86, dy: 0 };
+export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)
 export const ref = { sizePx: L.sizePx, groundPx: L.ground, Hpx, image: 'ref/standing_34.jpg' };

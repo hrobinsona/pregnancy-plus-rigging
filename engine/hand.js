@@ -6,7 +6,7 @@
 //    per-finger lags so fingers settle at different times [Toon Boom swaps; Animation Mentor hands]
 //  · four fingers, back-of-hand side straighter / palm side curved; creases between overlapping fingers [design refs]
 // Everything is computed from the spec below; nothing is sampled from an image.
-import { add, sub, mulS, norm, perpL, len } from './geom.js';
+import { add, sub, mulS, norm, perpL, len, lerp } from './geom.js';
 import { limb, taper, loop } from './shapes.js';
 
 const DEG = Math.PI / 180;
@@ -72,11 +72,11 @@ export function makeHand(spec) {
       // crease on the side facing the finger behind it (skinned across the middle joint so it bends with the finger)
       if (spec.crease !== false && rank > 0 && (spec.crease !== 'one' || rank === Math.floor(order.length / 2))) {
         const side = mulS(norm(perpL(sub(t, k))), spec.creaseSide ?? -spec.thumbSide);
-        const c0 = add(add(k, mulS(sub(m, k), 0.12)), mulS(side, w0 * 0.72)), c1 = add(m, mulS(side, w1 * 0.8)), c2 = add(add(m, mulS(sub(t, m), 0.8)), mulS(side, w2 * 0.72));
-        out.push({ id: `${id}.f${i + 1}.crease`, bone: `${id}.f${i + 1}b`, z: zf + 0.002, fill: line,
-                   geom: taper([c0, c1, c2], [0.003, f.w * 0.34, 0.004]),   // ≥ 0.025 H: no hair-thin lines (design bar)
-                   clip: [`${id}.f${i + 1}a`, `${id}.f${i + 1}b`],            // never leaks past the finger it sits on
-                   skin: { parent: `${id}.f${i + 1}a`, child: `${id}.f${i + 1}b`, zone: 0.3 } });
+        // a short straight line along the PROXIMAL segment only (rigid on bone a): it never kinks at the middle joint
+        const c0 = add(add(k, mulS(sub(m, k), 0.18)), mulS(side, w0 * 0.62)), c2 = add(add(k, mulS(sub(m, k), 0.95)), mulS(side, w1 * 0.66)), c1 = lerp(c0, c2, 0.5);
+        out.push({ id: `${id}.f${i + 1}.crease`, bone: `${id}.f${i + 1}a`, z: zf + 0.002, fill: line,
+                   geom: taper([c0, c1, c2], [0.026, 0.028, 0.024], 'round'),   // an even, round-capped line ≥ 0.025 H (a wedge reads as a gash)
+                   clip: [`${id}.f${i + 1}a`, `${id}.f${i + 1}b`] });          // never leaks past the finger it sits on
       }
     });
     if (th) {

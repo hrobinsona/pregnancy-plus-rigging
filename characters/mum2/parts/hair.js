@@ -29,7 +29,7 @@ export function build({ P: C, C: char, pose }) {
   out.push(part('hair.back', 18, C.hair, ensureCW(loop([
     [top[0] + 0.02, top[1] - 0.005], [top[0] + 0.28, top[1] + 0.05], [f.far[0] + 0.05, f.part[1] + 0.06], [f.far[0] + 0.04, f.far[1] - 0.03],
     [f.far[0] - 0.2, f.chin[1] - 0.1], [-0.14, f.chin[1] - 0.07], [back[0] + 0.22, f.chin[1] - 0.12],
-    [back[0] + 0.07, f.chin[1] - 0.3], [back[0] + 0.01, back[1] + 0.02], [back[0] + 0.02, top[1] + 0.2], [top[0] - 0.26, top[1] + 0.02]]))));
+    [back[0] + 0.07, f.chin[1] - 0.3], [back[0] + 0.01, back[1] + 0.02], [back[0] + 0.02, top[1] + 0.2], [top[0] - 0.26, top[1] - 0.04]]))));   // last anchor tucks into the bun: no pinhole (detail audit)
   // bun + its shade crescent; loop above it; one flyaway
   const b = [h.bun[0] + 0.03, h.bun[1] + 0.05], r = h.bunR;
   out.push(part('hair.bun', 17, C.hair, egg(b, { rx: r * 1.02, rxl: r, ryt: r * 0.95, ryb: r * 0.9, rot: -15 })));
@@ -41,7 +41,7 @@ export function build({ P: C, C: char, pose }) {
   // front cap: covers the skull top, centre part, sweeps to both temples (over the face)
   const part0 = f.part;
   out.push(part('hair.front', 60, C.hair, ensureCW(loop([
-    [part0[0], part0[1], { c: true, t: 0.6 }], [part0[0] + 0.1, part0[1] + 0.02], [f.far[0] - 0.02, f.far[1] - 0.17], [f.far[0] + 0.03, f.far[1] - 0.05],
+    [part0[0], part0[1], { c: true, t: 0.6 }], [part0[0] + 0.1, part0[1] + 0.02], [f.far[0] - 0.025, f.far[1] - 0.16], [f.far[0] + 0.01, f.far[1] - 0.085, { a: 20, t: 0.6 }],   // temple: rounded end, no needle
     [f.far[0] + 0.1, f.far[1] - 0.2], [top[0] + 0.32, top[1] + 0.1], [top[0] + 0.05, top[1] - 0.02], [top[0] - 0.3, top[1] + 0.07],
     [f.nearEye[0] - 0.06, f.nearEye[1] - 0.22], [f.nearEye[0] - 0.02, f.nearEye[1] + 0.06], [f.nearEye[0] + 0.03, f.nearEye[1] - 0.12],
     [part0[0] - 0.08, part0[1] + 0.06]]))));
@@ -49,7 +49,7 @@ export function build({ P: C, C: char, pose }) {
   // loose strands: wavy tapered strokes from the temples; spring channel pose.fx.hair.{near,far} bends them
   const hx = pose.fx?.hair || {};
   const sN = bend(wave([f.nearEye[0] - 0.01, f.nearEye[1] + 0.04], 97, 0.52, 8, { amp: 0.022, wl: 0.25, ph: 0.4 }), hx.near || 0);
-  const sF = bend(wave([f.far[0] + 0.04, f.far[1] - 0.1], 84, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
+  const sF = bend(wave([f.far[0] + 0.065, f.far[1] - 0.1], 84, h.strandFar?.len ?? 0.56, 8, { amp: h.strandFar?.amp ?? 0.024, wl: 0.24, ph: 1.6 }), hx.far || 0);
   out.push(part('hair.strand.near', 61, C.hair, taper(sN, X.hair.strandW)));
   out.push(part('hair.strand.far', 61, C.hair, taper(sF, X.hair.strandW)));
   return out;
