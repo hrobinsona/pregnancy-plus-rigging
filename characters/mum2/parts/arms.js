@@ -41,7 +41,7 @@ export function build(ctx) {
     if (X.detail.cuffRib) out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
     // wrist skin between cuff and palm, skinned across the wrist so a bent wrist stays filled (wrist corrective base)
     out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zb + 0.3, fill: C.skin,
-      geom: ensureCW(limb(lerp(el, wr, 0.86), wr, [{ t: 0, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }, { t: 1, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }], { capK: 0.3 })),   // a bridge for a bent wrist only: narrower than the palm and ending at the wrist, so it never shapes the silhouette below the cuff (the palm's own wrist end, tucked under the cuff, does)
+      geom: ensureCW(limb(lerp(el, wr, 0.86), wr, [{ t: 0, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }, { t: 1, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }], { capK: 1.0 })),   // a bridge for a bent wrist only: narrower than the palm and ending at the wrist, so it never shapes the silhouette below the cuff (the palm's own wrist end, tucked under the cuff, does)
       skin: { parent: `forearm.${side}`, child: `hand.${side}`, zone: 0.5 } });
     // hand
     const hand = char.hands[side];

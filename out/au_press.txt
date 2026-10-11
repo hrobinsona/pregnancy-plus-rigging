@@ -1,2 +1,1 @@
-detail audit mum2/_au_press: 1 findings (4 allowed by audit_allow.json) (render 1888x4592, 692 px/H, thin < 0.024 H)
-  1 pinhole/gap   bg            at (-0.894, -2.873) H  size 0.001×0.004 H  area 3 px
+detail audit mum2/_au_press: 0 findings (4 allowed by audit_allow.json) (render 1880x4593, 692 px/H, thin < 0.024 H)

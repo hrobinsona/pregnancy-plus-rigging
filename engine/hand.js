@@ -19,13 +19,30 @@ import { limb, loop, tube, taper } from './shapes.js';
 import { ellipse } from './geom.js';
 
 const DEG = Math.PI / 180;
+const polyLen = (pts) => pts.slice(1).reduce((a, p, i) => a + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
+/** the first L of a polyline, as exactly n points (joint vertices kept while inside; the longest segment is split to pad) */
+function truncPoly(pts, L, n) {
+  const out = [pts[0]]; let acc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const sl = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    if (acc + sl >= L) { const t = (L - acc) / Math.max(sl, 1e-9); out.push([pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * t, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * t]); break; }
+    out.push(pts[i]); acc += sl;
+  }
+  while (out.length > n) out.splice(out.length - 2, 1);
+  while (out.length < n) {
+    let bi = 0, bl = -1;
+    for (let i = 1; i < out.length; i++) { const l = Math.hypot(out[i][0] - out[i - 1][0], out[i][1] - out[i - 1][1]); if (l > bl) { bl = l; bi = i; } }
+    out.splice(bi, 0, [(out[bi][0] + out[bi - 1][0]) / 2, (out[bi][1] + out[bi - 1][1]) / 2]);
+  }
+  return out;
+}
 const clamp01 = (x) => Math.max(0, Math.min(1, x)), smooth01 = (x) => { const t = clamp01(x); return t * t * (3 - 2 * t); };
 const dirv = (deg) => [Math.cos(deg * DEG), Math.sin(deg * DEG)];
 const rot = (v, deg) => { const c = Math.cos(deg * DEG), s = Math.sin(deg * DEG); return [c * v[0] - s * v[1], s * v[0] + c * v[1]]; };
 export const HAND_DEFAULTS = {                // anatomical defaults (override per character in the spec)
   fingerLen: [0.9, 1.0, 0.94, 0.76], phalanx: [0.46, 0.3, 0.24], fingerW: [0.98, 1.0, 0.94, 0.82], knuckleArc: [0.965, 1.0, 0.975, 0.915],
   across: [0.37, 0.125, -0.125, -0.37], fan: 'touch', touch: 0.9, taper: [1.0, 0.94, 0.88, 0.82], tipK: 0.95, fingerK: 0.9, rim: 0.02, rootIn: 0.05,
-  view: 'back', thenarEdge: [0.84, 0.9], webK: 0.3, lineTipGap: 2.6, crease: [[-0.25, 0.23], [0.32, 0.8], [0.87, 1.05]],   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
+  view: 'back', hypo: 0.018, thenarEdge: [0.84, 0.9], webK: 0.3, lineTipGap: 2.5, lineEnd: 0.55, crease: [[0.1, 0.25]], creaseBow: 0.012,   // thenar crease (palm view): heel of the hand → under the thumb tip                                // 'back' (dorsal: curled phalanges fold BEHIND the hand) | 'palm' (they curl in front of it)
   thumb: { cmc: [0.1, 0.36], mcp: [0.42, 0.6], dir: 18, prox: 0.37, dist: 0.3, w: 1.18, taper: [1.0, 0.9, 0.8] },   // free thumb ≈ 0.75 × index
 };
 
@@ -89,7 +106,7 @@ export function makeHand(spec) {
     // palm: wrist → knuckle arc. Pinky side a long gentle curve; the heel of the hand on the thumb side is carried by
     // the thenar pad; the distal edge hides under the finger roots.
     const pd = norm(sub(F[3].p, F[3].k)), pinkyA = Math.atan2(pd[1], pd[0]) * 180 / Math.PI;
-    const kn = F.map((f) => f.k), pinkyRoot = add(F[3].k, mulS(n, -F[3].r[0] * 0.86));   // pinky's outer edge AT its knuckle: inside the MCP disc, so a flexed pinky never exposes the palm's corner
+    const kn = F.map((f) => f.k), pinkyRoot = add(F[3].k, mulS(n, -F[3].r[0] * 0.84));   // pinky's outer edge AT its knuckle: inside the MCP disc, so a flexed pinky never exposes the palm's corner
     // incoming handle at a corner: between the chord back to the previous anchor and the given tangent, so an edge that
     // must arrive ALONG a finger never bulges sideways past the chord (exposed as a tongue when that finger curls)
     // w = 0: exactly the tangent (a straight pinky: palm edge flows into its edge) … w = 1: the chord (a curled pinky)
@@ -100,9 +117,9 @@ export function makeHand(spec) {
       return add(lerp(a.k, b.k, 0.5), mulS(dd, S.webK * La));
     };
     const palm = [
-      P(-0.12, -wW), add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -0.006)), [...pinkyRoot, { c: true, ai: inA(pinkyRoot, add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -0.006)), pinkyA + 180, pkCurl), ti: 1.05 - 0.5 * pkCurl, ao: Math.atan2(F[3].k[1] - pinkyRoot[1], F[3].k[0] - pinkyRoot[0]) * 180 / Math.PI }],   // corner: arrives along the pinky's edge, leaves ACROSS the knuckle (never bulges past it when the pinky curls)   // arrives tangent to the pinky's outer edge   // R9: one convex edge from the wrist to the pinky's root (no dent, no step)
+      P(-0.7 * wW, -0.7 * wW), add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), [...pinkyRoot, { c: true, ai: inA(pinkyRoot, add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), pinkyA + 180, pkCurl), ti: 1.05 - 0.5 * pkCurl, ao: Math.atan2(F[3].k[1] - pinkyRoot[1], F[3].k[0] - pinkyRoot[0]) * 180 / Math.PI }],   // corner: arrives along the pinky's edge, leaves ACROSS the knuckle (never bulges past it when the pinky curls)   // arrives tangent to the pinky's outer edge   // R9: one convex edge from the wrist to the pinky's root (no dent, no step)
       ...[3, 2, 1].map(webAt), add(kn[0], mulS(u, 0.018)),   // WEBBING: between two knuckles the palm's edge dips to where the fingers meet (≈ webK of the first phalanx) — hidden when the fingers are together, the V of skin between spread fingers, and no enclosed gap at the roots
-      P(palmL * S.knuckleArc[0] * 0.95, pW * 0.86), P(palmL * 0.62, pW * S.thenarEdge[1]), P(palmL * 0.3, pW * S.thenarEdge[0]), P(-0.12, wW * 1.0), P(-0.13, 0),   // thumb side envelops the ball of the thumb: one convex edge cuff → thumb (no corner where the thenar pad pokes out)   // wrist end tucks well under the cuff (its corners never peek past the cuff's rounded end)
+      P(palmL * S.knuckleArc[0] * 0.95, pW * 0.86), P(palmL * 0.62, pW * S.thenarEdge[1]), P(palmL * 0.3, pW * S.thenarEdge[0]), P(-0.7 * wW, 0.7 * wW), P(-wW, 0),   // R12: the wrist end is a SEMICIRCLE about the wrist pivot (joint = circle: the hand stays inside the cuff at any flex). Thumb side envelops the ball of the thumb: one convex edge cuff → thumb (no corner where the thenar pad pokes out)   // wrist end tucks well under the cuff (its corners never peek past the cuff's rounded end)
     ];
     out.push({ id: `${id}.palm`, bone: S.parentBone, z, fill, geom: ensureCW(loop(palm)) });
     // thenar pad on the thumb metacarpal (moves with opposition)
@@ -135,7 +152,7 @@ export function makeHand(spec) {
       const dE = sVis <= 1 ? sVis * Lb : Lb + (sVis - 1) * Lc, wq = sVis <= 1 ? 0 : smooth01((sVis - 1) / 0.5), dM = lerp([dE / 2], [Lb], wq)[0];
       out.push({ id: fid, bone: `${fid}c`, z: zf, fill, skin,
                  geom: tubeOf([root, f.p, at(dM), at(dE)], [f.r[0] * 0.8, f.r[1], rAt(dM), rAt(dE)], 0, S.tipK, 'none') });   // round fingertip pad; FLAT root sunk in the palm (a round root bulges past the palm's edge)
-      out.push({ id: `${fid}.j0`, bone: `${fid}a`, z: zf - 0.0006, fill, rigid: true, geom: ellipse(f.k, f.r[0] * 0.92, f.r[0] * 0.92) });   // MCP knuckle: round outer corner when the knuckle flexes hard (fist = a row of round knuckles, no teeth)
+      out.push({ id: `${fid}.j0`, bone: `${fid}a`, z: zf - 0.0006, fill, rigid: true, geom: ellipse(f.k, f.r[0] * 0.84, f.r[0] * 0.84) });   // MCP knuckle: round outer corner when the knuckle flexes hard (fist = a row of round knuckles, no teeth)
       out.push({ id: `${fid}.j1`, bone: `${fid}b`, z: zf - 0.0005, fill, rigid: true, geom: ellipse(f.p, f.r[1] * 0.7, f.r[1] * 0.7) });
       const j2k = smooth01((dE - 0.5 * Lb) / (0.5 * Lb));   // DIP disc: on its own joint (rigid), shrinking away as the middle phalanx folds behind
       if (j2k > 0.05) out.push({ id: `${fid}.j2`, bone: `${fid}c`, z: zf - 0.0004, fill, rigid: true, geom: ellipse(f.q, f.r[2] * 0.7 * j2k, f.r[2] * 0.7 * j2k) });
@@ -150,14 +167,18 @@ export function makeHand(spec) {
         const bk = F[order[rank - 1]], d = norm(sub(f.t, f.k)), pl = perpL(d), side = Math.sign((bk.k[0] - f.k[0]) * pl[0] + (bk.k[1] - f.k[1]) * pl[1]) || 1;   // toward the finger behind
         const nn = mulS(perpL(d), side), off = (pt, r) => add(pt, mulS(nn, r + S.rim * 0.4));   // just OUTSIDE the edge (the finger itself is drawn over the line's inner half)
         const s0 = S.lineStart ?? (S.view === 'palm' ? 0.22 : 0.3);   // palm view: from the digital crease; back view: just below the knuckle
-        const pts = [off(lerp(f.k, f.p, s0), lerp([f.r[0]], [f.r[1]], s0)[0]), off(f.p, f.r[1]), off(f.q, f.r[2])];
-        rimStart[i] = pts[0];   // the line runs to the DIP — no tip curl (no J/S), no clutter at the knuckles
+        // R12: the line runs INTO the distal segment (to lineEnd of it), ending just above the notch between the fingertips
+        // as in the reference — stopping at the DIP made the hand a slab with slits (and the far palm comb an "E")
+        const pts = [off(lerp(f.k, f.p, s0), lerp([f.r[0]], [f.r[1]], s0)[0]), off(f.p, f.r[1]), off(f.q, f.r[2]), off(lerp(f.q, f.t, S.lineEnd), rAt(Lb + S.lineEnd * Lc))];
+        rimStart[i] = pts[0];
         // never past the TIP of the finger behind (a shorter finger, e.g. the pinky behind the ring): the line would cross its
         // tip outline and leave a crescent sliver — lines stop short of the tips, as in the reference
         const alongOf = (pt) => (pt[0] - f.k[0]) * d[0] + (pt[1] - f.k[1]) * d[1], aEnd = alongOf(bk.t) - S.lineTipGap * bk.r[3];
-        const capF = clamp01((aEnd - alongOf(pts[0])) / Math.max(1e-6, alongOf(pts[2]) - alongOf(pts[0])));
-        const segL = [0, 1].map((j) => Math.hypot(pts[j + 1][0] - pts[j][0], pts[j + 1][1] - pts[j][1])), Lk = (segL[0] + segL[1]) * Math.min(keepF, capF);
-        const cut = Lk <= segL[0] ? [pts[0], lerp(pts[0], pts[1], Lk / segL[0] * 0.5), lerp(pts[0], pts[1], Lk / segL[0])] : [pts[0], pts[1], lerp(pts[1], pts[2], (Lk - segL[0]) / segL[1])];
+        const capF = clamp01((aEnd - alongOf(pts[0])) / Math.max(1e-6, alongOf(pts[3]) - alongOf(pts[0])));
+        // spread fingers no longer overlap: the line fades (by length) as this finger and the one behind spread apart, so it is
+        // never clipped into a needle wedge in the V between them
+        const spr = Math.abs((ctx.pose?.bones?.[`${fid}s`] ?? 0) - (ctx.pose?.bones?.[`${id}.f${bkI + 1}s`] ?? 0)), keepS = clamp01(1 - (spr - 3) / 5);
+        const Lk = polyLen(pts) * Math.min(keepF, capF, keepS), cut = truncPoly(pts, Lk, 4);
         if (Lk >= 0.04) out.push({ id: `${fid}.rim`, bone: `${fid}c`, z: zf - 0.004, fill: line, geom: taper(cut, cut.map(() => S.rim), 'round'), skin, clip: [...behind] });
       }
       if (nail) {
@@ -177,11 +198,23 @@ export function makeHand(spec) {
     // clipped to the hand so their round ends never touch the silhouette; the digital crease shortens toward its middle
     // as the knuckles flex (curled fingers come forward over it), dropped below 0.04 H.
     if (S.view === 'palm' && S.palmLines !== false && line) {
-      const tFlex = ['t0', 't1', 't2'].reduce((acc, b) => acc + (ctx.pose?.bones?.[`${id}.${b}`] ?? 0), 0), keepT = 0.45 + 0.55 * clamp01(1 - (tFlex - 40) / 40);
-      const cr0 = S.crease.map(([al, ac]) => P(palmL * al, pW * ac));   // [× palmL, × palmW/2] landmarks of the crease
-      const cr = [cr0[0], lerp(cr0[0], cr0[1], Math.min(1, keepT * 1.6)), lerp(cr0[0], cr0[2], keepT)];   // shortens toward the heel as the thumb folds
-      out.push({ id: `${id}.crease`, bone: S.parentBone, z: z + 0.025, fill: line, geom: taper(cr, [S.rim * 0.8, S.rim, S.rim], 'round'), clip: [`${id}.palm`, `${id}.thenar`] });
-      const mcpAvg = [0, 1, 2, 3].reduce((acc, j) => acc + ang(j, 'a'), 0) / 4, keepB = clamp01(1 - (mcpAvg - 25) / 30);
+      // R12: ONE stroke — heel of the hand → sweeping under the ball of the thumb → along the thumb's inner edge to past its
+      // joint (the reference's single S-line). Skinned along the thumb chain (heel end rides the thenar), drawn ABOVE the thumb
+      // so its outline can never cut it (no flat cut, no pointed start, no fork); shortens by length as the thumb folds.
+      const tFlex = ['t0', 't1', 't2'].reduce((acc, b) => acc + (ctx.pose?.bones?.[`${id}.${b}`] ?? 0), 0);
+      // folding the thumb across the palm: the whole crease shrinks away (no tadpole stub); spreading it: the thumb's edge
+      // borders the background, so the stroke retreats to its palm part (never an outline against the background)
+      const keepT = clamp01(1 - (tFlex - 40) / 40) * (0.4 + 0.6 * clamp01(1 - (Math.abs(ctx.pose?.bones?.[`${id}.ts`] ?? 0) - 6) / 8));
+      const td0 = norm(sub(tt, ip)), tpl = perpL(td0), hcen = P(palmL * 0.9, 0), tside = Math.sign((hcen[0] - ip[0]) * tpl[0] + (hcen[1] - ip[1]) * tpl[1]) || 1, tnn = mulS(tpl, tside);
+      const cA = P(palmL * S.crease[0][0], pW * S.crease[0][1]);
+      const cC = add(lerp(mcp, ip, 0.4), mulS(tnn, lerp([tr[0]], [tr[1]], 0.4)[0] + S.rim * 0.4));
+      const cD = add(lerp(ip, tt, 0.6), mulS(tnn, lerp([tr[1]], [tr[2]], 0.6)[0] + S.rim * 0.4));
+      const cB = add(lerp(cA, cC, 0.55), mulS(n, -S.creaseBow));                       // the sweep bows toward the pinky side
+      const cpts = [cA, cB, cC, cD], cL = polyLen(cpts) * keepT;
+      if (cL >= 0.04) out.push({ id: `${id}.crease`, bone: `${id}.t2`, z: (S.thumbZ ?? z + 0.1) + 0.005, fill: line, skin: { chain: [`${id}.t0`, `${id}.t1`, `${id}.t2`], zone: 0.5 },
+                                geom: taper(truncPoly(cpts, cL, 4), [S.rim * 0.8, S.rim, S.rim, S.rim], 'round'), clip: [`${id}.palm`, `${id}.thenar`, `${id}.thumb`] });
+      const sprD = Math.max(...[1, 2, 3].map((j) => Math.abs((ctx.pose?.bones?.[`${id}.f${j + 1}s`] ?? 0) - (ctx.pose?.bones?.[`${id}.f${j}s`] ?? 0))));
+      const mcpAvg = [0, 1, 2, 3].reduce((acc, j) => acc + ang(j, 'a'), 0) / 4, keepB = clamp01(1 - (mcpAvg - 25) / 30) * clamp01(1 - (sprD - 3) / 5);   // spread: the comb's teeth fade, so does its spine
       // spans exactly from the first to the last separation line (their round starts ARE its ends: T/L joins, as in the
       // reference's comb — never a "+" with a line poking through it)
       const rs = order.map((j) => rimStart[j]).filter(Boolean);
