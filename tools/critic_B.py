@@ -17,6 +17,7 @@ run('python3', 'tools/zoom_tour.py', c, pose)                   # close-ups of e
 run('python3', 'tools/detail_audit.py', c, pose)                # pixel audit: pinholes, slivers, spurs
 run('python3', 'tools/hand_lab.py', c, '--pose', pose)           # every hand-library pose, both hands, large
 run('python3', 'tools/hand_fit.py', c)                           # rest hands measured against the reference
+run('python3', 'tools/corner_audit.py', c, pose)                 # outline corners: kinks/teeth where same-material shapes meet
 root = os.getcwd()
 files = [f'out/{c}_{pose}_still.png — the {pose} pose, full size (1080×1920)',
          f'out/{c}_{pose}_phone.png — the same at phone thumbnail size (360 px wide)',
@@ -24,6 +25,7 @@ files = [f'out/{c}_{pose}_still.png — the {pose} pose, full size (1080×1920)'
          f'out/{c}_compare.png — reference | render | overlay | silhouette diff, then zoom pairs (reference | render): face, near hand, far hand, feet',
          f'out/{c}_{pose}_tour.png — ZOOM TOUR: 3–4× close-ups of head, neck & collars, shoulders, bust→bump, hem & crotch, hands, knees, feet. Inspect every tile for construction faults (lumps, teeth, slivers, kinks, tangents)',
          f'out/{c}_{pose}_audit.txt — automated pixel audit (pinholes, specks, thin spurs) after the allowlist of intentional thin features',
+         f'out/{c}_{pose}_corners.txt — automated OUTLINE-CORNER audit (shallow sharp turns on a material\'s own silhouette: kinks, teeth, knobs)',
          f'out/{c}_hand_lab.png — HAND LAB: every hand-library pose (relaxed, open, cup, press, grip, fist, point) on the near (top, back of hand) and far (bottom, palm view) hand at ~4× close range, plus the {pose} pose. Judge construction, anatomy and joint direction here',
          f'out/{c}_hand_fit.png + out/{c}_hand_fit.txt — rest-pose hands vs the reference at the same scale: reference | render | mask overlay, width profile and length along the hand axis',
          f'out/{c}_rest_metrics.txt — REST pose (reference-matched) silhouette IoU and row-extent deltas vs reference (H): the landmark-fidelity gate',

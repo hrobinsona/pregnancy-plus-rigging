@@ -79,27 +79,28 @@ export const P = {
 };
 
 // ---------------------------------------------------------------- hands (generator v2: engine/hand.js anatomy defaults)
-// Rebuilt 11 Oct after "hands look a mess — they should be separate fingers and feel like real hands": three phalanges,
-// tapering separate fingers on a knuckle arc, a real thumb with its thenar pad, shade rims only where fingers overlap.
-// Character-specific: size (hand ≈ face), palm width, finger slimness (fingerK), and how each hand is seen.
-// 14:24 user: "fingers look like weird sausages; cupping bends the wrong way" → women's hands: long fingers tapering to a
-// soft point (tip 0.58 of base), nails on the back-of-hand view; flexion mostly FORESHORTENS (flexFx 0.18 / −0.22: a
-// finger curling toward the palm seen from the back gets shorter, it does not swing sideways); curled poses converge.
-// Fingers held together OVERLAP in a stagger (~20% of a width, rim between) — never edge-to-edge: abutting fingers leave
-// hairline slivers and enclosed gaps (detail audit). Spread poses open real gaps.
+// Hands — history: v2 (separate fingers) → v3 (pointed, nails: judged by eye) → v4 (MEASURED against the reference with
+// tools/hand_fit.py; critic rounds R12–R14). What holds now:
+//  · proportions from the reference: chunky grouped fingers (≈1:3), round tips, no nails, separate thumb with a notch
+//  · fingers TOGETHER by construction ('touch' fan) — spread is a pose; webbing between knuckles
+//  · flexion mostly foreshortens (flexFx 0.10 near / −0.14 far): curls never swing sideways; past ~100° a phalanx folds
+//    away (depth rule) so a fist is a knuckle block; knuckle discs are rigid
+//  · lines (skinLine) run from just below the knuckles to just above the tip notches, shorten for a shorter finger behind,
+//    fade with curl and spread; the palm view adds one S/C crease (heel → thumb's inner edge) and a comb at the finger roots
+//  · the palm's wrist end is a semicircle about the pivot; its thumb side envelops the thenar (one convex edge cuff → thumb)
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   // Measured, not eyeballed (tools/hand_fit.py vs the reference): wrist(cuff)→fingertip 0.45 H near / 0.38 H far; palm
   // incl. thumb ≈ 0.33 H wide; fingers grouped (one skin run across them), chunky (width ≈ 0.075 H, ≈ 1:3), round tips.
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
-          length: 0.47, palmFrac: 0.5, wristW: 0.26, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 15, w: 1.05 }, thenarEdge: [1.05, 1.1], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
+          length: 0.47, palmFrac: 0.5, wristW: 0.29, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 15, w: 1.05 }, thenarEdge: [1.25, 1.15], thumbWeb: [0.9, 0.7], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
   // inner edge is drawn as a line over the palm (as in the reference)
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
-         length: 0.38, palmFrac: 0.52, wristW: 0.22, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,
-         thumbFx: -0.35, thumb: { cmc: [0.08, 0.5], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.05, 1.15], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
+         length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,
+         thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.25, 1.2], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)

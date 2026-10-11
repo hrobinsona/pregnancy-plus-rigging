@@ -21,11 +21,6 @@
  },
  "hands": {
   "near": "relaxed",
-  "far": {
-   "pose": "relaxed",
-   "mix": {
-    "cup": 0.4
-   }
-  }
+  "far": "relaxed"
  }
 }
