@@ -23,6 +23,9 @@ export function handBones(prefix, entry, lib, spreadSign = 1) {
 export function expandHands(pose, lib, sides) {
   if (!pose.hands || !lib) return pose;
   const bones = {};
-  for (const [side, sd] of Object.entries(sides || {})) if (pose.hands[side]) Object.assign(bones, handBones(sd.prefix, pose.hands[side], lib, sd.spreadSign));
+  for (const [side, sd0] of Object.entries(sides || {})) {
+    const sd = pose.handView?.[side] === 'back' && sd0.back ? sd0.back : sd0;   // a view SWAP: the pose drives the drawing it shows
+    if (pose.hands[side]) Object.assign(bones, handBones(sd.prefix, pose.hands[side], lib, sd.spreadSign));
+  }
   return { ...pose, bones: { ...bones, ...(pose.bones || {}) } };
 }

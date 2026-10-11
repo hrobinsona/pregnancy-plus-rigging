@@ -137,6 +137,17 @@ export function createRig(C) {
         }
       }
     }
+    // OUTLINE GROUPS (C.outlineGroups): a group of parts that may overlap the SAME material (a hand over the face, a hand over
+    // the other hand) gets a line round its silhouette ONLY where it lies over that material: every part of the group is
+    // cloned as a stroke just below the group and clipped to the same-material parts behind it. Over the background or another
+    // colour nothing shows — the style's no-outline rule holds; same-colour shapes can still be told apart.
+    for (const G of C.outlineGroups || []) {
+      const inG = parts.filter((p) => G.match.test(p.id)); if (!inG.length) continue;
+      const zmin = Math.min(...inG.map((p) => p.z));
+      const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && !p.stroke).map((p) => p.id);
+      if (!behind.length) continue;
+      for (const p of inG) if (p.fill === G.material) parts.push({ ...p, id: `${p.id}.ol`, z: zmin - 0.002, fill: 'none', stroke: G.line, strokeW: 2 * G.w, clip: behind, skin: undefined });
+    }
     return parts.map((p, i) => [p, i]).sort((a, b) => a[0].z - b[0].z || a[1] - b[1]).map((x) => x[0]);
   }
 
@@ -180,11 +191,13 @@ export function createRig(C) {
     for (const p of parts) {
       if (p.opacity !== undefined && p.opacity <= 0.002) continue;
       const op = !sil && p.opacity !== undefined && p.opacity < 0.998 ? ` opacity="${f2(p.opacity)}"` : '';
-      const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" fill="${sil ? '#000' : p.fill}" transform="${tfOf(p.M)}"${op}/>`;
+      if (p.stroke && sil) continue;
+      const paint = p.stroke ? `fill="none" stroke="${p.stroke}" stroke-width="${f2(p.strokeW * Hpx)}" stroke-linejoin="round"` : `fill="${sil ? '#000' : p.fill}"`;
+      const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" ${paint} transform="${tfOf(p.M)}"${op}/>`;
       // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
       // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
       const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
-      if (!clips.length) { out += path; continue; }
+      if (!clips.length) { if (!p.stroke) out += path; continue; }   // an outline with nothing behind it is never drawn
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
       out += `<g clip-path="url(#${cid})">${path}</g>`;

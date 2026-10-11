@@ -10,7 +10,7 @@ export const ANCHORS = { 'cap.near': 4, 'cap.far': 4, 'cast.near': 7, 'sleeve.ne
 export function build(ctx) {
   const { P: C, C: char } = ctx, J = char.joints, X = char.params.P, out = [];
   for (const side of ['near', 'far']) {
-    const S = side === 'near' ? 'Near' : 'Far', zb = side === 'near' ? 80 : 10;
+    const S = side === 'near' ? 'Near' : 'Far', zb = (side === 'near' ? 80 : 10) + (ctx.pose?.zBias?.[`arm.${side}`] ?? 0);   // zBias: a per-pose draw-order swap (a far arm reaching onto the bump comes in front of the body)
     const sh = J['shoulder' + S], el = J['elbow' + S], wr = J['wrist' + S], w = X.sleeve[side];
     const cuffEnd = lerp(el, wr, (X.cuffEnd?.[side] ?? 0.9) - 0.06), axis = [sh, lerp(sh, el, 0.55), el, cuffEnd];
     const fill = side === 'near' ? C.cardigan : C.cardiganShade;     // far limbs one value darker (depth)
@@ -44,7 +44,7 @@ export function build(ctx) {
       geom: ensureCW(limb(lerp(el, wr, 0.86), wr, [{ t: 0, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }, { t: 1, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }], { capK: 1.0 })),   // a bridge for a bent wrist only: narrower than the palm and ending at the wrist, so it never shapes the silhouette below the cuff (the palm's own wrist end, tucked under the cuff, does)
       skin: { parent: `forearm.${side}`, child: `hand.${side}`, zone: 0.5 } });
     // hand
-    const hand = char.hands[side];
+    const hand = (ctx.pose?.handView?.[side] === 'back' && char.hands[side + 'Back']) || char.hands[side];   // view swap
     out.push(...hand.parts(ctx, { fill: C.skin, line: C.skinLine, zBase: zb + 0.35 }));   // under the cuff: the cuff covers the wrist end
   }
   return out;

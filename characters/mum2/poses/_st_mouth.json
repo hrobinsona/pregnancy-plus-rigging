@@ -1,0 +1,70 @@
+{
+ "name": "_st_mouth",
+ "note": "stress: nausea, near hand pressed over the mouth",
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -6,
+  "chest": -5,
+  "neck": 8,
+  "head": 10,
+  "belly": 3,
+  "clavicle.far": 4,
+  "clavicle.near": 1,
+  "upperArm.near": 83.7,
+  "forearm.near": 96.2,
+  "upperArm.far": -15.4,
+  "forearm.far": 110.1,
+  "shoulderAbd.near": 15.1,
+  "hand.near": 11.6,
+  "shoulderAbd.far": 30,
+  "hand.far": -46.5
+ },
+ "hands": {
+  "near": "press",
+  "far": "cup"
+ },
+ "zBias": {
+  "arm.far": 60
+ },
+ "handView": {
+  "far": "back"
+ },
+ "_ik": [
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2k",
+   "to": {
+    "bone": "head",
+    "point": "mouth",
+    "offset": [
+     0.02,
+     -0.03
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ]
+  },
+  {
+   "bone": "hand.far",
+   "point": "hand.farB.f2k",
+   "to": {
+    "bone": "belly",
+    "point": "bellyApex",
+    "offset": [
+     -0.1,
+     -0.05
+    ]
+   },
+   "solve": [
+    "shoulderAbd.far",
+    "upperArm.far",
+    "forearm.far",
+    "hand.far"
+   ]
+  }
+ ]
+}

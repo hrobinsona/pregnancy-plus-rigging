@@ -103,5 +103,10 @@ export const handSpecs = {
          thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.35, 1.32], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 
+// far (her left) hand, BACK view: the swap drawing used when the far hand turns its palm away (resting on the bump). Same
+// size as the far hand, back-of-hand construction like the near hand, mirrored for the left hand (thumbSide −1, flexion
+// senses flipped). Its own bones (hand.farB.*) hang off the same wrist bone (hand.far); a pose picks it with handView.far.
+handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', thumbSide: -1, flexFx: -0.1, thumbFx: 0.15, palmLines: false, lineStart: undefined, crease: undefined, creaseHook: undefined,
+  thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], hypo: 0.018, fingerLen: [0.86, 1.0, 0.94, 0.76], thumbLine: false };
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)
 export const ref = { sizePx: L.sizePx, groundPx: L.ground, Hpx, image: 'ref/standing_34.jpg' };

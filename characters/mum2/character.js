@@ -10,8 +10,8 @@ import * as arms from './parts/arms.js';
 import * as legs from './parts/legs.js';
 
 const J = { ...params.joints };
-const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far) };
-Object.assign(J, hands.near.joints, hands.far.joints);
+const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far), farBack: makeHand(params.handSpecs.farBack) };
+Object.assign(J, hands.near.joints, hands.far.joints, hands.farBack.joints);
 J.handNearTip = J['hand.near.f2t'];
 J.handFarTip = J['hand.far.f2t'];
 
@@ -36,7 +36,7 @@ const bones = [
       { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'sagittal', restAnat: 0, min: -70, max: 70, cap: 0.08 },
     ];
   }),
-  ...hands.near.bones, ...hands.far.bones,
+  ...hands.near.bones, ...hands.far.bones, ...hands.farBack.bones,
   ...['far', 'near'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
@@ -55,12 +55,19 @@ export default {
   name: 'mum2',
   params, hands,
   handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point'],
-  handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
+  handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign, back: { prefix: 'hand.farB', spreadSign: hands.farBack.spreadSign } } },
   joints: J,
   bones,
   palette: params.palette,
-  design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes } },
-  modules: { hair: merge(hair), legs: merge(legs), body: merge(body), head: merge(head), arms: merge(arms, hands.near.ANCHORS, hands.far.ANCHORS) },
+  design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes, ...hands.farBack.planes } },
+  modules: { hair: merge(hair), legs: merge(legs), body: merge(body), head: merge(head), arms: merge(arms, hands.near.ANCHORS, hands.far.ANCHORS, hands.farBack.ANCHORS) },
+  // same-material overlaps: hands get a skinLine edge where they lie over skin (face, neck, the other hand)
+  outlineGroups: [
+    { match: /^(hand\.near\.|wrist\.near$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },
+    { match: /^(hand\.far\.|hand\.farB\.|wrist\.far$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },
+    // the near jogger leg where it crosses the far one (walk, crossed legs): same purple, told apart by the shade line
+    { match: /^(leg\.near|cuffleg\.near)$/, material: params.palette.bottoms, line: params.palette.bottomsShade, w: 0.014 },
+  ],
   frame: params.frame,
   ref: params.ref,
   roles: {
