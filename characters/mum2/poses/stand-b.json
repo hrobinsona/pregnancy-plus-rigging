@@ -1,0 +1,27 @@
+{
+ "name": "stand-b",
+ "note": "idle breakdown: weight eases onto the far leg, head tips toward the bump side, near hand drifts forward a touch",
+ "bones": {
+  "spineLower": 3,
+  "spineUpper": -7.5,
+  "chest": -6,
+  "neck": 4.5,
+  "head": 7.5,
+  "belly": 3,
+  "clavicle.far": 4,
+  "clavicle.near": 1,
+  "upperArm.near": -1.5999999999999996,
+  "upperArm.far": -4,
+  "hipAbd.far": -1.5,
+  "shoulderAbd.far": -22,
+  "shoulderAbd.near": 13,
+  "forearm.far": 18,
+  "forearm.near": 10,
+  "hand.far": -30,
+  "pelvis": 1.5
+ },
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ }
+}

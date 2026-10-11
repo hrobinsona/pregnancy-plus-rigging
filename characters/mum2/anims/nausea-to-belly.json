@@ -1,0 +1,226 @@
+{
+ "name": "nausea-to-belly",
+ "story": "Calm, holding her bump. A wave of nausea: her eyes widen, her near hand flies up to cover her mouth as her eyes squeeze shut and her face pales; she rides it out, breathing; it passes \u2014 the hand comes back down to the bump on a lower path and she softens with relief.",
+ "fps": 30,
+ "duration": 7.0,
+ "loop": true,
+ "exposure": "ones",
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "bump-hold",
+   "ease": "inOut"
+  },
+  {
+   "t": 1.55,
+   "pose": "bump-hold",
+   "ease": "inOut",
+   "note": "anticipation hold ends"
+  },
+  {
+   "t": 1.85,
+   "pose": "mouth-bd",
+   "kind": "breakdown",
+   "note": "hand rises in front of the chest (arc)"
+  },
+  {
+   "t": 2.1,
+   "pose": "mouth-cover",
+   "ease": "reaction",
+   "note": "fast out, long settle onto the mouth"
+  },
+  {
+   "t": 3.7,
+   "pose": "mouth-cover",
+   "ease": "inOut",
+   "note": "moving hold (breath + drift keep her alive)"
+  },
+  {
+   "t": 4.35,
+   "pose": "mouth-bd",
+   "kind": "breakdown",
+   "note": "comes down past the chest"
+  },
+  {
+   "t": 5.0,
+   "pose": "bump-hold",
+   "ease": "settle",
+   "note": "lands on the bump, slight overshoot"
+  }
+ ],
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.cheek"
+   ],
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.2,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.5,
+     "pose": "face-uneasy",
+     "ease": "dart",
+     "note": "unease reads before the hand moves"
+    },
+    {
+     "t": 2.05,
+     "pose": "face-sick",
+     "ease": "inOut",
+     "note": "eyes squeeze shut as the hand lands"
+    },
+    {
+     "t": 3.85,
+     "pose": "face-sick",
+     "ease": "inOut"
+    },
+    {
+     "t": 4.6,
+     "pose": "face-relief",
+     "ease": "inOut",
+     "note": "it passes: eyes open soft, warm mouth"
+    },
+    {
+     "t": 6.6,
+     "pose": "face-calm",
+     "ease": "inOut"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 3.5,
+  "phase0": 0.0,
+  "amp": 1,
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.022,
+   "chestAcross": 0.026,
+   "chestDeg": -1.0,
+   "shoulderDeg": 1.6,
+   "headDeg": -0.8,
+   "belly": 0.003
+  }
+ },
+ "drift": {
+  "amp": 1,
+  "seed": 5,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.4,
+   "clavicle.near": 0.25,
+   "clavicle.far": 0.25,
+   "hand.near": 0.4,
+   "hand.far": 0.4
+  }
+ },
+ "springs": {
+  "harmonics": 24,
+  "samples": 512,
+  "hair": {
+   "near": {
+    "f": 1.0,
+    "zeta": 0.55,
+    "kRot": 1.2,
+    "kGrav": 0.3
+   },
+   "far": {
+    "f": 0.8,
+    "zeta": 0.5,
+    "kRot": 1.5,
+    "kGrav": 0.25
+   }
+  },
+  "belly": {
+   "f": 4.0,
+   "zeta": 0.7
+  }
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 0.75
+  },
+  {
+   "type": "blink",
+   "t": 6.1,
+   "open": 7
+  }
+ ],
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 2,
+  "chest": 3,
+  "neck": 4,
+  "head": 5,
+  "clavicle.near": 2,
+  "upperArm.near": 0,
+  "forearm.near": 2,
+  "hand.near": 4,
+  "clavicle.far": 4,
+  "upperArm.far": 2,
+  "forearm.far": 3,
+  "hand.far": 5,
+  "face": 0,
+  "fx": 0
+ }
+}

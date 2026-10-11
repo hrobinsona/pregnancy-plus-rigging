@@ -24,9 +24,18 @@ export function build(ctx) {
         geom: ensureCW(tube([sh, lerp(sh, el, 0.5), lerp(sh, el, 0.85)], [0, 1, 2].map((i) => ({ r: w[i] + [-0.03, 0.01, 0.06][i], l: w[i] * 0.6 })), { capA: 'none', capK: 0.8 })),   // R10: emerges from under the sleeve at zero width; ends above the armpit window   // R9: a wedge (thin at the shoulder, wider down the arm), starting inside the cap — not a constant stripe
         skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
     }
-    out.push({ id: `sleeve.${side}`, bone: `forearm.${side}`, z: zb, fill,
-      geom: ensureCW(tube(axis, w.map((v, i) => { const o = X.sleeve.outer[i], n = X.sleeve.inner[i]; const out = side === 'near' ? { r: v * n, l: v * o } : { r: v * o, l: v * n }; if (i === 0) { if (side === 'near') out.r *= 0.85; else out.l *= 0.85; } return out; }), { capK: 0.55 })),
-      skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
+    const sleeveG = ensureCW(tube(axis, w.map((v, i) => { const o = X.sleeve.outer[i], n = X.sleeve.inner[i]; const out = side === 'near' ? { r: v * n, l: v * o } : { r: v * o, l: v * n }; if (i === 0) { if (side === 'near') out.r *= 0.85; else out.l *= 0.85; } return out; }), { capK: 0.55 }));
+    out.push({ id: `sleeve.${side}`, bone: `forearm.${side}`, z: zb, fill, geom: sleeveG, skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 } });
+    // FOREARM DRAW-ORDER SWAP (pose.zBias['arm.<side>.fore']): the forearm, cuff and hand come in front (a far hand resting on
+    // the bump) while the upper arm stays behind the body. The sleeve is drawn again at the new depth, clipped to a KEYHOLE
+    // on the forearm bone — a round cap centred on the elbow (the sleeve's own width there) widening toward the cuff — so the
+    // swapped forearm begins with a round elbow, the classic cut-out joint. Nothing changes when the bias is 0.
+    const zFore = zb + (ctx.pose?.zBias?.[`arm.${side}.fore`] ?? 0), zf = zb + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? ctx.pose?.zBias?.[`arm.${side}.fore`] ?? 0);   // zf: cuff, wrist and hand ('…hand' = only those come in front: the forearm runs behind the bump)
+    if (zFore !== zb) {
+      const rE = w[2] * 1.06, far = add(wr, mulS(norm(sub(wr, el)), 0.6));
+      out.push({ id: `keyhole.${side}`, bone: `forearm.${side}`, z: 0, fill: 'none', geom: ensureCW(limb(el, far, [{ t: 0, r: rE, l: rE }, { t: 1, r: 0.55, l: 0.55 }], { capK: 1.0, capB: 'none' })) });
+      out.push({ id: `sleeve.${side}.fore`, bone: `forearm.${side}`, z: zFore, fill, geom: sleeveG, skin: { parent: `upperArm.${side}`, child: `forearm.${side}`, zone: 0.22 }, clip: `keyhole.${side}` });
+    }
     // inner fold line along the sleeve (reads the arm against the cardigan of the same colour)
     const u = norm(sub(el, sh)), n = perpL(u), inner = side === 'near' ? 1 : -1;
     const f0 = add(lerp(sh, el, 0.15), mulS(n, inner * w[0] * 0.55)), f1 = add(lerp(sh, el, 0.75), mulS(n, inner * w[1] * 0.62)), f2 = add(lerp(el, wr, 0.25), mulS(perpL(norm(sub(wr, el))), inner * w[2] * 0.6)), f3 = add(lerp(el, wr, 0.6), mulS(perpL(norm(sub(wr, el))), inner * w[2] * 0.5));
@@ -36,16 +45,16 @@ export function build(ctx) {
     // the cuff's rounded end sits ON the wrist landmark (measured: the reference cuff edge is the wrist), so the whole back
     // of the hand / palm shows below it (hand_fit: the old cuff hid the top 0.08 H of the hand and the palm crease)
     const cE = X.cuffEnd?.[side] ?? 0.92, c0 = lerp(el, wr, cE - 0.14), c1 = lerp(el, wr, cE), cw = w[3] * 1.04;
-    out.push({ id: `cuff.${side}`, bone: `forearm.${side}`, z: zb + 0.4, fill, geom: ensureCW(limb(c0, c1, [{ t: 0, r: cw, l: cw }, { t: 1, r: cw * 0.92, l: cw * 0.92 }], { capK: 0.4 })) });
+    out.push({ id: `cuff.${side}`, bone: `forearm.${side}`, z: zFore + 0.4, fill, geom: ensureCW(limb(c0, c1, [{ t: 0, r: cw, l: cw }, { t: 1, r: cw * 0.92, l: cw * 0.92 }], { capK: 0.4 })) });
     const cn = perpL(norm(sub(c1, c0))), cm = lerp(c0, c1, 0.3);
     if (X.detail.cuffRib) out.push({ id: `cuff.${side}.rib`, bone: `forearm.${side}`, z: zb + 0.5, fill: C.cardiganShade, geom: taper([add(cm, mulS(cn, cw * 0.8)), lerp(cm, add(cm, [0, 0.012]), 1), add(cm, mulS(cn, -cw * 0.8))], [0.003, 0.016, 0.003]) });
     // wrist skin between cuff and palm, skinned across the wrist so a bent wrist stays filled (wrist corrective base)
-    out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zb + 0.3, fill: C.skin,
+    out.push({ id: `wrist.${side}`, bone: `hand.${side}`, z: zf + 0.3, fill: C.skin,
       geom: ensureCW(limb(lerp(el, wr, 0.86), wr, [{ t: 0, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }, { t: 1, r: char.params.handSpecs[side].wristW * 0.4, l: char.params.handSpecs[side].wristW * 0.4 }], { capK: 1.0 })),   // a bridge for a bent wrist only: narrower than the palm and ending at the wrist, so it never shapes the silhouette below the cuff (the palm's own wrist end, tucked under the cuff, does)
       skin: { parent: `forearm.${side}`, child: `hand.${side}`, zone: 0.5 } });
     // hand
     const hand = (ctx.pose?.handView?.[side] === 'back' && char.hands[side + 'Back']) || char.hands[side];   // view swap
-    out.push(...hand.parts(ctx, { fill: C.skin, line: C.skinLine, zBase: zb + 0.35 }));   // under the cuff: the cuff covers the wrist end
+    out.push(...hand.parts(ctx, { fill: C.skin, line: C.skinLine, zBase: zf + 0.35 }));   // under the cuff: the cuff covers the wrist end
   }
   return out;
 }

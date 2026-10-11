@@ -1,0 +1,19 @@
+{
+ "name": "face-uneasy",
+ "face": {
+  "lid": {
+   "open": 0.8
+  },
+  "gaze": [
+   0.004,
+   -0.004
+  ],
+  "mouth": {
+   "neutral": 1
+  },
+  "cheek": {
+   "sick": 0.6,
+   "blush": 0.4
+  }
+ }
+}

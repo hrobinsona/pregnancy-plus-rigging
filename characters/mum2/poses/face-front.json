@@ -1,0 +1,15 @@
+{
+ "name": "face-front",
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "gaze": [
+   0,
+   0
+  ],
+  "mouth": {
+   "smile": 1
+  }
+ }
+}

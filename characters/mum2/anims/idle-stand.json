@@ -1,0 +1,186 @@
+{
+ "name": "idle-stand",
+ "story": "Standing breathing idle: two slow, ribcage-led breaths per loop; her weight eases onto the far leg and her head tips toward the bump, her eyes drop to it and come back up inside a blink.",
+ "fps": 30,
+ "duration": 6.0,
+ "loop": true,
+ "exposure": "ones",
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "stand",
+   "ease": "inOut"
+  },
+  {
+   "t": 3.0,
+   "pose": "stand-b",
+   "ease": "inOut",
+   "note": "weight shift extreme, mid-loop"
+  }
+ ],
+ "tracks": {
+  "eyes": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth"
+   ],
+   "keys": [
+    {
+     "t": 0.2,
+     "pose": "face-front",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.8,
+     "pose": "face-front",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.1,
+     "pose": "face-look-down",
+     "ease": "dart",
+     "note": "eyes drop to the bump"
+    },
+    {
+     "t": 4.0,
+     "pose": "face-look-down",
+     "ease": "inOut"
+    },
+    {
+     "t": 4.12,
+     "pose": "face-front",
+     "ease": "dart",
+     "note": "eyes return inside the blink"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 3.0,
+  "phase0": 0.0,
+  "amp": 1,
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.022,
+   "chestAcross": 0.026,
+   "chestDeg": -1.0,
+   "shoulderDeg": 1.6,
+   "headDeg": -0.8,
+   "belly": 0.003
+  },
+  "note": "pregnant breathing: ribcage-led (more chest, less belly), I:E \u2248 1:0.64 + pause"
+ },
+ "drift": {
+  "amp": 1,
+  "seed": 11,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.3,
+   "clavicle.near": 0.25,
+   "clavicle.far": 0.25,
+   "hand.near": 0.6,
+   "hand.far": 0.5
+  }
+ },
+ "springs": {
+  "harmonics": 24,
+  "samples": 512,
+  "hair": {
+   "near": {
+    "f": 1.0,
+    "zeta": 0.55,
+    "kRot": 1.2,
+    "kGrav": 0.3
+   },
+   "far": {
+    "f": 0.8,
+    "zeta": 0.5,
+    "kRot": 1.5,
+    "kGrav": 0.25
+   }
+  },
+  "belly": {
+   "f": 4.0,
+   "zeta": 0.7
+  }
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 4.05,
+   "open": 6,
+   "note": "hides the eyes coming back up"
+  },
+  {
+   "type": "blink",
+   "t": 0.9
+  }
+ ],
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 2,
+  "chest": 4,
+  "neck": 6,
+  "head": 8,
+  "clavicle.near": 4,
+  "upperArm.near": 2,
+  "forearm.near": 4,
+  "hand.near": 6,
+  "clavicle.far": 4,
+  "upperArm.far": 2,
+  "forearm.far": 4,
+  "hand.far": 6,
+  "face": 0,
+  "fx": 0
+ }
+}

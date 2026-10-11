@@ -1,0 +1,15 @@
+{
+ "name": "face-look-down",
+ "face": {
+  "lid": {
+   "open": 0.85
+  },
+  "gaze": [
+   -0.005,
+   0.012
+  ],
+  "mouth": {
+   "warm": 1
+  }
+ }
+}
