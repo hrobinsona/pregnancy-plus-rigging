@@ -1,6 +1,6 @@
 {
  "name": "nausea-to-belly",
- "story": "Calm, holding her bump. A jolt of unease (head back, shoulders up), then the nausea hits: her near hand darts up to cover her mouth as her eyes squeeze shut; a gag heaves her chest and shoulders; she rides it out with two slow controlled breaths; it passes \u2014 a sigh, the hand drops to her heart, then comes back down to the bump on a lower, looser path and she softens with relief.",
+ "story": "Calm, holding her bump. A jolt of unease \u2014 a sharp intake, head back, shoulders jump \u2014 then the nausea hits: her near hand darts up and claps over her mouth as her eyes squeeze shut; a gag heaves her chest and shoulders; she rides it out with two slow, controlled breaths through her hand; it passes \u2014 a sigh, the hand drops to her heart, then sinks low and swings back in to the bump, and she softens with relief.",
  "fps": 30,
  "duration": 7.0,
  "loop": true,
@@ -12,23 +12,33 @@
    "ease": "inOut"
   },
   {
-   "t": 1.4,
+   "t": 1.3333,
    "pose": "bump-hold",
    "ease": "inOut",
    "note": "calm hold ends (breath + drift keep it alive)"
   },
   {
-   "t": 1.5333,
+   "t": 1.5,
    "pose": "recoil",
    "ease": "dart",
-   "note": "anticipation: head back, shoulders up, hands still planted (near arm channels land together: the hand stays on the bump while the torso recoils)",
    "shift": {
     "forearm.near": -2,
     "hand.near": -4
-   }
+   },
+   "note": "anticipation: intake, head back, shoulders jump; hands stay planted"
   },
   {
-   "t": 1.8667,
+   "t": 1.6,
+   "pose": "recoil",
+   "ease": "inOut",
+   "shift": {
+    "forearm.near": -2,
+    "hand.near": -4
+   },
+   "note": "held a beat at the top of the jolt"
+  },
+  {
+   "t": 1.9,
    "pose": "mouth-bd",
    "kind": "breakdown",
    "note": "up path: elbow close to the body, hand in front of the chest"
@@ -37,55 +47,95 @@
    "t": 2.2,
    "pose": "mouth-cover",
    "ease": "reaction",
-   "note": "lands over the mouth, head dips into it"
+   "note": "palm claps over the mouth, fingers on the far cheek; head dips into it"
   },
   {
    "t": 2.4333,
    "pose": "gag",
    "ease": "reaction",
+   "shift": {
+    "spineUpper": 1,
+    "clavicle.near": 3,
+    "clavicle.far": 1,
+    "neck": 3,
+    "head": 2
+   },
    "note": "gag heave: chest in, shoulders jump, head forward-down"
   },
   {
-   "t": 2.8667,
+   "t": 3.0333,
    "pose": "hunch-in",
    "ease": "breath",
-   "note": "controlled breath IN through the hand"
+   "shift": {
+    "spineUpper": 1,
+    "clavicle.near": 3,
+    "clavicle.far": 1,
+    "neck": 3,
+    "head": 2
+   },
+   "note": "slow breath IN through the hand (18f): ribcage up, shoulders up, head lifts"
   },
   {
-   "t": 3.2,
+   "t": 3.5,
    "pose": "hunch-out",
    "ease": "breath",
-   "note": "breath OUT"
+   "shift": {
+    "spineUpper": 1,
+    "clavicle.near": 3,
+    "clavicle.far": 1,
+    "neck": 3,
+    "head": 2
+   },
+   "note": "breath OUT (14f): ribcage and shoulders settle, head sinks"
   },
   {
-   "t": 3.7333,
+   "t": 4.1,
    "pose": "hunch-in",
    "ease": "breath",
-   "note": "second breath IN (longer than the out)"
+   "shift": {
+    "spineUpper": 1,
+    "clavicle.near": 3,
+    "clavicle.far": 1,
+    "neck": 3,
+    "head": 2
+   },
+   "note": "second breath IN (18f)"
   },
   {
-   "t": 4.1333,
+   "t": 4.6333,
    "pose": "relief-heart",
    "ease": "slowIn",
-   "note": "relief sigh: hand drops to the heart, shoulders drop"
+   "shift": {
+    "upperArm.near": 2,
+    "forearm.near": 1
+   },
+   "note": "relief sigh (16f): shoulders drop, the hand trails down to the heart"
   },
   {
-   "t": 4.4,
+   "t": 4.9,
    "pose": "relief-heart",
    "ease": "inOut",
+   "shift": {
+    "upperArm.near": 2,
+    "forearm.near": 1
+   },
    "note": "moving hold on the heart"
   },
   {
-   "t": 4.6667,
+   "t": 5.3667,
    "pose": "down-bd",
    "kind": "breakdown",
-   "note": "down path: sags low and outside the up path"
+   "shift": {
+    "upperArm.near": 2,
+    "forearm.near": 1
+   },
+   "note": "down path: sinks low by the hip, below the far hand"
   },
   {
-   "t": 5.0,
+   "t": 5.7,
    "pose": "bump-hold",
    "ease": "settle",
-   "note": "lands on the bump, slight overshoot, fingers settle"
+   "note": "swings in to the bump, slight overshoot, fingers settle"
   }
  ],
  "tracks": {
@@ -103,51 +153,51 @@
      "ease": "inOut"
     },
     {
-     "t": 1.3333,
+     "t": 1.2667,
      "pose": "face-calm",
      "ease": "inOut"
     },
     {
-     "t": 1.5667,
+     "t": 1.5,
      "pose": "face-uneasy",
      "ease": "dart",
-     "note": "eyes widen with the recoil, before the hand moves"
+     "note": "eyes widen with the jolt, before the hand moves"
     },
     {
-     "t": 1.8333,
+     "t": 1.8667,
      "pose": "face-uneasy",
      "ease": "inOut"
     },
     {
-     "t": 2.0667,
+     "t": 2.1667,
      "pose": "face-sick",
      "ease": "reaction",
      "note": "eyes squeeze shut as the hand lands"
     },
     {
-     "t": 3.0,
+     "t": 3.1,
      "pose": "face-sick",
      "ease": "inOut"
     },
     {
-     "t": 3.3333,
+     "t": 3.5667,
      "pose": "face-sick-soft",
      "ease": "breath",
      "note": "the out-breath eases the squeeze"
     },
     {
-     "t": 3.6667,
+     "t": 4.0667,
      "pose": "face-sick",
      "ease": "breath",
      "note": "squeezes again on the second in-breath"
     },
     {
-     "t": 4.0,
+     "t": 4.5667,
      "pose": "face-sick-soft",
      "ease": "inOut"
     },
     {
-     "t": 4.4,
+     "t": 5.0667,
      "pose": "face-relief",
      "ease": "inOut",
      "note": "it passes: eyes open soft, warm mouth"
@@ -161,7 +211,8 @@
   },
   "contact": {
    "channels": [
-    "fx.pinNear"
+    "fx.pinNear",
+    "fx.pinNearFace"
    ],
    "keys": [
     {
@@ -170,10 +221,10 @@
      "ease": "inOut"
     },
     {
-     "t": 1.5333,
+     "t": 1.6,
      "pose": "_pin-on",
      "ease": "inOut",
-     "note": "planted through the recoil"
+     "note": "planted through the jolt"
     },
     {
      "t": 1.6667,
@@ -182,12 +233,34 @@
      "note": "lets go as the hand lifts"
     },
     {
-     "t": 4.9,
+     "t": 2.1,
      "pose": "_pin-off",
      "ease": "inOut"
     },
     {
-     "t": 5.1333,
+     "t": 2.2333,
+     "pose": "_pin-face",
+     "ease": "inOut",
+     "note": "stuck to the face while head and arm overlap"
+    },
+    {
+     "t": 4.1333,
+     "pose": "_pin-face",
+     "ease": "inOut"
+    },
+    {
+     "t": 4.3,
+     "pose": "_pin-off",
+     "ease": "inOut",
+     "note": "lifts off the mouth"
+    },
+    {
+     "t": 5.7333,
+     "pose": "_pin-off",
+     "ease": "inOut"
+    },
+    {
+     "t": 6.0,
      "pose": "_pin-on",
      "ease": "inOut",
      "note": "re-planted as it lands"
@@ -197,26 +270,26 @@
  },
  "breath": {
   "period": 3.5,
-  "phase0": 0.0,
+  "phase0": 0.36,
   "amp": [
    {
     "t": 0,
     "amp": 1
    },
    {
-    "t": 2.2,
+    "t": 1.2667,
     "amp": 1
    },
    {
-    "t": 2.5333,
+    "t": 1.5333,
     "amp": 0.25
    },
    {
-    "t": 4.1333,
+    "t": 4.8333,
     "amp": 0.25
    },
    {
-    "t": 4.6667,
+    "t": 5.5,
     "amp": 1
    }
   ],
@@ -314,12 +387,8 @@
   },
   {
    "type": "blink",
-   "t": 5.3333,
+   "t": 6.0667,
    "open": 7
-  },
-  {
-   "type": "blink",
-   "t": 6.4
   }
  ],
  "blink": {
@@ -346,20 +415,22 @@
   "fx": 0
  },
  "pins": {
-  "on": "belly",
-  "plant": {
-   "near": "bump-hold",
-   "far": "bump-hold"
-  },
-  "release": {
-   "near": [
-    0.03,
-    0.3
-   ],
-   "far": [
-    0.3,
-    0.8
-   ]
+  "channels": {
+   "pinNear": {
+    "side": "near",
+    "on": "belly",
+    "plant": "bump-hold"
+   },
+   "pinFar": {
+    "side": "far",
+    "on": "belly",
+    "plant": "bump-hold"
+   },
+   "pinNearFace": {
+    "side": "near",
+    "on": "head",
+    "ref": "keys"
+   }
   }
  }
 }

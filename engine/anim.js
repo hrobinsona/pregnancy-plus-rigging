@@ -228,6 +228,22 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     return v / ampNorm;
   };
 
+  // ---- contact pins: fx channel → {side, on (bone the hand rests on), plant?, release?, ref?}. spec.pins.channels names
+  //      them; the legacy form {on, plant: {side: pose}, release} gives pinNear / pinFar on one surface.
+  const PS = spec.pins || {};
+  const PINS = Object.entries(PS.channels || Object.fromEntries(['near', 'far'].map((sd) => ['pin' + sd[0].toUpperCase() + sd.slice(1),
+    { side: sd, on: PS.on, plant: PS.plant?.[sd], release: Array.isArray(PS.release) ? PS.release : PS.release?.[sd] }])))
+    .map(([ch, P]) => [ch, { ...P, on: P.on || C.roles?.belly || 'belly' }]);
+  const unlagged = (tt, pose) => {
+    const b = {}, sc = {};
+    for (const ch of allCh) {
+      const [kind] = ch.split('.');
+      if (kind === 'bone') b[ch.slice(5)] = sample(ch, tt, keysFor(ch));
+      else if (kind === 'scale') { const id = ch.slice(6, -2), ix = +ch.slice(-1); (sc[id] ||= [1, 1])[ix] = sample(ch, tt, keysFor(ch)); }
+    }
+    return { bones: b, scale: { ...pose.scale, ...sc } };
+  };
+
   // ---- base pose: keys + breath + drift (no springs). Pure in t.
   function basePose(t) {
     const tt = wrapT(t);
@@ -264,9 +280,13 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
     }
     for (const [b, a] of Object.entries(DR.bones || {})) if (!b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     // contact: re-plant pinned hands against the additive layers, then let the hands themselves drift
-    for (const side of ['near', 'far']) {
-      const w = clamp01(pose.fx['pin' + side[0].toUpperCase() + side.slice(1)] ?? 0);
-      if (w > 0) pinArm(pose, keyed, side, w);
+    for (const [ch, P] of PINS) {
+      const w = clamp01(pose.fx[ch] ?? 0);
+      if (w <= 0) continue;
+      // reference: 'keys' = the key poses WITHOUT the per-channel lags (a hand on the face keeps the authored hand↔head
+      // relation while head and arm overlap at different lags); otherwise the lagged keyed pose
+      const ref = P.ref === 'keys' ? unlagged(tt, pose) : keyed;
+      pinArm(pose, ref, P.side, w, P);
     }
     for (const [b, a] of Object.entries(DR.bones || {})) if (b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     return pose;
@@ -279,18 +299,18 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
   const inv = (m) => { const d = m[0] * m[3] - m[1] * m[2]; return [m[3] / d, -m[1] / d, -m[2] / d, m[0] / d, (m[2] * m[5] - m[3] * m[4]) / d, (m[1] * m[4] - m[0] * m[5]) / d]; };
   const apM = (m, p) => [m[0] * p[0] + m[2] * p[1] + m[4], m[1] * p[0] + m[3] * p[1] + m[5]];
   const plantCache = {};
-  const plantRef = (side) => {
-    const nm = spec.pins?.plant?.[side]; if (!nm) return null;
-    if (!lib[nm]) throw new Error(`pins.plant.${side}: missing pose ${nm}`);
-    return (plantCache[side] ||= solve({ ...lib[nm], bones: { ...lib[nm].bones }, scale: { ...(lib[nm].scale || {}) } }));
+  const plantRef = (P) => {
+    const nm = P.plant; if (!nm) return null;
+    if (!lib[nm]) throw new Error(`pin plant: missing pose ${nm}`);
+    return (plantCache[nm] ||= solve({ ...lib[nm], bones: { ...lib[nm].bones }, scale: { ...(lib[nm].scale || {}) } }));
   };
-  function pinArm(pose, keyed, side, w) {
-    const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side, on = spec.pins?.on || C.roles?.belly || 'belly';
-    // the contact comes from the PLANT pose when the spec names one (spec.pins.plant[side]): the hand stays where it was put
-    // on the surface while the torso keys change under it (gag, hunch, breaths); otherwise from the keyed pose itself.
-    const kst = solve({ ...pose, bones: { ...pose.bones, ...keyed.bones }, scale: keyed.scale }), ref = plantRef(side) || kst, cur = solve(pose);
-    if (ref !== kst) {   // a plant holds only while the KEYED hand is at it: it lets go smoothly as the keys lift the hand off
-      const a = apM(inv(kst[on].M), kst[ha].pos), b = apM(inv(ref[on].M), ref[ha].pos), R = spec.pins?.release, [d0, d1] = (Array.isArray(R) ? R : R?.[side]) || [0.1, 0.4];
+  function pinArm(pose, keyed, side, w, P) {
+    const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side, on = P.on;
+    // the contact comes from the PLANT pose when the pin names one (P.plant): the hand stays where it was put on the surface
+    // while the torso keys change under it (gag, hunch, breaths); otherwise from the reference (keyed) pose itself.
+    const kst = solve({ ...pose, bones: { ...pose.bones, ...keyed.bones }, scale: keyed.scale }), ref = plantRef(P) || kst, cur = solve(pose);
+    if (ref !== kst && P.release) {   // optional: a plant holds only while the KEYED hand is at it (lets go as the keys lift it off)
+      const a = apM(inv(kst[on].M), kst[ha].pos), b = apM(inv(ref[on].M), ref[ha].pos), [d0, d1] = P.release;
       w *= 1 - smooth01((Math.hypot(a[0] - b[0], a[1] - b[1]) - d0) / (d1 - d0));
       if (w <= 0) return;
     }

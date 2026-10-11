@@ -1,6 +1,6 @@
 {
  "name": "down-bd",
- "note": "breakdown down: the hand sags low and outside on its way back to the bump",
+ "note": "breakdown down: the hand sags low by the hip, below the far hand, then swings in to the bump",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -37,10 +37,10 @@
    "point": "hand.near.f2k",
    "to": {
     "bone": "belly",
-    "point": "bellyApex",
+    "point": "bellyBottom",
     "offset": [
-     -0.42,
-     0.1
+     -0.3,
+     0.04
     ]
    },
    "solve": [

@@ -1,1 +1,1 @@
-{"name":"_pin-off","note":"contact track: the near hand is free","fx":{"pinNear":0}}
+{"name":"_pin-off","note":"contact track: near hand free","fx":{"pinNear":0,"pinNearFace":0}}

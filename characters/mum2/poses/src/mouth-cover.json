@@ -38,8 +38,8 @@
     "bone": "head",
     "point": "mouth",
     "offset": [
-     0.02,
-     -0.03
+     0.06,
+     -0.02
     ]
    },
    "solve": [
@@ -48,6 +48,25 @@
     "forearm.near",
     "hand.near"
    ]
+  },
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2t",
+   "to": {
+    "bone": "head",
+    "point": "cheekFar",
+    "offset": [
+     0.0,
+     -0.02
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ],
+   "w": 0.4
   }
  ]
 }

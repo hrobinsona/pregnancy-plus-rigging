@@ -16,8 +16,8 @@
  },
  "scale": {
   "spineUpper": [
-   1.06,
-   1.05
+   1.09,
+   1.07
   ]
  },
  "bones": {
@@ -25,18 +25,18 @@
   "spineUpper": -4,
   "chest": -3,
   "neck": 8,
-  "head": 11,
+  "head": 10,
   "belly": 3,
-  "clavicle.far": 10,
+  "clavicle.far": 13,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 7,
-  "upperArm.near": 87.3,
-  "forearm.near": 95.2,
-  "shoulderAbd.near": 15.7,
-  "hand.near": 31.5
+  "clavicle.near": 9,
+  "upperArm.near": 77,
+  "forearm.near": 93.8,
+  "shoulderAbd.near": -6.2,
+  "hand.near": -49.7
  },
  "_ik": [
   {
@@ -46,8 +46,8 @@
     "bone": "head",
     "point": "mouth",
     "offset": [
-     0.02,
-     -0.03
+     0.06,
+     -0.02
     ]
    },
    "solve": [
@@ -56,6 +56,25 @@
     "forearm.near",
     "hand.near"
    ]
+  },
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2t",
+   "to": {
+    "bone": "head",
+    "point": "cheekFar",
+    "offset": [
+     0,
+     -0.02
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ],
+   "w": 0.4
   }
  ]
 }

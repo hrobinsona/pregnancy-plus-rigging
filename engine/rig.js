@@ -144,9 +144,12 @@ export function createRig(C) {
     for (const G of C.outlineGroups || []) {
       const inG = parts.filter((p) => G.match.test(p.id)); if (!inG.length) continue;
       const zmin = Math.min(...inG.map((p) => p.z));
-      const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && !p.stroke).map((p) => p.id);
+      const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && !p.stroke && (!G.behind || G.behind.test(p.id))).map((p) => p.id);   // G.behind: only these count (a sleeve is not outlined against its own shoulder cap)
       if (!behind.length) continue;
-      for (const p of inG) if (p.fill === G.material) parts.push({ ...p, id: `${p.id}.ol`, z: zmin - 0.002, fill: 'none', stroke: G.line, strokeW: 2 * G.w, clip: behind, skin: undefined });
+      // G.fade = {bone, r: [r0, r1]}: the line is masked out within r0 (H) of that bone's joint and full beyond r1 — a sleeve
+      // over its own shoulder must not draw a seam that runs out tangentially through the silhouette
+      const fade = G.fade && { c: ap(F, st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
+      for (const p of inG) if (p.fill === G.material) parts.push({ ...p, id: `${p.id}.ol`, z: zmin - 0.002, fill: 'none', stroke: G.line, strokeW: 2 * G.w, clip: behind, skin: undefined, fade });
     }
     return parts.map((p, i) => [p, i]).sort((a, b) => a[0].z - b[0].z || a[1] - b[1]).map((x) => x[0]);
   }
@@ -200,7 +203,14 @@ export function createRig(C) {
       if (!clips.length) { if (!p.stroke) out += path; continue; }   // an outline with nothing behind it is never drawn
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
-      out += `<g clip-path="url(#${cid})">${path}</g>`;
+      let mk = '';
+      if (p.fade) {   // radial mask: hidden inside r0, shown beyond r1 (userSpaceOnUse, model px)
+        const { c, r0, r1 } = p.fade, R1 = r1 * Hpx, o = Math.max(0, Math.min(1, r0 / r1));
+        out += `<radialGradient id="${cid}-g" gradientUnits="userSpaceOnUse" cx="${f2(c[0] * Hpx)}" cy="${f2(c[1] * Hpx)}" r="${f2(R1)}"><stop offset="${f2(o)}" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>`
+             + `<mask id="${cid}-m" maskUnits="userSpaceOnUse" x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}"><rect x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}" fill="url(#${cid}-g)"/></mask>`;
+        mk = ` mask="url(#${cid}-m)"`;
+      }
+      out += `<g clip-path="url(#${cid})"${mk}>${path}</g>`;
     }
     return out + '</g></svg>';
   }

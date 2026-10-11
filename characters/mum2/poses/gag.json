@@ -33,10 +33,10 @@
   "shoulderAbd.far": 30,
   "hand.far": -70,
   "clavicle.near": 9,
-  "upperArm.near": 79.2,
-  "forearm.near": 97.3,
-  "shoulderAbd.near": 7.5,
-  "hand.near": 6.3
+  "upperArm.near": 78.8,
+  "forearm.near": 94.5,
+  "shoulderAbd.near": -3.6,
+  "hand.near": -54.9
  },
  "_ik": [
   {
@@ -46,8 +46,8 @@
     "bone": "head",
     "point": "mouth",
     "offset": [
-     0.02,
-     -0.03
+     0.06,
+     -0.02
     ]
    },
    "solve": [
@@ -56,6 +56,25 @@
     "forearm.near",
     "hand.near"
    ]
+  },
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2t",
+   "to": {
+    "bone": "head",
+    "point": "cheekFar",
+    "offset": [
+     0,
+     -0.02
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ],
+   "w": 0.4
   }
  ]
 }

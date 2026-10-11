@@ -1,6 +1,6 @@
 {
  "name": "recoil",
- "note": "anticipation: a jolt of unease \u2014 head pulls back and up, shoulders lift, hands still on the bump",
+ "note": "anticipation: a jolt of unease \u2014 sharp intake (ribcage up), head pulls back, shoulders jump, hands still on the bump (near arm IK-held on the bump so the plant lets go without a snap)",
  "bones": {
   "spineLower": 4,
   "spineUpper": -7,
@@ -8,12 +8,12 @@
   "neck": 0,
   "head": 0,
   "belly": 3,
-  "clavicle.far": 7,
+  "clavicle.far": 11,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 4,
+  "clavicle.near": 8,
   "upperArm.near": -2.1,
   "forearm.near": 35.3,
   "shoulderAbd.near": -30,
@@ -32,6 +32,12 @@
  "fx": {
   "pinFar": 1,
   "pinNear": 1
+ },
+ "scale": {
+  "spineUpper": [
+   1.03,
+   1.02
+  ]
  },
  "targets": [
   {
