@@ -99,7 +99,7 @@ export const handSpecs = {
   // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
   // inner edge is drawn as a line over the palm (as in the reference)
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
-         length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,
+         length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], lineStart: -0.25, crease: [[0.0, -0.4]], creaseHook: [0.68, 0.5], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,   // R19: the palm's line system sits toward the wrist (reference landmark band): long finger lines, crease on the heel
          thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.35, 1.32], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 

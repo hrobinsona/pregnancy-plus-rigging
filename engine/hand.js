@@ -119,7 +119,7 @@ export function makeHand(spec) {
     // the thumb-side envelope follows the thumb: as it ADDUCTS toward the palm (library ts < 0) the envelope pulls in with it
     // (continuous in the pose), so it never stands proud of a tucked thumb (R15 press kink)
     const tsLib = -(ctx.pose?.bones?.[`${id}.ts`] ?? 0) * S.thumbSide, tFoldE = ['t0', 't1', 't2'].reduce((acc, b) => acc + (ctx.pose?.bones?.[`${id}.${b}`] ?? 0), 0);
-    const thE = S.thenarEdge.map((v, k) => (k === 0 ? v : v - (v - 1.0) * Math.min(0.5, clamp01(Math.max(-tsLib / 12, tFoldE / 70)))));   // capped: a notch stays on the outer edge so the silhouette still says 'thumb'   // follows adduction AND flexion of the thumb   // only the distal anchor: the proximal one sits over the thenar pad, which stays put
+    const thE = S.thenarEdge.map((v, k) => (k === 0 ? v : v - (v - 1.0) * Math.min(S.view === 'back' ? 1 : 0.5, clamp01(Math.max(-tsLib / 12, tFoldE / 70)))));   // capped: a notch stays on the outer edge so the silhouette still says 'thumb'   // follows adduction AND flexion of the thumb   // only the distal anchor: the proximal one sits over the thenar pad, which stays put
     const palm = [
       P(-0.7 * wW, -0.7 * wW), add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), [...pinkyRoot, { c: true, ai: inA(pinkyRoot, add(lerp(P(-0.04, -wW), pinkyRoot, 0.5), mulS(n, -S.hypo)), pinkyA + 180, pkCurl), ti: 1.05 - 0.5 * pkCurl, ao: Math.atan2(F[3].k[1] - pinkyRoot[1], F[3].k[0] - pinkyRoot[0]) * 180 / Math.PI }],   // corner: arrives along the pinky's edge, leaves ACROSS the knuckle (never bulges past it when the pinky curls)   // arrives tangent to the pinky's outer edge   // R9: one convex edge from the wrist to the pinky's root (no dent, no step)
       ...[3, 2, 1].map(webAt), add(kn[0], mulS(u, 0.018)),   // WEBBING: between two knuckles the palm's edge dips to where the fingers meet (≈ webK of the first phalanx) — hidden when the fingers are together, the V of skin between spread fingers, and no enclosed gap at the roots
@@ -175,7 +175,7 @@ export function makeHand(spec) {
       const PK = posed(`${fid}a`, f.k, f.k), PP = posed(`${fid}b`, f.p, f.p), PQ = posed(`${fid}c`, f.q, f.q), PT = posed(`${fid}c`, f.t, f.q), PR = posed(`${fid}s`, root, f.k);
       const bdir = (b) => rot(dK, ctx.st ? ctx.st[b].rot : 0);
       /** rest distance along the finger from the knuckle → posed point + posed direction */
-      const along = (dd) => dd <= La ? [lerp(PK, PP, clamp01(dd / La)), bdir(`${fid}a`)] : dd <= La + Lb ? [lerp(PP, PQ, (dd - La) / Lb), bdir(`${fid}b`)] : [lerp(PQ, PT, clamp01((dd - La - Lb) / Lc)), bdir(`${fid}c`)];
+      const along = (dd) => dd <= La ? [lerp(PK, PP, Math.min(1, dd / La)), bdir(`${fid}a`)] : dd <= La + Lb ? [lerp(PP, PQ, (dd - La) / Lb), bdir(`${fid}b`)] : [lerp(PQ, PT, clamp01((dd - La - Lb) / Lc)), bdir(`${fid}c`)];
       const EP = along(La + dE)[0], MP = along(La + dM)[0];
       out.push({ id: fid, bone: `${fid}c`, z: zf, fill, world: true,
                  geom: tubeOf([PR, PK, PP, MP, EP], [f.r[0] * 0.8, f.r[0], f.r[1], rAt(dM), rAt(dE)], 0, S.tipK, 'none') });   // round fingertip pad; FLAT root sunk in the palm (a round root bulges past the palm's edge)
@@ -265,7 +265,8 @@ export function makeHand(spec) {
       const ok = rs.length >= 2, along0 = (j) => rot(norm(sub(F[j].p, F[j].k)), ctx.st ? ctx.st[`${id}.f${j + 1}a`].rot : 0);   // posed first-phalanx direction
       if (ok) {
         const fd = norm([0, 1, 2, 3].reduce((acc, j) => add(acc, along0(j)), [0, 0])), bow = mulS(fd, 0.015 * clamp01(mcpAvg / 40));
-        let b0 = rs[rs.length - 1]; const b2 = rs[0], bm = add(rs.length > 2 ? rs[1] : lerp(b0, b2, 0.5), bow), half = (pt) => lerp(bm, pt, keepB);
+        const sink = mulS(fd, -0.008), rsS = rs.map((p_) => add(p_, sink));   // the spine runs half a line width toward the wrist of the line starts: their round caps are buried in it (no nubs at the T-joins)
+        let b0 = rsS[rsS.length - 1]; const bmid = add(rsS.length > 2 ? rsS[1] : lerp(b0, rsS[0], 0.5), bow), b2 = add(rsS[0], mulS(norm(sub(rsS[0], bmid)), 0.012)), bm = bmid, half = (pt) => lerp(bm, pt, keepB);   // pinky end runs 0.012 H past its line: a T, not an L
         // clearance from the crease ≥ creaseGap: shorten the spine from its index end, never move the crease
         if (creaseP) { const dmin = (pt) => Math.min(...creaseP.map((c) => Math.hypot(c[0] - pt[0], c[1] - pt[1])));
           for (let k = 0; k < 10 && dmin(half(b0)) < S.creaseGap; k++) b0 = lerp(b0, bm, 0.15); }

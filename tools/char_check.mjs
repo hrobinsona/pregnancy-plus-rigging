@@ -24,6 +24,16 @@ for (const name of ['(rest)', ...poses]) {
     if (doc[p.id] !== undefined && doc[p.id] !== n) problems.push(`${p.id}: built ${n}, documented ${doc[p.id]}`);
   }
 }
+// 4) LINT: a '//' comment followed on the same line by more `key: value,` code means an edit dropped a comment MID-LINE and
+//    silently commented out the rest of an object literal (it builds fine — the keys just fall back to defaults). Bit us 5×.
+for (const f of [`characters/${char}/params.js`, ...fs.readdirSync(`characters/${char}/parts`).map((x) => `characters/${char}/parts/${x}`), ...fs.readdirSync('engine').filter((x) => x.endsWith('.js')).map((x) => `engine/${x}`)]) {
+  fs.readFileSync(f, 'utf8').split('\n').forEach((ln, i) => {
+    const c = ln.indexOf('//'); if (c < 0 || /https?:\/\//.test(ln)) return;
+    const after = ln.slice(c + 2);
+    if (/[,{(]\s*[A-Za-z_$][\w$]*\s*:\s*[-\[{('"0-9A-Za-z_$]/.test(after) && /[,;{(]\s*$/.test(after.trim()) && /\b[A-Za-z_$][\w$]*\s*:\s*[-\[{0-9]/.test(after.split('  ').pop()))
+      problems.push(`${f}:${i + 1}: code after a '//' comment on the same line (mid-line comment?) — …${after.slice(-70)}`);
+  });
+}
 const uniq = [...new Set(problems)];
 if (fix) for (const [id, n] of Object.entries(counts)) if (doc[id] !== undefined && doc[id] !== n) console.log(`  '${id}': ${n},`);
 console.log(uniq.length ? uniq.join('\n') : `ok — ${char}: ${Object.keys(counts).length} parts, ${poses.length + 1} poses, anchor contract holds`);
