@@ -59,7 +59,7 @@
    "t": 1.9,
    "pose": "mouth-bd",
    "kind": "breakdown",
-   "note": "up path: elbow close to the body, hand in front of the chest"
+   "note": "up path: the hand rises through the air in front of the chest, fingers already up toward the mouth"
   },
   {
    "t": 2.2,
@@ -107,8 +107,8 @@
    "note": "the heave from the gut: trunk folds 14\u00b0, ribcage squeezes; neck and head land together (+5)"
   },
   {
-   "t": 2.9,
-   "pose": "gag",
+   "t": 2.8,
+   "pose": "gag-hold",
    "ease": "inOut",
    "shift": {
     "spineUpper": 1,
@@ -117,7 +117,7 @@
     "neck": 1,
     "head": 0
    },
-   "note": "the retch lands: a beat before the first breath"
+   "note": "moving hold: the retch keeps folding a little (2\u00b0), ribcage squeezes on"
   },
   {
    "t": 3.5,
@@ -189,8 +189,8 @@
   },
   {
    "t": 6.2333,
-   "pose": "relief-heart",
-   "ease": "inOut",
+   "pose": "relief-settle",
+   "ease": "settle",
    "shift": {
     "spineUpper": 1,
     "clavicle.near": 3,
@@ -201,10 +201,21 @@
     "forearm.near": 2,
     "hand.near": 2
    },
-   "note": "moving hold on the heart"
+   "note": "the sigh settles: ribcage sinks under the hand"
   },
   {
-   "t": 6.7,
+   "t": 6.5667,
+   "pose": "drop-bd",
+   "kind": "breakdown",
+   "shift": {
+    "upperArm.near": 2,
+    "forearm.near": 2,
+    "hand.near": 2
+   },
+   "note": "drops off the heart beside the cardigan front, fingers down, clear of the bump"
+  },
+  {
+   "t": 6.7667,
    "pose": "down-bd",
    "kind": "breakdown",
    "shift": {
@@ -212,13 +223,13 @@
     "forearm.near": 2,
     "hand.near": 2
    },
-   "note": "down path: sinks low and out by the hip, off the bump"
+   "note": "sinks low by the hip, clear of the bump outline"
   },
   {
-   "t": 7.0333,
+   "t": 7.0667,
    "pose": "bump-hold",
    "ease": "settle",
-   "note": "swings in to the bump, slight overshoot"
+   "note": "swings in on one arc: first contact ~f211, slight overshoot"
   },
   {
    "t": 7.5333,
@@ -371,12 +382,12 @@
      "note": "lifts off the mouth"
     },
     {
-     "t": 7.0667,
+     "t": 7.1333,
      "pose": "_pin-off",
      "ease": "inOut"
     },
     {
-     "t": 7.3333,
+     "t": 7.4,
      "pose": "_pin-on",
      "ease": "inOut",
      "note": "re-planted as it lands"
@@ -401,11 +412,11 @@
     "amp": 0.25
    },
    {
-    "t": 6.0,
+    "t": 5.3333,
     "amp": 0.25
    },
    {
-    "t": 6.8333,
+    "t": 5.9333,
     "amp": 1
    }
   ],
@@ -438,7 +449,7 @@
    "chestDeg": -1.0,
    "shoulderDeg": 1.6,
    "headDeg": -0.8,
-   "belly": 0.003
+   "belly": 0.007
   }
  },
  "drift": {

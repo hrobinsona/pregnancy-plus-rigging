@@ -76,3 +76,23 @@ Asks, and what was done:
    The bun stays rigid by design (tied up).
 5. [low] Breath shifts on the sigh and the relief look → applied (wave set). NOT on the jolt: a startle fires
    head/shoulders together (ask 3 wins over ask 5).
+
+## Round 5 — NOT YET
+Scores: timing 4 · spacing 3 · arcs 3 · overlap 4 · breath 3 · staging 3 · appeal 3 · technical 4
+Asks, and what was done:
+1. [high] The dart dragged up the sternum and throat through the heart pose → `mouth-bd` re-authored. DEVIATION: the
+   ask was 90 px screen-LEFT (over the near panel); tried, it folds the arm into a hand-on-shoulder pledge (forearm at its
+   150° limit, upper arm hiding it). In this 3/4 view "in the air in front of her" is screen-RIGHT of the chest, so the
+   breakdown wrist is in front of the bust (clear of the body line), fingers already up toward the mouth, palm to the face.
+   No longer the heart pose. Wrist peak 40 px/f; fingertip 69 px/f (roll done before f57).
+2. [med] Return still slid down the bump → new breakdown `drop-bd` f197 (drops off the heart beside the cardigan front,
+   fingers down, elbow in), `down-bd` f203 a further 50 px left / 30 px lower (by the hip, clear of the bump outline),
+   one swing-in arc to `bump-hold` f212 (first contact ~f211), re-plant f214–222. Wrist 28/26/27 px/f humps, fingertip
+   ≤ 54, landing 25→20→10→3.
+3. [med] Exhales re-hit the heave → `hunch-out` spine −4 (was −2 of fold toward the gag's +5), head 12 (was 18), neck 5;
+   ribcage 0.97/0.98; the inhale sits up and back (spine −6, head 6), so in/out are no longer one line.
+4. [med] Dead frame after the retch / breath 1 in = out → `gag-hold` moving hold f80–84 (2° more fold, ribcage 0.93,
+   chin 1° down); hunch-in stays f105 (21f in vs 18f out). Belly scale 1.015/1.01 on the ins and 0.99 on the outs, and
+   the procedural belly gain 0.003 → 0.007, so the wave starts at the bump.
+5. [low] Torso froze under the heart hand → `relief-settle` f187 (ribcage 0.98, shoulders −3°, spine −1°, settle ease);
+   procedural breath back to full by f178.

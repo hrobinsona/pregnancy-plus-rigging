@@ -3,17 +3,17 @@
  "note": "riding it out: hunched, the breath OUT (ribcage settles, shoulders drop a little)",
  "bones": {
   "spineLower": 4,
-  "spineUpper": -2,
+  "spineUpper": -4,
   "chest": -2,
-  "neck": 8,
-  "head": 18,
+  "neck": 5,
+  "head": 12,
   "belly": 3,
-  "clavicle.far": 5,
+  "clavicle.far": 3,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 0,
+  "clavicle.near": 2,
   "upperArm.near": 72,
   "forearm.near": 110
  },
@@ -32,8 +32,12 @@
  },
  "scale": {
   "spineUpper": [
-   0.98,
-   0.99
+   0.97,
+   0.98
+  ],
+  "belly": [
+   0.99,
+   1.0
   ]
  },
  "targets": [

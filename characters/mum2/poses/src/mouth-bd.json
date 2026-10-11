@@ -1,6 +1,6 @@
 {
  "name": "mouth-bd",
- "note": "breakdown up: elbow leads forward close to the body, the hand rises in front of the chest",
+ "note": "breakdown up: the hand rises through the air IN FRONT of the chest (clear of the body), already turned fingers-up toward the mouth",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -20,9 +20,9 @@
  },
  "hands": {
   "near": {
-   "pose": "cup",
+   "pose": "press",
    "mix": {
-    "press": 0.5
+    "cup": 0.4
    }
   },
   "far": "cup"
@@ -39,20 +39,40 @@
  "targets": [
   {
    "bone": "hand.near",
-   "point": "hand.near.f2k",
+   "point": "wristNear",
    "to": {
     "bone": "chest",
     "point": "neck",
     "offset": [
-     0.0,
-     0.45
+     0.5,
+     0.52
     ]
    },
    "solve": [
+    "shoulderAbd.near",
     "upperArm.near",
     "forearm.near",
     "hand.near"
    ]
+  },
+  {
+   "bone": "hand.near",
+   "point": "hand.near.f2t",
+   "to": {
+    "bone": "chest",
+    "point": "neck",
+    "offset": [
+     0.58,
+     0.07
+    ]
+   },
+   "solve": [
+    "shoulderAbd.near",
+    "upperArm.near",
+    "forearm.near",
+    "hand.near"
+   ],
+   "w": 0.5
   }
  ]
 }

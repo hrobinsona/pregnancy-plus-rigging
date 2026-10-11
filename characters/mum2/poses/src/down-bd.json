@@ -19,7 +19,12 @@
   "shoulderAbd.near": -30
  },
  "hands": {
-  "near": "cup",
+  "near": {
+   "pose": "cup",
+   "mix": {
+    "relaxed": 0.5
+   }
+  },
   "far": "cup"
  },
  "handView": {
@@ -39,8 +44,8 @@
     "bone": "belly",
     "point": "bellyBottom",
     "offset": [
-     -0.58,
-     0.2
+     -0.78,
+     0.32
     ]
    },
    "solve": [

@@ -16,27 +16,31 @@
  },
  "scale": {
   "spineUpper": [
-   0.98,
-   0.99
+   0.97,
+   0.98
+  ],
+  "belly": [
+   0.99,
+   1
   ]
  },
  "bones": {
   "spineLower": 4,
-  "spineUpper": -2,
+  "spineUpper": -4,
   "chest": -2,
-  "neck": 8,
-  "head": 18,
+  "neck": 5,
+  "head": 12,
   "belly": 3,
-  "clavicle.far": 5,
+  "clavicle.far": 3,
   "upperArm.far": -10.4,
   "forearm.far": 116.6,
   "shoulderAbd.far": 30,
   "hand.far": -70,
-  "clavicle.near": 0,
-  "upperArm.near": 71,
-  "forearm.near": 79.8,
-  "shoulderAbd.near": -16.1,
-  "hand.near": -52.2
+  "clavicle.near": 2,
+  "upperArm.near": 78.4,
+  "forearm.near": 92.6,
+  "shoulderAbd.near": -2.2,
+  "hand.near": -51.4
  },
  "_ik": [
   {
