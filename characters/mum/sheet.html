@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>mum — character sheet</title>
+<style>html,body{margin:0;padding:0;background:#fff;overflow:hidden}#stage svg{display:block}</style></head>
+<body><div id="stage"></div>
+<script type="module">
+import { toSVG, jointWorld } from './rig.js';
+const q = new URLSearchParams(location.search);
+const pose = await (await fetch(`./poses/${q.get('pose') || 'rest'}.json`)).json();
+if (q.get('bones')) pose.bones = { ...pose.bones, ...JSON.parse(q.get('bones')) };
+if (q.get('facing')) pose.facing = q.get('facing');
+const opts = { frame: q.get('frame') || 'still', silhouette: q.get('sil') === '1', bg: q.get('bg') || '#ffffff' };
+const stage = document.getElementById('stage');
+// renderAt(t): pure function of t. The rest pose has no time dependence.
+window.renderAt = (t) => { stage.innerHTML = toSVG(pose, { ...opts, t }); };
+window.jointWorld = () => jointWorld(pose);
+window.renderAt(0);
+window.__ready = true;
+</script></body></html>

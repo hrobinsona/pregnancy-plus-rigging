@@ -1,0 +1,8 @@
+{
+  "name": "rest",
+  "bones": {},
+  "lattice": { "belly": null },
+  "expression": "soft-smile",
+  "hands": { "near": "cupping-belly", "far": "cupping-belly" },
+  "facing": "right"
+}

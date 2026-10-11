@@ -1,0 +1,573 @@
+{
+ "image": "characters/mum/ref/reference.png",
+ "size": [
+  1254,
+  1254
+ ],
+ "bbox": [
+  367,
+  29,
+  879,
+  1208
+ ],
+ "height_px": 1179,
+ "head_H_px": 210.0,
+ "height_in_heads": 5.614,
+ "landmarks": {
+  "crown": [
+   488.0,
+   29.0
+  ],
+  "ground": [
+   703.1,
+   1208.0
+  ],
+  "eyeNear": [
+   564.9,
+   194.9
+  ],
+  "eyeFar": [
+   634.5,
+   186.6
+  ],
+  "mouth": [
+   605.4,
+   241.7
+  ],
+  "nose": [
+   619.4,
+   206.4
+  ],
+  "cheekNear": [
+   555.0,
+   225.1
+  ],
+  "cheekFar": [
+   648.8,
+   215.1
+  ],
+  "skullTop": [
+   600.0,
+   74.0
+  ],
+  "ear": [
+   491.6,
+   214.9
+  ],
+  "chin": [
+   610.0,
+   284.0
+  ],
+  "neckBack": [
+   516.0,
+   315.0
+  ],
+  "neckFront": [
+   594.0,
+   315.0
+  ],
+  "neckline": [
+   611.5,
+   415.0
+  ],
+  "shoulderNear": [
+   492.1,
+   326.0
+  ],
+  "shoulderFar": [
+   620.5,
+   328.0
+  ],
+  "cardiganHem": [
+   453.5,
+   806.0
+  ],
+  "underBust": [
+   683.5,
+   506.0
+  ],
+  "bustApex": [
+   705.0,
+   449.0
+  ],
+  "bellyApex": [
+   716.0,
+   604.0
+  ],
+  "bellyBottom": [
+   670.5,
+   663.0
+  ],
+  "handFar": [
+   671.1,
+   555.7
+  ],
+  "handNear": [
+   580.3,
+   637.3
+  ],
+  "armNearOuter": [
+   367.0,
+   555.0
+  ],
+  "armFarOuter": [
+   781.0,
+   560.0
+  ],
+  "sockTopNear": [
+   636.0,
+   1055.0
+  ],
+  "toeNear": [
+   745.0,
+   1185.0
+  ],
+  "heelNear": [
+   591.0,
+   1152.0
+  ],
+  "sockTopFar": [
+   773.0,
+   1053.0
+  ],
+  "toeFar": [
+   877.0,
+   1176.0
+  ],
+  "heelFar": [
+   731.0,
+   1146.0
+  ],
+  "cuffNear": [
+   636.0,
+   1036.0
+  ],
+  "cuffFar": [
+   773.0,
+   1035.0
+  ],
+  "shinGap": [
+   717.5,
+   798.0
+  ],
+  "kneeFar": [
+   849.0,
+   758.0
+  ],
+  "seat": [
+   552.2,
+   797.0
+  ]
+ },
+ "landmarks_frac": {
+  "crown": [
+   -0.1824,
+   1.0
+  ],
+  "ground": [
+   0.0,
+   0.0
+  ],
+  "eyeNear": [
+   -0.1172,
+   0.8593
+  ],
+  "eyeFar": [
+   -0.0582,
+   0.8663
+  ],
+  "mouth": [
+   -0.0829,
+   0.8196
+  ],
+  "nose": [
+   -0.071,
+   0.8495
+  ],
+  "cheekNear": [
+   -0.1256,
+   0.8337
+  ],
+  "cheekFar": [
+   -0.0461,
+   0.8422
+  ],
+  "skullTop": [
+   -0.0874,
+   0.9618
+  ],
+  "ear": [
+   -0.1794,
+   0.8423
+  ],
+  "chin": [
+   -0.079,
+   0.7837
+  ],
+  "neckBack": [
+   -0.1587,
+   0.7574
+  ],
+  "neckFront": [
+   -0.0925,
+   0.7574
+  ],
+  "neckline": [
+   -0.0777,
+   0.6726
+  ],
+  "shoulderNear": [
+   -0.179,
+   0.7481
+  ],
+  "shoulderFar": [
+   -0.0701,
+   0.7464
+  ],
+  "cardiganHem": [
+   -0.2117,
+   0.341
+  ],
+  "underBust": [
+   -0.0166,
+   0.5954
+  ],
+  "bustApex": [
+   0.0016,
+   0.6438
+  ],
+  "bellyApex": [
+   0.0109,
+   0.5123
+  ],
+  "bellyBottom": [
+   -0.0277,
+   0.4623
+  ],
+  "handFar": [
+   -0.0271,
+   0.5533
+  ],
+  "handNear": [
+   -0.1042,
+   0.4841
+  ],
+  "armNearOuter": [
+   -0.2851,
+   0.5539
+  ],
+  "armFarOuter": [
+   0.0661,
+   0.5496
+  ],
+  "sockTopNear": [
+   -0.0569,
+   0.1298
+  ],
+  "toeNear": [
+   0.0355,
+   0.0195
+  ],
+  "heelNear": [
+   -0.0951,
+   0.0475
+  ],
+  "sockTopFar": [
+   0.0593,
+   0.1315
+  ],
+  "toeFar": [
+   0.1475,
+   0.0271
+  ],
+  "heelFar": [
+   0.0237,
+   0.0526
+  ],
+  "cuffNear": [
+   -0.0569,
+   0.1459
+  ],
+  "cuffFar": [
+   0.0593,
+   0.1467
+  ],
+  "shinGap": [
+   0.0122,
+   0.3478
+  ],
+  "kneeFar": [
+   0.1237,
+   0.3817
+  ],
+  "seat": [
+   -0.128,
+   0.3486
+  ]
+ },
+ "feature_sizes": {
+  "eyes_px": {
+   "near": [
+    17,
+    19
+   ],
+   "far": [
+    15,
+    19
+   ]
+  },
+  "mouth_w_px": 41,
+  "neck_w_px": 78.0,
+  "shins_px": {
+   "near": [
+    580,
+    698
+   ],
+   "far": [
+    724,
+    837
+   ]
+  }
+ },
+ "belly_profile": [
+  [
+   688.0,
+   506.0
+  ],
+  [
+   691.0,
+   518.0
+  ],
+  [
+   695.0,
+   530.0
+  ],
+  [
+   596.0,
+   542.0
+  ],
+  [
+   593.0,
+   554.0
+  ],
+  [
+   600.0,
+   566.0
+  ],
+  [
+   617.0,
+   578.0
+  ],
+  [
+   697.0,
+   590.0
+  ],
+  [
+   713.0,
+   602.0
+  ],
+  [
+   716.0,
+   614.0
+  ],
+  [
+   715.0,
+   626.0
+  ],
+  [
+   708.0,
+   638.0
+  ],
+  [
+   692.0,
+   650.0
+  ],
+  [
+   671.0,
+   663.0
+  ]
+ ],
+ "back_profile": [
+  [
+   474.0,
+   331.0
+  ],
+  [
+   414.0,
+   373.0
+  ],
+  [
+   397.0,
+   416.0
+  ],
+  [
+   386.0,
+   459.0
+  ],
+  [
+   377.0,
+   501.0
+  ],
+  [
+   369.0,
+   544.0
+  ],
+  [
+   368.0,
+   587.0
+  ],
+  [
+   400.0,
+   630.0
+  ],
+  [
+   415.0,
+   672.0
+  ],
+  [
+   402.0,
+   715.0
+  ],
+  [
+   398.0,
+   758.0
+  ],
+  [
+   436.0,
+   801.0
+  ]
+ ],
+ "front_profile": [
+  [
+   662.0,
+   284.0
+  ],
+  [
+   597.0,
+   318.0
+  ],
+  [
+   687.0,
+   352.0
+  ],
+  [
+   710.0,
+   386.0
+  ],
+  [
+   722.0,
+   420.0
+  ],
+  [
+   733.0,
+   455.0
+  ],
+  [
+   747.0,
+   489.0
+  ],
+  [
+   769.0,
+   523.0
+  ],
+  [
+   781.0,
+   557.0
+  ],
+  [
+   778.0,
+   591.0
+  ],
+  [
+   749.0,
+   626.0
+  ],
+  [
+   762.0,
+   660.0
+  ],
+  [
+   826.0,
+   694.0
+  ],
+  [
+   845.0,
+   728.0
+  ],
+  [
+   849.0,
+   762.0
+  ],
+  [
+   849.0,
+   797.0
+  ]
+ ],
+ "palette": {
+  "garment": "#cbaee9",
+  "garmentShade": "#b695dc",
+  "cardigan": "#feb8c3",
+  "cardiganShade": "#fb9caf",
+  "skin": "#d48055",
+  "skinShade": "#cf6c49",
+  "skinLine": "#b56645",
+  "hair": "#633826",
+  "hairShade": "#502a19",
+  "accent": "#fee076",
+  "accentShade": "#facb4b",
+  "line": "#070201",
+  "mouth": "#763519",
+  "cheek": "#e37158"
+ },
+ "landmark_rules": {
+  "crown": "topmost figure pixel (top of bun)",
+  "skullTop": "topmost hair pixel in the column midway between the eyes",
+  "chin": "first row below the mouth where the face front edge reaches the neck front edge",
+  "eyeNear/eyeFar": "centroids of the two largest eye-dark blobs (near = screen-left)",
+  "mouth": "centroid of the mouth blob",
+  "nose": "centroid of the skin-shade blob between eyes and mouth",
+  "cheekNear/cheekFar": "centroids of the blush blobs",
+  "ear": "centroid of the small skin blob left of the face",
+  "neckBack/neckFront": "skin edges 0.15H below the chin",
+  "neckline": "lowest pixel of the face/neck/chest skin region",
+  "shoulderNear/Far": "topmost cardigan pixel left/right of the neck",
+  "armNearOuter/armFarOuter": "extreme left/right figure pixel between shoulder and seat",
+  "bustApex": "rightmost torso-garment pixel between neckline and under-bust",
+  "underBust": "lowest pixel of the far under-bust shade arc",
+  "bellyApex": "rightmost torso-garment pixel below the under-bust",
+  "bellyBottom": "lowest pixel of the torso-garment region (top/belly)",
+  "handNear/handFar": "centroids of the hand skin regions (near = lower hand)",
+  "kneeFar": "rightmost leg-garment pixel above the shins",
+  "shinGap": "apex of the background gap between the shins (front-bottom of near knee)",
+  "seat": "midpoint of the bottom 3 rows of leg garment left of the near shin (seat line)",
+  "cardiganHem": "lowest cardigan pixel",
+  "cuffNear/cuffFar": "lowest garment pixel at each shin centre",
+  "sockTopNear/Far": "topmost sock pixel at each sock centre",
+  "toeNear/toeFar": "rightmost sock pixel of each sock",
+  "heelNear/heelFar": "leftmost sock pixel in the bottom 35% of each sock",
+  "ground": "midpoint of the lowest figure row"
+ },
+ "notes": [
+  "Seated pose, three-quarter facing screen-right; near side = her right side = screen-left.",
+  "Navel and pubis are not visible (hands/top cover them); bellyBottom and seat replace them.",
+  "Spine is hidden by the cardigan; back_profile is the near sleeve/cardigan silhouette edge."
+ ],
+ "kmeans_clusters": {
+  "#b695dc": 7892,
+  "#fee076": 23838,
+  "#d48055": 43711,
+  "#feb8c3": 59022,
+  "#633826": 23989,
+  "#cbaee9": 121853,
+  "#f8e8e5": 2528,
+  "#d4b4da": 3365,
+  "#fb9caf": 7312,
+  "#502a19": 6365,
+  "#ba918d": 1320,
+  "#fbecb3": 1314,
+  "#cf6c49": 3639,
+  "#0d0302": 517,
+  "#facb4b": 1505,
+  "#ca8166": 2807
+ }
+}
