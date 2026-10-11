@@ -3,40 +3,35 @@
  "note": "gag heave from the gut: upper spine folds 14° forward, ribcage squeezes, shoulders jump up and forward, head goes with the trunk, chin into the hand",
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
-   0.94,
+   0.9,
    0.95
+  ],
+  "belly": [
+   0.97,
+   1
   ]
  },
  "bones": {
-  "spineLower": 4,
+  "spineLower": 8.5,
   "spineUpper": 5,
   "chest": -3,
   "neck": 3,
   "head": 10,
   "belly": 3,
-  "clavicle.far": -7,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 12,
-  "upperArm.near": 83.8,
-  "forearm.near": 105.1,
-  "shoulderAbd.near": 1.7,
-  "hand.near": -55.9
+  "clavicle.far": -2,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 7,
+  "upperArm.near": 83.9,
+  "forearm.near": 108.2,
+  "shoulderAbd.near": 3,
+  "hand.near": -50
  },
  "_ik": [
   {

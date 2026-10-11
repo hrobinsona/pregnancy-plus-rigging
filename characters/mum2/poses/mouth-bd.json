@@ -1,13 +1,8 @@
 {
  "name": "mouth-bd",
- "note": "breakdown up: the hand rises through the air IN FRONT of the chest (clear of the body), already turned fingers-up toward the mouth",
+ "note": "breakdown up: wrist below the chin, back of the hand to us, cupped fingers already angled up at the mouth (≤20° roll left)",
  "hands": {
-  "near": {
-   "pose": "press",
-   "mix": {
-    "cup": 0.4
-   }
-  },
+  "near": "cup",
   "far": "cup"
  },
  "handView": {
@@ -32,10 +27,10 @@
   "shoulderAbd.far": 30,
   "hand.far": -70,
   "clavicle.near": 3,
-  "shoulderAbd.near": -19.2,
-  "upperArm.near": 40,
-  "forearm.near": 61.1,
-  "hand.near": 51.1
+  "shoulderAbd.near": -6.6,
+  "upperArm.near": 40.1,
+  "forearm.near": 99.9,
+  "hand.near": 3.8
  },
  "_ik": [
   {
@@ -45,8 +40,8 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     0.5,
-     0.52
+     0.15,
+     0.24
     ]
    },
    "solve": [
@@ -63,8 +58,8 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     0.58,
-     0.07
+     0.37,
+     -0.14
     ]
    },
    "solve": [

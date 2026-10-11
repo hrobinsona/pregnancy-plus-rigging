@@ -16,7 +16,7 @@ const char = arg('char', 'mum2'), name = arg('anim', 'idle-stand'), D = `charact
 const C = (await import(`../${D}character.js`)).default, rig = createRig(C);
 const handLib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`${D}poses/hands/${h}.json`))]));
 const spec = JSON.parse(fs.readFileSync(`${D}anims/${name}.json`));
-const poseNames = [...new Set([...[...spec.keys, ...Object.values(spec.tracks || {}).flatMap((t) => (Array.isArray(t) ? t : t.keys))].map((k) => k.pose), ...Object.values(spec.pins?.plant || {})])];
+const poseNames = [...new Set([...[...spec.keys, ...Object.values(spec.tracks || {}).flatMap((t) => (Array.isArray(t) ? t : t.keys))].map((k) => k.pose), ...Object.values(spec.pins?.plant || {}), ...Object.values(spec.reach || {}).flat().map((e) => e.pose)])];
 const lib = Object.fromEntries(poseNames.map((p) => [p, expandHands(JSON.parse(fs.readFileSync(`${D}poses/${p}.json`)), handLib, C.handSides)]));
 const A = makeAnim(spec, lib, { rig, C });
 const N = Math.round(spec.duration * spec.fps), LAST = spec.loop ? N - 1 : N, every = +arg('every', 1);

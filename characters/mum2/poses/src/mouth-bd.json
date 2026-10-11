@@ -1,6 +1,6 @@
 {
  "name": "mouth-bd",
- "note": "breakdown up: the hand rises through the air IN FRONT of the chest (clear of the body), already turned fingers-up toward the mouth",
+ "note": "breakdown up: wrist below the chin, back of the hand to us, cupped fingers already angled up at the mouth (\u226420\u00b0 roll left)",
  "bones": {
   "spineLower": 4,
   "spineUpper": -6,
@@ -19,12 +19,7 @@
   "forearm.near": 110
  },
  "hands": {
-  "near": {
-   "pose": "press",
-   "mix": {
-    "cup": 0.4
-   }
-  },
+  "near": "cup",
   "far": "cup"
  },
  "handView": {
@@ -44,8 +39,8 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     0.5,
-     0.52
+     0.15,
+     0.24
     ]
    },
    "solve": [
@@ -62,8 +57,8 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     0.58,
-     0.07
+     0.37,
+     -0.14
     ]
    },
    "solve": [

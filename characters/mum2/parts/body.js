@@ -26,6 +26,9 @@ export function build({ P: C, C: char, pose }) {
   const nb = X.neck, nl = X.neckline, nbase = nb.base;
   const collarN = [nbase[0] - 0.15, nbase[1] - 0.13], collarF = [nbase[0] + 0.11, nbase[1] - 0.13];   // collars hug the neck (R5: higher, far collar tucks behind the throat)
   const spineSkin = { chain: ['pelvis', 'spineLower', 'spineUpper', 'chest'], zone: 0.3 };
+  // the cardigan's shoulders ride the clavicles (shrugs, shoulder rhythm): collar → shoulder → sleeve cap stay one piece
+  const shoulderRegions = [{ bone: 'clavicle.near', c: J.shoulderNear, r: [0.18, 0.55] }, { bone: 'clavicle.far', c: J.shoulderFar, r: [0.18, 0.55] }];
+  const cardSkin = { ...spineSkin, regions: shoulderRegions };
   // ---- neck = a simple column (straight throat, gently curved nape) + a décolletage UNDER the top: the visible neckline
   // is the top's own smooth U-scoop, never the skin shape (design bar: one clean shape per form, no lobes).
   //  · column (z 40): above the far collar (which wraps behind the neck), below the near cardigan collar and the face.
@@ -84,19 +87,19 @@ export function build({ P: C, C: char, pose }) {
     [collarN[0], collarN[1]], X.shoulderLine.near[0], X.shoulderLine.near[1], [hn[0] - 0.08, -4.15],
     [hn[0] - 0.0, -3.45], [hn[0] - 0.09, hn[1] - 0.32], [hn[0] - 0.04, hn[1] + 0.01, { t: 0.45 }], [(hn[0] + hf[0]) / 2, hf[1] + 0.035],
     [hf[0], hf[1], { t: 0.4 }], [hf[0] + 0.04, -3.2], [hf[0] + 0.03, -4.0], [nl[0] - 0.2, nl[1] + 0.02], [collarN[0] + 0.05, collarN[1] + 0.12]])),   // R9: soft-rounded hem corners, smooth mid-hem
-    { skin: spineSkin }));
+    { skin: cardSkin }));
   // far panel: hangs on the far side BEHIND the bust and bump (they project past it); its inner edge is hidden behind
   // the torso except below the bump. The lapel (over the top) carries the visible edge above the bust.
   const hfar = X.hem.far, shF = J.shoulderFar, capF = X.shoulderCap.far;
   out.push(part('cardigan.far', 'spineLower', 33, C.cardigan, ensureCW(loop([
     [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [bu[0] - 0.15, bu[1] - 0.17], [bz.dip[0] - 0.04, bz.dip[1]], [bz.apex[0] - 0.2, bz.apex[1]], [hfar[0] - 0.12, -3.3], [hfar[0] - 0.05, hfar[1] - 0.08],
     [hfar[0] - 0.11, hfar[1] + 0.03, { t: 0.9 }], [0.6, hfar[1] + 0.02, { c: true, t: 0.6 }], [0.6, bz.hemFront[1] + 0.12], [0.42, -3.4], [0.3, -4.4]])),
-    { skin: spineSkin }));
+    { skin: cardSkin }));
   out.push(part('cardigan.far.lapel', 'spineLower', 36.5, C.cardigan, ensureCW(loop([
     // a confident collar band over the far shoulder that ENDS above the bust with one rounded end (no tooth on the bust);
     // R8: the rounded end stays INSIDE the cap/sleeve silhouette (no knob, no tangent notch)
     [collarF[0], collarF[1]], X.shoulderLine.far[0], X.shoulderLine.far[1], [shF[0] + capF * 0.4, shF[1] - 0.06, { a: 95 }],
     [shF[0] + capF * 0.34, shF[1] + 0.01], [bu[0] - 0.08, bu[1] - 0.31, { t: 0.9 }], [bu[0] - 0.15, bu[1] - 0.39], [nl[0] + 0.21, nl[1] - 0.225]])),   // R7: tapers from ~0.05 H at the collar to ~0.12 over the cap; rounded end sits ON the shoulder
-    { skin: spineSkin }));
+    { skin: cardSkin }));
   return out;
 }

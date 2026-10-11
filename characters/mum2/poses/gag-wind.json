@@ -3,16 +3,7 @@
  "note": "gag wind-up: the throat clenches — spine extends, shoulders lift, head comes up, ribcage swells",
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
@@ -27,16 +18,16 @@
   "neck": 6,
   "head": 5,
   "belly": 3,
-  "clavicle.far": -9,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 14,
-  "upperArm.near": 68.5,
-  "forearm.near": 90.3,
-  "shoulderAbd.near": -20.6,
-  "hand.near": -35.4
+  "clavicle.far": -4,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 9,
+  "upperArm.near": 69.8,
+  "forearm.near": 92.2,
+  "shoulderAbd.near": -18,
+  "hand.near": -36.1
  },
  "_ik": [
   {

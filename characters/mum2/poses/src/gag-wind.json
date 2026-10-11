@@ -8,27 +8,18 @@
   "neck": 6,
   "head": 5,
   "belly": 3,
-  "clavicle.far": -9,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 14,
+  "clavicle.far": -4,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 9,
   "upperArm.near": 70,
   "forearm.near": 110
  },
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "targets": [
   {

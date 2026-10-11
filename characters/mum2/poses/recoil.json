@@ -2,18 +2,8 @@
  "name": "recoil",
  "note": "anticipation: a jolt of unease — sharp intake (ribcage up), head pulls back, shoulders jump, hands still on the bump (near arm IK-held on the bump so the plant lets go without a snap)",
  "hands": {
-  "near": "cup",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1,
-  "pinNear": 1
+  "near": "relaxed",
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
@@ -28,35 +18,16 @@
   "neck": -2,
   "head": -3,
   "belly": 3,
-  "clavicle.far": -6,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 11,
-  "upperArm.near": 23.8,
-  "forearm.near": 2.7,
-  "shoulderAbd.near": -30,
-  "hand.near": -1.5
+  "clavicle.far": 0,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 5,
+  "upperArm.near": 8.9,
+  "forearm.near": 40.7,
+  "shoulderAbd.near": -27.8,
+  "hand.near": 11.8
  },
- "_ik": [
-  {
-   "bone": "hand.near",
-   "point": "hand.near.f2k",
-   "to": {
-    "bone": "belly",
-    "point": "bellyBottom",
-    "offset": [
-     0.05,
-     -0.06
-    ]
-   },
-   "solve": [
-    "shoulderAbd.near",
-    "upperArm.near",
-    "forearm.near",
-    "hand.near"
-   ]
-  }
- ]
+ "_ik": []
 }

@@ -1,1 +1,1 @@
-{"name": "face-tender", "note": "relief, eyes lowered to the bump", "face": {"lid": {"open": 0.42, "closed": 0.58}, "gaze": [0.006, 0.022], "mouth": {"warm": 1}, "cheek": {"blush": 1}}}
+{"name":"face-tender","note":"relief, looking down at the bump: lids part-lowered, eyes dropped to the lower lid","face":{"lid":{"open":0.58,"closed":0.42},"gaze":[0.006,0.03],"mouth":{"warm":1},"cheek":{"blush":1}}}

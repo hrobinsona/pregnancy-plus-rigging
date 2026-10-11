@@ -122,6 +122,10 @@ def metrics():
     L.append(f'pixels changed frame->next: min {diffs.min()}, median {int(np.median(diffs))}, max {diffs.max()}; frames with no change: {int((diffs == 0).sum())}')
     sp = [d / max(1, (diffs[i - 1] + diffs[(i + 1) % len(diffs)]) / 2) for i, d in enumerate(diffs)]
     L.append(f'largest single-frame change vs its neighbours: x{max(sp):.2f} (pops show as > 2)')
+    # per-move travel (R6: the critic had to guess per-breath shoulder/head travel from strips)
+    L.append('per-move travel (px, screen; window = key frame → next key frame + 7f of lag): ' + ' | '.join(
+        f"{mv}: " + ', '.join(f"{jn} {np.ptp(np.array([tr(i % N if loop else min(i, N - 1))[jn] for i in range(a, b + 8)])[:, 1]):.0f}v/{np.ptp(np.array([tr(i % N if loop else min(i, N - 1))[jn] for i in range(a, b + 8)])[:, 0]):.0f}h" for jn in ('shoulderNear', 'headTip', 'wristNear'))
+        for mv, a, b, _ in moves))
     ch = lambda k: np.array([tr(i)['ch'].get(k, 0) for i in rng])
     b = ch('breath')
     if b.max() > 0:

@@ -3,40 +3,35 @@
  "note": "the retch lands and keeps going a little: 2° more fold, ribcage squeezes on, chin 1° further down",
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
-   0.93,
+   0.89,
    0.94
+  ],
+  "belly": [
+   0.97,
+   1
   ]
  },
  "bones": {
-  "spineLower": 4,
+  "spineLower": 9,
   "spineUpper": 7,
   "chest": -3,
   "neck": 3,
   "head": 11,
   "belly": 3,
-  "clavicle.far": -7,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 12,
-  "upperArm.near": 82.9,
-  "forearm.near": 104.1,
-  "shoulderAbd.near": 0.4,
-  "hand.near": -56.8
+  "clavicle.far": -2,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 7,
+  "upperArm.near": 84.9,
+  "forearm.near": 109.1,
+  "shoulderAbd.near": 4.6,
+  "hand.near": -50
  },
  "_ik": [
   {

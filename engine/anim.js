@@ -290,8 +290,73 @@ export function makeAnim(spec, lib, { rig, C } = {}) {
       const ref = P.ref === 'keys' ? unlagged(tt, pose) : keyed;
       pinArm(pose, ref, P.side, w, P);
     }
+    // HANG: a free arm hangs with gravity — when the torso tilts, the arm counter-rotates at the shoulder so it keeps
+    // hanging, a few frames LATE (it drags, then catches up: follow-through for free). spec.hang[side] = {lag, k, rest}
+    for (const [side, Hg] of Object.entries(spec.hang || {})) {
+      const chain = ['pelvis', 'spineLower', 'spineUpper', 'chest', 'clavicle.' + side];
+      const sumAt = (t) => chain.reduce((a, b) => a + (allCh.includes('bone.' + b) ? sample('bone.' + b, t - lagOf('bone.' + b), keysFor('bone.' + b)) : 0), 0);
+      const restSum = chain.reduce((a, b) => a + (lib[Hg.rest]?.bones?.[b] ?? 0), 0);
+      add('shoulderAbd.' + side, (Hg.k ?? 0.9) * (restSum - sumAt(tt - (Hg.lag ?? 4) / fps)));
+    }
+    // REACH: goal-directed hand moves planned in HAND space (spec.reach[side]) — the arm is solved to the hand
+    for (const side of Object.keys(spec.reach || {})) reachArm(pose, tt, side);
     for (const [b, a] of Object.entries(DR.bones || {})) if (b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     return pose;
+  }
+
+  // REACH (hand-space). People plan a reach with the HAND: it travels a nearly straight, slightly curved path with a
+  // bell-shaped speed (minimum jerk, Flash & Hogan 1985); shoulder and elbow follow. Blending arm ANGLES instead swings
+  // the hand on arcs around the shoulder (client: "a weird circular motion"). spec.reach[side] = [{t, pose, on, curve?,
+  // handLag?}, …]: at time t the wrist is where it is in key pose `pose`, relative to bone `on` (contacts ride the body:
+  // the bump breathes, the head bobs); between entries it follows the min-jerk path; the hand's angle relative to `on`
+  // blends the same way, trailing the wrist by handLag frames. The arm is then solved to that wrist each frame, seeded
+  // by the keyed angles (which pick the natural elbow), a fixed number of Newton steps — still a pure function of t.
+  const RC = spec.reach || {};
+  const mj = (u) => { u = clamp01(u); return u * u * u * (10 + u * (-15 + 6 * u)); };
+  const reachRefCache = {};
+  const reachRef = (name) => {
+    if (!lib[name]) throw new Error(`reach: missing pose ${name}`);
+    return (reachRefCache[name] ||= solve({ ...lib[name], bones: { ...lib[name].bones }, scale: { ...(lib[name].scale || {}) } }));
+  };
+  function contact(st, side, e) {
+    const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
+    return { p: apM(st[on].M, apM(inv(ref[on].M), ref[ha].pos)), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+  }
+  function reachTarget(side, tt, st) {
+    const L = RC[side];
+    let i = -1; for (let k = 0; k < L.length; k++) if (L[k].t <= tt + 1e-9) i = k;
+    let a, b, ta, tb;
+    if (i >= 0 && i < L.length - 1) { a = L[i]; b = L[i + 1]; ta = a.t; tb = b.t; }
+    else if (loop) { a = L[(i + L.length) % L.length]; b = L[(i + 1) % L.length]; ta = i < 0 ? a.t - D : a.t; tb = i < 0 ? b.t : b.t + D; }
+    else { const e = L[Math.max(0, i)]; const c = contact(st, side, e); return c; }
+    const A = contact(st, side, a);
+    if (a.pose === b.pose && a.on === b.on) return A;                     // a hold: the hand stays where it was put
+    const B = contact(st, side, b), u = (tt - ta) / (tb - ta), sP = mj(u);
+    const d = [B.p[0] - A.p[0], B.p[1] - A.p[1]], Ld = Math.hypot(d[0], d[1]) || 1, n = [d[1] / Ld, -d[0] / Ld];
+    const bow = (b.curve ?? 0.08) * Ld * 4 * sP * (1 - sP);
+    const p = [A.p[0] + sP * d[0] + n[0] * bow, A.p[1] + sP * d[1] + n[1] * bow];
+    const sH = mj(u - (b.handLag ?? 2) / fps / (tb - ta));
+    return { p, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180) };
+  }
+  function reachArm(pose, tt, side) {
+    const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
+    const T = reachTarget(side, tt, solve(pose)), h = 0.5;
+    const at = (b, d) => { const p = { ...pose, bones: { ...pose.bones, [b]: (pose.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
+    for (let it = 0; it < 6; it++) {                                        // fixed Newton budget: no state, no iteration-to-tolerance drift
+      const W0 = solve(pose)[ha].pos, ex = T.p[0] - W0[0], ey = T.p[1] - W0[1];
+      if (Math.hypot(ex, ey) < 1e-6) break;
+      const Wu = at(ua, h), Wf = at(fa, h);
+      const Jm = [(Wu[0] - W0[0]) / h, (Wu[1] - W0[1]) / h, (Wf[0] - W0[0]) / h, (Wf[1] - W0[1]) / h], det = Jm[0] * Jm[3] - Jm[2] * Jm[1];
+      if (Math.abs(det) < 1e-9) break;
+      let du = (Jm[3] * ex - Jm[2] * ey) / det, df = (-Jm[1] * ex + Jm[0] * ey) / det;
+      const m = Math.hypot(du, df); if (m > 30) { du *= 30 / m; df *= 30 / m; }
+      pose.bones[ua] = (pose.bones[ua] || 0) + du; pose.bones[fa] = (pose.bones[fa] || 0) + df;
+    }
+    for (let it = 0; it < 2; it++) {                                        // hand angle (the rig clamps it to the wrist's real range)
+      const c2 = solve(pose), e0 = ((T.rot - c2[ha].rot + 540) % 360) - 180;
+      const hp = { ...pose, bones: { ...pose.bones, [ha]: (pose.bones[ha] || 0) + h } }, slope = (((solve(hp)[ha].rot - c2[ha].rot) + 540) % 360 - 180) / h;
+      if (Math.abs(slope) > 1e-6) pose.bones[ha] = (pose.bones[ha] || 0) + Math.max(-40, Math.min(40, e0 / slope));
+    }
   }
 
   // CONTACT PIN (projected-plane arms): a planted hand keeps its KEYED contact on the surface it rests on while breath and

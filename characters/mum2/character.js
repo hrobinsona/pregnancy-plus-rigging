@@ -28,12 +28,12 @@ const bones = [
   ...['near', 'far'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
-      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -18, max: 18 },   // ±18°: a full breath shrug / gag jump (±10 clamped the R3 shrug to ~20 px)
+      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -22, max: 22 },   // ±22°: a full breath shrug / gag jump (±10 clamped the R3 shrug to ~20 px)
       // abduction (frontal plane ≈ picture plane in ¾) as a screen rotation, then flexion/extension in the sagittal plane
       { id: `shoulderAbd.${s}`, parent: `clavicle.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, min: -30, max: 30 },
       { id: `upperArm.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'sagittal', restAnat: 0, min: -60, max: 170, cap: 0.2 },
       { id: `forearm.${s}`, parent: `upperArm.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, plane: 'sagittal', restAnat: 0, min: -5, max: 150, cap: 0.18 },
-      { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'sagittal', restAnat: 0, min: -70, max: 70, cap: 0.08 },
+      { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'sagittal', restAnat: 0, min: -50, max: 40, cap: 0.08 },   // ±70 drew broken wrists (client flag 1). The in-plane bend is deviation (≈30°) with the palm to the body, but flexion/extension when the palm turns to the face (hand over mouth), which the 2D rig can't tell apart: −50…40 covers both without the impossible extremes
     ];
   }),
   ...hands.near.bones, ...hands.far.bones, ...hands.farBack.bones,
@@ -62,6 +62,11 @@ export default {
   design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes, ...hands.farBack.planes } },
   modules: { hair: merge(hair), legs: merge(legs), body: merge(body), head: merge(head), arms: merge(arms, hands.near.ANCHORS, hands.far.ANCHORS, hands.farBack.ANCHORS) },
   // same-material overlaps: hands get a skinLine edge where they lie over skin (face, neck, the other hand)
+  // shoulder rhythm: past ~30° of arm flexion the clavicle lifts ≈ 1° per 4° (near: + is up; far: − is up)
+  drivers: [
+    { bone: 'clavicle.near', from: 'upperArm.near', k: 0.18, start: 30, soft: 20, max: 60 },
+    { bone: 'clavicle.far', from: 'upperArm.far', k: -0.18, start: 30, soft: 20, max: 60 },
+  ],
   outlineGroups: [
     { match: /^(hand\.near\.|wrist\.near$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },
     { match: /^(hand\.far\.|hand\.farB\.|wrist\.far$)/, material: params.palette.skin, line: params.palette.skinLine, w: 0.012 },

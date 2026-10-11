@@ -1,0 +1,33 @@
+{
+ "name": "relief-sigh",
+ "note": "relief: the long out-breath — shoulders drop, ribcage settles, head eases back up; the hand is on its way down",
+ "scale": {
+  "spineUpper": [
+   0.97,
+   0.98
+  ]
+ },
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "bones": {
+  "spineLower": 4,
+  "spineUpper": -7,
+  "chest": -6,
+  "neck": 2,
+  "head": 1,
+  "belly": 3,
+  "clavicle.far": 8,
+  "clavicle.near": -3,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "hand.far": -8,
+  "shoulderAbd.far": 8,
+  "upperArm.near": 40,
+  "forearm.near": 70,
+  "hand.near": -10,
+  "shoulderAbd.near": -15
+ },
+ "_ik": []
+}

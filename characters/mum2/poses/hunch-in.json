@@ -3,16 +3,7 @@
  "note": "riding it out: hunched, a controlled breath IN (ribcage swells, shoulders lift)",
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
@@ -29,18 +20,18 @@
   "spineUpper": -6,
   "chest": -3,
   "neck": 8,
-  "head": 6,
+  "head": 3,
   "belly": 3,
   "clavicle.far": -11,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
   "clavicle.near": 16,
-  "upperArm.near": 70.8,
-  "forearm.near": 92.3,
-  "shoulderAbd.near": -18.1,
-  "hand.near": -41.4
+  "upperArm.near": 73.3,
+  "forearm.near": 100.8,
+  "shoulderAbd.near": -13.9,
+  "hand.near": -40.7
  },
  "_ik": [
   {

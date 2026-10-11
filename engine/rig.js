@@ -36,10 +36,21 @@ export function createRig(C) {
   };
 
   /** Per-bone world state: pos (pivot), rot (deg, screen, relative to rest), anat (sagittal bones), Sb, M. */
+  // DRIVERS (C.drivers): a bone that follows another, e.g. SHOULDER RHYTHM — lifting the arm past ~30° rotates the
+  // shoulder girdle (≈1° of clavicle per 4–5° of arm), so the shoulder rises WITH the arm instead of the arm swinging
+  // on a fixed pin (the client: "shoulders move separately — not part of one body"). Soft onset (no kink at `start`).
+  const DRV = C.drivers || [];
+  const soft = (x, w) => (x <= 0 ? 0 : x < w ? (x * x) / (2 * w) : x - w / 2);
+  const driven = (pose) => {
+    if (!DRV.length) return pose.bones || {};
+    const b = { ...(pose.bones || {}) };
+    for (const d of DRV) { const a = b[d.from] ?? 0; b[d.bone] = (b[d.bone] ?? 0) + d.k * Math.min(d.max ?? 1e9, soft(a - (d.start ?? 0), d.soft ?? 15)); }
+    return b;
+  };
   function solve(pose = {}) {
-    const st = {};
+    const st = {}, bonesIn = driven(pose);
     for (const b of BONES) {
-      const d = Math.max(b.min ?? -180, Math.min(b.max ?? 180, pose.bones?.[b.id] ?? 0));
+      const d = Math.max(b.min ?? -180, Math.min(b.max ?? 180, bonesIn[b.id] ?? 0));
       const user = pose.scale?.[b.id] || [1, 1];
       let pos, rot, anat = null, along = 1;
       const ps = b.parent ? st[b.parent] : null;
@@ -110,6 +121,27 @@ export function createRig(C) {
     return out;
   }
 
+  /** REGION skin: anchors near a rest-space centre also follow another bone (weight 1 inside r0, 0 beyond r1, smooth),
+   *  e.g. the cardigan's shoulder line follows the clavicle so collar, shoulder and sleeve cap move as one piece. An
+   *  anchor's handles take the anchor's weight (the curve keeps its shape locally). */
+  function regionSkin(rest, posed, regions, st) {
+    const out = { P: posed.P.slice(), hin: posed.hin.slice(), hout: posed.hout.slice() };
+    for (const R0 of regions) {
+      const b = BONE[R0.bone], j = J[b.joint], M = st[R0.bone].M, c = R0.c;
+      const car = (v) => ap(M, sub(v, j));
+      rest.P.forEach((v, k) => {
+        const w = (R0.w ?? 1) * (1 - smooth(R0.r[0], R0.r[1], Math.hypot(v[0] - c[0], v[1] - c[1])));
+        if (w <= 1e-6) return;
+        const bl = (a, q) => [a[0] + w * (q[0] - a[0]), a[1] + w * (q[1] - a[1])];
+        // the region bone's motion RELATIVE to its parent is what we add (the base skin already follows the parent)
+        const pb = st[b.parent], pj = J[BONE[b.parent].joint], viaParent = (v) => ap(pb.M, sub(v, pj));
+        const d = (v) => sub(car(v), viaParent(v));
+        out.P[k] = bl(out.P[k], add(out.P[k], d(v))); out.hin[k] = bl(out.hin[k], add(out.hin[k], d(rest.hin[k]))); out.hout[k] = bl(out.hout[k], add(out.hout[k], d(rest.hout[k])));
+      });
+    }
+    return out;
+  }
+
   /** All parts, z-sorted, each with a final matrix M (rigid) or posed geometry (skinned). */
   function build(pose = {}) {
     const st = solve(pose);
@@ -121,7 +153,7 @@ export function createRig(C) {
         const want = mod.ANCHORS?.[p.id];
         if (want !== undefined && want !== p.geom.P.length) throw new Error(`${p.id}: ${p.geom.P.length} anchors, documented ${want}`);
         if (!st[p.bone]) throw new Error(`${p.id}: unknown bone ${p.bone}`);
-        if (p.skin) parts.push({ ...p, module: name, anchors: p.geom.P.length, geom: p.skin.chain ? chainSkinGeom(p.geom, p.skin, st) : skinGeom(p.geom, p.skin, st), M: F });
+        if (p.skin) { let g = p.skin.chain ? chainSkinGeom(p.geom, p.skin, st) : skinGeom(p.geom, p.skin, st); if (p.skin.regions) g = regionSkin(p.geom, g, p.skin.regions, st); parts.push({ ...p, module: name, anchors: p.geom.P.length, geom: g, M: F }); }
         else {
           const j = J[BONE[p.bone].joint];
           // rigid: rotate + translate with the bone but never take its stretch (a knuckle disc on a foreshortening phalanx

@@ -27,10 +27,10 @@
   "shoulderAbd.far": 30,
   "hand.far": -70,
   "clavicle.near": 0,
-  "upperArm.near": -26.5,
-  "forearm.near": 84.9,
+  "upperArm.near": -45.3,
+  "forearm.near": 90.4,
   "shoulderAbd.near": -10,
-  "hand.near": -54.2
+  "hand.near": -40.9
  },
  "_ik": [
   {
@@ -40,7 +40,7 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     -0.2,
+     -0.42,
      1.38
     ]
    },
@@ -57,7 +57,7 @@
     "bone": "chest",
     "point": "neck",
     "offset": [
-     -0.15,
+     -0.37,
      1.84
     ]
    },

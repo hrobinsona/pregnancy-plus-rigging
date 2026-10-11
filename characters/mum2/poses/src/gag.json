@@ -2,38 +2,33 @@
  "name": "gag",
  "note": "gag heave from the gut: upper spine folds 14\u00b0 forward, ribcage squeezes, shoulders jump up and forward, head goes with the trunk, chin into the hand",
  "bones": {
-  "spineLower": 4,
+  "spineLower": 8.5,
   "spineUpper": 5,
   "chest": -3,
   "neck": 3,
   "head": 10,
   "belly": 3,
-  "clavicle.far": -7,
-  "upperArm.far": -10.4,
-  "forearm.far": 116.6,
-  "shoulderAbd.far": 30,
-  "hand.far": -70,
-  "clavicle.near": 12,
+  "clavicle.far": -2,
+  "upperArm.far": -2,
+  "forearm.far": 14,
+  "shoulderAbd.far": 8,
+  "hand.far": -8,
+  "clavicle.near": 7,
   "upperArm.near": 75,
   "forearm.near": 110
  },
  "hands": {
   "near": "press",
-  "far": "cup"
- },
- "handView": {
-  "far": "back"
- },
- "zBias": {
-  "arm.far.hand": 60
- },
- "fx": {
-  "pinFar": 1
+  "far": "relaxed"
  },
  "scale": {
   "spineUpper": [
-   0.94,
+   0.9,
    0.95
+  ],
+  "belly": [
+   0.97,
+   1.0
   ]
  },
  "targets": [
