@@ -1,4 +1,4 @@
-silhouette IoU vs reference: 0.9246
+silhouette IoU vs reference: 0.9247
 rows (every 60 ref px) with an extent off by > 0.03 H: 27 of 41
 
     y   ref L   ren L     dL |   ref R   ren R     dR   (H units; d = render - ref; * if |d| > 0.03)
