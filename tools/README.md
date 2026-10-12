@@ -27,6 +27,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | ★ `new_pose.py gen\|fit <char> <name>` | Recipe "new pose": refgen 3 samples (Mac), then pose-estimate, fit each, keep the lowest rms, gate (rms ≤ 0.06 H, no bone on a limit), record in `refs/fit_keys.sh`, sheet `out/new_pose_<name>.png`. |
 | `new_char.py <id> --from mum2` | Recipe "new character": scaffold a character from a template (drawing code, hand library, rest poses, refs folders) and print the next steps. |
 | ★ `refgen.py <char> <name>` | Make reference stills with the Codex CLI on the ChatGPT login (image 1 sheet, 2 previous pose, 3 target), then register them. Runs where Codex is logged in (Harry's Mac). Tests: `test_refgen.py`. |
+| ★ `refgen_worker.py --install\|--status` | Unattended refgen on Harry's Mac: launchd polls `claude/*` branches for `requests/refgen/<name>.json`, generates via Codex (ChatGPT login), pushes the stills and `requests/refgen/done/<name>.json`. Runs a pinned copy; 60 images/day. See `docs/REF_PROMPTS.md`. |
 | ★ `ref_register.py` | Bring in stills from ANY image tool (Codex CLI / ChatGPT, fal, …): copies to `refs/images/`, writes the ledger, `--est` runs pose estimation. |
 | ★ `pose_est.py` | MediaPipe body + hands landmarks for an image or video (models in `$MUM_MODELS`, `models/` or `~/models`). |
 | `fal_gen.py`, `fal_batch.py` | fal.ai stills (and video) with a provenance ledger. Key from `~/.secrets/fal_key` or `$FAL_KEY` — never commit it. |
