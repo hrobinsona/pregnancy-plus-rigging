@@ -295,7 +295,29 @@ export function createRig(C) {
       const r = co.ring ? pathD({ P, hin, hout }, Hpx) : `M${f2(vb[0])} ${f2(vb[1])}h${f2(vb[2])}v${f2(vb[3])}h${f2(-vb[2])}Z`;
       out += `<clipPath id="${id}"><path clip-rule="evenodd" d="${r} ${hole}"/></clipPath>`; outDefs.add(id); return id;
     };
+    // CONTACT SHADOW (C.contactShadow, from the reels rig): each hand casts one near-hard, faint copy of itself (all its
+    // parts as ONE shape, so overlaps never darken), offset a few screen px, onto the body parts drawn behind it — "on her"
+    // without looking stuck on. No blur filter (blur rasterised differently out of order). Emitted just before the hand.
+    const CS = !sil && C.contactShadow, shadows = [];
+    if (CS) {
+      const k = W / vb[2], onRe = new RegExp(CS.on);
+      for (const g of CS.groups) {
+        const re = new RegExp(g.match), hp = parts.filter((p) => re.test(p.id) && !p.stroke && !p.id.endsWith('.ol') && !(p.opacity <= 0.002) && p.fill !== 'none');
+        if (!hp.length) continue;
+        const zh = Math.min(...hp.map((p) => p.z)), gRe = g.on ? new RegExp(g.on) : onRe, on = [...new Set(parts.filter((p) => gRe.test(p.id) && !p.stroke && p.z < zh && !(p.opacity <= 0.002))
+          .flatMap((p) => (p.clip ? (Array.isArray(p.clip) ? p.clip : [p.clip]).map((id) => byId[id]).filter(Boolean) : [p])))];   // a clipped surface (a rim shade) counts only as its clip region
+        if (on.length) shadows.push({ zh, hp, on, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
+      }
+      shadows.sort((a, b) => a.zh - b.zh);
+      var emitShadow = (S) => {
+        const [dx, dy] = (CS.offset || [4, 6]).map((v) => v / k);
+        out += `<clipPath id="${S.id}">${S.on.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`
+          + `<g clip-path="url(#${S.id})"><g opacity="${f2(CS.opacity ?? 0.12)}"><g transform="translate(${f2(dx)} ${f2(dy)})">`
+          + S.hp.map((c) => `<path d="${pathD(c.geom, Hpx)}" fill="${CS.color || '#000'}" transform="${tfOf(c.M)}"/>`).join('') + '</g></g></g>';
+      };
+    }
     for (const p of parts) {
+      while (shadows.length && p.z >= shadows[0].zh) emitShadow(shadows.shift());
       if (p.opacity !== undefined && p.opacity <= 0.002) continue;
       let wrap = 0;
       if (p.clipKeep) { const ks = (Array.isArray(p.clipKeep) ? p.clipKeep : [p.clipKeep]).map((id) => byId[id]).filter(Boolean);

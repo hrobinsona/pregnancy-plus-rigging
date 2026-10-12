@@ -1231,5 +1231,16 @@
   }
  ],
  "layers": [],
- "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff."
+ "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff.",
+ "land": [
+  {
+   "side": "far",
+   "t": 2.8,
+   "wag": 2,
+   "spread": 2,
+   "uncurl": 3,
+   "press": 1,
+   "note": "lands on her mouth: lighter than the default landing (engine/anim.js LANDING)"
+  }
+ ]
 }

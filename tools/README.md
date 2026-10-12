@@ -24,6 +24,8 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 ## References (make, register, measure)
 | Tool | What it's for |
 |---|---|
+| ★ `new_pose.py gen\|fit <char> <name>` | Recipe "new pose": refgen 3 samples (Mac), then pose-estimate, fit each, keep the lowest rms, gate (rms ≤ 0.06 H, no bone on a limit), record in `refs/fit_keys.sh`, sheet `out/new_pose_<name>.png`. |
+| `new_char.py <id> --from mum2` | Recipe "new character": scaffold a character from a template (drawing code, hand library, rest poses, refs folders) and print the next steps. |
 | ★ `refgen.py <char> <name>` | Make reference stills with the Codex CLI on the ChatGPT login (image 1 sheet, 2 previous pose, 3 target), then register them. Runs where Codex is logged in (Harry's Mac). Tests: `test_refgen.py`. |
 | ★ `ref_register.py` | Bring in stills from ANY image tool (Codex CLI / ChatGPT, fal, …): copies to `refs/images/`, writes the ledger, `--est` runs pose estimation. |
 | ★ `pose_est.py` | MediaPipe body + hands landmarks for an image or video (models in `$MUM_MODELS`, `models/` or `~/models`). |
@@ -50,6 +52,9 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 ## Review and audit
 | Tool | What it's for |
 |---|---|
+| ★ `qa_checks.mjs --char c --anim a [--box …]` | The QA gate (from reels): frames rendered out of order match, no state leaks (pose and SVG markup alone vs after every earlier frame), pixel jumps and still stretches (`qa_frames.py`), hands (palm pops, wrist angle one way per move, hands < 15 px apart, size ratio). Exit 1 on a fail. |
+| `qa_frames.py <frames dir>` | Pixel jumps (> 1.8× neighbours) and still stretches > 1 s on a rendered frame folder. |
+| ★ `qa_closeups.mjs --t a,b,c` | Close-ups that follow the joints (shoulders, elbows, hands, face) at chosen times: details at size. |
 | ★ `critic_F.py <char> <anim>` | Builds the feel-critic pack + prompt (brief, intensity, beats, zooms, refs). Pipe to `out/critic_prompt.md`, hand it to a subagent. |
 | `critic_F.py … --lens lasseter\|hands\|all` | Extra lenses (default `feel`). `lasseter`: the 12 principles, a score and a timed fix each (finds timing, anticipation, staging faults). `hands`: hands at size, from zoomed tiles of both hands at one scale + an angle/size trace (`out/<c>_<a>_feel_hands_*.png`, from the tracks json). `all`: a judge panel, one prompt per lens in `out/critic_prompt_<lens>.md` (one fresh reviewer each), all three printed together. |
 | `critic_prompt_F.md` | The critic template: one block per lens + the shared framing (Harry's eye overrules a reviewer; brief and intensity beat taste). B = design vs reference, C = motion mechanics, legacy. |

@@ -132,6 +132,14 @@ or composited.
    (`{s0,s1,dp}`) where they disagree. Lift v14e: at the chin the shot already matched (0.03 u); at chest height the
    still's hand was 0.11 u further out in front of the far shoulder, so the hand now rises in front and then comes in.
 
+22. **Ported performance defaults are subtle; measure whether a change is VISIBLE before claiming it.** The reels landing
+   (press, settle, wag, index first), the finger ripple, the 85 % wrist taper and the 12 % contact shadow went in as
+   engine defaults (v15). Two blind A/Bs against v14e: "no clear difference" at phone size (the far hand lands half
+   hidden by the bump; the near hand never moves far). They stay as defaults so a new move doesn't start frozen, but the
+   visible faults the same reviewers named were all shot-level: the forearm turn at 7.5 s, the cuff sliver at the rim
+   7.8–8.0 s, a one-eyed blink at 1.0 s, a lift a bit brisk for "gentle". A side effect the A/B did catch: fingers lagged
+   by the hand's own lag landed 4 frames late on her mouth and uncovered it — ripple from the index, not from the hand.
+
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

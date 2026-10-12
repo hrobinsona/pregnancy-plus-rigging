@@ -592,3 +592,20 @@ What was done:
    moving the path's opening knots (no visible change).
 Checks: fingertip speeds unchanged in shape (arrival peak 45 px/f at f81, as in v14d); determinism 0 mismatches.
 Still open: the 61 px/f forearm turn at 7.57 s (CLAUDE.md next step 1).
+
+## v15 — the reels rig consolidated into this one (2026-10-12)
+Harry: "consolidate first and take the best of both, then iterate". No shot changes except the defaults below.
+What was done:
+1. QA gate from reels (`tools/qa_checks.mjs`, `qa_frames.py`, `qa_closeups.mjs`). On this shot: order and state-leak
+   checks pass; FAILS (pre-existing, v14e too): a head stutter at 1.27 s (10 px, 0, 10 px per frame); far palm pops at
+   2.73 s and 7.73 s; the far wrist turns back 13° at 2.70 s (arriving at the mouth) and 39° at 8.0 s (landing).
+2. Review loop from reels: `tools/blind_ab.py`; `critic_F.py --lens all` (feel, Lasseter, hands).
+3. Lessons merged: `docs/PIPELINE.md` "From the reels rig".
+4. Engine defaults from reels: landing settle and wag (`spec.land`, auto on arriving reach stops), finger ripple index
+   first (`spec.fingerRipple`), contact shadow (`C.contactShadow`), wrist 85 % of the palm (`params.js`). Mouth landing
+   set lighter (`spec.land` at 2.8).
+5. Recipes: `tools/new_pose.py` (gen on the Mac, fit anywhere, gated), `tools/new_char.py` (scaffold), the skill's
+   "Recipes" table.
+Blind A/B v14e vs v15 (fresh reviewer, whole shot): NO CLEAR DIFFERENCE, 6.5 / 6.5. Faults named in both: the forearm
+turn 7.47–7.67 s (oath palm flips flat in ~3 frames); the far hand slides along the bump's outside 7.8–8.0 s with a pink
+cuff sliver past the rim; one eye closes before the other at 1.0–1.1 s (reads as a wink); the lift 2.2–2.5 s a bit brisk.

@@ -177,6 +177,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const lagOf = (ch) => {
     if (spec.lags?.[ch] !== undefined) return spec.lags[ch] / fps;   // a full channel name (e.g. fx.headPitch: the nod trails the trunk like the head)
     const m = ch.match(/^(?:bone|scale)\.(.+?)(?:\.[01])?$/);
+    if (m && spec.lags?.[m[1]] !== undefined) return spec.lags[m[1]] / fps;
+    // FINGERS ripple index first (reels: fingers open to land one by one, +40 ms each): spec.fingerRipple frames per finger
+    // after the index (default 1.2; 0 = in unison). Not the hand's lag on top: a reach places the hand itself, and fingers
+    // 4 frames late uncovered her mouth as the hand landed on it (v15a).
+    const f = m && m[1].match(/^hand\.(\w+?)B?\.f(\d)[abcs]$/);   // (not the thumb: lagging it opened a gap at the mouth)
+    if (f) return ((spec.fingerRipple ?? 1.2) * (f[2] - 1)) / fps;
     return ((m ? spec.lags?.[m[1]] : spec.lags?.[ch.split('.')[0]]) ?? 0) / fps;
   };
   // key.shift = {bone or group: frames}: that key lands earlier/later for those channels only (offset keys per curve),
@@ -346,6 +352,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // REACH: goal-directed hand moves planned in HAND space (spec.reach[side]) — the arm is solved to the hand
     for (const side of Object.keys(spec.reach || {})) reachArm(pose, tt, side);
     fidgetAt(pose, tt, (b) => !b.startsWith('fx.slide.'));
+    landAt(pose, tt);
     for (const [b, a] of Object.entries(DR.bones || {})) if (b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     return pose;
   }
@@ -715,6 +722,37 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
 
   // FIDGET: small human life on top of the keys — a thumb stroke on the bump, fingers pressing — as smooth out-and-back
   // bumps: spec.fidget = [{t0, t1, cycles, bones: {bone: deg}}] adds deg·½(1 − cos 2π·cycles·u) over [t0, t1].
+  // LANDING (spec.land = [{side, t, …}], from the reels rig, perform.js): a hand that arrives lands ONCE — it presses in
+  // and the fingers spread and uncurl a little as it takes the weight (settle), then swing side to side for ~6 frames
+  // (wag, 2.6 Hz decaying e^-4.5t), finger by finger from the index (stagger), and after that only breathes. Still at
+  // once, a landed hand read as frozen; a press-and-release on top of the breath read as a bounce. Closed form in the time
+  // since landing, so still a pure function of t. Degrees: wag (MCP flex swing), spread (fan), uncurl (PIP), press (wrist).
+  // DEFAULT: every reach stop that ends a move lands (a stop with `land: false` doesn't; `land: {…}` sets its numbers);
+  // spec.land entries add landings or override one at the same side and time; spec.landAuto = false turns the default off.
+  const autoLand = spec.landAuto === false ? [] : Object.entries(spec.reach || {}).filter(([, a]) => Array.isArray(a))
+    .flatMap(([side, a]) => a.filter((e, i) => { const prev = a.slice(0, i).filter((q) => !q.via).at(-1);   // arrives: the stop before it held another pose (a stop repeating it is a hold, then a departure)
+      return prev && !e.via && e.t > 0 && e.land !== false && (prev.pose !== e.pose || prev.on !== e.on); })
+      .map((e) => ({ side, t: e.t, ...(typeof e.land === 'object' ? e.land : {}) })));
+  const LAND = [...autoLand.filter((A_) => !(spec.land || []).some((L) => L.side === A_.side && Math.abs(L.t - A_.t) < 0.05)), ...(spec.land || [])]
+    .map((L) => ({ wag: 3, spread: 3, uncurl: 5, press: 1.5, stagger: 0.04, ...L }));
+  const settleW = (l) => (l > 0 ? Math.sin(Math.min(1, l / 0.22) * Math.PI) * Math.exp(-l * 3) : 0);
+  const wagW = (l) => (l > 0 ? Math.sin(2 * Math.PI * 2.6 * l) * Math.exp(-l * 4.5) : 0);
+  const pressW = (l) => (l > 0 ? Math.sin(Math.min(1, l / 0.35) * Math.PI) * Math.exp(-l * 2) : 0);
+  const landAt = (pose, tt) => {
+    for (const L of LAND) {
+      const l = tt - L.t; if (l <= 0 || l > 2.5) continue;
+      const sd = C.handSides?.[L.side]; if (!sd) continue;
+      for (const { prefix: p, spreadSign: ss = 1 } of [sd, sd.back].filter(Boolean)) {
+        for (let i = 1; i <= 4; i++) {
+          const li = l - L.stagger * (i - 1), fan = (i - 2.5) / 1.5;   // index first; the outer fingers fan the most
+          pose.bones[`${p}.f${i}a`] = (pose.bones[`${p}.f${i}a`] || 0) + L.wag * wagW(li);
+          pose.bones[`${p}.f${i}b`] = (pose.bones[`${p}.f${i}b`] || 0) - L.uncurl * settleW(li);
+          pose.bones[`${p}.f${i}s`] = (pose.bones[`${p}.f${i}s`] || 0) + ss * fan * L.spread * settleW(li);
+        }
+      }
+      pose.bones['hand.' + L.side] = (pose.bones['hand.' + L.side] || 0) + L.press * pressW(l);
+    }
+  };
   const fidgetAt = (pose, tt, sel = () => true) => {
     for (const F of spec.fidget || []) {
       let u = (tt - F.t0) / (F.t1 - F.t0); if (loop && u < 0) u = (tt + D - F.t0) / (F.t1 - F.t0);

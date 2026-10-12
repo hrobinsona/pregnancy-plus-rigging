@@ -1,6 +1,6 @@
 ---
 name: code-character-animation
-description: Build, rig and animate a code-drawn flat-vector character (pure-code SVG, every frame a pure function of t) to Headspace/BUCK quality from MEASURED reference stills. Use when extending Mum with new poses or shots, iterating a shot from client or critic feedback, or adding a new character in this repo.
+description: Build, rig and animate a code-drawn flat-vector character (pure-code SVG, every frame a pure function of t) to Headspace/BUCK quality from MEASURED reference stills. Use when adding a new pose, move, shot, character or outfit, iterating a shot from client or critic feedback, or giving a Pregnancy+ reel a figure. This repo replaces the traced rig in pregnancy-plus-reels.
 ---
 
 # Code-drawn character animation
@@ -9,7 +9,7 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
 
 **Read first:**
 - `CLAUDE.md` for the current status and next steps.
-- `docs/PIPELINE.md` "0. The big lessons" and "1. Reference generation".
+- `docs/PIPELINE.md` "0. The big lessons", "From the reels rig" (performance, hands, face, review: merged from the old traced rig) and "1. Reference generation".
 - `docs/REF_PROMPTS.md` before making any reference image.
 - `tools/README.md` for the full tool index (★ = current loop).
 
@@ -21,6 +21,24 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
 - **Hands move in hand space** (`spec.reach`): stops, vias and paths. Never blend arm angles between distant poses; that swings the hand on a circle round the shoulder.
 - **The client's brief and intensity win.** Put both in `spec.story` and `spec.intensity`; the feel critic sees them. Don't polish an extreme the client didn't ask for.
 - **Secrets.** API keys live in `~/.secrets/` or the environment. Never put them in the repo, logs, docs or memory.
+
+## Recipes (each ends on a gate)
+
+The repo's job is that each of these is routine. Run the gate; don't hand a result to the client before it passes.
+
+| Recipe | Input | Commands | Gate |
+|---|---|---|---|
+| **New pose** | one sentence + the character | prompt in `docs/prompts/<name>.txt` → `python3 tools/new_pose.py gen <char> <name> --prompt-file … --ref <sheet> --ref <prev key> -n 3` (Mac) → commit → `python3 tools/new_pose.py fit <char> <name> --fit-args "…"` | rms ≤ 0.06 H, no bone on a limit (script), contacts right in `out/new_pose_<name>.png` (look) |
+| **New move** | two poses | 2 in-between stills (New pose ×2) → a reach stop with the first as a via AND an arm-only key (`only` far-arm bones) at its time (lesson 20) → `uv_check --poses` and a path `bias` where the shot misses the stills (lesson 21). Landing settle and finger ripple come from the engine defaults | `--tracks-only` (no pop > 2× neighbours), `node tools/qa_checks.mjs`, a frame strip |
+| **New shot** | brief + intensity | beats in `spec.story`/`spec.intensity` → New pose per key → New move per hand move → breath/face/fidgets → render | `qa_checks` PASS (or each fail explained), `critic_F.py --lens all` (three fresh reviewers), `blind_ab.py` against the previous version for each change; Harry's eye last |
+| **New character** | one master drawing | `python3 tools/new_char.py <id> --from mum2 --master <sheet>` → its printed steps (measure, rest fit, hands early, stress poses) | `char_check`, stress-pose sheet, hand checks (`qa_checks` hands) |
+| **New outfit / hand view** | stills of the view | New pose for each view → a fitted replacement drawing in `parts/` or the hand library | `detail_audit.py`, `corner_audit.py`, `qa_closeups.mjs` at the stress times |
+
+**Engine defaults from the reels rig** (on unless the shot turns them off):
+- every reach stop that ARRIVES lands once: press, fingers settle and wag, index first (`spec.land`, `landAuto: false`, a stop's `land: false|{…}`);
+- fingers ripple index first by `spec.fingerRipple` frames (1.2; 0 = in unison);
+- a contact shadow under each hand on her (`C.contactShadow`: ~12 %, 4,6 px, no blur), only onto the parts listed in `on`.
+These won no blind A/B on their own in the nausea shot (the far hand lands half hidden by the bump; the reviewers saw no difference at phone size) — they are there so a new move doesn't start frozen. Big visible wins still come from the shot: timing, staging, the turn of a forearm.
 
 ## The loop
 
@@ -40,8 +58,10 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
      - path moves from `tools/vtrack_apply.mjs` (`spec.video`), options documented in `engine/anim.js` pathTarget.
    - `tracks.face`, `fidget` (out-and-back life: fingers, `fx.slide.near.*` strokes, swallows), `breath`, `swaps` (hand views), `pins` (planted near hand), `plantFeet: "ik"`.
 6. **Render and measure** (see Commands). Check the per-frame speeds for pops before any review. Use `pose_probe` to A/B a DOF on one frame before keying it, and `uv_check` to see where the wrist and elbow actually go in the torso frame. For a fitted in-between, use its position (`uv_check --poses`) and a path `bias`, not its fitted twist (PIPELINE lesson 21).
-7. **Review.**
-   - Run `python3 tools/critic_F.py <char> <shot> > out/critic_prompt.md`. Then spawn a subagent with: *"Read out/critic_prompt.md and follow it exactly; open every image it lists; return the review."*
+7. **QA, then review.**
+   - `node tools/qa_checks.mjs --char <c> --anim <a> --box …`: frames out of order match, no state leaks, no pixel jumps, no still stretch > 1 s, hands (palm pops, wrist angle one way per move, hands ≥ 15 px apart). `node tools/qa_closeups.mjs --t …` for joints at size.
+   - Run `python3 tools/critic_F.py <char> <shot> --lens all > out/critic_prompt.md` (feel, Lasseter's principles, hands). Give each `out/critic_prompt_<lens>.md` to its own fresh subagent: *"Read … and follow it exactly; open every image it lists; return the review."*
+   - For a change: `python3 tools/blind_ab.py <old.mp4> <new.mp4> --anim <c>/<a>`, a fresh subagent on `out/blind_ab/prompt.md`, then `--reveal`. Keep a change that is meant to be visible only if it wins.
    - Log the round and "What was done" in `characters/<char>/feel_log_<shot>.md`.
    - Run `tools/anim_audit.py` for bleed (clothing showing through limbs and vice versa) and `tools/detail_audit.py` for single poses.
 8. **Iterate.**
@@ -63,7 +83,10 @@ python3 tools/frame_strip.py out/frames/mum2_nausea-to-belly out/strip.png 200 2
 node tools/pose_probe.mjs --anim nausea-to-belly --t 7.37 --vary hand.far=-40,0,40 --crop 450,250,1000,950
 node tools/uv_check.mjs mum2 nausea-to-belly 7.0 8.1              # wrist/elbow in the torso frame, frame by frame
 node tools/uv_check.mjs mum2 nausea-to-belly --poses fit-bf1,fit-bf2   # where fitted stills put them: compare, then bias the path
-python3 tools/critic_F.py mum2 nausea-to-belly > out/critic_prompt.md
+python3 tools/critic_F.py mum2 nausea-to-belly --lens all > out/critic_prompt.md   # feel + Lasseter + hands
+python3 tools/blind_ab.py renders/<old>.mp4 out/mum2_nausea-to-belly.mp4 --anim mum2/nausea-to-belly   # blind A/B pack
+node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly --box 380,150,1000,1050   # the QA gate
+node tools/qa_closeups.mjs --char mum2 --anim nausea-to-belly --t 2.8,7.5,9.0     # joints at size
 python3 tools/anim_audit.py mum2 nausea-to-belly --every 3        # bleed audit → out/mum2_nausea-to-belly_bleed.{txt,png}
 node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is drawn where (id, z, fill, clip) at one frame
 ```
@@ -93,7 +116,7 @@ node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is draw
 
 ## New character checklist
 
-Copy mum2's structure: `character.js` (parts, roles, warps, outline groups, hand library), `params.js`, `parts/*.js`, depth proxies, `poses/hands/*`.
+`python3 tools/new_char.py <id> --from mum2` copies mum2's structure: `character.js` (parts, roles, warps, outline groups, hand library, contact shadow), `params.js`, `parts/*.js`, depth proxies, `poses/hands/*`.
 
 1. Start from a clean character sheet image. Measure it with `tools/measure_ref.py` and fit the rest pose. Make limb lengths left = right (rest art foreshortens).
 2. Build the hands early, fitted (`tools/hand_fit.py`, `hand_lab.py`). Generic bending hands read as paws.
