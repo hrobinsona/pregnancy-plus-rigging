@@ -295,6 +295,20 @@ or composited.
    its face centre match the still's (within 1° on all three keys). Nelder–Mead from two seeds (the fit's head, and a
    bow: nod 2.5× the still's pitch, neck forward, head counter-rolled): the valley is diagonal (more nod, less roll),
    single-axis steps stopped at a 15° roll. Measure at the rig's scale (`C.ref.Hpx`), not the view's own head size.
+46. **A hand seen from the back shows its life in the FAN, not the curl; and in ¾ a resting palm keeps the still's
+   angle, not the proxy's.** mum3q's hand on the bump: the reviewers called v1 and v2 "frozen" and "a decal" although
+   the fingers flexed 4–6° (v2 even 6–12°): for a hand seen from the back flexion is in DEPTH and shortens a finger by
+   1 − cos θ (~1%). What reads is in the picture plane: the spread (fingers fan open with a caress, ±5°), the thumb's
+   sweep (`ts`), the whole hand sliding on the bump (reach stops with `dp`, `surface`), and a curl big enough to shorten
+   the fingers ~8% (8–14° per joint: a "gather"). The profile's `lie` (the palm laid in the bump proxy's tangent plane)
+   foreshortened the ¾ hand to 79% (`qa_checks` limbs): the ¾ bump's front faces us, the still's palm lies flat at full
+   length, so the fitted hand angle is kept (`hands/drape`: flat, graded, fanned) and only the wrist sits on the surface.
+47. **Fitted keys carry their own idle limbs: a limb the brief doesn't move takes ONE key's values, and a hanging arm
+   counter-rotates the trunk.** Each still's fit gave the far arm its own angles (forearm 10° → −3° → 3°), so in the
+   shot the far hand swung in and out behind her skirt by half its width: the biggest motion in every hold (all three
+   reviewers). `pose_blend --keep <far arm, legs>` holds them from the look-down key; then the far upper arm takes the
+   trunk's change with the opposite sign (the far side's angles run opposite) so it stays plumb when the chest opens
+   (far fingertip ≤ 1.7 px/frame, from 5.8 with the wrong sign).
 
 ## From the reels rig (merged 2026-10-12)
 
