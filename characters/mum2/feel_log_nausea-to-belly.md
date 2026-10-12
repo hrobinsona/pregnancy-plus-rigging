@@ -559,3 +559,22 @@ What was done (v14a–c):
    tab while wrapping (cut away round the bump). Asked the client for timestamps of what they saw.
 4. Still open: a few frames of fingers-up around 7.3–7.4 s; the in-between stills that would replace the designed
    waypoint (fal balance exhausted; prompts in docs/prompts/ for the Codex CLI).
+
+## v14d — measured lowering (2026-10-12)
+Input: the four in-between stills, made with `tools/refgen.py` (Codex CLI on Harry's ChatGPT login, 3 samples each, 12
+images, no failures). Fits rms 0.040–0.050 H; kept b_lower1_2 (0.045), b_lower2_1 (0.041), b_lift1_2 (0.045),
+b_lift2_2 (0.042) → `fit-bl1/bl2/bf1/bf2` (`refs/fit_keys.sh`). The lift stills fit best with the `cup` hand (a loose
+curl seen from the back); `relaxed` drew an open "oath" palm.
+What was done:
+1. The designed waypoint `n-fall-via` is replaced by the fitted `fit-bl1` as the reach via (the hand passes flat below
+   her collarbone).
+2. A via moves only the WRIST: with it alone the fingers still pointed up to 7.53 s. The still's ARM comes in as an
+   arm-only breakdown key (`fit-bl1` at 7.38: elevation, plane, humeral rotation, forearm, pronation) — that is what
+   turns the forearm across her chest so the fingers point down toward the bump. Fingers up now end at 7.40 s (the peel
+   off the lips) instead of 7.57 s.
+3. That exposed a two-frame forearm turn at 7.57 (fingertip 95 px/f, v14c peak 39): the pronation caught up all at once.
+   `fit-bl2`'s forearm turn (pronation + humeral rotation only) as a breakdown at 7.55 spreads it: peak 61 px/f.
+   `fit-bl2` as a reach via put the hand low on the bump and the wrap swap popped at 8.1 (139 px/f): not used as a via.
+Still open: (a) the 61 px/f turn — the upper arm passes straight down there (elevation crosses 0, the plane of elevation
+flips), so the forearm's direction is ill-defined for a frame or two; (b) the lift stills are fitted but not wired in
+(the lift is a video path move with hand-tuned bendAt/twistAt; next round).

@@ -161,6 +161,33 @@
    "note": "the fingers come together, relaxed, as they leave the lips"
   },
   {
+   "t": 7.38,
+   "pose": "fit-bl1",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "only": [
+    "bone.upperArm.far",
+    "bone.forearm.far",
+    "bone.shoulderAbd.far",
+    "bone.armAbd.far",
+    "bone.armRot.far",
+    "bone.foreRot.far",
+    "bone.clavicle.far"
+   ],
+   "note": "far arm a third of the way down, MEASURED (still b_lower1_2): elbow low at her side, forearm across the chest, so the fingers point down toward the bump, not up"
+  },
+  {
+   "t": 7.55,
+   "pose": "fit-bl2",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "only": [
+    "bone.foreRot.far",
+    "bone.armRot.far"
+   ],
+   "note": "the forearm turns the hand toward the bump's rim on the way down, MEASURED (still b_lower2_1): spreads the turn that otherwise happened in two frames at 7.57"
+  },
+  {
    "t": 7.6,
    "pose": "n-sigh",
    "ease": "inOut",
@@ -594,11 +621,11 @@
    },
    {
     "t": 0,
-    "pose": "n-fall-via",
+    "pose": "fit-bl1",
     "on": "chest",
     "via": true,
     "front": true,
-    "note": "halfway down: in front of her chest, the forearm about level, the wrist relaxed"
+    "note": "a third of the way down: the hand flat below her collarbone, fingers toward the bump (fitted still b_lower1_2)"
    },
    {
     "t": 8.1,

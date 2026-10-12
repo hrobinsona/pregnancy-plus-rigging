@@ -116,6 +116,15 @@ or composited.
    (minimum jerk, limp wrist by time, a designed limp bend) read calmer than every video-derived version. The waypoint
    should be a fitted in-between still (`docs/REF_PROMPTS.md`) — the designed one is a stopgap.
 
+20. **A via moves the wrist; the arm comes from keys.** A fitted in-between as a reach via (`{via: true}`) only steers
+   the WRIST's path (and its local bend); elevation, humeral rotation and pronation still come from the body keys, so a
+   measured in-between whose point is the FOREARM (across the chest, fingers down) changed nothing visible as a via
+   (fingers up to 7.53 s). Use the same fitted pose twice: as the via, and as an arm-only breakdown key (`only` the far
+   arm's bones) at the time the hand passes it. Then check `--tracks-only`: pinning the arm mid-move can bunch a turn
+   into the next stretch (a two-frame pronation catch-up) — spread it with the next still's forearm turn as its own
+   `only` key rather than tuning eases. Where the upper arm passes straight down the plane of elevation flips (a 3D-arm
+   singularity): expect a fast turn there and look at those frames first.
+
 ## 1. Reference generation (fal.ai) — see `tools/fal_gen.py`, ledger in `characters/<c>/refs/ledger.jsonl`
 
 ### Scoreboard (mum2, nausea shot): what paid off and what did not
