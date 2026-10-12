@@ -140,6 +140,14 @@ or composited.
    7.8–8.0 s, a one-eyed blink at 1.0 s, a lift a bit brisk for "gentle". A side effect the A/B did catch: fingers lagged
    by the hand's own lag landed 4 frames late on her mouth and uncovered it — ripple from the index, not from the hand.
 
+23. **A key moves every channel its pose has unless told otherwise — make its scope match its note.** Part of v15's
+   worst moment (the far forearm turning 58° in two frames at 7.67–7.73 s) was a breakdown whose note said "shoulders
+   settle": it keyed the derived pose `n-sigh` with only the hands excepted, so its far-arm pronation (40°) landed
+   0.05 s after the fitted in-between's (−17°). `anim_dump` with the reach turned off (`reach: {}`) shows key-driven
+   jumps at once. Prefer `only` lists for accent keys. The rest of that moment (the palm flipping upright → flat at
+   7.50–7.60 s) IS the upper arm passing straight down, and the blind A/B still named it after the key fix — two causes
+   in one "flip". And check a reviewer's claim on the frames before fixing it: the v15 "wink" was both eyes together.
+
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

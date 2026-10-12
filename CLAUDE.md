@@ -29,8 +29,8 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
   - Log the round in `characters/mum2/feel_log_nausea-to-belly.md`.
 - **Taste.** The client's brief and intensity (`spec.story`, `spec.intensity`) beat the critic's taste. Explore, don't tune (`PIPELINE.md` lesson 15).
 
-## Status (2026-10-12): v15, the two rigs consolidated
-The reels rig's best parts are now here (Harry: consolidate first, then iterate): its QA gate (`tools/qa_checks.mjs`), review loop (`tools/blind_ab.py`, `critic_F.py --lens all`), lessons (`docs/PIPELINE.md` "From the reels rig"), performance and hand defaults in the engine (landing, finger ripple, contact shadow, wrist taper), and the recipes (`tools/new_pose.py`, `tools/new_char.py`, the skill's "Recipes" table). Latest render: `renders/mum2_nausea-to-belly_v15.mp4` (v14e, v14d, v14c kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
+## Status (2026-10-12): v16, the two rigs consolidated, first iteration done
+The reels rig's best parts are now here (Harry: consolidate first, then iterate): its QA gate (`tools/qa_checks.mjs`), review loop (`tools/blind_ab.py`, `critic_F.py --lens all`), lessons (`docs/PIPELINE.md` "From the reels rig"), performance and hand defaults in the engine (landing, finger ripple, contact shadow, wrist taper), and the recipes (`tools/new_pose.py`, `tools/new_char.py`, the skill's "Recipes" table). Latest render: `renders/mum2_nausea-to-belly_v16.mp4` (v16: the far forearm no longer turns 58° in two frames at 7.7 s, the head jerk at 1.27 s is gone; v15, v14e, v14d, v14c kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
 
 **Beat:**
 
@@ -54,12 +54,12 @@ The reels rig's best parts are now here (Harry: consolidate first, then iterate)
   - Fixed: outline lines running over neck skin; the far cuff poking past the bump rim as a ragged tab.
   - Harry has not yet said where he saw bleed. Ask him for timestamps.
 
-**Next steps, in order** (iterate on the shot; each from the v15 QA gate or blind A/B, feel log v15):
-1. **Forearm turn at ≈7.5 s.** The oath palm flips flat in ~3 frames (61 px/f): the upper arm passes straight down and the plane of elevation flips (3D-arm singularity). Fix in the engine or with elbow guidance, not eases.
-2. **Far hand onto the bump, 7.8–8.0 s:** it slides along the outside of the bump with a pink cuff sliver past the rim, and the wrist turns back 39° as it lands (QA hands).
-3. **Small QA fails:** head stutter at 1.27 s; one-eyed blink at 1.0–1.1 s; far wrist turns back 13° at 2.7 s; the lift a bit brisk for "gentle".
+**Next steps, in order** (feel log v16):
+1. **The palm flip at 7.50–7.60 s** (blind A/B v16 names it in every version): the far upper arm passes straight down and the plane of elevation swings 0 → 77° in 5 frames, turning the palm from upright to flat. Fix the swivel/plane in the reach solve (keep the elbow's plane continuous), not the keys.
+2. **Far hand onto the bump, 7.8–8.1 s:** it reaches the bump's outside edge as a whole hand, then swaps to the wrap drawing (a full hand to a thin row of fingers in 2 frames at 8.00 → 8.07 s). Needs an in-between view of the hand curling round the rim (recipe "New outfit / hand view"), not timing.
+3. **Small QA items:** the far wrist snaps into the cover at 2.70 s (13° back, palm pop 17%) — but turning it earlier showed an "oath" palm and lost a blind A/B; needs a better hand view, not timing.
 4. **Bleed.** Get Harry's timestamps, then `tools/anim_audit.py`. Most remaining audit hits are deliberate lines (cardigan creases, finger gaps in the wrap, the hair-bun hole).
-5. **Hand-view library.** An edge-on hand and a loose curl seen from the back, as fitted replacement drawings (recipe "New outfit / hand view").
+5. **Hand-view library.** An edge-on hand and a loose curl seen from the back, as fitted replacement drawings.
 6. **Second character** with `tools/new_char.py`, only by following the skill; fix the skill wherever it gets stuck. Then point the reels article-video and character skills at this repo for figures.
 
 ## Layout

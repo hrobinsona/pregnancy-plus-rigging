@@ -609,3 +609,25 @@ What was done:
 Blind A/B v14e vs v15 (fresh reviewer, whole shot): NO CLEAR DIFFERENCE, 6.5 / 6.5. Faults named in both: the forearm
 turn 7.47–7.67 s (oath palm flips flat in ~3 frames); the far hand slides along the bump's outside 7.8–8.0 s with a pink
 cuff sliver past the rim; one eye closes before the other at 1.0–1.1 s (reads as a wink); the lift 2.2–2.5 s a bit brisk.
+
+## v16 — first iteration on the v15 findings (2026-10-12)
+What was done (each measured first: anim_dump, tracks, frame strips):
+1. **The forearm flip at 7.5–7.7 s** was not the 3D-arm singularity: the 7.6 `n-sigh` breakdown ("shoulders settle")
+   also keyed the far ARM, and its pronation (40°) came 0.05 s after `fit-bl2`'s (−17°): the forearm turned 58° in two
+   frames. The key now leaves the far arm alone; pronation runs fit-bl2 → fit-k8 over 0.7 s (≤ 6°/frame). Fingertip
+   peak 61 → 50 px/f, the second bump at 8.0 s (37 px/f) gone; QA: the far palm pop at 7.73 s and the 39° wrist
+   reversal at 8.0 s are gone.
+2. **The wrist turn into the cover at 2.7 s** snaps in 2 frames (twist 65 → 2° between path s 0.86 and 1). Tried
+   turning it over the second half of the path (s 0.5–1): smoother numbers, but the blind A/B preferred v15 — the hand
+   rose upright with the palm out (an "oath") at 2.60–2.67 s before rolling onto the mouth. Reverted; kept as is.
+3. **The head jerk at 1.27 s:** the chest straightened back before the lagged neck and head bowed forward (head tip 16 px
+   back, then 28 px forward in 4 frames). Shifted at the fit-k2 key (chest/spine +2 f, neck/head −2 f): ≤ 5 px back.
+   QA still flags 1.17 s: the onset of the startle out of a quiet hold (1.9 levels/frame, below mid-shot motion).
+4. **The "wink" at 1.0 s** (blind A/B v15): checked frame by frame — both eyes close together. No change.
+Blind A/B v15 vs the trial (fresh reviewer, low confidence): v15 more natural, for the lift arrival above; the lowering
+a very slight edge to v15 too, and in BOTH the palm still flips from upright to flat at 7.50–7.60 s — that part is the
+upper arm passing straight down (armAbd swings 0 → 77° over frames 224–229), not the key fixed in 1. Shipped as v16:
+items 1 and 3 kept, 2 reverted.
+Still open: the far hand reaches the bump's outside edge and then swaps to the wrap drawing (8.00 → 8.07 s: a full hand
+to a thin finger row in 2 frames) — a drawing problem (the wrap needs an in-between view), not timing. QA: the far
+wrist turns back 13° at 2.80 s (the landing on the mouth).

@@ -63,7 +63,14 @@
    "t": 1.3,
    "pose": "fit-k2",
    "ease": "inOut",
-   "note": "something's off: a small intake, near fingers press in, brows go up, eyes drop"
+   "note": "something's off: a small intake, near fingers press in, brows go up, eyes drop",
+   "shift": {
+    "spineUpper": 2,
+    "chest": 2,
+    "neck": -2,
+    "head": -2
+   },
+   "shiftNote": "the head bows WHILE the chest straightens, not after it: lagged behind the chest, the head was pulled back 16 px then swung 28 px forward in 4 frames (QA jump at 1.27 s); now ≤ 5 px back. Bigger shifts made a 15 px one-frame jump"
   },
   {
    "t": 1.75,
@@ -194,9 +201,15 @@
    "kind": "breakdown",
    "except": [
     "hand.far",
-    "hand.farB"
+    "hand.farB",
+    "bone.upperArm.far",
+    "bone.forearm.far",
+    "bone.shoulderAbd.far",
+    "bone.armAbd.far",
+    "bone.armRot.far",
+    "bone.foreRot.far"
    ],
-   "note": "shoulders settle as the hand comes down"
+   "note": "shoulders settle as the hand comes down (not the far ARM: its n-sigh pronation, 40°, keyed 0.05 s after fit-bl2's −17°, turned the forearm 58° in two frames — the v15 'oath flips flat' at 7.5–7.7 s)"
   },
   {
    "t": 7.61,
@@ -617,7 +630,8 @@
        0.4377
       ]
      ],
-     "elbowW": 1
+     "elbowW": 1,
+     "turnNote": "kept late on purpose (s 0.86–1): turning the wrist over the second half (v16 trial) showed an upright open palm, an 'oath', at 2.60–2.67 s and lost a blind A/B to this"
     },
     "limp": 0
    },
