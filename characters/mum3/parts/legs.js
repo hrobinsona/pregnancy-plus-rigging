@@ -1,50 +1,43 @@
-// legs.js — joggers (tube hip→knee→ballooned calf→gathered cuff, skinned across the knee), cuff bands, ankle skin,
-// socks (skinned foot→toe at the ball) with rib band. Far leg behind the near leg.
-import { tube, limb, taper, loop } from '../../../engine/shapes.js';
+// legs.js — mum3's bare legs (one skin tube hip → knee → ankle each, skinned across the knee; the thighs disappear
+// under the skirt), the foot's top above the shoe, and ballet flats (skinned foot → toe at the ball). Far leg behind the
+// near one, one step darker, as in the master.
+import { tube, loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
+import { add, lerp } from '../../../engine/geom.js';
 
-export const ANCHORS = { 'sock.near.heel': 4, 'sock.far.heel': 4, 'sock.near.toe': 4, 'sock.far.toe': 4, 'leg.near': 12, 'leg.far': 12, 'cuffleg.near': 5, 'cuffleg.far': 5, 'cuffleg.near.line': 4, 'cuffleg.far.line': 4,
-  'ankle.near': 6, 'ankle.far': 6, 'sock.near': 10, 'sock.far': 10, 'sock.near.band': 4, 'sock.far.band': 4 };
+export const ANCHORS = { 'leg.near': 16, 'leg.far': 16, 'foot.near': 7, 'foot.far': 7, 'shoe.near': 8, 'shoe.far': 8 };
 
 export function build({ P: C, C: char }) {
   const J = char.joints, X = char.params.P, out = [];
   for (const side of ['far', 'near']) {
-    const S = side === 'near' ? 'Near' : 'Far', z = side === 'near' ? 26 : 20, w = X.leg[side];
+    const S = side === 'near' ? 'Near' : 'Far', z = side === 'near' ? 20 : 16, fill = side === 'near' ? C.skin : C.skinFar, w = X.leg[side];
     const hip = J['hip' + S], knee = J['knee' + S], ank = J['ankle' + S];
-    const cuffTop = lerp(knee, ank, 0.82), calf = lerp(knee, ank, 0.6);   // the leg's rounded end BLOUSES over the cuff band (a convex overhang, never a shelf)
-    const axis = [add(hip, [0, -0.1]), lerp(hip, knee, 0.5), knee, calf, cuffTop];
-    // straights against curves: the inner side tapers straight, the outer side carries the thigh/calf curve
-    const inR = side === 'near';   // axis points down: r = screen right = inner for the near leg, outer for the far leg
-    const ws = [w.hip, w.hip * 0.93, w.knee, w.knee * (w.calfK ?? 1.02), w.cuff * 1.1].map((v, i) => {
-      const pick = (f) => (Array.isArray(f) ? f[i] : i < 4 ? f : 1);   // per-station factor, or one factor for the top 4
-      const o = pick(w.outer), n = pick(w.inner);
-      return inR ? { r: v * n, l: v * o } : { r: v * o, l: v * n };
-    });
-    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill: C.bottoms, geom: ensureCW(tube(axis, ws, { capK: 0.55 })),
+    // axis down the leg: r = the tube's +normal (screen right on a downward axis) = the leg's FRONT; l = its back (calf)
+    const axis = [add(hip, [0, -0.15]), lerp(hip, knee, 0.5), knee, lerp(knee, ank, 0.23), lerp(knee, ank, 0.5), lerp(knee, ank, 0.77), ank];
+    const thigh = side === 'near' ? { front: 0.21, back: 0.22 } : { front: 0.22, back: 0.2 };
+    const ws = [thigh, thigh, { front: w.knee.front * 1.05, back: w.knee.back * 0.92 }, w.calf, { front: (w.calf.front + w.low.front) / 2, back: (w.calf.back + w.low.back) / 2 }, w.low, { front: w.ankle.front, back: w.ankle.back * 0.95 }]
+      .map((v) => ({ r: v.front, l: v.back }));
+    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill, geom: ensureCW(tube(axis, ws, { capK: 0.6 })),
       skin: { parent: `thigh.${side}`, child: `shin.${side}`, zone: 0.25 } });
-    // gathered cuff band
-    const c0 = lerp(knee, ank, 0.8), c1 = lerp(knee, ank, 0.95);
-    out.push({ id: `cuffleg.${side}`, bone: `shin.${side}`, z: z + 1, fill: C.bottoms, geom: ensureCW(limb(c0, c1, [{ t: 0, r: w.cuff * 0.86 * (w.cuffK ?? 1), l: w.cuff * 0.86 * (w.cuffK ?? 1) }, { t: 1, r: w.cuff * 0.86 * (w.cuffK ?? 1), l: w.cuff * 0.86 * (w.cuffK ?? 1) }], { capA: 'none', capK: 0.22, capB: 'round' })) });   // R8: a flatter band (straight-ish bottom) under one blouse curve, not a second ball   // band starts INSIDE the leg; the leg's rounded end blouses over it
-    const n = perpL(norm(sub(c1, c0))), m = lerp(c0, c1, 0.15);
-    if (X.detail.legCuffLine) out.push({ id: `cuffleg.${side}.line`, bone: `shin.${side}`, z: z + 1.1, fill: C.bottomsShade, geom: taper([add(m, mulS(n, w.cuff * 0.85)), add(m, [0, 0.012]), add(m, mulS(n, -w.cuff * 0.85))], [0.003, 0.016, 0.003]) });
-    // ankle skin
-    out.push({ id: `ankle.${side}`, bone: `shin.${side}`, z: z - 0.5, fill: C.skin, geom: ensureCW(limb(lerp(knee, ank, 0.9), add(ank, [0, 0.03]), [{ t: 0, r: 0.115, l: 0.115 }, { t: 1, r: 0.11, l: 0.11 }], { capK: 0.5 })) });   // narrower than band and sock top: never peeks between them
-    // sock: ankle top → heel → sole → toe (built from heel/toe landmarks and the ankle joint), skinned at the ball
-    const heel = X.foot[side].heel, toe = X.foot[side].toe, top = add(ank, [0, 0.0]);
-    // ankle-top rib band is a bit wider than the ankle; heel bulges back; instep slopes to a rounded toe
-    // rib cuff a little narrower than the foot; waist at the ankle; heel bulges back; instep slopes to a rounded toe
-    const fw = (toe[0] - heel[0]), cw = 0.13;
-    const sock = [
-      [top[0] - cw, top[1] - 0.055], [top[0] + cw, top[1] - 0.055], [top[0] + cw * 0.95, top[1] + 0.2], [heel[0] + fw * 0.7, toe[1] - 0.15],
-      [toe[0] + 0.005, toe[1] - 0.045 * (X.foot[side].round || 1)], [toe[0] - 0.03 * (X.foot[side].round || 1), toe[1] + 0.03], [heel[0] + fw * 0.45, heel[1] + 0.135], [heel[0] + 0.05, heel[1] + 0.105],
-      [heel[0] - 0.015, heel[1] + 0.01], [top[0] - cw * 0.92, top[1] + 0.22]];
-    out.push({ id: `sock.${side}`, bone: `toe.${side}`, z: z + 0.5, fill: C.sock, geom: ensureCW(loop(sock)),
+    // the foot's top, visible above the low-cut shoe: ankle → instep → toes (the rest inside the shoe)
+    const sh = X.shoe[side], h = sh.heel, t = sh.toe;
+    out.push({ id: `foot.${side}`, bone: `toe.${side}`, z: z + 0.3, fill, geom: ensureCW(loop([
+      [ank[0] - 0.13, ank[1] - 0.05], [ank[0] + 0.07, ank[1] - 0.05, { a: 82 }], [ank[0] + 0.2, sh.top + 0.02, { a: 45 }], [h[0] + 0.75 * (t[0] - h[0]), sh.top + 0.17, { a: 20 }],   // the instep: steep below the ankle, flattening toward the toes
+      [t[0] - 0.14, sh.sole - 0.06], [h[0] + 0.2, sh.sole - 0.1], [h[0] + 0.08, h[1] - 0.04]])),
       skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
-    out.push({ id: `sock.${side}.band`, bone: `foot.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[top[0] - cw * 0.92, top[1] + 0.13], [top[0], top[1] + 0.145], [top[0] + cw * 0.92, top[1] + 0.125]], [0.003, 0.018, 0.003]) });
-    // heel and toe seams (short arcs), as in the reference's sock construction
-    if (X.detail.sockSeams) out.push({ id: `sock.${side}.heel`, bone: `foot.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[heel[0] + 0.0, heel[1] - 0.06], [heel[0] + 0.1, heel[1] + 0.0], [heel[0] + 0.14, heel[1] + 0.11]], [0.003, 0.02, 0.003]) });
-    if (X.detail.sockSeams) out.push({ id: `sock.${side}.toe`, bone: `toe.${side}`, z: z + 0.6, fill: C.sockShade, geom: taper([[toe[0] - 0.13, toe[1] + 0.03], [toe[0] - 0.12, toe[1] - 0.05], [toe[0] - 0.05, toe[1] - 0.12]], [0.003, 0.02, 0.003]) });
+    // ballet flat: heel counter → the low opening (steep at the heel, flattening to the vamp) → toe box → tip → a sole
+    // that rises toward the heel (the master's flats rock up at the back) → round heel
+    const L = t[0] - h[0];
+    out.push({ id: `shoe.${side}`, bone: `toe.${side}`, z: z + 0.6, fill: C.shoe, geom: ensureCW(loop([
+      [h[0] + 0.035, sh.top, { c: true, ai: 250, ao: 40, ti: 0.5, to: 0.7 }],
+      [h[0] + 0.4 * L, sh.top + 0.125, { a: 14 }],
+      [h[0] + 0.75 * L, sh.top + 0.165, { c: true, ai: 190, ao: 5, ti: 0.7, to: 0.6 }],   // the opening's front end meets the toe box
+      [(h[0] + 0.75 * L + t[0]) / 2, (sh.top + 0.165 + t[1]) / 2 - 0.03, { a: 22 }],   // the toe box's top: below the line vamp → tip (no hump)
+      [t[0], t[1], { a: 90, t: 0.9 }],
+      [t[0] - 0.16, sh.sole, { a: 180 }],
+      [h[0] + 0.2, sh.sole - 0.045, { a: 190 }],
+      [h[0] + 0.02, h[1] + 0.1, { a: 245 }]])),
+      skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
   }
   return out;
 }

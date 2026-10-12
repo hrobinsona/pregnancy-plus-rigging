@@ -133,7 +133,8 @@ hy, hx = np.nonzero(head)
 pts['skullTop'] = [int(ear[0] - 0.3 * dHead) + int(np.median(hx[hy == hy.min()])), int(hy.min())] if len(hy) else pts['crown']
 # face front edge per row (rightmost skin pixel in the head band) → nose tip, chin, neck front
 x0 = int(ear[0] - 0.6 * dHead)
-def front(y, m=skinM):
+def front(y, m=None):
+    m = (skinM | (fig & ~hairM)) if m is None else m
     r = np.nonzero(m[y, x0:])[0]
     return x0 + int(r.max()) if len(r) else None
 yE, yS = int(eye[1]), int(pt(shN)[1])
@@ -155,12 +156,42 @@ if fm.any():   # the eye blob nearest the MediaPipe eye
     cy, cx = ndi.center_of_mass(lab_f == best); pts['eye'] = [int(cx), int(cy)]
     bb = ndi.find_objects((lab_f == best).astype(int))[0]; pts['eyeSize'] = [bb[1].stop - bb[1].start, bb[0].stop - bb[0].start]
 pts['ear'] = ear.astype(int).tolist()
+# FACE PROFILE (profile/near-profile masters): named points on the face's front edge, each an extreme of that edge in its
+# own band — forehead (most forward above the eye), nose bridge (deepest between eye and nose tip), subnasal (deepest
+# between nose tip and mouth), upper lip / chin front (most forward), chin crease (deepest between them); and where the
+# HAIR ends on the front edge (the first row whose front-most head pixel is skin)
+def fmax(y0, y1): ys_ = [y for y in range(int(y0), int(y1)) if fx.get(y) is not None]; return max(ys_, key=lambda y: fx[y]) if ys_ else None
+def fmin(y0, y1): ys_ = [y for y in range(int(y0), int(y1)) if fx.get(y) is not None]; return min(ys_, key=lambda y: fx[y]) if ys_ else None
+fh = {y: front(y, hairM | skinM) for y in range(pts['skullTop'][1], yE)}
+hf = next((y for y in range(pts['skullTop'][1], yE) if fh[y] is not None and skinM[y, fh[y]] and not hairM[y, max(0, fh[y] - 2)]), None)
+for y in range(yE - int(0.3 * dHead), yE): fx.setdefault(y, front(y))
+if hf is not None:
+    for y in range(hf, yE - int(0.3 * dHead)): fx[y] = front(y)
+    pts['hairFront'] = [fx[hf], hf]
+yF = fmax(hf if hf is not None else yE - 0.3 * dHead, eye[1]);         pts['forehead'] = [fx[yF], yF]
+yB = fmin(eye[1] - 0.1 * dHead, noseY);                                 pts['noseBridge'] = [fx[yB], yB]
+yS = fmin(noseY, mouth[1]);                                              pts['subnasal'] = [fx[yS], yS]
+yU = fmax(yS, mouth[1] + 2);                                             pts['lipUpper'] = [fx[yU], yU]
+yC = fmax(mouth[1] + 0.12 * dHead, chinY);                               pts['chinFront'] = [fx[yC], yC]
+yK = fmin(mouth[1] + 2, yC);                                             pts['chinCrease'] = [fx[yK], yK]
+# EAR: rows between brow and jaw where the skin's BACK edge bulges backward (the ear in front of the hair): its extremes
+def back_(y, m=skinM):
+    r = np.nonzero(m[y, int(ear[0] - 1.0 * dHead):int(nose[0])])[0]
+    return int(ear[0] - 1.0 * dHead) + int(r.min()) if len(r) else None
+bk = {y: back_(y) for y in range(int(eye[1] - 0.45 * dHead), int(chinY))}
+bk = {y: v for y, v in bk.items() if v is not None and v < eye[0] - 0.2 * dHead}
+if bk:
+    med = np.median(list(bk.values())); er = [y for y, v in bk.items() if v < med - 0.04 * dHead]
+    if er:
+        lab_e, ne = ndi.label(np.isin(np.arange(Hh), er)); big_e = max(range(1, ne + 1), key=lambda k: (lab_e == k).sum())
+        er = [y for y in er if lab_e[y] == big_e]; yb = min(er, key=lambda y: bk[y])
+        pts['earBack'], pts['earTop'], pts['earBottom'] = [bk[yb], yb], [bk[min(er)], min(er)], [bk[max(er)], max(er)]
 # hair: bun = the hair blob behind the skull (its centroid and equal-area radius); hair outline as a polar profile
-hb = hairM.copy(); hb[:, int(ear[0] - 0.35 * dHead):] = False
-if hb.any():
-    lab_h, nh = ndi.label(hb); big = 1 + int(np.argmax(ndi.sum(hb, lab_h, range(1, nh + 1))))
-    cy, cx = ndi.center_of_mass(lab_h == big); pts['bun'] = [int(cx), int(cy)]
-    pts['bunR'] = float(np.sqrt((lab_h == big).sum() / np.pi))
+# bun = the biggest circle that fits in the hair behind and below the ear (distance transform), i.e. the round knot,
+# not the centroid of the whole back mass it joins
+dt = ndi.distance_transform_edt(hairM); dt[:int(ear[1]), :] = 0; dt[:, int(ear[0] - 0.35 * dHead):] = 0
+if dt.max() > 0.1 * dHead:
+    by, bx = np.unravel_index(int(dt.argmax()), dt.shape); pts['bun'] = [int(bx), int(by)]; pts['bunR'] = float(dt.max())
 headC = np.array([(ear[0] + eye[0]) / 2, (pts['skullTop'][1] + chinY) / 2])
 pts['headCentre'] = headC.astype(int).tolist()
 polar = {}

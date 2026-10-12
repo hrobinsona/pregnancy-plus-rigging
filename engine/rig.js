@@ -306,13 +306,15 @@ export function createRig(C) {
         if (!hp.length) continue;
         const zh = Math.min(...hp.map((p) => p.z)), gRe = g.on ? new RegExp(g.on) : onRe, on = [...new Set(parts.filter((p) => gRe.test(p.id) && !p.stroke && p.z < zh && !(p.opacity <= 0.002))
           .flatMap((p) => (p.clip ? (Array.isArray(p.clip) ? p.clip : [p.clip]).map((id) => byId[id]).filter(Boolean) : [p])))];   // a clipped surface (a rim shade) counts only as its clip region
-        if (on.length) shadows.push({ zh, hp, on, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
+        // g.gate: an fx channel (0–1) that fades the shadow in, e.g. a hand that is ON her only after it lands
+        const gk = g.gate ? Math.max(0, Math.min(1, pose.fx?.[g.gate] ?? 0)) : 1;
+        if (on.length && gk > 0.002) shadows.push({ zh, hp, on, k: gk, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
       }
       shadows.sort((a, b) => a.zh - b.zh);
       var emitShadow = (S) => {
         const [dx, dy] = (CS.offset || [4, 6]).map((v) => v / k);
         out += `<clipPath id="${S.id}">${S.on.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`
-          + `<g clip-path="url(#${S.id})"><g opacity="${f2(CS.opacity ?? 0.12)}"><g transform="translate(${f2(dx)} ${f2(dy)})">`
+          + `<g clip-path="url(#${S.id})"><g opacity="${f2((CS.opacity ?? 0.12) * (S.k ?? 1))}"><g transform="translate(${f2(dx)} ${f2(dy)})">`
           + S.hp.map((c) => `<path d="${pathD(c.geom, Hpx)}" fill="${CS.color || '#000'}" transform="${tfOf(c.M)}"/>`).join('') + '</g></g></g>';
       };
     }

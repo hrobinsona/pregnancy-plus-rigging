@@ -1,129 +1,98 @@
-// params.js — Mum v2: every number the parts use. Units: H (head = skull top → chin), origin on the ground between
-// the feet, y down, facing right (¾ view). Landmarks come from ref/landmarks.json (named points only); everything
-// else is a DESIGN parameter, chosen against the design language (docs/research.md §4) and tuned by the critic.
+// params.js — mum3: every number the parts use. Units: H (head = skull top → chin), origin on the ground under the near
+// shoe, y down, facing right. She is drawn near PROFILE (turned ~18° toward us), so limbs move across the frame, not at
+// the camera. Landmarks come from ref/landmarks.json, measured by tools/master_measure.py (named points, joints and
+// width profiles; no contour); everything else is a DESIGN parameter.
 import L from './ref/landmarks.json' with { type: 'json' };
 
 export const Hpx = L.Hpx;
 const G = L.ground;
 export const at = ([X, Y]) => [(X - G[0]) / Hpx, (Y - G[1]) / Hpx];
 export const lm = (k) => at(L.points[k]);
+const jt = (k) => at(L.joints[k]);
+const W = (k, f) => { const s = L.widths[k].find((q) => Math.abs(q.f - f) < 0.01); return { front: s.l / Hpx, back: s.r / Hpx }; };   // measured half-widths across a limb (front = facing side)
 
+// colours sampled from the master (tools/master_measure.py palette + darkest pixels of each small feature)
 export const palette = {
-  skin: '#d48055', skinShade: '#c76a47', skinLine: '#b05a3a', cheek: '#e37158', nail: '#e7a27c',   // nail: a light tint of the skin (back-of-hand views only)   // skinLine: drawn creases (finger lines, nose) — darker than the shade, as sampled from the reference (#a14e32 on #c87754)
-  hair: '#5e3424', hairShade: '#4a2718',
-  top: '#b99dd7', topShade: '#a685cb',            // lilac top (value ladder: cardigan 81 > top 69 > joggers 50 > hair 27)
-  bottoms: '#9c7fb5', bottomsShade: '#8467a0',     // mauve joggers (lightened 11 Oct: large area, keep the ladder gentle)
-  cardigan: '#feb8c3', cardiganShade: '#f79caf',   // pink cardigan: one base + one shade
-  sock: '#e0c079', sockShade: '#cea155',            // lower chroma than the face's focal colours; ΔL* ≈ 6 vs floor           // yellow socks
-  eye: '#2a1611', mouth: '#7a3a1e',                // no pure black (ONS / Headspace practice)
-  sick: '#b3ad6c',
+  skin: '#fbbb8d', skinFar: '#f7ae7e',       // far limbs one step darker (the master's far leg)
+  skinShade: '#f2a06f', skinLine: '#eb9161',  // jaw shade, finger gaps
+  cheek: '#f8a685',
+  hair: '#513027', hairShade: '#452821',
+  dress: '#e5725c', dressShade: '#d4604b',
+  shoe: '#4f2c22', shoeShade: '#3c1b11',   // the master's shoes are the hair colour (one palette cluster)
+  eye: '#361e18', brow: '#452821', mouth: '#d56d4d', earIn: '#f2a06f',
+  nail: '#fcc9a3',
 };
 
-export const design = { facing: 'right', forwardX: 0.72, ground: '#efe0d0' };
+// forwardX = cos(yaw): 0.95 ≈ 18° toward the camera (shoulders and hips measured 0.3 H apart on screen)
+export const design = { facing: 'right', forwardX: 0.95, ground: '#efe0d0' };
 
-// ---------------------------------------------------------------- joints (rest = relaxed standing ¾)
+const SH = jt('shoulderNear'), EL = jt('elbowNear'), WR = jt('wristNear'), farDx = 0.18, farDy = 0.06;   // the far arm: the near one moved across and down, so it stays hidden behind her chest (a design choice: the master shows no far shoulder)
+// ---------------------------------------------------------------- joints (rest = the master's standing pose)
 export const joints = {
   root: [0, 0],
-  pelvis: [0.0, -2.78],
-  spineLower: [-0.05, -3.25], spineUpper: [-0.08, -3.8], chest: [-0.07, -4.32],
-  neck: [-0.07, -4.86], head: [-0.08, -5.1], headTip: lm('skullTop'),
-  bellyBase: [0.22, -3.42], bellyApex: lm('bellyApex'),
-  clavicleNear: [-0.16, -4.76], shoulderNear: lm('shoulderNear'), elbowNear: lm('elbowNear'), wristNear: lm('wristNear'),
-  clavicleFar: [0.06, -4.76], shoulderFar: lm('shoulderFar'), wristFar: lm('wristFar'),
-  // the 3D arm needs TRUE segment lengths, equal on both sides: the far arm's drawn elbow (rest ref) sat low, giving a 1.0 H
-  // upper arm and a 0.79 H forearm (the near arm: 0.88 / 0.89) — a far hand raised to the mouth then fell short. Put the far
-  // elbow at the near arm's upper-arm length along the drawn direction.
-  elbowFar: ((s, e, L) => { const d = Math.hypot(e[0] - s[0], e[1] - s[1]); return [s[0] + (e[0] - s[0]) * L / d, s[1] + (e[1] - s[1]) * L / d]; })(lm('shoulderFar'), lm('elbowFar'), Math.hypot(lm('elbowNear')[0] - lm('shoulderNear')[0], lm('elbowNear')[1] - lm('shoulderNear')[1])),
-  hipNear: lm('hipNear'), kneeNear: lm('kneeNear'), ankleNear: lm('ankleNear'), ballNear: [-0.03, -0.01], toeNear: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05],
-  hipFar: lm('hipFar'), kneeFar: [lm('kneeFar')[0], lm('kneeFar')[1] - 0.03], ankleFar: [lm('ankleFar')[0], lm('ankleFar')[1] - 0.07], ballFar: [0.75, -0.17], toeFar: [lm('toeFar')[0], lm('toeFar')[1] - 0.07],   // far foot sits back in depth
+  pelvis: [0.23, -3.7],
+  spineLower: [0.14, -4.25], spineUpper: [0.08, -4.8], chest: [0.06, -5.3],
+  neck: [-0.02, -5.92], head: [0.06, -6.28], headTip: lm('skullTop'),
+  bellyBase: [0.42, -3.95], bellyApex: lm('bumpApex'),
+  clavicleNear: [0.12, -5.82], shoulderNear: SH, elbowNear: EL, wristNear: WR,
+  clavicleFar: [0.16, -5.82], shoulderFar: [SH[0] + farDx, SH[1] + farDy], elbowFar: [EL[0] + farDx, EL[1] + farDy], wristFar: [WR[0] + farDx, WR[1] + farDy],
+  hipNear: jt('hipNear'), kneeNear: jt('kneeNear'), ankleNear: jt('ankleNear'), ballNear: [0.12, -0.05], toeNear: at(L.points.shoeNear.toe),
+  hipFar: jt('hipFar'), kneeFar: jt('kneeFar'), ankleFar: jt('ankleFar'), ballFar: [0.6, -0.2], toeFar: at(L.points.shoeFar.toe),
 };
 
+// the dress's FRONT edge measured at stations down the torso (master_measure.py): the bump's curve passes through these
+const front = L.torso.map((q) => at([q.front, q.y]));
+const frontAt = (y) => front.reduce((a, q) => (Math.abs(q[1] - y) < Math.abs(a[1] - y) ? q : a));
+const bump = { under: lm('underBust'), apex: lm('bumpApex'), bottom: lm('bumpBottom') };
+bump.upper = frontAt(bump.under[1] + 0.55 * (bump.apex[1] - bump.under[1]));   // on the bump's upper slope
+bump.lower = frontAt(bump.apex[1] + 0.6 * (bump.bottom[1] - bump.apex[1]));    // on its lower curve
 // ---------------------------------------------------------------- shape parameters
 export const P = {
-  // detail budget (BUCK/Headspace bar: big simple shapes carry the read; no wrinkles or hair-thin lines). Each flag is a
-  // small line-like detail; keep the count low and spend it where it explains form (bust fold, bump shade).
-  detail: { sleeveFold: false, cuffRib: false, legCuffLine: false, sockSeams: false, sockBand: true },
-  // head (head bone): face built from landmark-anchored construction points
-  face: { chin: lm('chin'), jawNear: lm('jawNear'), far: lm('faceFar'), nearEye: lm('faceNearAtEyes'), part: lm('hairPart') },
-  eyes: { near: { c: lm('eyeNear'), rx: 0.03, ry: 0.039 }, far: { c: lm('eyeFar'), rx: 0.026, ry: 0.038 } },
-  brows: { near: lm('browNear'), far: lm('browFar'), len: [0.12, 0.09], w: 0.026 },
-  nose: lm('noseTip'), mouth: lm('mouth'), cheeks: { near: lm('cheekNear'), far: lm('cheekFar') }, ear: lm('ear'),
-  hair: { bun: lm('bunCentre'), bunR: 0.19, loopTop: lm('loopTop'), back: lm('hairBack'), top: lm('skullTop'),
-          fly: false, strandW: [0.066, 0.062, 0.057, 0.052, 0.047, 0.042, 0.036, 0.03],   // tail ≥ 0.03 H
-          loopW: [0.042, 0.056, 0.06, 0.056, 0.042], loopDrop: 0.1, strandFar: { amp: 0.014, len: 0.42 } },   // chunkify: no hair-thin strokes (BUCK/Blender 'illusion of simplicity')
-  neck: { back: lm('neckBack'), front: lm('neckFront'), base: lm('neckBase'), w: 0.28 },
-  // neck column (rebuilt 11 Oct after "the neck looks messed up"): throat straight under the chin, nape gently curved, ~0.3 H
-  // wide; tops hidden under the face/hair, base hidden in the décolletage / under the near collar
-  neckCol: { backTop: [lm('neckBack')[0] + 0.02, lm('jawNear')[1] + 0.045], frontTop: [lm('neckFront')[0] + 0.02, lm('chin')[1] - 0.04],
-             frontBase: [lm('neckFront')[0] + 0.1, lm('neckBase')[1] + 0.05], backBase: [lm('neckBack')[0] - 0.1, lm('neckBase')[1] + 0.03],
-             nape: 0.05 },   // R7: wider base (nape sweeps back into the trapezius under the strand tail; throat flares into the far collar), concave nape
-  // jaw/chin shadow on the throat: thickest at the front under the chin (the chin projects), thin toward the ear
-  jawShade: { front: 0.1, back: 0.04 },
-  shoulderCap: { near: 0.2, far: 0.205 },   // R8: far cap a touch larger: collar → cap → sleeve reads as one convex shoulder arc    // circle radius at the shoulder pivot (joint = circle) = sleeve half-width
-  // trapezius slope (measured as silhouette extents at three heights, then used as construction points)
-  shoulderLine: { near: [[-0.42, -4.965], [-0.725, -4.845, { a: 150 }]], far: [[0.26, -4.965], [0.54, -4.8, { a: 47 }]] },   // zoom tour: slopes DOWN from the high collar to the cap (no hump)   // R6: end points ON the cap circles with the cap's tangent → one convex shoulder arc   // R4: end points sit inside the cap circles (no step)
-  // torso (top), belly, cardigan
-  neckline: lm('necklineFront'), bust: lm('bustFar'), underBust: lm('underBust'),
-  belly: { apex: lm('bellyApex'), bottom: lm('bellyBottom') },
-  // bump (rebuilt 11 Oct): the bump IS the lower front of the torso, not an egg glued on. Front contour = bust →
-  // small notch (dip) → flatter upper slope (fundus high under the ribs at ~36 wk) → apex just below mid-height →
-  // fuller, near-elliptical lower curve → hem wraps under it as a "smile" (lowest under the bump, rising to both
-  // sides) = the cross-section line that sells the volume. upperFull < 1 flattens the upper slope (egg, small end up).
-  bump: { dip: lm('underBustDip'), apex: [lm('bellyApex')[0] + 0.02, lm('bellyApex')[1] + 0.06], hemFront: [lm('hemBumpFront')[0] - 0.04, lm('hemBumpFront')[1]],
-          hemLow: [lm('bellyBottom')[0] - 0.05, lm('bellyBottom')[1] - 0.01], hemBack: lm('topHemBack'), upperFull: 0.85, lowerFull: 1.15, dipAngle: 28,   // R4: egg, not a symmetric D
-          shade: 0.055, cast: 0.05 },
-  hem: { near: lm('hemNear'), front: lm('hemFront'), far: lm('hemFar') },
-  shoulderTop: { near: lm('shoulderTopNear'), far: lm('shoulderTopFar') },
-  // sleeves: half-widths along shoulder → elbow → cuff
-  wrapFingers: { shift: 0, cup: { back: 0.4, len: 1.0, width: 0.1, span: 0.15 } },   // cup: the arriving hand's extra size (parts/wrap.js, refs h_fore1/2)   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
-  cuffEnd: { near: 0.92, far: 0.9 },   // far 0.84 → 0.9 when its forearm got its true length (0.79 → 0.91 H)
-    // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
-  sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
-  // legs (jogger half-widths at hip, knee, above cuff) and centre offsets measured as widths
-  leg: { near: { hip: 0.34, knee: 0.3, cuff: 0.2, calfK: 1.06, outer: [1.06, 1.2, 1.06, 1.0, 1], inner: [1.12, 1.16, 1.08, 0.94, 1] }, far: { hip: 0.32, knee: 0.28, cuff: 0.18, cuffK: 0.92, calfK: 1.06, outer: [1.02, 1.16, 1.02, 0.94, 1], inner: [1.0, 1.08, 1.05, 0.94, 1] } },   // ¾: legs nearly touch at the crotch and open as a narrow wedge (measured ref gap 0.05 H @-2.0 → 0.16 @-1.2); far ≈ 0.94× near; the near knee bulges inward
-  foot: { near: { heel: [lm('heelNear')[0] + 0.04, lm('heelNear')[1]], toe: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05], round: 1.3 }, far: { heel: [lm('heelFar')[0], lm('heelFar')[1] - 0.07], toe: [lm('toeFar')[0] - 0.1, lm('toeFar')[1] - 0.07], round: 1.3 } },   // near foot toward camera (shorter, toe lower); far foot back in depth
+  // FACE (head bone), profile: named points on the front edge (master_measure.py), the rest designed
+  face: { hairFront: lm('hairFront'), bridge: lm('noseBridge'), nose: lm('noseTip'), subnasal: lm('subnasal'), lip: lm('lipUpper'),
+          chinFront: lm('chinFront'), chin: lm('chin'), jaw: [0.06, -6.26], back: [-0.02, -6.8] },
+  eye: { c: lm('eye'), rx: 0.037, ry: 0.06 },
+  brow: { p: [[0.275, -6.675], [0.35, -6.725], [0.42, -6.705]], w: [0.012, 0.026, 0.014] },
+  mouth: lm('mouth'),
+  ear: { c: [-0.05, -6.49], rx: 0.1, ry: 0.122, rot: 8 },
+  cheek: { c: [0.3, -6.38], r: 0.075 },
+  // HAIR: the cap over the skull (an egg round the skull centre) with a designed hairline, and the low bun
+  hair: { c: [0.04, -6.62], rx: 0.54, rxl: 0.5, ryt: 0.52, ryb: 0.46, front: lm('hairFront'), temple: [0.1, -6.62], earTop: [-0.07, -6.6],
+          nape: [-0.12, -6.22], bun: lm('bun'), bunR: L.points.bunR / Hpx },
+  neck: { back: lm('neckBack'), front: lm('neckFront'), throatTop: [0.15, -6.18], napeTop: [-0.13, -6.45] },   // tops tuck under the jaw, ear and hair
+  // TORSO (dress): named points + the measured front stations; the back behind the arm is designed (a straight back)
+  chestFront: [0.33, -5.75], bust: [0.59, -5.3], bump,
+  back: { shoulder: [-0.3, -5.72], blade: [-0.33, -5.2], waist: [-0.29, -4.55], seat: [-0.37, -3.78] },
+  hem: { back: lm('hemBack'), front: lm('hemFront'), y: (L.points.hem - G[1]) / Hpx },
+  strap: { back: [-0.34, -5.85], top: [-0.15, -5.93], front: [0.04, -5.86], w: 0.065 },   // the dress's top edge over the shoulder (master: back silhouette → over the deltoid → into the neckline)
+  neckline: { front: [0.5, -5.57], low: [0.25, -5.69] },   // a shallow curve from the shoulder down to the chest front (measured: crosses y −5.74 at x 0.12)
+  // ARMS: measured half-widths (front / back of the arm) at the shoulder, mid upper arm, elbow, mid forearm, wrist
+  arm: { w: [W('upperArmNear', 0.1), W('upperArmNear', 0.5), W('upperArmNear', 0.9), W('forearmNear', 0.5), W('forearmNear', 0.9)] },
+  // LEGS: measured shin widths; thighs disappear under the skirt
+  leg: { near: { knee: W('shinNear', 0.1), calf: W('shinNear', 0.23), low: W('shinNear', 0.77), ankle: W('shinNear', 0.9) },
+         far: { knee: W('shinFar', 0.1), calf: W('shinFar', 0.37), low: W('shinFar', 0.77), ankle: W('shinFar', 0.9) } },
+  shoe: { near: { heel: at(L.points.shoeNear.heel), toe: at(L.points.shoeNear.toe), top: (L.points.shoeNear.top - G[1]) / Hpx, sole: (L.points.shoeNear.sole - G[1]) / Hpx },
+          far: { heel: at(L.points.shoeFar.heel), toe: at(L.points.shoeFar.toe), top: (L.points.shoeFar.top - G[1]) / Hpx, sole: (L.points.shoeFar.sole - G[1]) / Hpx } },
 };
 
-// ---------------------------------------------------------------- hands (generator v2: engine/hand.js anatomy defaults)
-// Hands — history: v2 (separate fingers) → v3 (pointed, nails: judged by eye) → v4 (MEASURED against the reference with
-// tools/hand_fit.py; critic rounds R12–R14). What holds now:
-//  · proportions from the reference: chunky grouped fingers (≈1:3), round tips, no nails, separate thumb with a notch
-//  · fingers TOGETHER by construction ('touch' fan) — spread is a pose; webbing between knuckles
-//  · flexion mostly foreshortens (flexFx 0.10 near / −0.14 far): curls never swing sideways; past ~100° a phalanx folds
-//    away (depth rule) so a fist is a knuckle block; knuckle discs are rigid
-//  · lines (skinLine) run from just below the knuckles to just above the tip notches, shorten for a shorter finger behind,
-//    fade with curl and spread; the palm view adds one S/C crease (heel → thumb's inner edge) and a comb at the finger roots
-//  · the palm's wrist end is a semicircle about the pivot; its thumb side envelops the thenar (one convex edge cuff → thumb)
+// ---------------------------------------------------------------- hands (engine/hand.js), measured from the master's hand
+// landmarks and a side-by-side check: wrist → middle tip 0.6 H, palm half of it, 0.3 H across; long fingers
+// held together; back of the hand toward us, thumb forward (her front = right)
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
-  // Measured, not eyeballed (tools/hand_fit.py vs the reference): wrist(cuff)→fingertip 0.45 H near / 0.38 H far; palm
-  // incl. thumb ≈ 0.33 H wide; fingers grouped (one skin run across them), chunky (width ≈ 0.075 H, ≈ 1:3), round tips.
-  // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
-  near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
-          length: 0.47, palmFrac: 0.5, wristW: 0.25, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], fingerLen: [0.86, 1.0, 0.94, 0.76], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
-  // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
-  // inner edge is drawn as a line over the palm (as in the reference)
-  far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
-         length: 0.38, palmFrac: 0.52, wristW: 0.23, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], lineStart: -0.25, crease: [[0.0, -0.4]], creaseHook: [0.68, 0.5], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,   // R19: the palm's line system sits toward the wrist (reference landmark band): long finger lines, crease on the heel
-         thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.35, 1.32], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
+  near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] + 0.045, joints.wristNear[1] + 0.03],   // the forearm's axis runs near its FRONT edge (front 0.07 / back 0.12 H at the wrist): the hand sits centred on the wrist's width
+          dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
+          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.2, 1.1], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },
 };
+handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] + 0.045, joints.wristFar[1] + 0.03] };
 
-// far (her left) hand, BACK view: the swap drawing used when the far hand turns its palm away (resting on the bump). Same
-// size as the far hand, back-of-hand construction like the near hand, mirrored for the left hand (thumbSide −1, flexion
-// senses flipped). Its own bones (hand.farB.*) hang off the same wrist bone (hand.far); a pose picks it with handView.far.
-handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', length: 0.46, wristW: 0.25, palmW: 0.29,   // its TRUE size (= the near hand; refs: wrist→middle tip 0.45 H at the mouth): the far palm drawing (0.38) is foreshortened round the bump
-  thumbSide: -1, flexFx: -0.1, thumbFx: 0.15, palmLines: false, lineStart: undefined, crease: undefined, creaseHook: undefined,
-  thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], hypo: 0.018, fingerLen: [0.86, 1.0, 0.94, 0.76], thumbLine: false };
-// DEPTH PROXIES (engine/depth.js): the body as a few 3D volumes on its midline, for draw-order decisions of the 3D arm.
-// Measured on the rest drawing in the ¾ view (forwardX 0.72): the shoulder joints sit 0.735 H either side of the midline;
-// each proxy's SCREEN silhouette is matched to the drawing (tools/depth_view.mjs); the face front ≈ 0.5 H before the head centre.
-export const depth = { midL: 0.735, proxies: [
-  { name: 'trunk', kind: 'cylinder', bone: 'spineUpper', at: [-0.08, -3.75], F: 0.0, axes: [0.42, 1.15, 0.62] },
-  { name: 'bump', kind: 'ellipsoid', bone: 'belly', at: [0.43, -3.6], F: 0.0, axes: [0.44, 0.53, 0.44] },   // sized to the DRAWN bump's silhouette (screen x 0…0.87, y −4.12…−3.06): a swap is invisible only where proxy and drawing agree
-  { name: 'neck', kind: 'cylinder', bone: 'neck', at: [-0.07, -4.98], F: 0.0, axes: [0.24, 0.2, 0.22] },
-  { name: 'head', kind: 'ellipsoid', bone: 'head', at: [-0.05, -5.6], F: 0.0, axes: [0.5, 0.65, 0.42] },
-  { name: 'jaw', kind: 'ellipsoid', bone: 'head', at: [-0.05, -5.2], F: 0.22, axes: [0.32, 0.32, 0.3] },   // the face's lower half juts forward: mouth, chin
+// DEPTH PROXIES (engine/depth.js) for the 3D arm's draw order: the shoulder joints sit midL either side of the midline
+export const depth = { midL: 0.6, proxies: [
+  { name: 'trunk', kind: 'cylinder', bone: 'spineUpper', at: [0.12, -4.7], F: 0.0, axes: [0.42, 1.2, 0.55] },
+  { name: 'bump', kind: 'ellipsoid', bone: 'belly', at: [0.55, -4.35], F: 0.0, axes: [0.45, 0.62, 0.5] },
+  { name: 'neck', kind: 'cylinder', bone: 'neck', at: [0.0, -6.0], F: 0.0, axes: [0.18, 0.2, 0.18] },
+  { name: 'head', kind: 'ellipsoid', bone: 'head', at: [0.12, -6.62], F: 0.0, axes: [0.5, 0.55, 0.42] },
 ] };
-export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)
-export const ref = { sizePx: L.sizePx, groundPx: L.ground, Hpx, image: 'ref/standing_34.jpg' };
+export const frame = { bbox: [[-1.1, -7.3], [1.3, 0.05]], fill: 0.86, dy: 0 };
+export const ref = { sizePx: L.sizePx, groundPx: L.ground, Hpx, image: 'ref/master.png' };
