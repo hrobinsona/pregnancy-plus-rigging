@@ -4,7 +4,7 @@
  "duration": 12,
  "loop": true,
  "exposure": "ones",
- "story": "Calm, both hands resting on her bump, her thumb stroking it. Something's not right \u2014 a small intake, her fingers press in, she swallows and her eyes drop. The nausea rises: her far hand leaves her bump and comes up to cover her mouth as her eyes close; she swallows hard behind her hand, then takes one deep breath in \u2014 shoulders and ribcage rising \u2014 and lets it out slowly, her shoulders dropping. It passes: her hand eases off her lips and comes down to hold her bump, and with both hands on it she softens, looking down at it with love.",
+ "story": "Calm, both hands resting on her bump, her thumb stroking it. Something's not right — a small intake, her fingers press in, she swallows and her eyes drop. The nausea rises: her far hand leaves her bump and comes up to cover her mouth as her eyes close; she swallows hard behind her hand, then takes one deep breath in — shoulders and ribcage rising — and lets it out slowly, her shoulders dropping. It passes: her hand eases off her lips and comes down to hold her bump, and with both hands on it she softens, looking down at it with love.",
  "beats": [
   {
    "name": "calm",
@@ -76,7 +76,7 @@
    "pose": "n-swallow",
    "ease": "inOut",
    "kind": "breakdown",
-   "note": "\u2014 and the nausea rises"
+   "note": "— and the nausea rises"
   },
   {
    "t": 2.42,
@@ -137,7 +137,7 @@
     "neck": 1,
     "head": 2
    },
-   "note": "the long breath OUT (1.9 s): shoulders drop, a soft slump \u2014 it passes"
+   "note": "the long breath OUT (1.9 s): shoulders drop, a soft slump — it passes"
   },
   {
    "t": 7.12,
@@ -871,7 +871,7 @@
     "fx.slide.near.x": 0.12,
     "fx.slide.near.y": -0.04
    },
-   "note": "calm: one slow stroke over the bump \u2014 the whole hand slides a little along it and back, the thumb sweeping (the thumb alone was invisible, critic R23\u2013R24)"
+   "note": "calm: one slow stroke over the bump — the whole hand slides a little along it and back, the thumb sweeping (the thumb alone was invisible, critic R23–R24)"
   },
   {
    "t0": 1.3,
@@ -1099,7 +1099,7 @@
     1.8
    ],
    "smooth": 0.09,
-   "note": "seedance first\u2192last video (k2 \u2192 k4), retargeted through a TORSO frame (u across the shoulders, v shoulders\u2192hips, measured on the video's landmarks and rebuilt on her body every frame): the wrist rises up her far side (u\u22481.36) with the elbow held out at her side (u\u22481.25, v\u22480.43), then swings in to the mouth \u2014 the video's own shape and timing (fast off, cushioned in); the elbow guided to the measured elbow by its swivel; depth toward the camera by a quarter of the way; the wrist eases from the rest bend to the cover bend",
+   "note": "seedance first→last video (k2 → k4), retargeted through a TORSO frame (u across the shoulders, v shoulders→hips, measured on the video's landmarks and rebuilt on her body every frame): the wrist rises up her far side (u≈1.36) with the elbow held out at her side (u≈1.25, v≈0.43), then swings in to the mouth — the video's own shape and timing (fast off, cushioned in); the elbow guided to the measured elbow by its swivel; depth toward the camera by a quarter of the way; the wrist eases from the rest bend to the cover bend",
    "m": 1,
    "reg": 0.05,
    "zBy": 0.5,
