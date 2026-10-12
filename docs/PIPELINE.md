@@ -147,6 +147,20 @@ or composited.
    jumps at once. Prefer `only` lists for accent keys. The rest of that moment (the palm flipping upright → flat at
    7.50–7.60 s) IS the upper arm passing straight down, and the blind A/B still named it after the key fix — two causes
    in one "flip". And check a reviewer's claim on the frames before fixing it: the v15 "wink" was both eyes together.
+24. **A hand that passes end-on to the camera turns fast whatever you do, and every cure tried looked worse than the
+   turn (v17 trials, 2026-10-12, all lost blind A/Bs to v16).** Measured: as the far hand lowers at 7.5 s the HAND itself
+   (not only the forearm) points at the camera (projected length 0.14), so its screen angle sweeps ~150° in 5 frames
+   (peak 28°/frame). Tried:
+   - **Swinging it forward** (extra pronation, a `spec.layers` bump): peak 15°/frame, but the hand floated out past her
+     silhouette, flat, "presenting", and showed an open palm leaving the mouth.
+   - **A wider inward turn** (pronation plus wrist bend): it held the hand pointing backwards and then flipped later.
+   - **Foreshortening the fingers with the hand** (a world squash below projected length 0.45): it is physically right,
+     but at phone size the hand "shrinks to a broken shape". Reviewers read a full-size hand rolling over as a wrist turn.
+   - **Generated stills of the end-on hand:** 6 full-body stills all drifted to the end pose (hand already on the bump).
+     A full-body in-between prompt pulls the generator toward image 3.
+
+   What's left is the PATH: re-key the lowering so the hand never points at the camera (elbow by her side, fingers
+   turning in the picture plane), or accept the turn.
 
 ## From the reels rig (merged 2026-10-12)
 

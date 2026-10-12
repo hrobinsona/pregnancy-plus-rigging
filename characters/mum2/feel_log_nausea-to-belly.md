@@ -631,3 +631,12 @@ items 1 and 3 kept, 2 reverted.
 Still open: the far hand reaches the bump's outside edge and then swaps to the wrap drawing (8.00 → 8.07 s: a full hand
 to a thin finger row in 2 frames) — a drawing problem (the wrap needs an in-between view), not timing. QA: the far
 wrist turns back 13° at 2.80 s (the landing on the mouth).
+
+## v17 trials (2026-10-12): the 7.5 s palm flip, three methods, none kept (shot stays v16)
+- **Stills:** h_fore1/h_fore2 (6, made on Harry's Mac). None shows the forearm or hand end-on; all have the hand already on the bump.
+- **Measured:** the far HAND points at the camera at 7.60 s (projected length 0.14). Its screen angle sweeps ~150° over 7.50–7.67 s (peak 28°/frame).
+- **(a) A forward swing:** `spec.layers` foreRot +90 over 7.35–8.1 s gives a peak of 15°/frame. It lost a blind A/B (low to moderate confidence): open "hi" palm leaving the mouth; the hand floats out past her silhouette, flat, for 6 frames, then pops onto the rim.
+- **(b) A wider inward turn:** foreRot −60 and hand −20 give a peak of 19°/frame, but the hand held pointing backwards over 7.53–7.70 s, then flipped at 7.73–7.80 s. Not reviewed.
+- **(c) Fingers foreshortened with the hand** (engine: a world squash on the hand's children below projected length 0.45): it lost a blind A/B (~75%). Over 7.50–7.67 s the hand "shrinks to a small broken shape". The reviewer read v16's full-size turn as a wrist rolling over. QA had passed: the 7.7 s palm pop was gone.
+- **Both reviewers, in both versions:** the far hand arrives at the bump's outer rim, then cuts to a thin finger row (8.00–8.07 s); the palm-out hand leaving the mouth (7.37–7.47 s); the relief face switches on in 1–3 frames (7.93–8.10 s).
+- **Next:** re-key the path so the hand never points at the camera, or accept the turn and move on to the rim arrival. PIPELINE lesson 24.
