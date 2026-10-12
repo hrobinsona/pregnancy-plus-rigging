@@ -1,0 +1,18 @@
+{
+  "char": "mum3",
+  "name": "m3_view34",
+  "prompt_file": "docs/prompts/m3_view34.txt",
+  "refs": [
+    "characters/mum3/ref/master.png",
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 4,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/m3_view34_0.png",
+    "characters/mum3/refs/images/m3_view34_1.png",
+    "characters/mum3/refs/images/m3_view34_2.png",
+    "characters/mum3/refs/images/m3_view34_3.png"
+  ],
+  "finished": "2026-10-12 20:52:41"
+}
