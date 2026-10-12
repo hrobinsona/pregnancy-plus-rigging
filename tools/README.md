@@ -51,7 +51,9 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | Tool | What it's for |
 |---|---|
 | ★ `critic_F.py <char> <anim>` | Builds the feel-critic pack + prompt (brief, intensity, beats, zooms, refs). Pipe to `out/critic_prompt.md`, hand it to a subagent. |
-| `critic_prompt_F.md` | The feel-critic template (B = design vs reference, C = motion mechanics, legacy). |
+| `critic_F.py … --lens lasseter\|hands\|all` | Extra lenses (default `feel`). `lasseter`: the 12 principles, a score and a timed fix each (finds timing, anticipation, staging faults). `hands`: hands at size, from zoomed tiles of both hands at one scale + an angle/size trace (`out/<c>_<a>_feel_hands_*.png`, from the tracks json). `all`: a judge panel, one prompt per lens in `out/critic_prompt_<lens>.md` (one fresh reviewer each), all three printed together. |
+| `critic_prompt_F.md` | The critic template: one block per lens + the shared framing (Harry's eye overrules a reviewer; brief and intensity beat taste). B = design vs reference, C = motion mechanics, legacy. |
+| `blind_ab.py <a.mp4> <b.mp4>` | Blind A/B: relabels two renders X/Y at random (secret in `<out>/key.json`), pair sheets at matched times + every frame of each, and `<out>/prompt.md` for a fresh reviewer not told what changed. `--t0/--t1` window, `--crop`, `--anim c/a` for the brief; `--reveal <out>` unblinds. Use it to test principle-driven changes before keeping them. |
 | ★ `anim_audit.py` | Bleed audit across frames: specks, slivers, gaps classed by surroundings → `out/<c>_<a>_bleed.{txt,png}`. |
 | `detail_audit.py`, `corner_audit.py` | Single-pose drawing audits (thin slivers, broken corners). |
 | `char_pose_sheet.py`, `pose_sheet.py` | Stress-pose sheets and silhouette tests for a rig. |

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""critic_F.py <char> <anim>   |   critic_F.py <char> --poses p1,p2,...
+"""critic_F.py <char> <anim> [--lens feel|lasseter|hands|all]   |   critic_F.py <char> --poses p1,p2,...
 The FEEL critic pack: look-and-feel only, deliberately NO metrics (the maths critic C scored proxies — px/f, lag offsets,
 path loops — for six rounds while the client saw a stiff, detached, dead-handed arm; numbers bias a reviewer away from
 "does this look like a real body?").
@@ -9,18 +9,34 @@ Anim mode (run after tools/char_anim.mjs) writes:
                                 + the beat's frames side by side, zoomed on what moves
   out/<c>_<a>_feel_keys.png     the key moments, upper body, large
 Pose mode writes out/<c>_feel_poses.png (each pose large, upper body + full figure).
-Prints the filled prompt (tools/critic_prompt_F.md) with history from characters/<c>/feel_log_<a or poses>.md."""
-import sys, os, glob, json, subprocess
+Prints the filled prompt (tools/critic_prompt_F.md) with history from characters/<c>/feel_log_<a or poses>.md.
+--lens (anim mode; default feel): lasseter = the 12 principles, a score and a timed fix each; hands = the hands at size,
+  adding out/<c>_<a>_feel_hands_*.png (zoomed tiles from out/<c>_<a>_tracks.json, one scale for both hands) and a hand
+  angle/size trace; all = a judge panel: each lens also written to out/critic_prompt_<lens>.md (one fresh reviewer each),
+  all three printed together. From the reels rig, where these lenses found what the overall rubric missed."""
+import sys, os, re, glob, json, subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-c = sys.argv[1]; root = os.getcwd()
+args = sys.argv[1:]; lens = 'feel'
+if '--lens' in args: i = args.index('--lens'); lens = args[i + 1]; del args[i:i + 2]
+if lens not in ('feel', 'lasseter', 'hands', 'all'): sys.exit('--lens feel|lasseter|hands|all')
+c = args[0]; root = os.getcwd()
 F = lambda s: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', s)
 
-def fill(files, brief, logname):
-    files = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in files)
+def fill(files, brief, logname, hand_files=()):
+    parts = re.split(r'^<!-- (lens:\w+|framing) -->\n', open('tools/critic_prompt_F.md').read(), flags=re.M); B = dict(zip(parts[1::2], parts[2::2]))
     log = f'characters/{c}/{logname}'
     hist = ('\n\nHISTORY (earlier feel reviews — check whether their asks landed):\n' + open(log).read()) if os.path.exists(log) else ''
-    print(open('tools/critic_prompt_F.md').read().replace('{FILES}', files).replace('{BRIEF}', brief) + hist)
+    out = []
+    for L in (['feel', 'lasseter', 'hands'] if lens == 'all' else [lens]):
+        fl = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in (list(hand_files) + files if L == 'hands' else files))
+        out.append(B['lens:' + L].replace('{FILES}', fl).replace('{BRIEF}', brief).replace('{FRAMING}', B['framing']))
+        if lens == 'all': open(f'out/critic_prompt_{L}.md', 'w').write(out[-1] + hist)
+    if lens != 'all': print(out[0] + hist); return
+    print('A judge panel in one pass: three lenses on the same shot (feel, Lasseter principles, hands). Do them in order, each\n'
+          'as its own review with its own output, as if three different reviewers wrote them; open each file once and reuse it.\n'
+          '(The same lenses are in out/critic_prompt_feel.md, _lasseter.md and _hands.md, to give each to its own fresh reviewer.)\n\n'
+          + '\n\n---\n\n'.join(f'# Lens {i}: {L}\n\n{t}' for i, (L, t) in enumerate(zip(['feel', 'lasseter', 'hands'], out), 1)) + hist)
 
 def fig_mask(im):
     a = np.asarray(im.convert('L')); return a < 245
@@ -33,8 +49,9 @@ def outline(mask):
     m = Image.fromarray((mask * 255).astype(np.uint8)); e = m.filter(ImageFilter.FIND_EDGES)
     return np.asarray(e.filter(ImageFilter.MaxFilter(3))) > 0
 
-if sys.argv[2] == '--poses':
-    poses = sys.argv[3].split(','); tiles = []
+if args[1] == '--poses':
+    if lens != 'feel': sys.exit('--lens applies to anim mode only')
+    poses = args[2].split(','); tiles = []
     for p in poses:
         out = f'out/{c}_feel_pose_{p}.png'
         subprocess.run(['node', 'tools/char_still.mjs', '--char', c, '--pose', p, '--px', '900', '--out', out], check=True, capture_output=True)
@@ -51,7 +68,7 @@ if sys.argv[2] == '--poses':
          'Still key poses for the character (no motion). Judge them as drawings of a real body in these poses.', 'feel_log_poses.md')
     sys.exit()
 
-a = sys.argv[2]; name = f'{c}_{a}'; spec = json.load(open(f'characters/{c}/anims/{a}.json')); fps = spec['fps']
+a = args[1]; name = f'{c}_{a}'; spec = json.load(open(f'characters/{c}/anims/{a}.json')); fps = spec['fps']
 frames = sorted(glob.glob(f'out/frames/{name}/f*.png')); N = len(frames)
 fr = lambda i: Image.open(frames[i % N]).convert('RGB')
 for old in glob.glob(f'out/{name}_feel_*.png'): os.remove(old)
@@ -113,4 +130,48 @@ for j, k in enumerate(kt):
     x, y = (j % cols) * tw, (j // cols) * (th + 20); keys_im.paste(fr(k).crop(ub).resize((tw, th), Image.LANCZOS), (x, y + 20)); d.text((x + 3, y + 2), f'{k / fps:.2f}s', fill='#c00', font=F(14))
 keys_im.save(f'out/{name}_feel_keys.png'); files.append((f'out/{name}_feel_keys.png', 'key moments, upper body, large'))
 for rp, rd in spec.get('feelRefs', []): files.append((rp, rd))   # the illustrator's references the shot was built from
-fill(files, spec.get('story', '') + (f"\n\nINTENSITY (set by the client — judge against THIS, do not push it further): {spec['intensity']}" if spec.get('intensity') else ''), f'feel_log_{a}.md')
+# 4. hands lens: zoomed tiles of both hands at ONE scale (size and drawing compare across hands), every 0.1 s, + angle trace
+hand_files = []
+tp = f'out/{name}_tracks.json'
+if lens in ('hands', 'all') and not os.path.exists(tp): print(f'warning: {tp} missing (run tools/char_anim.mjs): no hand tiles', file=sys.stderr)
+elif lens in ('hands', 'all'):
+    T = json.load(open(tp))['tracks']; T = T[:N]
+    H_ = {'near': ('wristNear', 'handNearTip'), 'far': ('wristFar', 'handFarTip')}
+    P = {h: (np.array([t[w] for t in T], float), np.array([t[k] for t in T], float)) for h, (w, k) in H_.items()}
+    hl = {h: np.hypot(*(P[h][1] - P[h][0]).T) for h in P}; S = int(max(200, 3.2 * np.median(np.concatenate(list(hl.values())))))
+    def tile(im, h, i, tw):
+        cx, cy = P[h][0][i] + 0.55 * (P[h][1][i] - P[h][0][i]); x0, y0 = int(cx - S / 2), int(cy - S / 2)
+        t = Image.new('RGB', (S, S), 'white'); t.paste(im.crop((max(0, x0), max(0, y0), min(im.width, x0 + S), min(im.height, y0 + S))), (max(0, -x0), max(0, -y0)))   # white past the frame edge
+        return t.resize((tw, tw), Image.LANCZOS)
+    per, step, tw, cols = 90, 3, 160, 15
+    for pg, f0 in enumerate(range(0, N, per), 1):
+        idx = list(range(f0, min(N, f0 + per), step)); rows = (len(idx) + cols - 1) // cols
+        sheet = Image.new('RGB', (70 + cols * tw, 30 + 2 * rows * (tw + 16) + 20), 'white'); d = ImageDraw.Draw(sheet)
+        d.text((4, 4), f'hands {f0 / fps:.1f}-{(idx[-1]) / fps:.1f}s, every 0.1 s, one scale for both (near rows, then far rows)', fill='#111', font=F(16))
+        ims = {i: fr(i) for i in idx}
+        for r, h in enumerate(('near', 'far')):
+            y0 = 30 + r * (rows * (tw + 16) + 20); d.text((6, y0 + rows * (tw + 16) // 2 - 10), h, fill='#111', font=F(20))
+            for k, i in enumerate(idx):
+                x, y = 70 + (k % cols) * tw, y0 + (k // cols) * (tw + 16)
+                sheet.paste(tile(ims[i], h, i, tw), (x, y + 16)); d.text((x + 2, y), f'{i / fps:.2f}s', fill='#c00', font=F(11))
+        hp = f'out/{name}_feel_hands_{pg:02d}.png'; sheet.save(hp); hand_files.append((hp, f'both hands zoomed, {f0 / fps:.1f}-{idx[-1] / fps:.1f}s every 0.1 s: near hand rows above far hand rows, same scale'))
+    # key moments: both hands large, side by side
+    tw = 280; cols = 4; rows = (len(kt) + cols - 1) // cols; ks = Image.new('RGB', (cols * (2 * tw + 12), rows * (tw + 22)), 'white'); d = ImageDraw.Draw(ks)
+    for j, k in enumerate(kt):
+        x, y = (j % cols) * (2 * tw + 12), (j // cols) * (tw + 22); im = fr(k)
+        ks.paste(tile(im, 'near', k, tw), (x, y + 22)); ks.paste(tile(im, 'far', k, tw), (x + tw, y + 22)); d.text((x + 3, y + 3), f'{k / fps:.2f}s  near | far', fill='#c00', font=F(14))
+    hp = f'out/{name}_feel_hands_keys.png'; ks.save(hp); hand_files.append((hp, 'key moments: near hand (left) and far hand (right) large, same scale'))
+    # trace: hand angle (wrist → fingertips, screen degrees, unwrapped) and wrist-to-tip length, per frame, beats marked
+    pw, ph, m = 1500, 260, 60; tr = Image.new('RGB', (pw, 2 * ph + 70), 'white'); d = ImageDraw.Draw(tr)
+    ang = {h: np.degrees(np.unwrap(np.arctan2(*(P[h][1] - P[h][0]).T[::-1]))) for h in P}; col = {'near': '#d04020', 'far': '#2050d0'}
+    for r, (ttl, ser) in enumerate((('hand angle (deg): through a move it should run one way; a flick past and back is a spring', ang), ('wrist-to-fingertip length (px): a hand that grows or shrinks without turning', hl))):
+        y0 = 30 + r * (ph + 30); lo = min(v.min() for v in ser.values()); hi = max(v.max() for v in ser.values()); hi = hi if hi > lo else lo + 1
+        d.text((m, y0 - 22), ttl, fill='#111', font=F(13)); d.rectangle((m, y0, pw - 10, y0 + ph), outline='#999')
+        for b in beats: xb = m + (pw - 10 - m) * b['from'] / N; d.line((xb, y0, xb, y0 + ph), fill='#ddd'); d.text((xb + 2, y0 + 2), b['name'], fill='#888', font=F(10))
+        for s_ in range(0, int(N / fps) + 1): xs_ = m + (pw - 10 - m) * s_ * fps / N; d.text((xs_ - 6, y0 + ph + 2), f'{s_}s', fill='#666', font=F(10))
+        d.text((4, y0), f'{hi:.0f}', fill='#666', font=F(10)); d.text((4, y0 + ph - 12), f'{lo:.0f}', fill='#666', font=F(10))
+        for h, v in ser.items():
+            pts = [(m + (pw - 10 - m) * i / N, y0 + ph - (ph - 4) * (v[i] - lo) / (hi - lo) - 2) for i in range(len(v))]
+            d.line(pts, fill=col[h], width=2); d.text((pw - 120, y0 + 4 + 14 * (h == 'far')), h + ' hand', fill=col[h], font=F(12))
+    hp = f'out/{name}_feel_hands_trace.png'; tr.save(hp); hand_files.append((hp, 'hand angle and size per frame, both hands, beats marked (the only numbers in this pack: use them to confirm what the tiles show)'))
+fill(files, spec.get('story', '') + (f"\n\nINTENSITY (set by the client — judge against THIS, do not push it further): {spec['intensity']}" if spec.get('intensity') else ''), f'feel_log_{a}.md', hand_files)
