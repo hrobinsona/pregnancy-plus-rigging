@@ -136,7 +136,9 @@ tp = f'out/{name}_tracks.json'
 if lens in ('hands', 'all') and not os.path.exists(tp): print(f'warning: {tp} missing (run tools/char_anim.mjs): no hand tiles', file=sys.stderr)
 elif lens in ('hands', 'all'):
     T = json.load(open(tp))['tracks']; T = T[:N]
-    H_ = {'near': ('wristNear', 'handNearTip'), 'far': ('wristFar', 'handFarTip')}
+    # a hand the character hides by design (C.fit.hidden 'far.arm': behind her body all shot) gets no tiles
+    hid = subprocess.run(['node', '--input-type=module', '-e', f"const C = (await import('{root}/characters/{c}/character.js')).default; console.log(JSON.stringify(C.fit?.hidden || []))"], capture_output=True, text=True).stdout.strip() or '[]'
+    H_ = {h: v for h, v in {'near': ('wristNear', 'handNearTip'), 'far': ('wristFar', 'handFarTip')}.items() if f'{h}.arm' not in json.loads(hid)}
     P = {h: (np.array([t[w] for t in T], float), np.array([t[k] for t in T], float)) for h, (w, k) in H_.items()}
     hl = {h: np.hypot(*(P[h][1] - P[h][0]).T) for h in P}; S = int(max(200, 3.2 * np.median(np.concatenate(list(hl.values())))))
     def tile(im, h, i, tw):
@@ -146,21 +148,22 @@ elif lens in ('hands', 'all'):
     per, step, tw, cols = 90, 3, 160, 15
     for pg, f0 in enumerate(range(0, N, per), 1):
         idx = list(range(f0, min(N, f0 + per), step)); rows = (len(idx) + cols - 1) // cols
-        sheet = Image.new('RGB', (70 + cols * tw, 30 + 2 * rows * (tw + 16) + 20), 'white'); d = ImageDraw.Draw(sheet)
-        d.text((4, 4), f'hands {f0 / fps:.1f}-{(idx[-1]) / fps:.1f}s, every 0.1 s, one scale for both (near rows, then far rows)', fill='#111', font=F(16))
+        sheet = Image.new('RGB', (70 + cols * tw, 30 + len(H_) * rows * (tw + 16) + 20), 'white'); d = ImageDraw.Draw(sheet)
+        d.text((4, 4), f'hands {f0 / fps:.1f}-{(idx[-1]) / fps:.1f}s, every 0.1 s' + (', one scale for both (near rows, then far rows)' if len(H_) > 1 else f' ({next(iter(H_))} hand; the other is hidden behind her by design)'), fill='#111', font=F(16))
         ims = {i: fr(i) for i in idx}
-        for r, h in enumerate(('near', 'far')):
+        for r, h in enumerate(H_):
             y0 = 30 + r * (rows * (tw + 16) + 20); d.text((6, y0 + rows * (tw + 16) // 2 - 10), h, fill='#111', font=F(20))
             for k, i in enumerate(idx):
                 x, y = 70 + (k % cols) * tw, y0 + (k // cols) * (tw + 16)
                 sheet.paste(tile(ims[i], h, i, tw), (x, y + 16)); d.text((x + 2, y), f'{i / fps:.2f}s', fill='#c00', font=F(11))
-        hp = f'out/{name}_feel_hands_{pg:02d}.png'; sheet.save(hp); hand_files.append((hp, f'both hands zoomed, {f0 / fps:.1f}-{idx[-1] / fps:.1f}s every 0.1 s: near hand rows above far hand rows, same scale'))
+        hp = f'out/{name}_feel_hands_{pg:02d}.png'; sheet.save(hp); hand_files.append((hp, (f'both hands zoomed, {f0 / fps:.1f}-{idx[-1] / fps:.1f}s every 0.1 s: near hand rows above far hand rows, same scale' if len(H_) > 1 else f'the {next(iter(H_))} hand zoomed, {f0 / fps:.1f}-{idx[-1] / fps:.1f}s every 0.1 s (the other hand is hidden behind her by design)')))
     # key moments: both hands large, side by side
-    tw = 280; cols = 4; rows = (len(kt) + cols - 1) // cols; ks = Image.new('RGB', (cols * (2 * tw + 12), rows * (tw + 22)), 'white'); d = ImageDraw.Draw(ks)
+    tw = 280; cols = 4; nh = len(H_); rows = (len(kt) + cols - 1) // cols; ks = Image.new('RGB', (cols * (nh * tw + 12), rows * (tw + 22)), 'white'); d = ImageDraw.Draw(ks)
     for j, k in enumerate(kt):
-        x, y = (j % cols) * (2 * tw + 12), (j // cols) * (tw + 22); im = fr(k)
-        ks.paste(tile(im, 'near', k, tw), (x, y + 22)); ks.paste(tile(im, 'far', k, tw), (x + tw, y + 22)); d.text((x + 3, y + 3), f'{k / fps:.2f}s  near | far', fill='#c00', font=F(14))
-    hp = f'out/{name}_feel_hands_keys.png'; ks.save(hp); hand_files.append((hp, 'key moments: near hand (left) and far hand (right) large, same scale'))
+        x, y = (j % cols) * (nh * tw + 12), (j // cols) * (tw + 22); im = fr(k)
+        for q, h in enumerate(H_): ks.paste(tile(im, h, k, tw), (x + q * tw, y + 22))
+        d.text((x + 3, y + 3), f'{k / fps:.2f}s  ' + ' | '.join(H_), fill='#c00', font=F(14))
+    hp = f'out/{name}_feel_hands_keys.png'; ks.save(hp); hand_files.append((hp, 'key moments: near hand (left) and far hand (right) large, same scale' if nh > 1 else f'key moments: the {next(iter(H_))} hand large'))
     # trace: hand angle (wrist → fingertips, screen degrees, unwrapped) and wrist-to-tip length, per frame, beats marked
     pw, ph, m = 1500, 260, 60; tr = Image.new('RGB', (pw, 2 * ph + 70), 'white'); d = ImageDraw.Draw(tr)
     ang = {h: np.degrees(np.unwrap(np.arctan2(*(P[h][1] - P[h][0]).T[::-1]))) for h in P}; col = {'near': '#d04020', 'far': '#2050d0'}
