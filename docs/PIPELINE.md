@@ -234,14 +234,39 @@ or composited.
    hand bone, + = extension) and `lie: '<proxy>'` on a contact stop. The hand keeps the screen angle the reach chose
    and takes the depth of that proxy's TANGENT plane under the wrist (closed form in the forearm's frame, then the
    deviation re-matched): on the bump's near face it draws at full length (128 px vs 129 hanging), toward the outline it
-   wraps away and foreshortens, as a real hand does. Moves blend `lie` in and out. Swinging the elbow (`dphi`) could not
-   fix it: with the wrist where the still put it, every swivel that keeps the elbow out of her body points the forearm
-   into depth.
+   wraps away and foreshortens, as a real hand does. Moves blend `lie` in and out. (v4 also concluded that swinging the
+   elbow, `dphi`, could not fix the forearm. Wrong: the wrist's DEPTH was the fault, see lesson 39.)
 38. **A held hand ticks when its solver changes regime at the stop.** v3's resting hand stepped 1–2° in one frame as each
    hold began or ended (hands critic: "ticks" at 2.65, 7.30, 7.85, 10.30 s). Two causes, both in the wrist scan: it pulled
    toward the key's bend hard in a hold (0.3) and weakly in a move (0.02), switching at the stop; and it refined only to a
    1.5° grid. Now the pull blends continuously across a move's ends and the scan refines to 0.15°. Check with a per-frame
    trace of the drawn hand (wrist→middle-tip angle and length) across every move↔hold switch: no step over ~0.5°.
+39. **An arm that "shrinks when it moves" is a segment pointing at the camera; in a flat style keep every segment at
+   ≥ 0.9 of its length.** Harry on v3: "when the arm moves it sort of shrinks… it makes her arm look deformed". Nothing
+   in a flat-shaded drawing says "foreshortened", so a short forearm reads as a deformed one. Measured (`a3.len`): v4's
+   forearm drew at 57–65% on the bump and the upper arm at 80% at the stroke top. Three causes, all fixable in the
+   timeline. (1) The fitted still put the wrist 0.33 H in front of the bump, toward us (pose estimators' depth is
+   unreliable), so the forearm ran from her side out at the camera: put a resting wrist ON the surface it touches
+   (`surface: 'bump'`, `gap` 0.04). (2) v3 lifted the hand 45 px up the bump to keep the fingertips inside, which bent
+   the arm more: keep the hand where the still has it (13 px) and solve the tips with the fingers (lesson 40). (3)
+   `dphi` −35 held the elbow under her shoulder. First principles: with the shoulder and wrist fixed on screen, a
+   full-length arm has exactly ONE elbow position (the flat two-bone triangle), here just behind her back, which is
+   where the bump stills draw it. Choose the swivel by scanning `a3.len` (−25 on the bump, +20 at the stroke top): every
+   segment now 93–100% all shot. Gate: `qa_checks.mjs` limbs (≥ 0.85; a ¾ character can opt out with `C.qa.limbMin`).
+40. **Fingers on a convex surface end along its outline; don't move the hand to keep them inside.** Harry: the fingers
+   were "slightly too all together… not following the protruding bump". The bump stills show it: the thumb OUT, apart
+   from the index; the fingers a little fanned; the tips staggered along the outline, as if they run on round the curve.
+   v5's `lay`, `crest` and `flat` do that: `ts` 14–16, spread −7…+5, each finger curled just enough (index and middle,
+   nearest the front edge, most) that its tip ends ~9 px inside the outline (`tip_check --clear 9`); the in-flight
+   `limp` curls as much, or the tips graze the edge as the hand arrives and peels off. Tried and dropped: projecting the
+   finger curl through the hand's real 3D frame. It is physically right, but with this near-profile camera a curl INTO
+   the bump moves the tips FORWARD on screen, so they hooked over the edge. A real finger past the silhouette is hidden
+   by the bump; a cut-out finger is not, so the drawing rule wins.
+41. **A limb's round end must never sit at a joint the viewer can see.** v4's shin tube ended in a round cap at the ankle
+   and the foot started below it: a pinch in front of the ankle and a knob behind it (Harry: "ankles are a super weird
+   shape"). Now the tube runs on into the shoe at the ankle's width (the back of the ankle is one line into the heel), and
+   the foot's front edge leaves the shin's front line tangentially and bends into the instep along points measured row by
+   row on the master (`P.instep`). Same fill, so the overlap is invisible; only the union's outline is seen.
 
 ## From the reels rig (merged 2026-10-12)
 

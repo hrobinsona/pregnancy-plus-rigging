@@ -71,6 +71,11 @@ export const P = {
   // LEGS: measured shin widths; thighs disappear under the skirt
   leg: { near: { knee: W('shinNear', 0.1), calf: W('shinNear', 0.23), low: W('shinNear', 0.77), ankle: W('shinNear', 0.9) },
          far: { knee: W('shinFar', 0.1), calf: W('shinFar', 0.37), low: W('shinFar', 0.77), ankle: W('shinFar', 0.9) } },
+  // the INSTEP: the front edge of the foot from where it leaves the shin to the shoe's opening, as offsets from the ankle
+  // joint (H), measured on the master row by row (the shin's front line bends into the instep in one long curve; v4 ended
+  // the shin tube in a round cap at the ankle and started the foot below it: a pinch in front, a knob behind — Harry:
+  // "ankles are a super weird shape")
+  instep: { near: [[0.091, 0.094], [0.157, 0.174], [0.257, 0.254]], far: [[0.162, 0.099], [0.243, 0.179], [0.371, 0.259]] },
   shoe: { near: { heel: at(L.points.shoeNear.heel), toe: at(L.points.shoeNear.toe), top: (L.points.shoeNear.top - G[1]) / Hpx, sole: (L.points.shoeNear.sole - G[1]) / Hpx },
           far: { heel: at(L.points.shoeFar.heel), toe: at(L.points.shoeFar.toe), top: (L.points.shoeFar.top - G[1]) / Hpx, sole: (L.points.shoeFar.sole - G[1]) / Hpx } },
 };

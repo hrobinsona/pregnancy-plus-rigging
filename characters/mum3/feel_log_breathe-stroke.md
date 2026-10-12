@@ -144,3 +144,34 @@ What was done after it: `tip_check.mjs` now also measures each tip's clearance t
 running along the edge was 6 px inside along itself but touching sideways); the resting and stroke contacts moved ~3 px
 in and the down stroke bows inward: every tip ≥ 10 px clear. The stroke got life: the hand's angle trails the wrist by
 6 frames going up, and the fingers part and drag a little while it travels, then close over the dome at the top.
+
+Blind A/B of that fix (final v4) against the first v4 cut (fresh reviewer): **the first cut wins narrowly, 6.5 vs 6**,
+with low confidence (60/40), on one thing: in the final cut the elbow eased BACK 4–5 px as the stroke began and swung
+forward again as the hand arrived (8.1–9.0 s), out of step with the hand. Both: a rigid stroking mitt, a breath that
+reads mostly in the face, a step where the forearm meets the hand. The final v4 shipped (its fingertips no longer ran
+along the outline); the elbow path was rebuilt in v5 anyway.
+
+## Round 5: Harry on v3 (18:06), answered in v5
+
+Harry, verbatim: "When the arm moves it looks it sort of shrinks. The movement is decent but it makes her arm looked
+deformed once moving"; "fingers almost there but slightly too 'all together' or not feeling like it follows the
+protruding bump"; "ankles are a super weird shape". (They reached the thread after v4 was sent; v4 had fixed only the
+hand's own size.)
+
+What was done (v5):
+1. MEASURED the arm: v4's forearm drew at 57–65% of its length on the bump, the upper arm at 80% at the stroke top. The
+   fitted still had put the wrist 0.33 H in front of the bump, v3 had lifted the hand 45 px, and `dphi` −35 held the elbow
+   under her shoulder. Now the wrist lies ON the bump (`surface`), the hand stays where the bump still has it (13 px
+   lift), and the swivel comes from a scan of the drawn lengths (−25 resting, +20 at the stroke top, 53 px up): every arm
+   segment 93–100% all shot, the elbow just behind her back as in the stills (PIPELINE lesson 39; new `limbs` gate in
+   `qa_checks.mjs`, which fails v4 and passes v5).
+2. The hand, after the bump stills: the thumb out, apart from the index; the fingers a little fanned; each finger curled
+   just enough that the tips end in a line ~9 px inside the bump's outline, as if they run on round it (lay, crest and
+   flat redrawn; limp curls as much so the tips don't graze the edge arriving or peeling off). Tried first: curling the
+   fingers through the hand's real 3D frame; with this camera the curl moved the tips forward, hooked over the edge
+   (lesson 40).
+3. The ankles: the shin tube ran into a round cap at the ankle (a pinch in front, a knob behind). Now it runs on into the
+   shoe and the foot's front edge leaves the shin tangentially along an instep measured on the master (lesson 41); the
+   edges match the master within a few px row by row.
+
+Checks: `qa_checks` PASS (with limbs), `tip_check` PASS over the whole shot (every tip ≥ 4 px inside and ≥ 9 px clear).

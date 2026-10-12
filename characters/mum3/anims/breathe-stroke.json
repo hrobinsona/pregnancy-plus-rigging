@@ -222,8 +222,8 @@
     "t": 1.05,
     "pose": "n-rest",
     "on": "pelvis",
-    "dphi": -35,
-    "note": "every stop carries the same swivel offset (dphi), the straight ends and the vias too: a hold takes its own pose's swivel, so a rest stop without it snapped the elbow 5 px as the drop arrived"
+    "dphi": -25,
+    "note": "every stop carries a swivel offset (dphi): a hold takes its own pose's swivel, so a rest stop without it snapped the elbow 5 px as the drop arrived. v5: -25 on the bump (the arm full length, the elbow just behind her back as in the bump still); v4's -35 put the elbow under her shoulder and the forearm pointing at us, drawn at 58-65% of its length (Harry: 'the arm sort of shrinks when it moves')"
    },
    {
     "t": 1.65,
@@ -231,105 +231,117 @@
     "on": "pelvis",
     "via": true,
     "note": "the joint-space breakdown: the elbow bends progressively, the forearm swings forward",
-    "dphi": -35
+    "dphi": -25
    },
    {
     "t": 2.3,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.042,
-     -0.214
+     -0.0126,
+     -0.0642
     ],
     "skew": 0.1,
     "lie": "bump",
-    "note": "hand on the lower FRONT of the bump, its tips inside the outline (tools/tip_check.mjs); the elbow under the shoulder (dphi); the PALM LIES ON THE BUMP (lie: the wrist extends so the hand keeps its length \u2014 v3's shrank to 78% of the hanging hand); a long soft arrival"
+    "note": "hand on the lower front of the bump where the bump still has it (v4 lifted it 45 px to keep the tips inside, which bent the arm until the forearm foreshortened; v5 lifts it 13 px and lets the fingers end along the outline instead). The wrist lies ON the bump's near surface (surface): the fitted depth floated it 0.33 H in front of the bump, toward us. The palm lies on the bump (lie); a long soft arrival",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 2.8,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.042,
-     -0.214
+     -0.0126,
+     -0.0642
     ],
-    "lie": "bump"
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 4.5,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.022,
-     -0.244
+     -0.0066,
+     -0.0732
     ],
     "lie": "bump",
-    "note": "the hand rides the breath as one piece: up and out with the bump"
+    "note": "the hand rides the breath as one piece: up and out with the bump",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 4.85,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.022,
-     -0.244
+     -0.0066,
+     -0.0732
     ],
-    "lie": "bump"
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 7.4,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.047,
-     -0.201
+     -0.0141,
+     -0.0603
     ],
     "lie": "bump",
-    "note": "and sinks with it on the sigh, a touch lower than it started"
+    "note": "and sinks with it on the sigh, a touch lower than it started",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 7.85,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.047,
-     -0.201
+     -0.0141,
+     -0.0603
     ],
-    "lie": "bump"
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 9.0,
     "pose": "n-top",
     "on": "belly",
-    "dphi": -35,
+    "dphi": 20,
     "dp": [
-     -0.088,
-     -0.322
+     -0.04,
+     -0.16
     ],
     "surface": "bump",
-    "gap": 0.03,
+    "gap": 0.04,
     "land": false,
     "lie": "bump",
-    "note": "the top of the stroke, ~55 px up the bump's front; not a landing: the hand never left the bump; the hand's angle trails the wrist by 6 frames on the way up (v4 A/B: the stroking hand moved as one rigid piece)",
+    "note": "the top of the stroke, 53 px up the bump's front; the swivel turns (dphi 20) so the arm stays full length, the elbow easing back as the hand rises; not a landing: the hand never left the bump; the hand's angle trails the wrist by 6 frames on the way up",
     "handLag": 6
    },
    {
     "t": 9.2,
     "pose": "n-top",
     "on": "belly",
-    "dphi": -35,
+    "dphi": 20,
     "dp": [
-     -0.088,
-     -0.322
+     -0.04,
+     -0.16
     ],
     "surface": "bump",
-    "gap": 0.03,
+    "gap": 0.04,
     "land": false,
     "lie": "bump",
     "note": "a short pause at the top (the linger) before the way down"
@@ -338,28 +350,32 @@
     "t": 10.35,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.042,
-     -0.214
+     -0.0126,
+     -0.0642
     ],
     "land": false,
     "handLag": 5,
     "lie": "bump",
     "note": "stroking down the hand trails the forearm by 5 frames (the forearm reverses first); the path bows IN toward the bump's middle (the default outward bow ran the flat fingers along its outline: a tangent)",
-    "curve": -0.06
+    "curve": -0.06,
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 10.5,
     "pose": "n-bump",
     "on": "belly",
-    "dphi": -35,
+    "dphi": -25,
     "dp": [
-     -0.042,
-     -0.214
+     -0.0126,
+     -0.0642
     ],
     "land": false,
-    "lie": "bump"
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
    },
    {
     "t": 11.3,
@@ -367,7 +383,7 @@
     "on": "pelvis",
     "via": true,
     "note": "on the way down the elbow straightens progressively (joint-space breakdown) instead of snapping straight on arrival",
-    "dphi": -35
+    "dphi": -25
    },
    {
     "t": 11.95,
@@ -375,7 +391,7 @@
     "on": "pelvis",
     "skew": 0.1,
     "note": "peels off at 10.5 and drifts down under its own weight over 1.45 s (v3 dropped in ~0.5 s: the fastest move in the film)",
-    "dphi": -35
+    "dphi": -25
    }
   ]
  },

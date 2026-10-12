@@ -1,6 +1,6 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,limbs] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
@@ -9,6 +9,8 @@
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
 //             hands come (< 15 px reads as merged unless they deliberately touch), and the wrist angle running ONE way
 //             through each move (a reversal > 4° reads as springy overshoot)
+//     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (a forearm pointing at the camera reads
+//             as an arm that shrinks)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -125,6 +127,18 @@ if (!skip.has('hands')) {
     console.log(`  · far/near palm area (median) ${ratio.toFixed(2)} — one drawing for both hands; the far one smaller only by perspective`);
     const close = runs(gap.map((g) => g < 15)).map(([a, b]) => `${tt(a)}–${tt(b)} s (min ${Math.min(...gap.slice(a, b + 1)).toFixed(0)} px)`);
     console.log(`  · hands closer than 15 px: ${close.length ? close.join(', ') + ' — fine where they deliberately touch, else they read as one blob' : 'never'}`);
+  }
+}
+if (!skip.has('limbs')) {
+  // a 3D arm segment pointing at the camera is drawn short (a3.len = its projected length / its length). In a flat-shaded
+  // style nothing says "foreshortened", so a forearm at 60% reads as an arm that SHRINKS as it moves (Harry on mum3 v3:
+  // "the arm sort of shrinks… it makes her arm look deformed"; v4's forearm was 57–65% on the bump). Gate the shortest.
+  const lim = +arg('limb-min', C.qa?.limbMin ?? 0.85), segs = Object.keys(rig.BONE).filter((b) => /^(upperArm|forearm|hand)\.(near|far)$/.test(b) && rig.BONE[b].plane === 'arm3' && !(C.fit?.hidden || []).includes(`${b.split('.')[1]}.arm`));
+  if (segs.length) {
+    console.log(`limbs: drawn length of each 3D arm segment (want ≥ ${lim} of its length all shot)`);
+    const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]]));
+    for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; }
+    for (const b of segs) gate(lo[b][0] >= lim, `${b}: shortest ${(lo[b][0] * 100).toFixed(0)}% at ${lo[b][1].toFixed(2)} s${lo[b][0] < lim ? ' — it points at the camera: put the wrist on the surface it touches (reach surface:) and turn the elbow (dphi) until the arm lies across the picture' : ''}`);
   }
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);
