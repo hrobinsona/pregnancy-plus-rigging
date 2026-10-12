@@ -1,0 +1,32 @@
+{
+ "name": "cup",
+ "f1": [
+  35,
+  25
+ ],
+ "f2": [
+  38,
+  26
+ ],
+ "f3": [
+  40,
+  26
+ ],
+ "f4": [
+  42,
+  28
+ ],
+ "s": [
+  1,
+  0.5,
+  -0.5,
+  0
+ ],
+ "t": [
+  20,
+  15
+ ],
+ "to": 25,
+ "ts": -6,
+ "_note": "cupping / cradling the bump: knuckles flexed ~40, PIP ~26 (total stays under the 100\u00b0 fold, tips round), thumb opposed in front of the index edge"
+}

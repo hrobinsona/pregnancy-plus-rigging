@@ -1,0 +1,36 @@
+{
+ "name": "fist",
+ "f1": [
+  85,
+  95,
+  60
+ ],
+ "f2": [
+  88,
+  98,
+  62
+ ],
+ "f3": [
+  90,
+  100,
+  64
+ ],
+ "f4": [
+  92,
+  100,
+  66
+ ],
+ "s": [
+  0,
+  -2,
+  -5,
+  -10
+ ],
+ "t": [
+  35,
+  45
+ ],
+ "to": 35,
+ "ts": -15,
+ "_note": "closed fist; curled fingers converge toward the thumb side of the wrist (scaphoid)"
+}

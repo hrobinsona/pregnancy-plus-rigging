@@ -1,0 +1,25 @@
+{
+ "name": "face-uneasy2",
+ "note": "the swallow: eyes right down on the bump, brows knit, lids lowered",
+ "face": {
+  "lid": {
+   "open": 0.7,
+   "closed": 0.3
+  },
+  "gaze": [
+   0.0,
+   0.034
+  ],
+  "mouth": {
+   "frown": 1
+  },
+  "cheek": {
+   "blush": 0.6,
+   "sick": 0.4
+  },
+  "brow": {
+   "worry": 1,
+   "knit": 0.3
+  }
+ }
+}
