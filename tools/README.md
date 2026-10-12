@@ -56,6 +56,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 |---|---|
 | ★ `qa_checks.mjs --char c --anim a [--box …]` | The QA gate (from reels): frames rendered out of order match, no state leaks (pose and SVG markup alone vs after every earlier frame), pixel jumps and still stretches (`qa_frames.py`), hands (palm pops, wrist angle one way per move, hands < 15 px apart, size ratio). Exit 1 on a fail. |
 | ★ `tip_check.mjs --char c --anim a [--t …] [--from … --to … --every …]` | Do a resting hand's fingertips end INSIDE her silhouette? Draws her without that arm and hand and walks each tip along its finger: + px inside, − px past the outline. Exit 1 if a tip on her is under `--min` (4) px inside. |
+| `part_tint.mjs c a t out.png id=#col …` | One frame with chosen parts tinted, to see which part makes an edge, notch or sliver (pair with `parts_dump.mjs`). |
 | `qa_frames.py <frames dir>` | Pixel jumps (> 1.8× neighbours) and still stretches > 1 s on a rendered frame folder. |
 | ★ `qa_closeups.mjs --t a,b,c` | Close-ups that follow the joints (shoulders, elbows, hands, face) at chosen times: details at size. |
 | ★ `critic_F.py <char> <anim>` | Builds the feel-critic pack + prompt (brief, intensity, beats, zooms, refs). Pipe to `out/critic_prompt.md`, hand it to a subagent. |

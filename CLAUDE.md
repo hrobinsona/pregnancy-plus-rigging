@@ -31,7 +31,7 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
 - **Taste.** The client's brief and intensity (`spec.story`, `spec.intensity`) beat the critic's taste. Explore, don't tune (`PIPELINE.md` lesson 15).
 
 ## Status (2026-10-12): mum3 v3, the first shot of the new character
-mum2's worst faults were structural to a cut-out rig (a flat hand flipping toward the camera, sleeves pivoting over joints, a weak master), so Harry chose a fresh character designed for the rig, run through the whole workflow on a simple first shot. Latest render: `renders/mum3_breathe-stroke_v3.mp4`. Each version won a blind A/B against the one before (v2 over v1 6.5 vs 4; v3 over v2 6.5 vs 6). Round 2 reviewers on v2: Lasseter 6.5/10, hands 5/10, feel "not yet"; v3 answers their asks (feel log).
+mum2's worst faults were structural to a cut-out rig (a flat hand flipping toward the camera, sleeves pivoting over joints, a weak master), so Harry chose a fresh character designed for the rig, run through the whole workflow on a simple first shot. Latest render: `renders/mum3_breathe-stroke_v3.mp4`. Each version won a blind A/B against the one before (v2 over v1 6.5 vs 4; v3 over v2 6.5 vs 6; the final v3 over its first cut 6.5 vs 6). Round 2 reviewers on v2: Lasseter 6.5/10, hands 5/10, feel "not yet"; v3 answers their asks (feel log).
 
 **Beat:**
 
@@ -48,7 +48,7 @@ mum2's worst faults were structural to a cut-out rig (a flat hand flipping towar
 
 **Next steps, in order** (feel log, round 2):
 1. Fresh critics on v3 (`critic_F --lens all`); show Harry the render.
-2. Known drawing leftovers: a nape kink when the head is far down; the strap's inner edge notches at extreme poses; the hand drawing is shorter and blunter than the master (`hand_fit` IoU 0.74).
+2. From the last A/B: the drop to her side is the fastest move (slow it), the stroking hand reads as a rigid mitt (finger and wrist life), the breath still reads mostly in the face. Drawing leftovers: the strap's inner edge notches at extreme poses; the hand drawing is shorter and blunter than the master (`hand_fit` IoU 0.74).
 3. A second shot with mum3, then point the reels article-video skill at this repo for figures.
 
 **mum2 (paused at v17):** `renders/mum2_nausea-to-belly_v17.mp4`. Open there: the palm flip at 7.50–7.63 s (the hand points at the camera; three cures lost blind A/Bs, lesson 24); the far cuff swelling at 7.77–7.83 s; Harry has not yet given timestamps for the bleed he saw. Details in `characters/mum2/feel_log_nausea-to-belly.md`.

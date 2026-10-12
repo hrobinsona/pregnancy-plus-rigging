@@ -88,3 +88,13 @@ What was done after it (final v3):
 3. The chin lifts 5.5° on the breath in (was 3.5°).
 4. The resting hand rides the breath ~7 px and its fingers fan, the thumb eases out, then the fingers press flat on the
    way out (`spec.fidget`).
+
+Blind A/B first v3 cut vs final v3 (fresh reviewer): **final wins, 6.5 vs 6** (60/40) — "stays planted and upright …
+a quiet, mindful stance"; the stroke "noticeably further up the front of the bump, ~1.6× … still small"; the first cut's
+deeper bow and quicker head lift "breaks nothing fast". Wrong in both: the drop to her side (11.2–11.5 s) is the shot's
+fastest move ("a drop rather than drifts"); the stroking hand is a rigid "flat mitt" with stacked fingers, no wrist or
+finger change; the breath still shows mostly in the face at phone size.
+
+Drawing fix after it (no A/B needed): the nape notch with the head down — the chest skin's back edge sat on the neck's
+back line and jutted out once the neck bent forward (seen with the new `tools/part_tint.mjs`); its top now starts
+inside the neck base.

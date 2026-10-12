@@ -23,7 +23,7 @@ export function build({ P: C, C: char }) {
   // ---- chest skin: from the neck base forward and down to the neckline, back over the shoulder top behind the strap
   out.push(part('chest.skin', 'chest', 24, C.skin, ensureCW(loop([
     [N.front[0], N.front[1] - 0.02, { a: 85 }], [X.chestFront[0], X.chestFront[1], { a: 35 }], [nl.front[0] + 0.01, nl.front[1] + 0.02, { a: 60 }],
-    [nl.front[0] - 0.05, nl.front[1] + 0.2], [bk.shoulder[0] + 0.05, nl.front[1] + 0.2], [st.back[0] + 0.1, st.back[1] - 0.01, { a: -35 }], [N.back[0] + 0.004, N.back[1] - 0.03, { a: -80 }]]))));   // the trapezius slopes from the nape onto the strap (inside it: the strap and the arm's cap make the shoulder's silhouette, as in the master)
+    [nl.front[0] - 0.05, nl.front[1] + 0.2], [bk.shoulder[0] + 0.05, nl.front[1] + 0.2], [st.back[0] + 0.1, st.back[1] - 0.01, { a: -35 }], [N.back[0] + 0.05, N.back[1] + 0.02, { a: -60 }]]))));   // the trapezius slopes from INSIDE the neck base onto the strap (at the neck's back line it jutted out as a notch once the neck bent forward) (inside it: the strap and the arm's cap make the shoulder's silhouette, as in the master)
   // ---- dress
   const under = b.under, apex = b.apex, bot = b.bottom;
   const dressG = ensureCW(loop([
