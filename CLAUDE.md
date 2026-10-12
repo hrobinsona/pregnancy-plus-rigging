@@ -55,7 +55,13 @@ The reels rig's best parts are now here (Harry: consolidate first, then iterate)
   - Harry has not yet said where he saw bleed. Ask him for timestamps.
 
 **Next steps, in order** (feel log v16):
-1. **The palm flip at 7.50–7.60 s** (blind A/B v16 names it in every version): the far upper arm passes straight down and the plane of elevation swings 0 → 77° in 5 frames, turning the palm from upright to flat. Fix the swivel/plane in the reach solve (keep the elbow's plane continuous), not the keys.
+1. **The palm flip at 7.50–7.60 s** (blind A/B v16 names it in every version). MEASURED: it is a projection
+   singularity of the FOREARM, not the shoulder: between 7.43 and 7.73 s the far forearm turns to point straight at the
+   camera (projected length 0.77 → 0.14, depth −0.99), so its screen angle — and the hand drawn on it — whips round
+   (hand 149 → 96 → 37° over 4 frames). Keeping the elbow on the keyed elbow (tried: `elbowKeys`) changed nothing; the
+   fitted keys themselves end with the forearm toward the camera. Method next: either a hand view for fingers toward
+   the camera (hand-view library, item 5) swapped in while the forearm is short, or draw the hand from its own 3D
+   direction rather than the forearm's screen angle (engine/rig.js arm3).
 2. **Far hand onto the bump, 7.8–8.1 s:** it reaches the bump's outside edge as a whole hand, then swaps to the wrap drawing (a full hand to a thin row of fingers in 2 frames at 8.00 → 8.07 s). Needs an in-between view of the hand curling round the rim (recipe "New outfit / hand view"), not timing.
 3. **Small QA items:** the far wrist snaps into the cover at 2.70 s (13° back, palm pop 17%) — but turning it earlier showed an "oath" palm and lost a blind A/B; needs a better hand view, not timing.
 4. **Bleed.** Get Harry's timestamps, then `tools/anim_audit.py`. Most remaining audit hits are deliberate lines (cardigan creases, finger gaps in the wrap, the hair-bun hole).
