@@ -32,7 +32,7 @@ const W8 = { shoulder: 1, elbow: 1, wrist: 1.2, index: 0.5, pinky: 0.5, thumb: 0
 const wOf = (n) => { for (const [k, v] of Object.entries(W8)) if (n.startsWith(k)) return v; return 0.4; };
 
 // ---- calibration: landmarks of the REST drawing (rig units) — the virtual points
-const cal = JSON.parse(fs.readFileSync(`${D}refs/pose/standing_34.json`));
+const cal = JSON.parse(fs.readFileSync(fs.existsSync(`${D}refs/pose/master.json`) ? `${D}refs/pose/master.json` : `${D}refs/pose/standing_34.json`));   // the rest drawing's own landmarks
 const calScale = [Lm.sizePx[0] / cal.W, Lm.sizePx[1] / cal.H];
 const calH = Object.fromEntries(Object.entries(cal.pose).map(([n, p]) => [n, toH([p[0] * calScale[0], p[1] * calScale[1]])]));
 
