@@ -10,7 +10,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | ★ `frame_at.mjs` | Single frames to PNG; `--mods JSON` overrides spec fields to isolate a layer. |
 | ★ `frame_strip.py` | Strip of frames f0..f1 with a crop box — the way to *see* a move. |
 | ★ `pose_probe.mjs` | A/B one channel (bone, `fx.*`, `scale.<bone>.<0\|1>`, `--add/--set`) at time t before keying it. |
-| ★ `uv_check.mjs` | Where the far wrist and elbow actually go in the torso frame, per frame. |
+| ★ `uv_check.mjs` | Where the far wrist and elbow actually go in the torso frame, per frame; `--poses a,b` gives the same for fitted poses, to compare stills with the shot. |
 | ★ `anim_dump.mjs` | Channel values or body landmarks per frame ("lunge vs fold", "what pops at frame N"). |
 | ★ `parts_dump.mjs` | Drawn parts of one frame: id, z, fill, stroke, clip — draw-order and bleed questions. |
 | `char_still.mjs` | Render one pose to PNG (`--sil` for the silhouette). |

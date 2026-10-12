@@ -39,7 +39,7 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
      - per-stop `limp`/`limpBend`, `skew`, `reg`, `front`;
      - path moves from `tools/vtrack_apply.mjs` (`spec.video`), options documented in `engine/anim.js` pathTarget.
    - `tracks.face`, `fidget` (out-and-back life: fingers, `fx.slide.near.*` strokes, swallows), `breath`, `swaps` (hand views), `pins` (planted near hand), `plantFeet: "ik"`.
-6. **Render and measure** (see Commands). Check the per-frame speeds for pops before any review. Use `pose_probe` to A/B a DOF on one frame before keying it, and `uv_check` to see where the wrist and elbow actually go in the torso frame.
+6. **Render and measure** (see Commands). Check the per-frame speeds for pops before any review. Use `pose_probe` to A/B a DOF on one frame before keying it, and `uv_check` to see where the wrist and elbow actually go in the torso frame. For a fitted in-between, use its position (`uv_check --poses`) and a path `bias`, not its fitted twist (PIPELINE lesson 21).
 7. **Review.**
    - Run `python3 tools/critic_F.py <char> <shot> > out/critic_prompt.md`. Then spawn a subagent with: *"Read out/critic_prompt.md and follow it exactly; open every image it lists; return the review."*
    - Log the round and "What was done" in `characters/<char>/feel_log_<shot>.md`.
@@ -62,6 +62,7 @@ node tools/char_anim.mjs --char mum2 --anim nausea-to-belly --tracks-only       
 python3 tools/frame_strip.py out/frames/mum2_nausea-to-belly out/strip.png 200 250 --step 2 --box 380,150,1000,1050
 node tools/pose_probe.mjs --anim nausea-to-belly --t 7.37 --vary hand.far=-40,0,40 --crop 450,250,1000,950
 node tools/uv_check.mjs mum2 nausea-to-belly 7.0 8.1              # wrist/elbow in the torso frame, frame by frame
+node tools/uv_check.mjs mum2 nausea-to-belly --poses fit-bf1,fit-bf2   # where fitted stills put them: compare, then bias the path
 python3 tools/critic_F.py mum2 nausea-to-belly > out/critic_prompt.md
 python3 tools/anim_audit.py mum2 nausea-to-belly --every 3        # bleed audit → out/mum2_nausea-to-belly_bleed.{txt,png}
 node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is drawn where (id, z, fill, clip) at one frame

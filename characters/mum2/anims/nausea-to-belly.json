@@ -281,6 +281,15 @@
         0.1,
         0.02
        ]
+      },
+      {
+       "s0": 0.35,
+       "s1": 0.95,
+       "dp": [
+        0.12,
+        0
+       ],
+       "note": "MEASURED (still b_lift1_2, tools/uv_check --poses): at chest height the hand is still out in front of her far shoulder (torso u 1.32; the video path had come in to 1.21) — it rises, then comes in to the mouth"
       }
      ],
      "zBy": 0.5,

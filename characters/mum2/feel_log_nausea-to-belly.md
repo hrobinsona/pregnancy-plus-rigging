@@ -578,3 +578,17 @@ What was done:
 Still open: (a) the 61 px/f turn — the upper arm passes straight down there (elevation crosses 0, the plane of elevation
 flips), so the forearm's direction is ill-defined for a frame or two; (b) the lift stills are fitted but not wired in
 (the lift is a video path move with hand-tuned bendAt/twistAt; next round).
+
+## v14e — measured lift (2026-10-12)
+Input: `fit-bf1` (b_lift1_2) and `fit-bf2` (b_lift2_2) from the v14d batch; no new images.
+What was done:
+1. Measured the stills against the shot in the torso frame (`tools/uv_check.mjs --poses`, new). `fit-bf2` (hand at the
+   chin) already matches the shot within 0.03 u. `fit-bf1` (chest height) has the hand 0.11 u further out in front of
+   the far shoulder (u 1.32) than the video path (u 1.21).
+2. A second bias window on the lift path (`s0 0.35 → s1 0.95`, `dp [0.12, 0]`, marked MEASURED) moves the mid-lift out:
+   the hand now rises in front of her shoulder, then comes in to the mouth, as in the still.
+3. Tried and reverted: the stills' fitted twist and bend in place of the hand-tuned `twistAt`/`bendAt` (the fitted
+   pronation is ~0 because `--view far=back` forces the hand view, which drew an open "oath" palm in motion), and
+   moving the path's opening knots (no visible change).
+Checks: fingertip speeds unchanged in shape (arrival peak 45 px/f at f81, as in v14d); determinism 0 mismatches.
+Still open: the 61 px/f forearm turn at 7.57 s (CLAUDE.md next step 1).

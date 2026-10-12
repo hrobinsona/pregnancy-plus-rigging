@@ -125,6 +125,13 @@ or composited.
    `only` key rather than tuning eases. Where the upper arm passes straight down the plane of elevation flips (a 3D-arm
    singularity): expect a fast turn there and look at those frames first.
 
+21. **Fitted twist is not usable for motion; fitted position is.** `fit_pose --view far=back` forces the hand's view,
+   so the fitted pronation of a lift still came out near 0, which renders an open "oath" palm while the hand moves. Use
+   such a still for WHERE the hand is, not how it turns: compare it with the shot in the torso frame
+   (`tools/uv_check.mjs <char> <shot> --poses fit-bf1,fit-bf2`), then move a video path with a `bias` window
+   (`{s0,s1,dp}`) where they disagree. Lift v14e: at the chin the shot already matched (0.03 u); at chest height the
+   still's hand was 0.11 u further out in front of the far shoulder, so the hand now rises in front and then comes in.
+
 ## 1. Reference generation (fal.ai) — see `tools/fal_gen.py`, ledger in `characters/<c>/refs/ledger.jsonl`
 
 ### Scoreboard (mum2, nausea shot): what paid off and what did not

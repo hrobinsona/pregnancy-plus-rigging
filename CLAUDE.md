@@ -29,8 +29,8 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
   - Log the round in `characters/mum2/feel_log_nausea-to-belly.md`.
 - **Taste.** The client's brief and intensity (`spec.story`, `spec.intensity`) beat the critic's taste. Explore, don't tune (`PIPELINE.md` lesson 15).
 
-## Status (2026-10-12): v14d, the gentle version with a measured lowering
-Latest render: `renders/mum2_nausea-to-belly_v14d.mp4` (v14c kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
+## Status (2026-10-12): v14e, the gentle version with a measured lowering and lift
+Latest render: `renders/mum2_nausea-to-belly_v14e.mp4` (v14d and v14c kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
 
 **Beat:**
 
@@ -38,7 +38,7 @@ Latest render: `renders/mum2_nausea-to-belly_v14d.mp4` (v14c kept for comparison
 |---|---|
 | 0–1.1 | Calm; near thumb strokes the bump |
 | 1.1–2.0 | Unease, swallow |
-| 2.0–2.8 | Far hand to the mouth (video-timed path) |
+| 2.0–2.8 | Far hand to the mouth (video-timed path; mid-lift moved out to still `fit-bf1`'s chest point by a path bias) |
 | 2.8–3.7 | Nausea cues: hunch and swallow behind the hand |
 | 3.7–5.0 | One deep breath in (fitted from two stills) |
 | 5.0–6.9 | Long breath out |
@@ -55,7 +55,7 @@ Latest render: `renders/mum2_nausea-to-belly_v14d.mp4` (v14c kept for comparison
   - Harry has not yet said where he saw bleed. Ask him for timestamps.
 
 **Next steps, in order:**
-1. **Lift stills.** `fit-bf1`/`fit-bf2` (b_lift1/2, `cup` hand) are fitted but not wired in: the lift (2.0–2.8 s) is a video path move whose `bendAt`/`twistAt` were tuned by hand; replace those with the fitted stills (arm-only keys, as for the lowering, PIPELINE lesson 20). Also: the forearm turn at ≈7.57 s is still quicker than its neighbours (61 px/f, the upper arm passes straight down there).
+1. **Forearm turn at ≈7.57 s.** Still quicker than its neighbours (61 px/f): the upper arm passes straight down there and the plane of elevation flips (3D-arm singularity). Fix in the engine or with elbow guidance, not eases. The lift's twist and bend stay hand-tuned: fitted twist renders an oath palm (PIPELINE lesson 21).
 2. **Bleed.** Get Harry's timestamps, then run `tools/anim_audit.py` and fix. Most remaining audit hits are deliberate lines: cardigan creases, finger gaps in the wrap, the hair-bun hole.
 3. **Feel critic on the gentle version.** The brief now carries the intensity.
 4. **Hand-view library.** An edge-on hand and a loose curl seen from the back, as fitted replacement drawings. The generic hand reads as an "oath" or "fist" mid-move.
