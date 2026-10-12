@@ -73,3 +73,10 @@ What was done (v3):
 4. The near hand's life moved into what a back-of-hand view shows: the fan (fingers spread and the thumb sweeps out
    with the caress, gather back on the return), and a "holding you" gather at the smile (curl 8–14° per joint: the
    fingers shorten ~8% and draw together), then a spread re-settle index first.
+
+Blind A/B v3 vs v1 (one fresh reviewer): **v3 6.5, v1 6 — v3 preferred** (moderate to low confidence). Its reasons, in
+order: the upper body takes a small breath-like lift into the look up (v1 "a head turning on a mannequin"); the smile
+blooms after the eyes meet ours (eyes, then head, then smile: a reaction to the contact); the gaze drifts back down
+over 1.6 s; the look down at the start reads as looking AT the bump. Open in both: the near hand still reads as
+straight, parallel, evenly spread fingers at the reviewer's scale (the fan and gather were not seen); the far hand does
+nothing; the hold 3.2–4.6 s starts to feel held before the slow blink. Kept v3. Render: `renders/mum3q_look-up_v3.mp4`.

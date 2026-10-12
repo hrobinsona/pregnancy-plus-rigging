@@ -4,7 +4,7 @@ Rigged, code-drawn characters (parametric SVG, no traced pixels) animated to a H
 
 - **Character:** `characters/mum3`, a standing pregnant woman in near profile, facing right, designed for the rig (bare arms, sleeveless dress, far arm hidden).
 - **Shot in progress:** `characters/mum3/anims/breathe-stroke.json` (12 s loop, 30 fps).
-- **New view in progress:** `characters/mum3q`, the same woman in ¾ (turned ~43° toward us) on mum3's skeleton and palette, drawn from Harry's pick of the turnaround (`characters/mum3/refs/images/m3_view34_1.png`). Rest drawing done (IoU 0.969, stress poses `x-*` pass); its first shot (she looks up from the bump to the viewer and smiles) is next.
+- **New view in progress:** `characters/mum3q`, the same woman in ¾ (turned ~43° toward us) on mum3's skeleton and palette, drawn from Harry's pick of the turnaround (`characters/mum3/refs/images/m3_view34_1.png`). Rest drawing done (IoU 0.969, stress poses `x-*` pass). First shot `characters/mum3q/anims/look-up.json` (8 s loop: she looks up from her bump to the viewer and smiles), latest `renders/mum3q_look-up_v3.mp4`; v3 won its blind A/B over v1 (6.5 vs 6); open items in `characters/mum3q/feel_log_look-up.md`.
 - **Paused:** `characters/mum2` (¾ view, the nausea shot, v17) is kept as a test bed. **Legacy:** `characters/mum` is the first, seated version.
 
 **Use the skill:** `.claude/skills/code-character-animation/SKILL.md` holds the workflow, commands and gotchas. The lessons behind it are in `docs/PIPELINE.md`; how to make reference stills is in `docs/REF_PROMPTS.md`.
@@ -50,7 +50,7 @@ mum2's worst faults were structural to a cut-out rig (a flat hand flipping towar
 **Next steps, in order** (feel log, round 5):
 1. Harry's eye on v5; fresh critics on v5 (`critic_F --lens all`).
 2. From the last A/B: the stroking hand still moves as one rigid piece, its fingers a little comb-like at the stroke top (9.0 s); the chest and bump outline barely change on the breath; the hand stops dead at her side. Drawing: a step where the forearm's underside meets the heel of the hand; the strap's inner edge notches at extreme poses.
-3. Harry chose a ¾ view next (2026-10-12): `mum3q` (lessons 42–44). Then its first shot: she looks up from the bump to the viewer and smiles; then foreshortening cues and hand views, proven on mum2's palm flip.
+3. Harry chose a ¾ view next (2026-10-12): `mum3q` (lessons 42–47). Its first shot, look-up, is at v3 (Harry's eye next); then foreshortening cues and hand views, proven on mum2's palm flip.
 4. Point the reels article-video skill at this repo for figures.
 
 **mum2 (paused at v17):** `renders/mum2_nausea-to-belly_v17.mp4`. Open there: the palm flip at 7.50–7.63 s (the hand points at the camera; three cures lost blind A/Bs, lesson 24); the far cuff swelling at 7.77–7.83 s; Harry has not yet given timestamps for the bleed he saw. Details in `characters/mum2/feel_log_nausea-to-belly.md`.
