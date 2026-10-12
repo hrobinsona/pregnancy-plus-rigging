@@ -4,7 +4,8 @@ models/
 __pycache__/
 # all generated output (renders, frames, review packs, audits) — reproducible from the specs; the shot's
 # current render is copied to renders/
-out/
+out/*
+!out/.gitkeep
 review/
 # generated reference VIDEOS are large and mostly unused (18 of 21); their fitted tracks live in refs/tracks/
 characters/*/refs/videos/

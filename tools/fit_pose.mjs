@@ -174,7 +174,7 @@ const out = { name: outName, note: arg('note', `fitted to ${refJson} (MediaPipe 
   root: [+poseOf(x).root[0].toFixed(4), +poseOf(x).root[1].toFixed(4)],
   bones: Object.fromEntries(Object.entries(poseOf(x).bones).filter(([k]) => flag('hands') || !/^hand\.(near|far|farB)\./.test(k)).map(([k, v]) => [k, Math.round(v * 10) / 10])),
   _fit: { ref: refJson, scale: +s.toFixed(4), rms: +Math.sqrt(rep.reduce((a, r) => a + r[1] ** 2, 0) / rep.length).toFixed(4), worst: rep.slice(0, 5).map(([n, d]) => `${n} ${d.toFixed(3)}`) } };
-fs.writeFileSync(`${D}poses/${outName}.json`, JSON.stringify(out, null, 1));
+fs.mkdirSync(`${D}poses/${outName}`.replace(/\/[^/]*$/, ''), { recursive: true }); fs.writeFileSync(`${D}poses/${outName}.json`, JSON.stringify(out, null, 1));
 console.log(`fit ${outName}: ${targets.length} targets, rms ${out._fit.rms} H, scale ${s.toFixed(3)}; worst: ${out._fit.worst.join(', ')}`);
 // targets in rig units for the overlay tool
-fs.writeFileSync(`out/fit_${outName}_targets.json`, JSON.stringify({ ref: refJson, xf: { s, sx, sy, cx, cy, sizePx: Lm.sizePx, ground: Lm.ground, Hpx: Lm.Hpx, W: ref.W, H: ref.H }, targets: targets.map((t) => ({ n: t.n, to: t.to, got: carry(st, t.bone, t.rest, poF), bone: t.bone, rest: t.rest, w: t.w })) }));
+fs.mkdirSync(`out/fit_${outName}`.replace(/\/[^/]*$/, ''), { recursive: true }); fs.writeFileSync(`out/fit_${outName}_targets.json`, JSON.stringify({ ref: refJson, xf: { s, sx, sy, cx, cy, sizePx: Lm.sizePx, ground: Lm.ground, Hpx: Lm.Hpx, W: ref.W, H: ref.H }, targets: targets.map((t) => ({ n: t.n, to: t.to, got: carry(st, t.bone, t.rest, poF), bone: t.bone, rest: t.rest, w: t.w })) }));
