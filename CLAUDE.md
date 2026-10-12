@@ -29,8 +29,8 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
   - Log the round in `characters/mum2/feel_log_nausea-to-belly.md`.
 - **Taste.** The client's brief and intensity (`spec.story`, `spec.intensity`) beat the critic's taste. Explore, don't tune (`PIPELINE.md` lesson 15).
 
-## Status (2026-10-12): v16, the two rigs consolidated, first iteration done
-The reels rig's best parts are now here (Harry: consolidate first, then iterate): its QA gate (`tools/qa_checks.mjs`), review loop (`tools/blind_ab.py`, `critic_F.py --lens all`), lessons (`docs/PIPELINE.md` "From the reels rig"), performance and hand defaults in the engine (landing, finger ripple, contact shadow, wrist taper), and the recipes (`tools/new_pose.py`, `tools/new_char.py`, the skill's "Recipes" table). Latest render: `renders/mum2_nausea-to-belly_v16.mp4` (v16: the far forearm no longer turns 58° in two frames at 7.7 s, the head jerk at 1.27 s is gone; v15, v14e, v14d, v14c kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
+## Status (2026-10-12): v17, the two rigs consolidated, iterating
+The reels rig's best parts are now here (Harry: consolidate first, then iterate): its QA gate (`tools/qa_checks.mjs`), review loop (`tools/blind_ab.py`, `critic_F.py --lens all`), lessons (`docs/PIPELINE.md` "From the reels rig"), performance and hand defaults in the engine (landing, finger ripple, contact shadow, wrist taper), and the recipes (`tools/new_pose.py`, `tools/new_char.py`, the skill's "Recipes" table). Latest render: `renders/mum2_nausea-to-belly_v17.mp4` (v17: the far hand arriving round the bump's far rim at 7.87 s curls its fingers over the rim and settles slowly to the fingertip row, instead of sticking out past the rim and popping to a sliver at 8.13 s; it won a blind A/B against v16. v16: the far forearm no longer turns 58° in two frames at 7.7 s, and the head jerk at 1.27 s is gone. v16, v15, v14e, v14d and v14c are kept for comparison). The earlier violent-retch version, `renders/…_v13f_retch-version.mp4`, is kept for reference only.
 
 **Beat:**
 
@@ -54,15 +54,15 @@ The reels rig's best parts are now here (Harry: consolidate first, then iterate)
   - Fixed: outline lines running over neck skin; the far cuff poking past the bump rim as a ragged tab.
   - Harry has not yet said where he saw bleed. Ask him for timestamps.
 
-**Next steps, in order** (feel log v16):
-1. **The palm flip at 7.50–7.60 s** (blind A/B v16 names it in every version). MEASURED: it is a projection
-   singularity of the FOREARM, not the shoulder: between 7.43 and 7.73 s the far forearm turns to point straight at the
-   camera (projected length 0.77 → 0.14, depth −0.99), so its screen angle — and the hand drawn on it — whips round
-   (hand 149 → 96 → 37° over 4 frames). Keeping the elbow on the keyed elbow (tried: `elbowKeys`) changed nothing; the
-   fitted keys themselves end with the forearm toward the camera. Method next: either a hand view for fingers toward
-   the camera (hand-view library, item 5) swapped in while the forearm is short, or draw the hand from its own 3D
-   direction rather than the forearm's screen angle (engine/rig.js arm3).
-2. **Far hand onto the bump, 7.8–8.1 s:** it reaches the bump's outside edge as a whole hand, then swaps to the wrap drawing (a full hand to a thin row of fingers in 2 frames at 8.00 → 8.07 s). Needs an in-between view of the hand curling round the rim (recipe "New outfit / hand view"), not timing.
+**Next steps, in order** (feel log v17):
+1. **The palm flip at 7.50–7.63 s**, still the most visible flaw:
+   - MEASURED: the far HAND itself points at the camera (projected length 0.14), so it sweeps about 150° in 5 frames.
+   - Three cures lost blind A/Bs (PIPELINE lesson 24): a forward swing, a wider turn, and fingers foreshortened with the hand.
+   - Harry chose to leave it for now. The remaining method is re-keying the lowering path so the hand never points at the camera.
+2. **Arrival leftovers:**
+   - the far cuff swells into a blob just before the hand reaches the bump (7.77–7.83 s);
+   - the curled fingers read a little "stacked" (7.87–8.2 s);
+   - from 8.3 s the settled far hand is only a thin strip of fingertips.
 3. **Small QA items:** the far wrist snaps into the cover at 2.70 s (13° back, palm pop 17%) — but turning it earlier showed an "oath" palm and lost a blind A/B; needs a better hand view, not timing.
 4. **Bleed.** Get Harry's timestamps, then `tools/anim_audit.py`. Most remaining audit hits are deliberate lines (cardigan creases, finger gaps in the wrap, the hair-bun hole).
 5. **Hand-view library.** An edge-on hand and a loose curl seen from the back, as fitted replacement drawings.

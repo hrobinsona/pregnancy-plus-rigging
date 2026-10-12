@@ -75,7 +75,7 @@ export const P = {
   hem: { near: lm('hemNear'), front: lm('hemFront'), far: lm('hemFar') },
   shoulderTop: { near: lm('shoulderTopNear'), far: lm('shoulderTopFar') },
   // sleeves: half-widths along shoulder → elbow → cuff
-  wrapFingers: { shift: 0 },   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
+  wrapFingers: { shift: 0, cup: { back: 0.4, len: 1.0, width: 0.1, span: 0.15 } },   // cup: the arriving hand's extra size (parts/wrap.js, refs h_fore1/2)   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
   cuffEnd: { near: 0.92, far: 0.9 },   // far 0.84 → 0.9 when its forearm got its true length (0.79 → 0.91 H)
     // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },

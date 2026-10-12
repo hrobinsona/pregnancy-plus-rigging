@@ -162,6 +162,14 @@ or composited.
    What's left is the PATH: re-key the lowering so the hand never points at the camera (elbow by her side, fingers
    turning in the picture plane), or accept the turn.
 
+25. **A depth switch needs a replacement drawing of the same SIZE, led by the fingers (v17, won a blind A/B).** The far
+   hand arriving round the bump's far rim jumps from "in front" to "behind" in one frame, and only the part outside the
+   outline stays visible: a full hand became a sliver. What fixed it was drawing the arriving hand as the wrap at the full
+   hand's size, then shrinking it to the settled size over ~0.6 s, ending exactly at the size of the drawing it hands back
+   to. Neither path changes (a via out to the rim: "hovers") nor moving the switch (`frontBy`: the snap just moved) did
+   it. Size it with the FINGERS: a big back of the hand with no finger lines reads as a "mitten" or "lump" (lost), while
+   longer fingers curling over the rim read as "a hand holding her".
+
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

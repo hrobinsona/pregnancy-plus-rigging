@@ -1244,7 +1244,29 @@
    ]
   }
  ],
- "layers": [],
+ "layers": [
+  {
+   "note": "v17: the far hand ARRIVING round the bump's rim is drawn cupped (back of the hand outside the rim, fingers curling over; refs h_fore1_0, h_fore2_*) from the frame it goes behind the bump (7.87 s), then settles to k8's fingertip row by 8.4 s. Replaces the real hand half hidden behind the bump, which shrank to a sliver in 2 frames (8.00-8.07 s).",
+   "t": [
+    7.6,
+    7.84,
+    8.0,
+    8.15,
+    8.3,
+    8.45
+   ],
+   "ch": {
+    "fx.cup.far": [
+     0,
+     1,
+     0.9,
+     0.6,
+     0.25,
+     0
+    ]
+   }
+  }
+ ],
  "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff.",
  "land": [
   {

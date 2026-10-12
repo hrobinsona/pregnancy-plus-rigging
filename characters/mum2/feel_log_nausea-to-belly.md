@@ -646,3 +646,19 @@ wrist turns back 13° at 2.80 s (the landing on the mouth).
 - **(a) End the front flag at the rim** (`frontBy` 0.55 on the arriving stop): the snap only moved earlier (7.70 → 7.73 s), because the hand was still deep over the bump in front.
 - **(b) Plus a via just outside the rim** (fit-k8 contact, dp/dz): the arm reached the rim before tucking behind and the snap was gone. But the extra path length compressed the wrist turn (68°/frame at 7.57 s vs v16's 28). It lost a blind A/B at moderate confidence: the turn was a 3-frame flip, and the hand "hovers beside the bump" for 10 frames. The reviewer prefers v16's hand sliding over the FRONT of the bump to the rim, and still flags its cuff tab and full hand poking past the rim at 7.87–7.97 s, then the shrink to fingers at 8.00–8.07 s.
 - **What the references say:** the six h_fore stills (made for the 7.5 s turn) all drew the hand cupped round the bump's far rim: the back of the hand outside the outline and the fingers curling over it, bigger than k8's fingertip row. h_fore1_0 is the clearest. That is the missing in-between DRAWING. Next: measure it and make the wrap drawing (parts/wrap.js) start at that size and shrink to k8 as the wrap completes, keeping v16's path.
+
+## v17 (2026-10-12): the far hand curls round the bump's rim as it arrives (shipped)
+- **Harry's call:** fix the arrival, leave the 7.5 s turn (decision card).
+- **Change:** a keyed `fx.cup.far` (`spec.layers`, 1 at 7.84 s, easing to 0 by 8.45 s).
+  - While it is up, the arriving far hand is drawn as the wrap (parts/wrap.js) at a larger "cupped" size instead of the real hand half hidden behind the bump.
+  - The size is set in params `wrapFingers.cup`: fingers ×2, span ×1.15, width ×1.1, back ×1.4. It shrinks to the partial wrap's own size (`wrapCupW`), so the real hand comes back at 8.47 s without a step.
+- **First try:** back ×3 (the cupped hand of refs h_fore1_0 / h_fore2) lost its blind A/B. It read as a fingerless "mitten" or "lump".
+- **Blind A/B, v17 vs v16** (fresh reviewer, moderate to high confidence): **v17 more natural**, 7/10 vs 5.5/10.
+  - "The hand curls round the bump rim and stays inside the outline… narrows gradually into the row of fingertips."
+  - v16's fingers "stick out beyond the bump outline… then pop to a sliver at 8.13 s".
+- **QA:** order and leak checks pass; no pixel jumps. The new drawing swaps at 7.87 and 8.47 s are expected (no pop). The 2.70/2.73 s items are unchanged.
+- **Still open:**
+  - the 7.50–7.63 s palm flip (both versions; lesson 24);
+  - the cuff blob at 7.77–7.83 s;
+  - the curled fingers a little "stacked";
+  - the settled far hand too thin from 8.3 s.
