@@ -52,9 +52,13 @@ const tgt = Object.fromEntries(Object.entries(refN).map(([n, p]) => [n, toRig(p)
 const vis = Object.fromEntries(Object.entries(ref.pose).map(([n, p]) => [n, p[2]]));
 
 // ---- targets: every body landmark that is visible enough
+// C.fit.hidden: limbs the DESIGN keeps hidden (a profile's far arm behind her body): the estimator only guesses them, and
+// fitting those guesses pulled the far arm out past her back. Their landmarks are skipped and their bones stay at the base.
+const HID = new Set(C.fit?.hidden || []);
+const hiddenBone = (b) => [...HID].some((h) => { const [sd, limb] = h.split('.'); return limb === 'arm' && new RegExp(`^(clavicle|shoulderAbd|upperArm|armAbd|armRot|forearm|foreRot|hand)\\.${sd}$`).test(b); });
 const targets = [];
 for (const n of Object.keys(tgt)) {
-  if (vis[n] < 0.3 || !calH[n]) continue;
+  if (vis[n] < 0.3 || !calH[n] || hiddenBone(carrier(n))) continue;
   targets.push({ n, bone: carrier(n), rest: calH[n], to: tgt[n], w: wOf(n) * Math.min(1, vis[n] + 0.2) });
 }
 // hands (MediaPipe hand landmarks): attach each detected hand to the nearer pose wrist; joints of OUR hand rig as points
@@ -73,12 +77,13 @@ if (flag('hands')) for (const h of ref.hands || []) {
 }
 
 // ---- solve
-const base = JSON.parse(fs.readFileSync(`${D}poses/${arg('base', 'bump-rest')}.json`));
+const baseName = arg('base', fs.existsSync(`${D}poses/bump-rest.json`) ? 'bump-rest' : 'rest');
+const base = JSON.parse(fs.readFileSync(`${D}poses/${baseName}.json`));
 const fixed = Object.fromEntries((arg('fix', '') || '').split(',').filter(Boolean).map((kv) => { const [a, b] = kv.split('='); return [a, +b]; }));
 const VARS = ['root.0', 'root.1', 'pelvis', 'spineLower', 'spineUpper', 'chest', 'neck', 'head', 'belly',
   ...['near', 'far'].flatMap((sd) => [`clavicle.${sd}`, `shoulderAbd.${sd}`, `upperArm.${sd}`, `armAbd.${sd}`, `armRot.${sd}`, `forearm.${sd}`, `foreRot.${sd}`, `hand.${sd}`, `thigh.${sd}`, `shin.${sd}`, `foot.${sd}`, `hipAbd.${sd}`]),
   ...(flag('hands') ? ['near', 'far'].flatMap((sd) => [1, 2, 3, 4].flatMap((f) => [`hand.${sd}.f${f}a`, `hand.${sd}.f${f}b`, `hand.${sd}.f${f}s`]).concat([`hand.${sd}.t0`, `hand.${sd}.t1`, `hand.${sd}.ts`])) : [])]
-  .filter((v) => !(v in fixed) && (v.startsWith('root') || BONE[v]))
+  .filter((v) => !(v in fixed) && (v.startsWith('root') || BONE[v]) && !hiddenBone(v))
   // the head NOD (C.warps.head, engine/warp.js) is a DOF too: a ¾ head looking down moves its face down the skull — fitted
   // with a flat rotation only, the fit ROLLED the head to bring the face landmarks down (critic: "head rolls on a stalk")
   .concat(C.warps?.head && !('fx.headPitch' in fixed) ? ['fx.headPitch'] : [])
@@ -168,7 +173,7 @@ const poF = poseOf(x), st = rig.solve(poF), rep = [];
 for (const t of targets) { const a = carry(st, t.bone, t.rest, poF); rep.push([t.n, Math.hypot(a[0] - t.to[0], a[1] - t.to[1])]); }
 rep.sort((a, b) => b[1] - a[1]);
 const handArg = Object.fromEntries((arg('hand', '') || '').split(',').filter(Boolean).map((kv) => kv.split('=')));   // --hand far=cover: the library shape SEEN in the reference
-const out = { name: outName, note: arg('note', `fitted to ${refJson} (MediaPipe landmarks, base ${arg('base', 'bump-rest')})`), ...((base.hands || arg('hand')) && !flag('hands') ? { hands: { ...(base.hands || {}), ...handArg } } : {}),
+const out = { name: outName, note: arg('note', `fitted to ${refJson} (MediaPipe landmarks, base ${baseName})`), ...((base.hands || arg('hand')) && !flag('hands') ? { hands: { ...(base.hands || {}), ...handArg } } : {}),
   ...(base.handView || arg('view') ? { handView: { ...(base.handView || {}), ...Object.fromEntries((arg('view', '') || '').split(',').filter(Boolean).map((kv) => kv.split('='))) } } : {}),
   ...(base.zBias || arg('z') ? { zBias: { ...(base.zBias || {}), ...Object.fromEntries((arg('z', '') || '').split(',').filter(Boolean).map((kv) => { const [a, b] = kv.split('='); return [a, +b]; })) } } : {}), ...(base.fx || poF.fx?.headPitch ? { fx: { ...(base.fx || {}), ...(VARS.includes('fx.headPitch') ? { headPitch: Math.round(poF.fx.headPitch * 10) / 10 } : {}) } } : {}), ...(base.scale || flag('fold') ? { scale: Object.fromEntries(Object.entries(poF.scale || {}).map(([k, v]) => [k, v.map((q) => Math.round(q * 1000) / 1000)])) } : {}),
   root: [+poseOf(x).root[0].toFixed(4), +poseOf(x).root[1].toFixed(4)],

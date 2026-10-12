@@ -79,6 +79,8 @@ export default {
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
+  // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
+  fit: { hidden: ['far.arm'] },
   frame: params.frame,
   ref: params.ref,
   roles: {

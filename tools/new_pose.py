@@ -1,7 +1,7 @@
 """Recipe: NEW POSE — one sentence → reference stills → fitted pose, with a pass/fail gate.
     python3 tools/new_pose.py gen <char> <name> --prompt-file docs/prompts/<name>.txt --ref <sheet> --ref <prev key> [-n 3]
         (runs where Codex is logged in to ChatGPT, i.e. Harry's Mac: tools/refgen.py, registered without --est)
-    python3 tools/new_pose.py fit <char> <name> [--base bump-rest] [--fit-args "--view far=back --hand far=cup"]
+    python3 tools/new_pose.py fit <char> <name> [--base <pose>: default bump-rest, else rest] [--fit-args "--view far=back --hand far=cup"]
         (anywhere: pose_est each sample, fit each, keep the lowest rms, gate it, record it in refs/fit_keys.sh)
 Gate: rms <= 0.06 H, no bone pinned on a joint limit, then LOOK at out/new_pose_<name>.png (reference next to the fit:
 contacts must be right, e.g. a hand on the bump is on it). Exit 1 if the gate fails. See the skill, "Recipes"."""
@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 ap.add_argument('stage', choices=['gen', 'fit']); ap.add_argument('char'); ap.add_argument('name')
 ap.add_argument('--prompt-file'); ap.add_argument('--prompt'); ap.add_argument('--ref', action='append', default=[]); ap.add_argument('-n', type=int, default=3)
-ap.add_argument('--base', default='bump-rest'); ap.add_argument('--fit-args', default=''); ap.add_argument('--out-pose')
+ap.add_argument('--base'); ap.add_argument('--fit-args', default=''); ap.add_argument('--out-pose')
 ap.add_argument('--max-rms', type=float, default=0.06); ap.add_argument('--no-record', action='store_true')
 a = ap.parse_args()
 R = f'characters/{a.char}/refs'
@@ -35,19 +35,20 @@ if a.stage == 'gen':
 imgs = sorted(glob.glob(os.path.join(ROOT, R, 'images', f'{a.name}_[0-9]*.png')))
 if not imgs: sys.exit(f'no samples {R}/images/{a.name}_<i>.png — run the gen stage (or ref_register.py) first')
 out_pose = a.out_pose or f'fit-{a.name}'
+BASE = ['--base', a.base] if a.base else []   # fit_pose.mjs defaults to bump-rest, else rest
 res = []
 for img in imgs:
     k = os.path.splitext(os.path.basename(img))[0]; pj = f'{R}/pose/{k}.json'
     if not os.path.exists(os.path.join(ROOT, pj)):
         run([sys.executable, 'tools/pose_est.py', os.path.relpath(img, ROOT), '--out', pj, '--hands'], stdout=subprocess.DEVNULL)
     trial = f'_trial/{out_pose}-{k}'
-    o = run(['node', 'tools/fit_pose.mjs', a.char, pj, trial, '--base', a.base, *shlex.split(a.fit_args)], capture_output=True).stdout
+    o = run(['node', 'tools/fit_pose.mjs', a.char, pj, trial, *BASE, *shlex.split(a.fit_args)], capture_output=True).stdout
     m = re.search(r'rms ([\d.]+) H', o); rms = float(m.group(1)) if m else 9
     print(f'  {k}: rms {rms:.3f}  {o.strip().split("worst:")[-1].strip() if "worst:" in o else ""}')
     res.append((rms, k, pj, trial))
 rms, k, pj, trial = min(res)
-cmdline = f'node tools/fit_pose.mjs {a.char} $R/pose/{k}.json {out_pose} --base {a.base} {a.fit_args}'.strip()
-run(['node', 'tools/fit_pose.mjs', a.char, pj, out_pose, '--base', a.base, *shlex.split(a.fit_args)], stdout=subprocess.DEVNULL)
+cmdline = f'node tools/fit_pose.mjs {a.char} $R/pose/{k}.json {out_pose} {" ".join(BASE)} {a.fit_args}'.strip()
+run(['node', 'tools/fit_pose.mjs', a.char, pj, out_pose, *BASE, *shlex.split(a.fit_args)], stdout=subprocess.DEVNULL)
 for _, _, _, t in res:
     p = os.path.join(ROOT, f'characters/{a.char}/poses/{t}.json')
     if os.path.exists(p): os.remove(p)

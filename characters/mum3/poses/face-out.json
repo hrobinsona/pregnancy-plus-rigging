@@ -1,0 +1,20 @@
+{
+ "name": "face-out",
+ "note": "the long breath out: eyes softly closed, lips just parted",
+ "face": {
+  "lid": {
+   "open": 0.2,
+   "closed": 0.8
+  },
+  "gaze": [
+   0,
+   0.01
+  ],
+  "mouth": {
+   "soft": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

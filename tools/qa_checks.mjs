@@ -97,7 +97,9 @@ if (!skip.has('hands')) {
     gap.push(gapOf(H.near, H.far));
   }
   const tt = (i) => (i / spec.fps).toFixed(2), runs = (flags) => { const r = []; let s = null; flags.forEach((f, i) => { if (f && s === null) s = i; if (!f && s !== null) { r.push([s, i - 1]); s = null; } }); if (s !== null) r.push([s, flags.length - 1]); return r; };
-  for (const side of ['near', 'far']) {
+  // a hand the character hides by design (C.fit.hidden 'far.arm': behind her body all shot) has nothing to check
+  const sides = ['near', 'far'].filter((s) => !(C.fit?.hidden || []).includes(`${s}.arm`));
+  for (const side of sides) {
     // a pop = a one-frame area change > 8% AND > 2× its neighbours' (a palm foreshortening smoothly through a turn is fine);
     // a palm that appears or vanishes is a hand-view swap, listed for a look rather than gated
     const a = S[side].map((s) => s.palm), r = a.map((v, i) => (i && a[i - 1] > 0 && v > 0 ? Math.abs(v / a[i - 1] - 1) : 0)), pops = [], swaps = [];
@@ -117,9 +119,12 @@ if (!skip.has('hands')) {
     }
     gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
   }
-  const med = (v) => [...v].sort((a, b) => a - b)[v.length >> 1], ratio = med(S.far.map((s) => s.palm)) / med(S.near.map((s) => s.palm));
-  console.log(`  · far/near palm area (median) ${ratio.toFixed(2)} — one drawing for both hands; the far one smaller only by perspective`);
-  const close = runs(gap.map((g) => g < 15)).map(([a, b]) => `${tt(a)}–${tt(b)} s (min ${Math.min(...gap.slice(a, b + 1)).toFixed(0)} px)`);
-  console.log(`  · hands closer than 15 px: ${close.length ? close.join(', ') + ' — fine where they deliberately touch, else they read as one blob' : 'never'}`);
+  if (sides.length < 2) console.log(`  · ${['near', 'far'].filter((s) => !sides.includes(s)).join(', ')} hand hidden by design (C.fit.hidden): size and gap not checked`);
+  else {
+    const med = (v) => [...v].sort((a, b) => a - b)[v.length >> 1], ratio = med(S.far.map((s) => s.palm)) / med(S.near.map((s) => s.palm));
+    console.log(`  · far/near palm area (median) ${ratio.toFixed(2)} — one drawing for both hands; the far one smaller only by perspective`);
+    const close = runs(gap.map((g) => g < 15)).map(([a, b]) => `${tt(a)}–${tt(b)} s (min ${Math.min(...gap.slice(a, b + 1)).toFixed(0)} px)`);
+    console.log(`  · hands closer than 15 px: ${close.length ? close.join(', ') + ' — fine where they deliberately touch, else they read as one blob' : 'never'}`);
+  }
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

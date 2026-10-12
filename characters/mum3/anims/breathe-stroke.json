@@ -1,0 +1,64 @@
+{
+ "name": "breathe-stroke",
+ "fps": 30,
+ "duration": 12,
+ "loop": true,
+ "story": "Standing calmly in profile, her arm at her side. She lifts her hand and rests it on the lower front of her bump. She takes one slow deep breath in, eyes closing and chin lifting, and lets it out. Then she looks down at her bump with a warm smile and strokes it, up toward her bust and back down, before her hand drifts back to her side.",
+ "intensity": "very gentle and calm, an unhurried mindful moment. Small, soft moves; nothing fast, nothing big.",
+ "beats": [{"name": "calm", "from": 0, "to": 30}, {"name": "hand to the bump", "from": 30, "to": 90}, {"name": "deep breath in", "from": 90, "to": 156}, {"name": "breath out", "from": 156, "to": 210}, {"name": "look down and stroke", "from": 210, "to": 288}, {"name": "hand down", "from": 288, "to": 360}],
+ "keys": [
+  {"t": 0.0, "pose": "rest", "ease": "inOut", "note": "the master's pose: arm at her side"},
+  {"t": 1.0, "pose": "rest", "ease": "inOut"},
+  {"t": 2.3, "pose": "fit-m3_k_bump", "ease": "inOut", "note": "hand rests on the lower front of the bump (still m3_k_bump_1)"},
+  {"t": 3.0, "pose": "fit-m3_k_bump", "ease": "inOut"},
+  {"t": 4.7, "pose": "fit-m3_k_breath", "ease": "breath", "note": "the deep breath in: chest and chin lift (still m3_k_breath_0)"},
+  {"t": 5.2, "pose": "fit-m3_k_breath", "ease": "inOut"},
+  {"t": 7.0, "pose": "fit-m3_k_bump", "ease": "breath", "note": "the breath out"},
+  {"t": 8.2, "pose": "fit-m3_k_high", "ease": "inOut", "note": "looks down and strokes up the bump (still m3_k_high_2)"},
+  {"t": 9.3, "pose": "fit-m3_k_bump", "ease": "inOut", "note": "strokes back down"},
+  {"t": 9.7, "pose": "fit-m3_k_bump", "ease": "inOut"},
+  {"t": 10.9, "pose": "rest", "ease": "inOut", "note": "the hand drifts back to her side"}
+ ],
+ "reach": {
+  "near": [
+   {"t": 1.0, "pose": "rest", "on": "pelvis"},
+   {"t": 2.3, "pose": "fit-m3_k_bump", "on": "belly", "skew": 0.1},
+   {"t": 7.0, "pose": "fit-m3_k_bump", "on": "belly"},
+   {"t": 8.2, "pose": "fit-m3_k_high", "on": "belly", "surface": "bump", "gap": 0.03},
+   {"t": 9.3, "pose": "fit-m3_k_bump", "on": "belly", "surface": "bump", "gap": 0.03},
+   {"t": 9.7, "pose": "fit-m3_k_bump", "on": "belly", "surface": "bump", "gap": 0.03},
+   {"t": 10.9, "pose": "rest", "on": "pelvis", "skew": -0.1}
+  ]
+ },
+ "tracks": {
+  "face": {"channels": ["face.gaze", "face.lid", "face.mouth", "face.brow"], "keys": [
+   {"t": 0.3, "pose": "face-calm", "ease": "inOut"},
+   {"t": 3.2, "pose": "face-calm", "ease": "inOut"},
+   {"t": 4.4, "pose": "face-in", "ease": "breath", "note": "eyes close on the breath in"},
+   {"t": 5.3, "pose": "face-in", "ease": "inOut"},
+   {"t": 6.4, "pose": "face-out", "ease": "breath", "note": "lips part on the breath out"},
+   {"t": 7.1, "pose": "face-out", "ease": "inOut"},
+   {"t": 7.8, "pose": "face-tender", "ease": "inOut", "note": "eyes open onto the bump, the smile warms"},
+   {"t": 9.8, "pose": "face-tender", "ease": "inOut"},
+   {"t": 11.0, "pose": "face-calm", "ease": "inOut"}
+  ]},
+  "contact": {"channels": ["fx.contact.near"], "keys": [
+   {"t": 0.0, "pose": "c-off", "ease": "inOut"},
+   {"t": 2.15, "pose": "c-off", "ease": "inOut"},
+   {"t": 2.4, "pose": "c-on", "ease": "inOut", "note": "the shadow arrives with the hand"},
+   {"t": 9.8, "pose": "c-on", "ease": "inOut"},
+   {"t": 10.05, "pose": "c-off", "ease": "inOut"}
+  ]}
+ },
+ "breath": {"period": 4, "phase0": 0.2, "amp": [{"t": 0, "amp": 1}, {"t": 2.8, "amp": 1}, {"t": 3.2, "amp": 0.2}, {"t": 7.2, "amp": 0.2}, {"t": 7.8, "amp": 1}],
+  "shape": {"inhale": 0.55, "exhale": 0.35, "pause": 0.1, "inEase": [0.42, 0, 0.9, 1], "outEase": [0.15, 0, 0.65, 1]},
+  "delays": {"belly": 0, "chest": 3, "shoulders": 5, "head": 7},
+  "gain": {"chestAlong": 0.02, "chestAcross": 0.02, "chestDeg": -1, "shoulderDeg": 1.4, "headDeg": -0.8, "belly": 0.012}},
+ "blink": {"close": 3, "hold": 1, "open": 5},
+ "events": [{"type": "blink", "t": 0.7}, {"type": "blink", "t": 10.4}],
+ "drift": {"amp": 1, "seed": 3, "harmonics": [1, 2, 3], "chain": {"bones": ["spineLower", "spineUpper", "chest", "neck", "head"], "lagFrames": 3, "deg": [0.12, 0.2, 0.25, 0.3, 0.45]}, "bones": {"head": 0.4, "clavicle.near": 0.25, "hand.near": 0.4}},
+ "lags": {"pelvis": 0, "spineLower": 0, "spineUpper": 2, "chest": 3, "neck": 4, "head": 5, "clavicle.near": 2, "upperArm.near": 0, "forearm.near": 2, "hand.near": 4, "face": 0, "fx": 0},
+ "plantFeet": "ik",
+ "plantFeetRef": "rest",
+ "wrapEase": "inOut"
+}
