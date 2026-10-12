@@ -14,7 +14,7 @@ const bez = (a, h1, h2, b, t) => { const u = 1 - t; return [0, 1].map((i) => u *
 
 export function post(parts, ctx) {
   const hand = parts.filter((p) => p.wrapHand || p.wrapGrow); if (!hand.length) return;
-  const gw = hand[0].wrapHand ? 1 : hand[0].wrapGrow;          // how far round the rim the hand has gone (arms.js)
+  const gw = hand[0].wrapHand ? hand[0].wrapCupW ?? 1 : hand[0].wrapGrow;          // how far round the rim the hand has gone (arms.js)
   const belly = parts.find((p) => p.id === 'belly'); if (!belly) return;
   const C = ctx.P, X = ctx.C.params.P.wrapFingers || {}, B = ctx.pose?.bones || {};
   // where the hand is: centre of its posed anchors (skinned parts carry posed geometry with M = flip)
@@ -40,8 +40,11 @@ export function post(parts, ctx) {
   // the hidden hand's finger curl drives the drawing: more flexed → the fingers reach further round the rim
   const flex = ['f1a', 'f2a', 'f3a', 'f4a'].map((f) => B['hand.far.' + f] ?? X.restFlex ?? 23);
   const curl = Math.max(0.7, Math.min(1.35, 1 + 0.01 * (flex.reduce((a, v) => a + v, 0) / 4 - (X.restFlex ?? 23))));
-  const L = X.span ?? 0.36, back = (X.back ?? 0.06) * gw, sh = X.shift ?? 0;
-  const lens = (X.lens ?? [0.1, 0.112, 0.105, 0.085]).map((v) => v * curl * gw), ws = (X.widths ?? [0.054, 0.057, 0.054, 0.047]).map((v) => v * Math.sqrt(gw)), nf = lens.length;
+  // CUP (pose.fx['cup.far'], 0–1): the hand arriving round the rim, before it settles to k8's fingertip row — measured on
+  // refs h_fore1_0 / h_fore2_*: the back of the hand stands further outside the rim and the fingers reach further over it
+  const cup = Math.max(0, Math.min(1, ctx.pose?.fx?.['cup.far'] ?? 0)), K = X.cup || {};
+  const L = (X.span ?? 0.36) * (1 + (K.span ?? 0) * cup), back = (X.back ?? 0.06) * gw * (1 + (K.back ?? 0) * cup), sh = X.shift ?? 0;
+  const lens = (X.lens ?? [0.1, 0.112, 0.105, 0.085]).map((v) => v * curl * gw * (1 + (K.len ?? 0) * cup)), ws = (X.widths ?? [0.054, 0.057, 0.054, 0.047]).map((v) => v * Math.sqrt(gw) * (1 + (K.width ?? 0) * cup)), nf = lens.length;
   const st = (u) => along(sh + up * (u - 0.5) * L);            // u = 0 at the wrist end (up), 1 below the little finger
   const z = 34.45, M1 = [1, 0, 0, 1, 0, 0];
   // the BACK of the hand: a thin crescent just outside the rim (thickest at the knuckles, thin at the wrist end where the

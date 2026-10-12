@@ -13,8 +13,10 @@ import json, subprocess, argparse, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('--pose', default='rest'); ap.add_argument('--px', type=int, default=600)
 a = ap.parse_args(); c = a.char
-meta = json.loads(subprocess.run(['node', '-e', f"import('./characters/{c}/character.js').then(m=>console.log(JSON.stringify({{ref:m.default.ref}})))"], check=True, capture_output=True, text=True).stdout)
-L = json.load(open(f'characters/{c}/ref/landmarks.json'))['points']
+meta = json.loads(subprocess.run(['node', '-e', f"import('./characters/{c}/character.js').then(m=>console.log(JSON.stringify({{ref:m.default.ref,hidden:m.default.fit?.hidden||[]}})))"], check=True, capture_output=True, text=True).stdout)
+LM = json.load(open(f'characters/{c}/ref/landmarks.json')); L = dict(LM['points'])
+# master_measure.py names the one visible hand handWrist/handTip (the near hand of a profile) and puts wrists in joints
+L.setdefault('wristNear', L.get('handWrist') or LM.get('joints', {}).get('wristNear')); L.setdefault('fingertipNear', L.get('handTip'))
 Hpx, G = meta['ref']['Hpx'], meta['ref']['groundPx']; ref = Image.open(f'characters/{c}/ref/' + meta['ref']['image'].split('/')[-1]).convert('RGB')
 toH = lambda p: ((p[0] - G[0]) / Hpx, (p[1] - G[1]) / Hpx)
 
@@ -42,6 +44,7 @@ def profile(m, w, t, ppH, n=10):
 F = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 18)
 tiles, report = [], []
 for side, (wk, tk) in {'near': ('wristNear', 'fingertipNear'), 'far': ('wristFar', 'fingertipFar')}.items():
+    if f'{side}.arm' in meta['hidden'] or not (L.get(wk) and L.get(tk)): continue   # hidden by design, or not in the master
     wH, tH = toH(L[wk]), toH(L[tk]); cx, cy = (wH[0] + tH[0]) / 2, (wH[1] + tH[1]) / 2; h = 0.42
     box = (cx - h, cy - h, cx + h, cy + h); ppH = a.px / (2 * h)
     rc = ref.crop(tuple(int(round(v)) for v in (box[0] * Hpx + G[0], box[1] * Hpx + G[1], box[2] * Hpx + G[0], box[3] * Hpx + G[1]))).resize((a.px, a.px), Image.LANCZOS)
@@ -61,6 +64,6 @@ for side, (wk, tk) in {'near': ('wristNear', 'fingertipNear'), 'far': ('wristFar
     ov = Image.fromarray(ov); d = ImageDraw.Draw(ov); d.line([w, t], fill='#00a000', width=2)
     for im, lab in ((rc, f'{side}: reference'), (rr, f'{side}: render ({a.pose})'), (ov, 'red ref / blue render')):
         ImageDraw.Draw(im).text((6, 4), lab, fill='#c00000', font=F); tiles.append(im)
-sheet = Image.new('RGB', (3 * (a.px + 6), 2 * (a.px + 6)), 'white')
+sheet = Image.new('RGB', (3 * (a.px + 6), len(tiles) // 3 * (a.px + 6)), 'white')
 for i, im in enumerate(tiles): sheet.paste(im, ((i % 3) * (a.px + 6), (i // 3) * (a.px + 6)))
 sheet.save(f'out/{c}_hand_fit.png'); open(f'out/{c}_hand_fit.txt', 'w').write('\n'.join(report) + '\n'); print('\n'.join(report))

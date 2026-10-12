@@ -23,6 +23,12 @@ for i, (t, n) in enumerate(zip(tiles, ['reference (landmarks only)', 'render (co
     sheet.paste(t.crop(box).resize((int(W * sc), 700)), (i * (int(W * sc) + 10), 34)); d.text((i * (int(W * sc) + 10) + 4, 6), n, fill='#111', font=F)
 # zoom row: face, near hand, far hand, feet (reference above-left / render right)
 P = {k: v for k, v in L['points'].items()}
+# landmark names differ between characters (mum2: hand-read eyeNear/wristFar/heelNear/toeFar; master_measure.py: eye, joints{},
+# shoeNear{heel,toe}): fall back through them so the zoom row works for any measured character
+JN = {k: v[:2] for k, v in L.get('joints', {}).items()}
+P.setdefault('eyeNear', P.get('eye')); P.setdefault('wristNear', JN.get('wristNear')); P.setdefault('wristFar', JN.get('wristFar'))
+if 'shoeNear' in P: P.setdefault('heelNear', P['shoeNear']['heel']); P.setdefault('toeNear', P['shoeNear']['toe'])
+if 'shoeFar' in P: P.setdefault('toeFar', P['shoeFar']['toe'])
 RJ = json.loads(subprocess.run(['node', 'tools/char_joints.mjs', char, pose], capture_output=True, text=True, check=True).stdout)
 def zoom(cr, cm, half):   # reference crop centred on its landmark, render crop centred on the posed joint
     t = Image.new('RGB', (360, 180), 'white')

@@ -1,0 +1,4 @@
+# Put in front of every reference-still prompt by tools/refgen.py: what MEASURING the pose needs (pose estimation, then
+# fitting the rig). The still is never drawn or traced, so ask for clarity, not finish.
+One figure, full body from the top of the head to the feet, nothing cropped, plain white background, no scenery, no text, no frame, no shadow on the floor.
+Both hands, wrists, elbows and shoulders clearly readable; fingers distinct where the prompt says where they are.

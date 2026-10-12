@@ -1,0 +1,17 @@
+{
+  "char": "mum3",
+  "name": "m3_master_a",
+  "prompt_file": "docs/prompts/m3_master_a.txt",
+  "refs": [
+    "characters/mum3/ref/framing_guide.png"
+  ],
+  "n": 4,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/m3_master_a_0.png",
+    "characters/mum3/refs/images/m3_master_a_1.png",
+    "characters/mum3/refs/images/m3_master_a_2.png",
+    "characters/mum3/refs/images/m3_master_a_3.png"
+  ],
+  "finished": "2026-10-12 16:49:03"
+}

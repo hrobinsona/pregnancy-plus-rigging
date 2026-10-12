@@ -1,0 +1,40 @@
+{
+ "name": "n-top",
+ "note": "top of the stroke: the stroke still's arm and head on the bump key's trunk, fingers cupped round the dome",
+ "_recipe": "n-top fit-m3_k_bump fit-m3_k_stroke 1 --keep root,pelvis,spineLower,spineUpper,chest,hipAbd.near,hipAbd.far,thigh.near,thigh.far,shin.near,shin.far,foot.near,foot.far,toe.near,toe.far --add head=-4.5,neck=-3.5 --hands near=wrap --note top of the stroke: the stroke still's arm and head on the bump key's trunk, fingers cupped round the dome",
+ "hands": {
+  "near": "wrap",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "armAbd.near": 10.2,
+  "armRot.near": 39.5,
+  "belly": 0.0,
+  "chest": -0.6,
+  "clavicle.near": -3.1,
+  "foot.far": 1.6,
+  "foot.near": 2.9,
+  "foreRot.near": 4.0,
+  "forearm.near": 60.3,
+  "hand.near": 8.8,
+  "head": 10.9,
+  "hipAbd.far": 0,
+  "hipAbd.near": 0,
+  "neck": 8.8,
+  "pelvis": 0,
+  "shin.far": -1.6,
+  "shin.near": -1.2,
+  "shoulderAbd.near": -1.7,
+  "spineLower": 0,
+  "spineUpper": -0.2,
+  "thigh.far": 0,
+  "thigh.near": -0.1,
+  "toe.far": 0,
+  "toe.near": 0,
+  "upperArm.near": -12.6
+ }
+}

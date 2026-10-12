@@ -5,7 +5,9 @@ designer) into the pipeline with the same provenance as tools/fal_gen.py, then p
   python3 tools/ref_register.py <char> <name> <image> [<image> ...] --provider codex \
       --prompt "…" | --prompt-file docs/prompts/<name>.txt  [--ref <input image> ...]  [--est]
 
-  · copies the images to characters/<char>/refs/images/<name>_<i>.png (converted to PNG, i = 0, 1, …)
+  · copies the images to characters/<char>/refs/images/<name>_<i>.png (converted to PNG, i = 0, 1, …); --canvas WxH
+    letterboxes each onto a white WxH canvas at one uniform scale (a generator's own aspect, e.g. 1024×1536, would
+    otherwise be stretched when the fit normalises it to the character's frame)
   · appends one line to characters/<char>/refs/ledger.jsonl (provider, prompt, input images, outputs) — so a later run
     can see which prompt and which tool produced which reference, and which samples were used
   · --est: runs tools/pose_est.py on each (→ characters/<char>/refs/pose/<name>_<i>.json), ready for tools/fit_pose.mjs
@@ -18,15 +20,22 @@ ap.add_argument('char'); ap.add_argument('name'); ap.add_argument('images', narg
 ap.add_argument('--provider', default='external'); ap.add_argument('--model', default='')
 ap.add_argument('--prompt', default=''); ap.add_argument('--prompt-file', default='')
 ap.add_argument('--ref', action='append', default=[]); ap.add_argument('--est', action='store_true')
+ap.add_argument('--canvas', default='', help='WxH: letterbox onto a white canvas of this size (uniform scale, centred)')
 a = ap.parse_args()
 prompt = open(a.prompt_file).read().strip() if a.prompt_file else a.prompt
 D = f'characters/{a.char}/refs'; os.makedirs(f'{D}/images', exist_ok=True); os.makedirs(f'{D}/pose', exist_ok=True)
 outs = []
 for i, src in enumerate(a.images):
     dst = f'{D}/images/{a.name}_{i}.png'
-    Image.open(src).convert('RGB').save(dst); outs.append(dst); print('saved', dst)
+    im = Image.open(src).convert('RGB')
+    if a.canvas:
+        W, H = map(int, a.canvas.lower().split('x'))
+        k = min(W / im.width, H / im.height)
+        im = im.resize((round(im.width * k), round(im.height * k)), Image.LANCZOS)
+        bg = Image.new('RGB', (W, H), 'white'); bg.paste(im, ((W - im.width) // 2, (H - im.height) // 2)); im = bg
+    im.save(dst); outs.append(dst); print('saved', dst, f'({im.width}×{im.height})')
 entry = {'t': time.strftime('%Y-%m-%d %H:%M:%S'), 'kind': 'image', 'name': a.name, 'provider': a.provider, 'model': a.model,
-         'prompt': prompt, 'refs': a.ref, 'outputs': outs}
+         'prompt': prompt, 'refs': a.ref, 'outputs': outs, **({'canvas': a.canvas} if a.canvas else {})}
 with open(f'{D}/ledger.jsonl', 'a') as f: f.write(json.dumps(entry) + '\n')
 print('ledger +1:', a.name, f'({a.provider}, {len(outs)} images)')
 if a.est:

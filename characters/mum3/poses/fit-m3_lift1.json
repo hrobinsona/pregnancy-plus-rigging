@@ -1,0 +1,49 @@
+{
+ "name": "fit-m3_lift1",
+ "note": "fitted to characters/mum3/refs/pose/m3_lift1_1.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0213,
+  0.019
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": -0.5,
+  "spineUpper": -0.7,
+  "chest": -3.1,
+  "neck": 4.5,
+  "head": 13.5,
+  "belly": 0,
+  "clavicle.near": -5.9,
+  "shoulderAbd.near": 3.1,
+  "upperArm.near": -16.7,
+  "armAbd.near": 17.3,
+  "armRot.near": 31.2,
+  "forearm.near": 47.6,
+  "foreRot.near": -3.4,
+  "hand.near": -11.4,
+  "thigh.near": -0.4,
+  "shin.near": 0.2,
+  "foot.near": 0.8,
+  "hipAbd.near": 0,
+  "thigh.far": -0.6,
+  "shin.far": 0.1,
+  "foot.far": 0.1,
+  "hipAbd.far": 0
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/m3_lift1_1.json",
+  "scale": 0.9755,
+  "rms": 0.0423,
+  "worst": [
+   "earR 0.084",
+   "shoulderR 0.077",
+   "earL 0.076",
+   "hipL 0.071",
+   "elbowR 0.053"
+  ]
+ }
+}

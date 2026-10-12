@@ -63,7 +63,14 @@
    "t": 1.3,
    "pose": "fit-k2",
    "ease": "inOut",
-   "note": "something's off: a small intake, near fingers press in, brows go up, eyes drop"
+   "note": "something's off: a small intake, near fingers press in, brows go up, eyes drop",
+   "shift": {
+    "spineUpper": 2,
+    "chest": 2,
+    "neck": -2,
+    "head": -2
+   },
+   "shiftNote": "the head bows WHILE the chest straightens, not after it: lagged behind the chest, the head was pulled back 16 px then swung 28 px forward in 4 frames (QA jump at 1.27 s); now ≤ 5 px back. Bigger shifts made a 15 px one-frame jump"
   },
   {
    "t": 1.75,
@@ -161,15 +168,48 @@
    "note": "the fingers come together, relaxed, as they leave the lips"
   },
   {
+   "t": 7.38,
+   "pose": "fit-bl1",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "only": [
+    "bone.upperArm.far",
+    "bone.forearm.far",
+    "bone.shoulderAbd.far",
+    "bone.armAbd.far",
+    "bone.armRot.far",
+    "bone.foreRot.far",
+    "bone.clavicle.far"
+   ],
+   "note": "far arm a third of the way down, MEASURED (still b_lower1_2): elbow low at her side, forearm across the chest, so the fingers point down toward the bump, not up"
+  },
+  {
+   "t": 7.55,
+   "pose": "fit-bl2",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "only": [
+    "bone.foreRot.far",
+    "bone.armRot.far"
+   ],
+   "note": "the forearm turns the hand toward the bump's rim on the way down, MEASURED (still b_lower2_1): spreads the turn that otherwise happened in two frames at 7.57"
+  },
+  {
    "t": 7.6,
    "pose": "n-sigh",
    "ease": "inOut",
    "kind": "breakdown",
    "except": [
     "hand.far",
-    "hand.farB"
+    "hand.farB",
+    "bone.upperArm.far",
+    "bone.forearm.far",
+    "bone.shoulderAbd.far",
+    "bone.armAbd.far",
+    "bone.armRot.far",
+    "bone.foreRot.far"
    ],
-   "note": "shoulders settle as the hand comes down"
+   "note": "shoulders settle as the hand comes down (not the far ARM: its n-sigh pronation, 40°, keyed 0.05 s after fit-bl2's −17°, turned the forearm 58° in two frames — the v15 'oath flips flat' at 7.5–7.7 s)"
   },
   {
    "t": 7.61,
@@ -205,7 +245,9 @@
    {
     "t": 1.98,
     "pose": "fit-k2",
-    "on": "belly"
+    "on": "belly",
+    "neutral": 0.5,
+    "_neutral_note": "kept at the old default so v17 renders bit-identically (from 2026-10-12 a move between two stops on the same bone defaults to neutral 0)"
    },
    {
     "t": 0,
@@ -254,6 +296,15 @@
         0.1,
         0.02
        ]
+      },
+      {
+       "s0": 0.35,
+       "s1": 0.95,
+       "dp": [
+        0.12,
+        0
+       ],
+       "note": "MEASURED (still b_lift1_2, tools/uv_check --poses): at chest height the hand is still out in front of her far shoulder (torso u 1.32; the video path had come in to 1.21) — it rises, then comes in to the mouth"
       }
      ],
      "zBy": 0.5,
@@ -581,7 +632,8 @@
        0.4377
       ]
      ],
-     "elbowW": 1
+     "elbowW": 1,
+     "turnNote": "kept late on purpose (s 0.86–1): turning the wrist over the second half (v16 trial) showed an upright open palm, an 'oath', at 2.60–2.67 s and lost a blind A/B to this"
     },
     "limp": 0
    },
@@ -594,11 +646,11 @@
    },
    {
     "t": 0,
-    "pose": "n-fall-via",
+    "pose": "fit-bl1",
     "on": "chest",
     "via": true,
     "front": true,
-    "note": "halfway down: in front of her chest, the forearm about level, the wrist relaxed"
+    "note": "a third of the way down: the hand flat below her collarbone, fingers toward the bump (fitted still b_lower1_2)"
    },
    {
     "t": 8.1,
@@ -1194,6 +1246,39 @@
    ]
   }
  ],
- "layers": [],
- "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff."
+ "layers": [
+  {
+   "note": "v17: the far hand ARRIVING round the bump's rim is drawn cupped (back of the hand outside the rim, fingers curling over; refs h_fore1_0, h_fore2_*) from the frame it goes behind the bump (7.87 s), then settles to k8's fingertip row by 8.4 s. Replaces the real hand half hidden behind the bump, which shrank to a sliver in 2 frames (8.00-8.07 s).",
+   "t": [
+    7.6,
+    7.84,
+    8.0,
+    8.15,
+    8.3,
+    8.45
+   ],
+   "ch": {
+    "fx.cup.far": [
+     0,
+     1,
+     0.9,
+     0.6,
+     0.25,
+     0
+    ]
+   }
+  }
+ ],
+ "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff.",
+ "land": [
+  {
+   "side": "far",
+   "t": 2.8,
+   "wag": 2,
+   "spread": 2,
+   "uncurl": 3,
+   "press": 1,
+   "note": "lands on her mouth: lighter than the default landing (engine/anim.js LANDING)"
+  }
+ ]
 }

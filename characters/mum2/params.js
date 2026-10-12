@@ -75,7 +75,7 @@ export const P = {
   hem: { near: lm('hemNear'), front: lm('hemFront'), far: lm('hemFar') },
   shoulderTop: { near: lm('shoulderTopNear'), far: lm('shoulderTopFar') },
   // sleeves: half-widths along shoulder → elbow → cuff
-  wrapFingers: { shift: 0 },   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
+  wrapFingers: { shift: 0, cup: { back: 0.4, len: 1.0, width: 0.1, span: 0.15 } },   // cup: the arriving hand's extra size (parts/wrap.js, refs h_fore1/2)   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
   cuffEnd: { near: 0.92, far: 0.9 },   // far 0.84 → 0.9 when its forearm got its true length (0.79 → 0.91 H)
     // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
@@ -100,19 +100,19 @@ export const handSpecs = {
   // incl. thumb ≈ 0.33 H wide; fingers grouped (one skin run across them), chunky (width ≈ 0.075 H, ≈ 1:3), round tips.
   // near (her right) hand hangs beside the thigh: back of the hand toward us, thumb forward (toward her front = right)
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: joints.wristNear, dir: dirTo(joints.wristNear, lm('fingertipNear')) + 7, view: 'back',
-          length: 0.47, palmFrac: 0.5, wristW: 0.29, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          length: 0.47, palmFrac: 0.5, wristW: 0.25, palmW: 0.29, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
           thumbFx: -0.15, thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], fingerLen: [0.86, 1.0, 0.94, 0.76], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },   // thumb separates by its notch (no line); seen from the back its flexion goes INTO the picture (small in-plane share: a fist keeps the thumb on its side, never sweeping across the knuckles); thumb flexion runs ACROSS the palm (toward the pinky): mostly in-plane, opposite sense to finger curl
   // far (her left) hand: palm toward us, thumb on the OUTER edge (her front = right), lying in front of the palm; its
   // inner edge is drawn as a line over the palm (as in the reference)
   far: { id: 'hand.far', parentBone: 'hand.far', wrist: joints.wristFar, dir: dirTo(joints.wristFar, lm('fingertipFar')) - 4, view: 'palm',
-         length: 0.38, palmFrac: 0.52, wristW: 0.25, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], lineStart: -0.25, crease: [[0.0, -0.4]], creaseHook: [0.68, 0.5], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,   // R19: the palm's line system sits toward the wrist (reference landmark band): long finger lines, crease on the heel
+         length: 0.38, palmFrac: 0.52, wristW: 0.23, palmW: 0.265, hypo: 0.0, thumbSide: 1, fingerK: 1.08, fingerLen: [0.84, 1.0, 0.9, 0.72], lineStart: -0.25, crease: [[0.0, -0.4]], creaseHook: [0.68, 0.5], across: [0.3, 0.08, -0.15, -0.37], flexFx: -0.14,   // R19: the palm's line system sits toward the wrist (reference landmark band): long finger lines, crease on the heel
          thumbFx: -0.35, thumb: { cmc: [0.0, 0.6], mcp: [0.3, 1.15], dir: -3, w: 1.05 }, thenarEdge: [1.35, 1.32], thumbLine: false, order: [3, 2, 1, 0] },   // its inner edge is drawn by the crease stroke   // thumb lies ALONG the outer edge in front of the palm (adducted), tip at ~45% of the hand
 };
 
 // far (her left) hand, BACK view: the swap drawing used when the far hand turns its palm away (resting on the bump). Same
 // size as the far hand, back-of-hand construction like the near hand, mirrored for the left hand (thumbSide −1, flexion
 // senses flipped). Its own bones (hand.farB.*) hang off the same wrist bone (hand.far); a pose picks it with handView.far.
-handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', length: 0.46, wristW: 0.27, palmW: 0.29,   // its TRUE size (= the near hand; refs: wrist→middle tip 0.45 H at the mouth): the far palm drawing (0.38) is foreshortened round the bump
+handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', length: 0.46, wristW: 0.25, palmW: 0.29,   // its TRUE size (= the near hand; refs: wrist→middle tip 0.45 H at the mouth): the far palm drawing (0.38) is foreshortened round the bump
   thumbSide: -1, flexFx: -0.1, thumbFx: 0.15, palmLines: false, lineStart: undefined, crease: undefined, creaseHook: undefined,
   thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], hypo: 0.018, fingerLen: [0.86, 1.0, 0.94, 0.76], thumbLine: false };
 // DEPTH PROXIES (engine/depth.js): the body as a few 3D volumes on its midline, for draw-order decisions of the 3D arm.

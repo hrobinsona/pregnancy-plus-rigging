@@ -77,6 +77,9 @@ export default {
     { bone: 'clavicle.far', from: 'upperArm.far', k: -0.18, start: 30, soft: 20, max: 60 },
   ],
   postBuild: (parts, ctx) => wrap.post(parts, ctx),
+  // a hand on her casts a faint near-hard shadow onto her clothes and skin (reels: ~12 %, a few px, no blur)
+  contactShadow: { opacity: 0.12, offset: [4, 6], color: '#3b1a2b', groups: [{ match: '^hand\\.near\\.' }, { match: '^hand\\.farB?\\.' }, { match: '^wrap\\.far\\.', on: '^(belly|belly\\.shade)$' }],
+    on: '^(belly|belly\\.shade|belly\\.cast|top|top\\.underbust|cardigan\\.(near|far)|cardigan\\.far\\.lapel|cast\\.near|decollete|neck|face|cheek\\.(near|far)|jaw\\.shadow|hips)$' },
   // the head NODS (pose.fx.headPitch, deg, + = chin down): face slides down the skull, chin tucks, crown and bun come
   // forward — instead of the flat drawing rolling on the neck (engine/warp.js; ellipsoid = the head's depth proxy)
   warps: { head: (pose) => pitchWarp({ c: [-0.05, -5.6], axes: [0.5, 0.65, 0.42], fx: params.design.forwardX ?? 0.72 }, pose.fx?.headPitch ?? 0) },

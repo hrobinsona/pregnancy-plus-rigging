@@ -1,0 +1,18 @@
+{
+  "char": "mum3",
+  "name": "m3_lift1",
+  "prompt_file": "docs/prompts/m3_lift1.txt",
+  "refs": [
+    "characters/mum3/ref/master.png",
+    "characters/mum3/ref/master.png",
+    "characters/mum3/refs/images/m3_k_bump_1.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/m3_lift1_0.png",
+    "characters/mum3/refs/images/m3_lift1_1.png",
+    "characters/mum3/refs/images/m3_lift1_2.png"
+  ],
+  "finished": "2026-10-12 17:28:51"
+}

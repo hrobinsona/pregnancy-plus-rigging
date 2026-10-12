@@ -1,0 +1,38 @@
+{
+ "name": "n-stroke",
+ "note": "top of the stroke: hand on the bump's front, fingers curved onto it",
+ "_recipe": "n-stroke fit-m3_k_stroke --hands near=lay --note top of the stroke: hand on the bump's front, fingers curved onto it",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "root": [
+  -0.0067,
+  0.0127
+ ],
+ "bones": {
+  "armAbd.near": 10.2,
+  "armRot.near": 39.5,
+  "belly": 0,
+  "chest": 0.8,
+  "clavicle.near": -3.1,
+  "foot.far": 0.7,
+  "foot.near": 2.6,
+  "foreRot.near": 4,
+  "forearm.near": 60.3,
+  "hand.near": 8.8,
+  "head": 15.4,
+  "hipAbd.far": 0.3,
+  "hipAbd.near": 0,
+  "neck": 12.3,
+  "pelvis": 0,
+  "shin.far": -2.2,
+  "shin.near": -0.1,
+  "shoulderAbd.near": -1.7,
+  "spineLower": -3.2,
+  "spineUpper": -0.2,
+  "thigh.far": 1.6,
+  "thigh.near": 0,
+  "upperArm.near": -12.6
+ }
+}

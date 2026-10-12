@@ -41,7 +41,7 @@ $B n-swallow fit-k2 --add neck=4,head=5,chest=1 --note "the swallow: chin dips, 
 $B n-look fit-k8 --add neck=5,head=8,chest=2,spineUpper=1 --note "relief: chin drops toward the bump, looking down at it"
 $B n-peel fit-k7 --add hand.far=30 --note "the peel (k7) with the wrist flexed: palm still toward her face, fingers loosely together (the fitted k7 hand stood upright, fingers up: an oath, critic R26)"
 $B n-fall-via fit-k7 fit-k8 0.5 --set hand.far=30 --from A --hands far=limp --note "reach via: the far hand falling in front of the chest, wrist limp"
-node tools/plant_feet.mjs mum2 fit-k1 fit-k2 fit-k3 fit-k4 fit-k5 fit-k6 fit-k7 fit-k8 n-wind n-hit n-rebound n-small n-hold n-in n-out n-sigh n-fall-via n-swallow n-look n-lift n-hit2 n-small2
+node tools/plant_feet.mjs mum2 fit-k1 fit-k2 fit-k3 fit-k4 fit-k5 fit-k6 fit-k7 fit-k8 fit-bl1 fit-bl2 fit-bf1 fit-bf2 n-wind n-hit n-rebound n-small n-hold n-in n-out n-sigh n-fall-via n-swallow n-look n-lift n-hit2 n-small2
 $S n-in --scale spineUpper=1.07:1.1,chest=1.18:1.05 >/dev/null; $S n-out --scale chest=0.9:1 >/dev/null
 $S n-lift --hand 'far={"pose":"cup","mix":{"relaxed":0.35}}' >/dev/null
 $S n-peel --hand 'far={"pose":"relaxed","mix":{"cup":0.5}}' >/dev/null
@@ -57,7 +57,7 @@ $S n-swallow --add head=-3 --fx headPitch=10 >/dev/null; $S n-look --add head=-4
 # k5: the forearm angles down and OUT to an elbow beside her far side (35° still propped it on the bump top, R24; 55° a wing)
 $S n-wind --fx swivelFar=8 >/dev/null; $S n-hit --fx swivelFar=50 >/dev/null; $S n-rebound --fx swivelFar=30 >/dev/null; $S n-small --fx swivelFar=40 >/dev/null; $S n-hold --fx swivelFar=10 >/dev/null
 # every key of the shot: the near hand stays planted on the bump (pin), the far arm never swings free
-for k in fit-k1 fit-k2 fit-k3 fit-k4 fit-k5 fit-k6 fit-k7 fit-k8 n-wind n-hit n-rebound n-small n-hold n-in n-out n-sigh n-fall-via n-swallow n-look n-lift n-hit2 n-small2 n-peel; do $S $k --fx pinNear=1,armFree=0 >/dev/null; done
+for k in fit-k1 fit-k2 fit-k3 fit-k4 fit-k5 fit-k6 fit-k7 fit-k8 fit-bl1 fit-bl2 fit-bf1 fit-bf2 n-wind n-hit n-rebound n-small n-hold n-in n-out n-sigh n-fall-via n-swallow n-look n-lift n-hit2 n-small2 n-peel; do $S $k --fx pinNear=1,armFree=0 >/dev/null; done
 
 # --- v14: the GENTLE version (client: "the nausea part is far too extreme and fast"): no retch — nausea cues at the
 # mouth (a small hunch and a swallow), ONE deep inhale (shoulders and ribcage rise, the head lifts a touch, eyes closed),

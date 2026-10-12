@@ -1,0 +1,49 @@
+{
+ "name": "fit-m3_k_bump",
+ "note": "fitted to characters/mum3/refs/pose/m3_k_bump_1.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": -0.2,
+  "chest": -0.6,
+  "neck": -0.2,
+  "head": 6.4,
+  "belly": 0,
+  "clavicle.near": -1.5,
+  "shoulderAbd.near": 1,
+  "upperArm.near": -6.1,
+  "armAbd.near": -0.8,
+  "armRot.near": -13.7,
+  "forearm.near": 53.1,
+  "foreRot.near": -0.7,
+  "hand.near": 2.4,
+  "thigh.near": -0.1,
+  "shin.near": -1.2,
+  "foot.near": 2.9,
+  "hipAbd.near": 0,
+  "thigh.far": 0,
+  "shin.far": -1.6,
+  "foot.far": 1.6,
+  "hipAbd.far": 0
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/m3_k_bump_1.json",
+  "scale": 0.9926,
+  "rms": 0.0292,
+  "worst": [
+   "hipL 0.063",
+   "shoulderR 0.060",
+   "heelL 0.048",
+   "hipR 0.044",
+   "earR 0.042"
+  ]
+ }
+}

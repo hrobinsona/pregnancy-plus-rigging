@@ -559,3 +559,106 @@ What was done (v14a–c):
    tab while wrapping (cut away round the bump). Asked the client for timestamps of what they saw.
 4. Still open: a few frames of fingers-up around 7.3–7.4 s; the in-between stills that would replace the designed
    waypoint (fal balance exhausted; prompts in docs/prompts/ for the Codex CLI).
+
+## v14d — measured lowering (2026-10-12)
+Input: the four in-between stills, made with `tools/refgen.py` (Codex CLI on Harry's ChatGPT login, 3 samples each, 12
+images, no failures). Fits rms 0.040–0.050 H; kept b_lower1_2 (0.045), b_lower2_1 (0.041), b_lift1_2 (0.045),
+b_lift2_2 (0.042) → `fit-bl1/bl2/bf1/bf2` (`refs/fit_keys.sh`). The lift stills fit best with the `cup` hand (a loose
+curl seen from the back); `relaxed` drew an open "oath" palm.
+What was done:
+1. The designed waypoint `n-fall-via` is replaced by the fitted `fit-bl1` as the reach via (the hand passes flat below
+   her collarbone).
+2. A via moves only the WRIST: with it alone the fingers still pointed up to 7.53 s. The still's ARM comes in as an
+   arm-only breakdown key (`fit-bl1` at 7.38: elevation, plane, humeral rotation, forearm, pronation) — that is what
+   turns the forearm across her chest so the fingers point down toward the bump. Fingers up now end at 7.40 s (the peel
+   off the lips) instead of 7.57 s.
+3. That exposed a two-frame forearm turn at 7.57 (fingertip 95 px/f, v14c peak 39): the pronation caught up all at once.
+   `fit-bl2`'s forearm turn (pronation + humeral rotation only) as a breakdown at 7.55 spreads it: peak 61 px/f.
+   `fit-bl2` as a reach via put the hand low on the bump and the wrap swap popped at 8.1 (139 px/f): not used as a via.
+Still open: (a) the 61 px/f turn — the upper arm passes straight down there (elevation crosses 0, the plane of elevation
+flips), so the forearm's direction is ill-defined for a frame or two; (b) the lift stills are fitted but not wired in
+(the lift is a video path move with hand-tuned bendAt/twistAt; next round).
+
+## v14e — measured lift (2026-10-12)
+Input: `fit-bf1` (b_lift1_2) and `fit-bf2` (b_lift2_2) from the v14d batch; no new images.
+What was done:
+1. Measured the stills against the shot in the torso frame (`tools/uv_check.mjs --poses`, new). `fit-bf2` (hand at the
+   chin) already matches the shot within 0.03 u. `fit-bf1` (chest height) has the hand 0.11 u further out in front of
+   the far shoulder (u 1.32) than the video path (u 1.21).
+2. A second bias window on the lift path (`s0 0.35 → s1 0.95`, `dp [0.12, 0]`, marked MEASURED) moves the mid-lift out:
+   the hand now rises in front of her shoulder, then comes in to the mouth, as in the still.
+3. Tried and reverted: the stills' fitted twist and bend in place of the hand-tuned `twistAt`/`bendAt` (the fitted
+   pronation is ~0 because `--view far=back` forces the hand view, which drew an open "oath" palm in motion), and
+   moving the path's opening knots (no visible change).
+Checks: fingertip speeds unchanged in shape (arrival peak 45 px/f at f81, as in v14d); determinism 0 mismatches.
+Still open: the 61 px/f forearm turn at 7.57 s (CLAUDE.md next step 1).
+
+## v15 — the reels rig consolidated into this one (2026-10-12)
+Harry: "consolidate first and take the best of both, then iterate". No shot changes except the defaults below.
+What was done:
+1. QA gate from reels (`tools/qa_checks.mjs`, `qa_frames.py`, `qa_closeups.mjs`). On this shot: order and state-leak
+   checks pass; FAILS (pre-existing, v14e too): a head stutter at 1.27 s (10 px, 0, 10 px per frame); far palm pops at
+   2.73 s and 7.73 s; the far wrist turns back 13° at 2.70 s (arriving at the mouth) and 39° at 8.0 s (landing).
+2. Review loop from reels: `tools/blind_ab.py`; `critic_F.py --lens all` (feel, Lasseter, hands).
+3. Lessons merged: `docs/PIPELINE.md` "From the reels rig".
+4. Engine defaults from reels: landing settle and wag (`spec.land`, auto on arriving reach stops), finger ripple index
+   first (`spec.fingerRipple`), contact shadow (`C.contactShadow`), wrist 85 % of the palm (`params.js`). Mouth landing
+   set lighter (`spec.land` at 2.8).
+5. Recipes: `tools/new_pose.py` (gen on the Mac, fit anywhere, gated), `tools/new_char.py` (scaffold), the skill's
+   "Recipes" table.
+Blind A/B v14e vs v15 (fresh reviewer, whole shot): NO CLEAR DIFFERENCE, 6.5 / 6.5. Faults named in both: the forearm
+turn 7.47–7.67 s (oath palm flips flat in ~3 frames); the far hand slides along the bump's outside 7.8–8.0 s with a pink
+cuff sliver past the rim; one eye closes before the other at 1.0–1.1 s (reads as a wink); the lift 2.2–2.5 s a bit brisk.
+
+## v16 — first iteration on the v15 findings (2026-10-12)
+What was done (each measured first: anim_dump, tracks, frame strips):
+1. **The forearm flip at 7.5–7.7 s** was not the 3D-arm singularity: the 7.6 `n-sigh` breakdown ("shoulders settle")
+   also keyed the far ARM, and its pronation (40°) came 0.05 s after `fit-bl2`'s (−17°): the forearm turned 58° in two
+   frames. The key now leaves the far arm alone; pronation runs fit-bl2 → fit-k8 over 0.7 s (≤ 6°/frame). Fingertip
+   peak 61 → 50 px/f, the second bump at 8.0 s (37 px/f) gone; QA: the far palm pop at 7.73 s and the 39° wrist
+   reversal at 8.0 s are gone.
+2. **The wrist turn into the cover at 2.7 s** snaps in 2 frames (twist 65 → 2° between path s 0.86 and 1). Tried
+   turning it over the second half of the path (s 0.5–1): smoother numbers, but the blind A/B preferred v15 — the hand
+   rose upright with the palm out (an "oath") at 2.60–2.67 s before rolling onto the mouth. Reverted; kept as is.
+3. **The head jerk at 1.27 s:** the chest straightened back before the lagged neck and head bowed forward (head tip 16 px
+   back, then 28 px forward in 4 frames). Shifted at the fit-k2 key (chest/spine +2 f, neck/head −2 f): ≤ 5 px back.
+   QA still flags 1.17 s: the onset of the startle out of a quiet hold (1.9 levels/frame, below mid-shot motion).
+4. **The "wink" at 1.0 s** (blind A/B v15): checked frame by frame — both eyes close together. No change.
+Blind A/B v15 vs the trial (fresh reviewer, low confidence): v15 more natural, for the lift arrival above; the lowering
+a very slight edge to v15 too, and in BOTH the palm still flips from upright to flat at 7.50–7.60 s — that part is the
+upper arm passing straight down (armAbd swings 0 → 77° over frames 224–229), not the key fixed in 1. Shipped as v16:
+items 1 and 3 kept, 2 reverted.
+Still open: the far hand reaches the bump's outside edge and then swaps to the wrap drawing (8.00 → 8.07 s: a full hand
+to a thin finger row in 2 frames) — a drawing problem (the wrap needs an in-between view), not timing. QA: the far
+wrist turns back 13° at 2.80 s (the landing on the mouth).
+
+## v17 trials (2026-10-12): the 7.5 s palm flip, three methods, none kept (shot stays v16)
+- **Stills:** h_fore1/h_fore2 (6, made on Harry's Mac). None shows the forearm or hand end-on; all have the hand already on the bump.
+- **Measured:** the far HAND points at the camera at 7.60 s (projected length 0.14). Its screen angle sweeps ~150° over 7.50–7.67 s (peak 28°/frame).
+- **(a) A forward swing:** `spec.layers` foreRot +90 over 7.35–8.1 s gives a peak of 15°/frame. It lost a blind A/B (low to moderate confidence): open "hi" palm leaving the mouth; the hand floats out past her silhouette, flat, for 6 frames, then pops onto the rim.
+- **(b) A wider inward turn:** foreRot −60 and hand −20 give a peak of 19°/frame, but the hand held pointing backwards over 7.53–7.70 s, then flipped at 7.73–7.80 s. Not reviewed.
+- **(c) Fingers foreshortened with the hand** (engine: a world squash on the hand's children below projected length 0.45): it lost a blind A/B (~75%). Over 7.50–7.67 s the hand "shrinks to a small broken shape". The reviewer read v16's full-size turn as a wrist rolling over. QA had passed: the 7.7 s palm pop was gone.
+- **Both reviewers, in both versions:** the far hand arrives at the bump's outer rim, then cuts to a thin finger row (8.00–8.07 s); the palm-out hand leaving the mouth (7.37–7.47 s); the relief face switches on in 1–3 frames (7.93–8.10 s).
+- **Next:** re-key the path so the hand never points at the camera, or accept the turn and move on to the rim arrival. PIPELINE lesson 24.
+
+## v17 arrival trials (2026-10-12): the far hand reaching the bump's far rim at 7.8–8.1 s; none kept (the shot stays v16)
+- **Measured:** the depth proxies put the far hand behind the bump from 7.73 s, with the wrap growing continuously from 0. The front flag carried from the mouth (`fx front.far`, ramped linearly to the landing) held the hand in front until 7.85 s. It then dropped behind with the wrap already at 0.48: the full hand snapped to a sliver. A second snap at 8.07–8.10 s: the hidden hand points at the camera again (projected length 0.08) and turns 108° in 2 frames while its edge still shows past the rim.
+- **(a) End the front flag at the rim** (`frontBy` 0.55 on the arriving stop): the snap only moved earlier (7.70 → 7.73 s), because the hand was still deep over the bump in front.
+- **(b) Plus a via just outside the rim** (fit-k8 contact, dp/dz): the arm reached the rim before tucking behind and the snap was gone. But the extra path length compressed the wrist turn (68°/frame at 7.57 s vs v16's 28). It lost a blind A/B at moderate confidence: the turn was a 3-frame flip, and the hand "hovers beside the bump" for 10 frames. The reviewer prefers v16's hand sliding over the FRONT of the bump to the rim, and still flags its cuff tab and full hand poking past the rim at 7.87–7.97 s, then the shrink to fingers at 8.00–8.07 s.
+- **What the references say:** the six h_fore stills (made for the 7.5 s turn) all drew the hand cupped round the bump's far rim: the back of the hand outside the outline and the fingers curling over it, bigger than k8's fingertip row. h_fore1_0 is the clearest. That is the missing in-between DRAWING. Next: measure it and make the wrap drawing (parts/wrap.js) start at that size and shrink to k8 as the wrap completes, keeping v16's path.
+
+## v17 (2026-10-12): the far hand curls round the bump's rim as it arrives (shipped)
+- **Harry's call:** fix the arrival, leave the 7.5 s turn (decision card).
+- **Change:** a keyed `fx.cup.far` (`spec.layers`, 1 at 7.84 s, easing to 0 by 8.45 s).
+  - While it is up, the arriving far hand is drawn as the wrap (parts/wrap.js) at a larger "cupped" size instead of the real hand half hidden behind the bump.
+  - The size is set in params `wrapFingers.cup`: fingers ×2, span ×1.15, width ×1.1, back ×1.4. It shrinks to the partial wrap's own size (`wrapCupW`), so the real hand comes back at 8.47 s without a step.
+- **First try:** back ×3 (the cupped hand of refs h_fore1_0 / h_fore2) lost its blind A/B. It read as a fingerless "mitten" or "lump".
+- **Blind A/B, v17 vs v16** (fresh reviewer, moderate to high confidence): **v17 more natural**, 7/10 vs 5.5/10.
+  - "The hand curls round the bump rim and stays inside the outline… narrows gradually into the row of fingertips."
+  - v16's fingers "stick out beyond the bump outline… then pop to a sliver at 8.13 s".
+- **QA:** order and leak checks pass; no pixel jumps. The new drawing swaps at 7.87 and 8.47 s are expected (no pop). The 2.70/2.73 s items are unchanged.
+- **Still open:**
+  - the 7.50–7.63 s palm flip (both versions; lesson 24);
+  - the cuff blob at 7.77–7.83 s;
+  - the curled fingers a little "stacked";
+  - the settled far hand too thin from 8.3 s.

@@ -45,7 +45,11 @@ export function build(ctx) {
       // instead of the hand popping into fingertips on one frame (feel critic R7–R21)
       const ss_ = (x) => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
       const wrapW = !fore && hb ? ss_(-((hb.t0 + hb.t1) / 2) / 0.12) * ss_((hb.t1 + 0.45) / 0.08) : 0;
-      auto = { fore, upper: fore && !U.includes(-1) && U.includes(1), wrap: wrapW >= 0.999, wrapW, towardCam };
+      // pose.fx['cup.<side>'] (0–1, keyed): the hand ARRIVING round the rim is drawn as the wrap at its cupped size (refs
+      // h_fore1/2: the back of the hand outside the rim, fingers curling over it) instead of the real hand half hidden
+      // behind the bump — which shrank from a full hand to a sliver in 2 frames (8.00–8.07 s)
+      const cup = ctx.pose?.fx?.[`cup.${side}`] ?? 0;
+      auto = { fore, upper: fore && !U.includes(-1) && U.includes(1), wrap: wrapW >= 0.999 || (wrapW > 0.02 && cup > 0.02), wrapW, towardCam };
     }
     const Z_FORE = 65, Z_UPPER = 38;
     const zb = auto?.upper ? Z_UPPER : (side === 'near' ? 80 : 10) + (ctx.pose?.zBias?.[`arm.${side}`] ?? 0);   // zBias: a per-pose draw-order swap (keyed), when automatic depth is off
@@ -135,7 +139,7 @@ export function build(ctx) {
     // hand
     const hand = (ctx.pose?.handView?.[side] === 'back' && char.hands[side + 'Back']) || char.hands[side];   // view swap
     const hp = hand.parts(ctx, { fill: C.skin, line: C.skinLine, zBase: (auto?.wrap ? 34.4 : zf) + (auto?.towardCam && !auto?.wrap ? 0.45 : 0.35) });   // under the cuff (it covers the wrist end) unless the hand comes out of it toward us
-    if (auto?.wrap) for (const q of hp) q.wrapHand = true;   // drawn as fingertips over the rim instead (parts/wrap.js)
+    if (auto?.wrap) for (const q of hp) { q.wrapHand = true; if (auto.wrapW < 0.999) q.wrapCupW = auto.wrapW + (1 - auto.wrapW) * Math.min(1, (ctx.pose?.fx?.[`cup.${side}`] ?? 0) / 0.5); }   // a cupped arrival ends at the partial wrap's own size (no step when the real hand comes back)   // drawn as fingertips over the rim instead (parts/wrap.js)
     else if (auto?.wrapW > 0.02) for (const q of hp) q.wrapGrow = auto.wrapW;   // half round: the real hand (behind the bump) AND the fingers, grown by the amount
     out.push(...hp);
     // a hand wrapped round the FAR side of the bump: its forearm runs behind the bump to the back of it; the cuff poked out

@@ -29,14 +29,14 @@ export function limb(a, b, stations, { capA = 'round', capB = 'round', capK = 0.
  *  perpL side / other side of the local direction). Interior normals average the neighbouring segments.
  *  caps 'round' add one anchor beyond each end. Anchors: 2·axis.length + caps. Clockwise for a downward axis. */
 export function tube(axis, widths, { capA = 'round', capB = 'round', capK = 0.9, k } = {}) {
-  const n = axis.length;
+  const n = axis.length, [kA, kB] = Array.isArray(capK) ? capK : [capK, capK];   // capK: one bulge for both ends, or [start, end]
   const dirs = axis.map((p, i) => norm(sub(axis[Math.min(i + 1, n - 1)], axis[Math.max(i - 1, 0)])));
   const nrm = dirs.map(perpL);
   const side = (i, s) => add(axis[i], mulS(nrm[i], s * (s > 0 ? widths[i].r : widths[i].l)));
   const A = [];
-  if (capA === 'round') A.push([...sub(axis[0], mulS(dirs[0], capK * (widths[0].r + widths[0].l) / 2)), { a: Math.atan2(nrm[0][1], nrm[0][0]) / DEG }]);
+  if (capA === 'round') A.push([...sub(axis[0], mulS(dirs[0], kA * (widths[0].r + widths[0].l) / 2)), { a: Math.atan2(nrm[0][1], nrm[0][0]) / DEG }]);
   for (let i = 0; i < n; i++) A.push(widths[i].f === undefined ? side(i, 1) : [...side(i, 1), widths[i].f]);
-  if (capB === 'round') A.push([...add(axis[n - 1], mulS(dirs[n - 1], capK * (widths[n - 1].r + widths[n - 1].l) / 2)), { a: Math.atan2(-nrm[n - 1][1], -nrm[n - 1][0]) / DEG }]);
+  if (capB === 'round') A.push([...add(axis[n - 1], mulS(dirs[n - 1], kB * (widths[n - 1].r + widths[n - 1].l) / 2)), { a: Math.atan2(-nrm[n - 1][1], -nrm[n - 1][0]) / DEG }]);
   for (let i = n - 1; i >= 0; i--) A.push(widths[i].f === undefined ? side(i, -1) : [...side(i, -1), widths[i].f]);
   return loop(A, k);
 }

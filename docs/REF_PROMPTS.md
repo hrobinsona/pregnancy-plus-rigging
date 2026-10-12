@@ -18,14 +18,64 @@ Ask for **3 samples** at the same aspect as image 2 (mum2 keys are 768×1344). P
 - **Say what stays put** ("…stays on the lower front of the bump exactly as in image 2") and **what the wrist, fingers and elbow do**. Hand shape is the part that changes most between samples.
 - Describe the moment, not the motion: "one third of the way: the hand is in front of her upper chest…".
 - Keep the style sentence verbatim (see `docs/prompts/*.txt`).
+- **The prompt IS the pose.** Write where the elbow goes in body landmarks ("under her shoulder, NOT behind her back"). mum3's
+  first stroke still put the elbow behind her back because its prompt said so, and the fit reproduced it faithfully.
+- **An in-between drifts toward image 3.** With the target pose as image 3, "two thirds of the way" came back as the
+  target itself. Describe the in-between by landmarks ("the hand beside her hip, at the height of the bottom of the bump")
+  and check it with `uv_check --poses` before using it.
+- **Poses made from poses drift by tens of px** (reels): image 2 is the previous POSE, so framing errors accumulate along a
+  chain. Always pass the character sheet as image 1, and use a key still (not an in-between) as image 2.
+- **`moderation_blocked` is usually a false flag** (reels): retry, or reword anything body-related more neutrally.
+- **Design rules for a NEW character's master** (mum3; reels character skill):
+  - fitted or short sleeves, or bare arms, on any arm that moves (a sleeve is a separate piece pivoting on a pin);
+  - top and bottoms in different values, or the bump merges into the lap; clothes distinct from any furniture;
+  - near profile or a ¾ view whose moves travel ACROSS the picture plane, never toward the camera;
+  - the far arm hidden or simple; plain white background, full body, the figure about 85 % of the frame height
+    (reels framing for phone reading is mid-thigh up: frame the SHOT tighter, not the master).
 
-## Registering what you generated
+## Making them with ChatGPT (Codex CLI): one command
+
+On a machine where `codex login status` says ChatGPT (Harry's Mac; a cloud container has no Codex):
+
+```sh
+python3 tools/refgen.py --check                   # codex: ready
+python3 tools/refgen.py mum2 b_lower1 --prompt-file docs/prompts/b_lower1.txt \
+  --ref characters/mum2/ref/standing_34.jpg --ref characters/mum2/refs/images/k4_cover_v2_0.png \
+  --ref characters/mum2/refs/images/k8_relief_v2_0.png -n 3 [--est]
+```
+
+It puts `docs/prompts/_measure.txt` in front of the prompt, asks for image 2's aspect, runs Codex locked down (image tool only, plan allowance, never API billing), saves the samples to `out/refgen/`, then registers them as below, letterboxed onto image 2's canvas so the fit isn't stretched. `--est` needs the MediaPipe setup; without it, run `tools/pose_est.py` wherever that is installed. With no Codex it falls back to a manual handoff: the full prompt plus which images to attach and where to save. Tests: `python3 tools/test_refgen.py` (stub Codex, nothing spent).
+
+## From a cloud session, with no one in the loop: push a request
+
+Harry's Mac runs `tools/refgen_worker.py` (launchd, every 2 minutes). To get stills, commit and push a request to your `claude/*` branch:
+
+```sh
+mkdir -p requests/refgen
+cat > requests/refgen/h_fore3.json <<'JSON'
+{"char": "mum2", "name": "h_fore3", "prompt_file": "docs/prompts/h_fore3.txt",
+ "refs": ["characters/mum2/ref/standing_34.jpg", "characters/mum2/refs/images/k4_cover_v2_0.png",
+          "characters/mum2/refs/images/k8_relief_v2_0.png"],
+ "n": 3}
+JSON
+git add requests/refgen/h_fore3.json docs/prompts/h_fore3.txt && git commit -m "request h_fore3" && git push
+```
+
+About a minute per image later, the worker pushes the samples to `characters/<char>/refs/images/<name>_<i>.png` with a ledger line. It also moves the request to `requests/refgen/done/<name>.json`, which records `status` (`ok`, `partial`, `failed` or `rejected`), `outputs` and `error`. `git pull` and check that file.
+
+- **Rules:** the prompt must be a `.txt` under `docs/prompts/`; give 1–3 refs under `characters/`, in the order image 1 (sheet), image 2 (previous pose), image 3 (target pose); `n` is 1–4. A name that already has samples is rejected unless the request has `"force": true`.
+- **Budget:** none; Harry approved as many images as the job needs. Runs take 12 images at a time (the rest follow on the next runs), and 1000 a day is only a guard against a runaway loop.
+- **No pose estimation:** the worker doesn't run `--est`; run `tools/pose_est.py` where it is set up.
+- **Only when the Mac is on:** it works only while the Mac is awake and logged in. A request that sits unanswered for more than about 10 minutes means the Mac is asleep.
+- **Pinned code:** the worker runs a pinned copy in `~/.refgen-worker`, so a change to `refgen_worker.py` or `refgen.py` takes effect only after someone runs `python3 tools/refgen_worker.py --install` on the Mac. Use `--status` to see readiness and the queue; the log is `~/.refgen-worker/worker.log`.
+
+## Registering what you generated by hand
 
 ```sh
 python3 tools/ref_register.py mum2 b_lower1 ~/Downloads/a.png ~/Downloads/b.png ~/Downloads/c.png \
   --provider codex --prompt-file docs/prompts/b_lower1.txt \
   --ref characters/mum2/ref/standing_34.jpg --ref characters/mum2/refs/images/k4_cover_v2_0.png \
-  --ref characters/mum2/refs/images/k8_relief_v2_0.png --est
+  --ref characters/mum2/refs/images/k8_relief_v2_0.png --canvas 768x1344 --est
 ```
 
 This copies the samples to `characters/mum2/refs/images/b_lower1_{0,1,2}.png`, appends the provenance to `refs/ledger.jsonl`, and pose-estimates each sample into `refs/pose/`.

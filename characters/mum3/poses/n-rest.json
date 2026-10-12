@@ -1,0 +1,17 @@
+{
+ "name": "n-rest",
+ "note": "the master's pose, the elbow softly bent (a relaxed arm is never locked straight; a straight one is the IK singularity the lift starts from) and the hand loosely curled",
+ "_recipe": "n-rest rest --hands near=hang --add forearm.near=10,upperArm.near=-3 --note the master's pose, the elbow softly bent (a relaxed arm is never locked straight; a straight one is the IK singularity the lift starts from) and the hand loosely curled",
+ "hands": {
+  "near": "hang",
+  "far": "relaxed"
+ },
+ "root": [
+  0,
+  0
+ ],
+ "bones": {
+  "forearm.near": 10.0,
+  "upperArm.near": -3.0
+ }
+}

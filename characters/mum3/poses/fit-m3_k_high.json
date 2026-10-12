@@ -1,0 +1,49 @@
+{
+ "name": "fit-m3_k_high",
+ "note": "fitted to characters/mum3/refs/pose/m3_k_high_2.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "root": [
+  -0.0247,
+  0.0295
+ ],
+ "bones": {
+  "pelvis": -0.2,
+  "spineLower": -8.7,
+  "spineUpper": 2.4,
+  "chest": 11.2,
+  "neck": 16.9,
+  "head": 9.1,
+  "belly": 0,
+  "clavicle.near": -11.2,
+  "shoulderAbd.near": 16.1,
+  "upperArm.near": -8.4,
+  "armAbd.near": -1.3,
+  "armRot.near": 4.2,
+  "forearm.near": 104.9,
+  "foreRot.near": 0.9,
+  "hand.near": 10.9,
+  "thigh.near": -1.2,
+  "shin.near": -2.6,
+  "foot.near": 4.3,
+  "hipAbd.near": -2.2,
+  "thigh.far": -0.6,
+  "shin.far": -0.6,
+  "foot.far": 3.8,
+  "hipAbd.far": -1.1
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/m3_k_high_2.json",
+  "scale": 0.9686,
+  "rms": 0.0417,
+  "worst": [
+   "earR 0.075",
+   "earL 0.070",
+   "mouthR 0.065",
+   "shoulderR 0.061",
+   "hipL 0.056"
+  ]
+ }
+}

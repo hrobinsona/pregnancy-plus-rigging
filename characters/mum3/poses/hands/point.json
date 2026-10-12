@@ -1,0 +1,36 @@
+{
+ "name": "point",
+ "f1": [
+  2,
+  2,
+  0
+ ],
+ "f2": [
+  85,
+  95,
+  60
+ ],
+ "f3": [
+  88,
+  98,
+  62
+ ],
+ "f4": [
+  90,
+  100,
+  64
+ ],
+ "s": [
+  -2,
+  1,
+  -3,
+  -7
+ ],
+ "t": [
+  35,
+  40
+ ],
+ "to": 30,
+ "ts": -10,
+ "_note": "index pointing, others curled and converging, thumb over the middle finger"
+}

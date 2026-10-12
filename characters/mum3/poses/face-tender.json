@@ -1,0 +1,21 @@
+{
+ "name": "face-tender",
+ "note": "looking down at her bump: the upper lid lowered to a flat line (lid.half), the lower lid lifted a touch by the smile, brows relaxed, a warm smile (v2's round dots under high brows read as alert, not tender)",
+ "face": {
+  "lid": {
+   "open": 0.5,
+   "half": 0.35,
+   "smile": 0.15
+  },
+  "gaze": [
+   0.006,
+   0.03
+  ],
+  "mouth": {
+   "warm": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}
