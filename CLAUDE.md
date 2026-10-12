@@ -22,7 +22,7 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
   - fal.ai (`tools/fal_gen.py`) also works, with a funded key in `~/.secrets/fal_key` or `$FAL_KEY`. The balance ran out on 2026-10-12.
   - **Never commit, log or print API keys.**
 - **Stills over videos.** One still per key plus two in-betweens per hand move. Video only for the timing of a fast move (`docs/PIPELINE.md` §1).
-- **Ask Harry before pushing to GitHub.**
+- **Git:** the repo is `github.com/hrobinsona/pregnancy-plus-rigging`, branch `main`. Commit each finished round and push it; Harry pulls from there. No more zips.
 - **Review loop:**
   - Build the critic pack with `python3 tools/critic_F.py mum2 nausea-to-belly > out/critic_prompt.md`.
   - Spawn a subagent: "Read out/critic_prompt.md and follow it exactly…".

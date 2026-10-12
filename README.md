@@ -9,6 +9,7 @@ This repo holds parametric SVG characters, rigged and animated in code, for Preg
 ## Quick start
 
 ```sh
+git clone https://github.com/hrobinsona/pregnancy-plus-rigging.git && cd pregnancy-plus-rigging
 scripts/setup.sh                                                  # playwright + chromium, python deps, MediaPipe models
 node tools/char_check.mjs mum2                                    # fast gate
 node tools/char_anim.mjs --char mum2 --anim nausea-to-belly       # → out/mum2_nausea-to-belly.mp4
@@ -21,6 +22,8 @@ node tools/char_anim.mjs --char mum2 --anim nausea-to-belly       # → out/mum2
 - `docs/REF_PROMPTS.md`: making and registering reference stills with any image tool (Codex CLI, fal, …).
 - `tools/README.md`: index of every tool, grouped by stage.
 - `characters/mum2/feel_log_nausea-to-belly.md`: every review round and client redirect, with what was done.
+
+Reference videos (`characters/*/refs/videos/`) are not in git; only their fitted tracks (`refs/tracks/`) are. The pipeline needs only the tracks.
 
 ## Requirements
 Node ≥ 20, Python ≥ 3.10, ffmpeg. The Python packages are in `requirements.txt`. The MediaPipe pose and hand models go in `models/`; `scripts/setup.sh` downloads them.
