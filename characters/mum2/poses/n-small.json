@@ -1,0 +1,75 @@
+{
+ "name": "n-small",
+ "note": "second hit: from the partial release (0.55) down again to 0.82 of the first \u2014 sudden like the first, clearly smaller (n-small knees: legs and lower back at 50%)",
+ "_recipe": "n-small fit-k4 n-hit2 0.82 --from B --note second hit: from the partial release (0.55) down again to 0.82 of the first \u2014 sudden like the first, clearly smaller",
+ "hands": {
+  "near": "press",
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 28.0,
+  "pinNear": 1.0,
+  "swivelFar": 40.0
+ },
+ "scale": {
+  "chest": [
+   0.64,
+   1.0
+  ],
+  "neck": [
+   0.64,
+   1.0
+  ]
+ },
+ "root": [
+  -0.0952,
+  0.0541
+ ],
+ "bones": {
+  "armAbd.far": -21.99,
+  "armAbd.near": -2.62,
+  "armRot.far": 66.42,
+  "armRot.near": 35.02,
+  "belly": 3,
+  "chest": 5.37,
+  "clavicle.far": -1.95,
+  "clavicle.near": -6.66,
+  "foot.far": 8.149999999999999,
+  "foot.near": 9,
+  "foreRot.far": 4.46,
+  "foreRot.near": 4.64,
+  "forearm.far": 130.28,
+  "forearm.near": 58.18,
+  "hand.far": -22.75,
+  "hand.near": 18.95,
+  "head": -2.75,
+  "hipAbd.far": 0.06,
+  "hipAbd.near": 0.42,
+  "neck": 0.9,
+  "pelvis": 0,
+  "shin.far": -24.400000000000002,
+  "shin.near": -21,
+  "shoulderAbd.far": 20.09,
+  "shoulderAbd.near": -10.43,
+  "spineLower": 12.3,
+  "spineUpper": 2.95,
+  "thigh.far": 16.05,
+  "thigh.near": 14.4,
+  "upperArm.far": 45.4,
+  "upperArm.near": -11.46
+ },
+ "_orig": {},
+ "_edits": [
+  "--scale chest=0.64:1,neck=0.64:1",
+  "--fx headPitch=28",
+  "--fx swivelFar=40",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

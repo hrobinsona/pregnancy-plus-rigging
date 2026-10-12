@@ -10,7 +10,7 @@
 // plane (θ from straight down, + toward the facing direction). The plane is yawed to the picture plane, so the rig
 // projects: screen dir = (sinθ·forwardX, cosθ), length factor L(θ) = √((forwardX·sinθ)² + cos²θ). A leg swinging
 // toward the camera therefore foreshortens instead of sweeping sideways.
-import { mul, T, R, S, I, pathD, ap, sub, add } from './geom.js';
+import { mul, T, R, S, I, pathD, ap, sub, add, mapGeom } from './geom.js';
 
 const DEG = Math.PI / 180;
 const wrap = (a) => ((a + 540) % 360) - 180;
@@ -47,6 +47,42 @@ export function createRig(C) {
     for (const d of DRV) { const a = b[d.from] ?? 0; b[d.bone] = (b[d.bone] ?? 0) + d.k * Math.min(d.max ?? 1e9, soft(a - (d.start ?? 0), d.soft ?? 15)); }
     return b;
   };
+  // 3D ARM (plane:'arm3'). A sagittal hinge chain cannot draw a hand brought to the mouth with the elbow out to the side:
+  // in a ¾ view the forearm then crosses back over the upper arm (projected elbow bend > 180°). Real arms are 3D: the
+  // shoulder has 3 DOF (elevation, plane of elevation, humeral rotation), the elbow is a hinge whose axis the humeral
+  // rotation turns, the forearm twists (pronation) under the wrist. The chain is posed in the side's LOCAL body frame
+  // (F forward, D down, L lateral = away from the midline) and projected orthographically with the body's yaw:
+  // screen x = fx·F ± √(1−fx²)·L, y = D, depth = −√(1−fx²)·F ± fx·L (+ = away from the camera; ± = far/near side).
+  // With abd = rot = pron = 0 it is EXACTLY the old sagittal chain (back-compatible poses). Output per bone is still a
+  // screen rotation + a projected length (foreshortening), so every part, pin, reach and spring works unchanged; st.a3
+  // carries the 3D frame (v = bone dir, g = flexion dir, n = palm normal, cam = projected dir with depth) for parts that
+  // decide draw order or hand view from depth.
+  const SQ = Math.sqrt(Math.max(0, 1 - fx * fx));
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const rotAbout = (v, k, a) => { const c = Math.cos(a), s = Math.sin(a), kv = dot3(k, v), kx = cross(k, v); return [0, 1, 2].map((i) => v[i] * c + kx[i] * s + k[i] * kv * (1 - c)); };
+  const toCam = (u, side) => { const s = side === 'near' ? -1 : 1; return [fx * u[0] + s * SQ * u[2], u[1], -SQ * u[0] + s * fx * u[2]]; };
+  const param = (id, bonesIn) => { const b = BONE[id]; return b ? Math.max(b.min ?? -180, Math.min(b.max ?? 180, bonesIn[id] ?? 0)) * DEG : 0; };
+  function arm3(b, d, ps, bonesIn) {
+    const P = BONE[b.parent].plane === 'arm3' ? ps.a3 : null, side = P ? P.side : b.side;
+    let v, g, n = null;
+    if (!P) {                                   // upper arm: elevation d in the plane of elevation turned out by abd, then humeral rotation
+      const e = d * DEG, al = param(b.abd, bonesIn), tw = param(b.twist, bonesIn);
+      v = [Math.sin(e) * Math.cos(al), Math.cos(e), Math.sin(e) * Math.sin(al)];
+      // swing (minimal rotation D→v) carries the rest flexion direction F; the singular straight-up arm falls back to the sagittal axis
+      const D3 = [0, 1, 0], k = cross(D3, v), kl = Math.hypot(...k);
+      g = kl > 1e-9 ? rotAbout([1, 0, 0], k.map((x) => x / kl), Math.atan2(kl, dot3(D3, v))) : (v[1] > 0 ? [1, 0, 0] : [-1, 0, 0]);
+      g = rotAbout(g, v, tw);                   // + = internal rotation: elbow flexion swings the forearm toward the midline
+    } else {
+      const c = d * DEG, v0 = P.v, g0 = P.g;
+      v = v0.map((x, i) => Math.cos(c) * x + Math.sin(c) * g0[i]);
+      g = g0.map((x, i) => Math.cos(c) * x - Math.sin(c) * v0[i]);
+      if (b.pron) g = rotAbout(g, v, param(b.pron, bonesIn));   // forearm twist: turns the plane the wrist bends in (and the palm)
+      n = cross(v, g);                          // palm normal (rest: medial)
+    }
+    const cam = toCam(v, side);
+    return { v, g, n, side, cam, ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };
+  }
   function solve(pose = {}) {
     const st = {}, bonesIn = driven(pose);
     for (const b of BONES) {
@@ -54,9 +90,16 @@ export function createRig(C) {
       const user = pose.scale?.[b.id] || [1, 1];
       let pos, rot, anat = null, along = 1;
       const ps = b.parent ? st[b.parent] : null;
+      if (b.param) { st[b.id] = { ...ps, param: d }; continue; }   // a parameter (3D arm DOF), not a drawn transform
       if (!ps) { const r0 = pose.root || [0, 0]; pos = [J[b.joint][0] + r0[0], J[b.joint][1] + r0[1]]; }
       else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
-      if (b.plane) {
+      if (b.plane === 'arm3') {
+        const a3 = arm3(b, d, ps, bonesIn), parentSame = BONE[b.parent].plane === 'arm3';
+        const base = parentSame ? ps.baseRot : ps.rot;
+        rot = base + wrap(a3.scr - 90);
+        along = a3.len;
+        st[b.id] = { baseRot: base, a3 };
+      } else if (b.plane) {
         // the bone rotates in a plane yawed to the picture: 'sagittal' uses C.design.forwardX; any other plane name
         // uses C.design.planes[name] (e.g. finger flexion seen from the back of the hand ≈ out of plane: small fx)
         const r0 = b.restAnat ?? 0, f = planeFx(b);
@@ -148,8 +191,12 @@ export function createRig(C) {
     const F = (pose.facing || C.design.facing || 'right') === 'left' ? S(-1, 1) : I();
     const ctx = { P: C.palette, C, J, pose, st, rig: api };
     const parts = [];
+    // 2.5D WARPS (C.warps = {bone: (pose) => (q) => q'}): every rigid part drawn on that bone is lifted through it before
+    // the bone's matrix (engine/warp.js: a ¾ head that nods instead of rolling)
+    const warps = Object.fromEntries(Object.entries(C.warps || {}).map(([b, w]) => [b, w(pose)]));
     for (const [name, mod] of Object.entries(C.modules)) {
-      for (const p of mod.build(ctx)) {
+      for (const p0 of mod.build(ctx)) {
+        const p = warps[p0.bone] && !p0.world && !p0.skin ? { ...p0, geom: mapGeom(p0.geom, warps[p0.bone]) } : p0;
         const want = mod.ANCHORS?.[p.id];
         if (want !== undefined && want !== p.geom.P.length) throw new Error(`${p.id}: ${p.geom.P.length} anchors, documented ${want}`);
         if (!st[p.bone]) throw new Error(`${p.id}: unknown bone ${p.bone}`);
@@ -173,15 +220,23 @@ export function createRig(C) {
     // the other hand) gets a line round its silhouette ONLY where it lies over that material: every part of the group is
     // cloned as a stroke just below the group and clipped to the same-material parts behind it. Over the background or another
     // colour nothing shows — the style's no-outline rule holds; same-colour shapes can still be told apart.
+    // character post-pass (C.postBuild): replacement drawings that need other modules' posed parts (e.g. fingertips
+    // wrapped round the bump's rim need the bump's posed outline)
+    if (C.postBuild) C.postBuild(parts, ctx);
     for (const G of C.outlineGroups || []) {
       const inG = parts.filter((p) => G.match.test(p.id)); if (!inG.length) continue;
       const zmin = Math.min(...inG.map((p) => p.z));
-      const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && !p.stroke && (!G.behind || G.behind.test(p.id))).map((p) => p.id);   // G.behind: only these count (a sleeve is not outlined against its own shoulder cap)
+      const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && p.z >= (G.minZ ?? -Infinity) && !p.stroke && (!G.behind || G.behind.test(p.id))).map((p) => p.id);   // G.behind: only these count (a sleeve is not outlined against its own shoulder cap); G.minZ: only parts not themselves hidden behind the body (a clip region is the part's whole shape, visible or not)
       if (!behind.length) continue;
       // G.fade = {bone, r: [r0, r1]}: the line is masked out within r0 (H) of that bone's joint and full beyond r1 — a sleeve
       // over its own shoulder must not draw a seam that runs out tangentially through the silhouette
       const fade = G.fade && { c: ap(F, st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
-      for (const p of inG) if (p.fill === G.material) parts.push({ ...p, id: `${p.id}.ol`, z: zmin - 0.002, fill: 'none', stroke: G.line, strokeW: 2 * G.w, clip: behind, skin: undefined, fade });
+      // OCCLUDERS: parts drawn above the same-material parts but below the group (the neck over the cardigan's collar) hide
+      // part of them — the line must not show there (it ran over the neck as a pink hairline: "clothing bleeding onto
+      // limbs", client). They are painted black into the line's mask, in z order, over the white material parts.
+      const zb0 = Math.min(...parts.filter((q) => behind.includes(q.id)).map((q) => q.z));
+      const occ = parts.filter((q) => !G.match.test(q.id) && !behind.includes(q.id) && q.z > zb0 && q.z < zmin && !q.stroke && q.fill !== G.material && q.fill !== 'none' && !(q.opacity !== undefined && q.opacity <= 0.002)).map((q) => q.id);
+      for (const p of inG) if (p.fill === G.material) parts.push({ ...p, id: `${p.id}.ol`, z: zmin - 0.002, fill: 'none', stroke: G.line, strokeW: 2 * G.w, clip: behind, clipOcc: occ.length ? { white: behind, black: occ } : undefined, clipKeep: p.clip, skin: undefined, fade });   // clipKeep: the part's own clip (a keyhole) still bounds its outline — else the line traces the hidden rest of the shape
     }
     return parts.map((p, i) => [p, i]).sort((a, b) => a[0].z - b[0].z || a[1] - b[1]).map((x) => x[0]);
   }
@@ -222,20 +277,50 @@ export function createRig(C) {
     if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx);
     out += `<g id="${C.name}">`;
     const tfOf = (m) => `matrix(${[m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx].map(f2).join(' ')})`;
-    const byId = Object.fromEntries(parts.map((p) => [p.id, p]));
+    const byId = Object.fromEntries(parts.map((p) => [p.id, p])), outDefs = new Set();
+    // CLIP-OUT (p.clipOut = {part, inset}): the part shows only OUTSIDE another part shrunk by `inset` (H) — fingers seen
+    // curling round the rim of the bump from behind: the hand is drawn in front, but everything well inside the bump's
+    // outline is cut away, so only what lies over the rim band and beyond it shows. One even-odd path: frame minus hole.
+    const clipOutDef = (co) => {
+      const q = byId[co.part]; if (!q) return null;
+      const id = `clipout-${co.part.replace(/[^\w-]/g, '_')}-${Math.round(co.inset * 1000)}${co.ring ? '-r' : ''}`;
+      if (outDefs.has(id)) return id;
+      const P = q.geom.P.map((v) => ap(q.M, v)), hin = q.geom.hin.map((v) => ap(q.M, v)), hout = q.geom.hout.map((v) => ap(q.M, v));
+      const c = P.reduce((a, v) => [a[0] + v[0] / P.length, a[1] + v[1] / P.length], [0, 0]);
+      const R = P.reduce((a, v) => a + Math.hypot(v[0] - c[0], v[1] - c[1]), 0) / P.length, k = Math.max(0.05, 1 - co.inset / R);
+      const sc = (v) => [c[0] + k * (v[0] - c[0]), c[1] + k * (v[1] - c[1])];
+      const hole = pathD({ P: P.map(sc), hin: hin.map(sc), hout: hout.map(sc) }, Hpx);
+      // co.ring: show only the BAND between the part's outline and the shrunk copy (fingertips lying on the near side of the
+      // bump just inside its rim; anything beyond the rim is behind the bump and stays hidden)
+      const r = co.ring ? pathD({ P, hin, hout }, Hpx) : `M${f2(vb[0])} ${f2(vb[1])}h${f2(vb[2])}v${f2(vb[3])}h${f2(-vb[2])}Z`;
+      out += `<clipPath id="${id}"><path clip-rule="evenodd" d="${r} ${hole}"/></clipPath>`; outDefs.add(id); return id;
+    };
     for (const p of parts) {
       if (p.opacity !== undefined && p.opacity <= 0.002) continue;
+      let wrap = 0;
+      if (p.clipKeep) { const ks = (Array.isArray(p.clipKeep) ? p.clipKeep : [p.clipKeep]).map((id) => byId[id]).filter(Boolean);
+        if (ks.length) { const kid = `keep-${p.id.replace(/[^\w-]/g, '_')}`; out += `<clipPath id="${kid}">${ks.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath><g clip-path="url(#${kid})">`; wrap++; } }
+      if (p.clipOut && !sil) { const id = clipOutDef(p.clipOut); if (id) { out += `<g clip-path="url(#${id})">`; wrap++; } }
+      emit(p);
+      out += '</g>'.repeat(wrap);
+    }
+    function emit(p) {
       const op = !sil && p.opacity !== undefined && p.opacity < 0.998 ? ` opacity="${f2(p.opacity)}"` : '';
-      if (p.stroke && sil) continue;
+      if (p.stroke && sil) return;
       const paint = p.stroke ? `fill="none" stroke="${p.stroke}" stroke-width="${f2(p.strokeW * Hpx)}" stroke-linejoin="round"` : `fill="${sil ? '#000' : p.fill}"`;
       const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" ${paint} transform="${tfOf(p.M)}"${op}/>`;
       // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
       // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
       const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
-      if (!clips.length) { if (!p.stroke) out += path; continue; }   // an outline with nothing behind it is never drawn
+      if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
       let mk = '';
+      if (p.clipOcc && !p.fade) {   // visible-region mask: the material parts white, the parts covering them black, in z order
+        const L = [...p.clipOcc.white.map((id) => [byId[id], '#fff']), ...p.clipOcc.black.map((id) => [byId[id], '#000'])].filter((x) => x[0]).sort((x, y) => x[0].z - y[0].z);
+        out += `<mask id="${cid}-o" maskUnits="userSpaceOnUse" x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}">${L.map(([c, col]) => `<path d="${pathD(c.geom, Hpx)}" fill="${col}" transform="${tfOf(c.M)}"/>`).join('')}</mask>`;
+        mk = ` mask="url(#${cid}-o)"`;
+      }
       if (p.fade) {   // radial mask: hidden inside r0, shown beyond r1 (userSpaceOnUse, model px)
         const { c, r0, r1 } = p.fade, R1 = r1 * Hpx, o = Math.max(0, Math.min(1, r0 / r1));
         out += `<radialGradient id="${cid}-g" gradientUnits="userSpaceOnUse" cx="${f2(c[0] * Hpx)}" cy="${f2(c[1] * Hpx)}" r="${f2(R1)}"><stop offset="${f2(o)}" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>`
@@ -255,6 +340,6 @@ export function createRig(C) {
   /** World position (H) of any named joint carried by a bone in this pose. */
   const carry = (st, bone, jointName) => ap(st[bone].M, sub(J[jointName], J[BONE[bone].joint]));
 
-  const api = { C, J, BONES, BONE, restAngle, solve, build, bounds, view, toScreen, toSVG, jointWorld, carry, scrAng, projLen, planeFx, fx };
+  const api = { C, J, BONES, BONE, restAngle, solve, build, bounds, view, toScreen, toSVG, jointWorld, carry, scrAng, projLen, planeFx, fx, toCam };
   return api;
 }

@@ -1,0 +1,72 @@
+{
+ "name": "n-lift",
+ "note": "the lift's breakdown (k3) with the hand loosely curled, knuckles leading (critic: an open, fingers-up hand read as a wave / an oath)",
+ "_recipe": "n-lift fit-k3 --note the lift's breakdown (k3) with the hand loosely curled, knuckles leading (critic: an open, fingers-up hand read as a wave / an oath)",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": {
+   "pose": "cup",
+   "mix": {
+    "relaxed": 0.35
+   }
+  }
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 6.4,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0249,
+  0.0099
+ ],
+ "bones": {
+  "armAbd.far": -27.1,
+  "armAbd.near": -4.3,
+  "armRot.far": 48.8,
+  "armRot.near": 26.8,
+  "belly": 3,
+  "chest": -5.2,
+  "clavicle.far": -14.2,
+  "clavicle.near": 4.1,
+  "foot.far": 0,
+  "foot.near": 1.9,
+  "foreRot.far": 0.3,
+  "foreRot.near": 1.7,
+  "forearm.far": 129.9,
+  "forearm.near": 69.2,
+  "hand.far": -8.6,
+  "hand.near": 13.3,
+  "head": -5.7,
+  "hipAbd.far": 0.6,
+  "hipAbd.near": 0,
+  "neck": -2.1,
+  "pelvis": 0,
+  "shin.far": -1.6,
+  "shin.near": -0.3,
+  "shoulderAbd.far": 18.4,
+  "shoulderAbd.near": -23.4,
+  "spineLower": 6,
+  "spineUpper": -2,
+  "thigh.far": 0.3,
+  "thigh.near": -0.4,
+  "upperArm.far": 43.1,
+  "upperArm.near": -25.5
+ },
+ "_orig": {},
+ "_edits": [
+  "--hand far={\"pose\":\"cup\",\"mix\":{\"relaxed\":0.35}}",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

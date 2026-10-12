@@ -97,6 +97,14 @@ for bi, b in enumerate(beats, 1):
         x, y = on.size[0] + 10 + (j % cols) * tws, 30 + (j // cols) * (tht + 16)
         sheet.paste(im.crop(box).resize((tws, tht), Image.LANCZOS), (x, y + 16)); d.text((x + 2, y), f'{(a0 + j) / fps:.2f}s', fill='#c00', font=F(11))
     p = f'out/{name}_feel_beat_{bi:02d}.png'; sheet.save(p); files.append((p, f"beat {bi} '{b['name']}': onion skin (left) and every frame (right), zoomed on what moves"))
+# 2b. zoom strips (spec.feelZoom = [{name, from, to, step?, box: [x0,y0,x1,y1] px}]): every frame of a move, close up —
+#     the moves the client watches hardest (a hand travelling to the mouth, a retch) need more than a phone-size film
+for z in spec.get('feelZoom', []):
+    bz = z['box']; idx = list(range(z['from'], min(z['to'], N - 1) + 1, z.get('step', 1))); tw = z.get('w', 150); th = int(tw * (bz[3] - bz[1]) / (bz[2] - bz[0])); cols = min(len(idx), z.get('cols', 12)); rows = (len(idx) + cols - 1) // cols
+    zs = Image.new('RGB', (cols * tw, rows * (th + 16)), 'white'); d = ImageDraw.Draw(zs)
+    for k, i in enumerate(idx):
+        x, y = (k % cols) * tw, (k // cols) * (th + 16); zs.paste(fr(i).crop(tuple(bz)).resize((tw, th), Image.LANCZOS), (x, y + 16)); d.text((x + 2, y), f'{i / fps:.2f}s', fill='#c00', font=F(11))
+    zp = f'out/{name}_feel_zoom_{z["name"].replace(" ", "_")}.png'; zs.save(zp); files.append((zp, f"every frame of '{z['name']}', close up"))
 # 3. key moments, upper body, large
 kt = sorted(set([round(k['t'] * fps) for k in spec['keys']] + [b['from'] for b in beats]))
 kt = [k for k in kt if k < N][:16]; ub = (bx[0], bx[1], bx[2], int(bx[1] + (bx[3] - bx[1]) * 0.6)); tw = 300; th = int(tw * (ub[3] - ub[1]) / (ub[2] - ub[0]))
@@ -104,4 +112,5 @@ cols = 4; rows = (len(kt) + cols - 1) // cols; keys_im = Image.new('RGB', (cols 
 for j, k in enumerate(kt):
     x, y = (j % cols) * tw, (j // cols) * (th + 20); keys_im.paste(fr(k).crop(ub).resize((tw, th), Image.LANCZOS), (x, y + 20)); d.text((x + 3, y + 2), f'{k / fps:.2f}s', fill='#c00', font=F(14))
 keys_im.save(f'out/{name}_feel_keys.png'); files.append((f'out/{name}_feel_keys.png', 'key moments, upper body, large'))
-fill(files, spec.get('story', ''), f'feel_log_{a}.md')
+for rp, rd in spec.get('feelRefs', []): files.append((rp, rd))   # the illustrator's references the shot was built from
+fill(files, spec.get('story', '') + (f"\n\nINTENSITY (set by the client — judge against THIS, do not push it further): {spec['intensity']}" if spec.get('intensity') else ''), f'feel_log_{a}.md')

@@ -1,3 +1,17 @@
+# dependencies and local models (scripts/setup.sh installs / downloads them)
 node_modules/
-out/frames*/
+models/
+__pycache__/
+# all generated output (renders, frames, review packs, audits) — reproducible from the specs; the shot's
+# current render is copied to renders/
+out/
 review/
+# generated reference VIDEOS are large and mostly unused (18 of 21); their fitted tracks live in refs/tracks/
+characters/*/refs/videos/
+# scratch
+characters/*/poses/_t/
+*.bak
+# secrets: API keys live in ~/.secrets (never in the repo)
+.secrets/
+*.key
+.env

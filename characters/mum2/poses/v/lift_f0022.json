@@ -1,0 +1,61 @@
+{
+ "name": "v/lift_f0022",
+ "note": "fitted to characters/mum2/refs/pose/v/lift/f0022.json (MediaPipe landmarks, base v/lift_f0021)",
+ "hands": {
+  "near": "press",
+  "far": "limp"
+ },
+ "fx": {
+  "armFree": 0,
+  "pinNear": 1
+ },
+ "root": [
+  0.0135,
+  0.0051
+ ],
+ "bones": {
+  "spineLower": 6,
+  "spineUpper": -3.5,
+  "chest": -5.7,
+  "neck": 4.9,
+  "head": 7.8,
+  "belly": 6,
+  "clavicle.far": -4.7,
+  "clavicle.near": 12,
+  "upperArm.far": -33.9,
+  "forearm.far": 82.3,
+  "hand.far": 40,
+  "shoulderAbd.far": 1.4,
+  "upperArm.near": -21.1,
+  "forearm.near": 78.6,
+  "shoulderAbd.near": -27.9,
+  "hand.near": 12.5,
+  "pelvis": 0.8,
+  "armAbd.near": 5.4,
+  "armRot.near": 34.8,
+  "foreRot.near": 5.4,
+  "thigh.near": 2.5,
+  "shin.near": -4.9,
+  "foot.near": 8,
+  "hipAbd.near": 0.2,
+  "armAbd.far": -20.6,
+  "armRot.far": 41.1,
+  "foreRot.far": 55.9,
+  "thigh.far": 1,
+  "shin.far": 0.5,
+  "foot.far": -0.6,
+  "hipAbd.far": 1
+ },
+ "_fit": {
+  "ref": "characters/mum2/refs/pose/v/lift/f0022.json",
+  "scale": 0.9808,
+  "rms": 0.037,
+  "worst": [
+   "shoulderL 0.097",
+   "shoulderR 0.070",
+   "elbowR 0.060",
+   "thumbR 0.055",
+   "thumbL 0.051"
+  ]
+ }
+}

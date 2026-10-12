@@ -1,1 +1,0 @@
-{"shots":[["relaxed","out/tmp_hands/relaxed.png"],["open","out/tmp_hands/open.png"],["cup","out/tmp_hands/cup.png"],["press","out/tmp_hands/press.png"],["grip","out/tmp_hands/grip.png"],["fist","out/tmp_hands/fist.png"],["point","out/tmp_hands/point.png"]],"wrists":{"near":[385,1490],"far":[1150,1480]},"ref":"characters/mum2/ref/standing_34.jpg","out":"out/mum2_hands.png"}

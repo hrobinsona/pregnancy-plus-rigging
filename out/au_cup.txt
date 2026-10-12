@@ -1,2 +1,0 @@
-detail audit mum2/_au_cup: 1 findings (4 allowed by audit_allow.json) (render 1866x4592, 692 px/H, thin < 0.024 H)
-  1 spur/thin     skin          at (-1.128, -2.996) H  size 0.016×0.022 H  area 85 px

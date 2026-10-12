@@ -1,1 +1,23 @@
-{"name": "face-uneasy", "face": {"lid": {"open": 0.85, "closed": 0.15}, "gaze": [0.004, 0.016], "mouth": {"neutral": 1}, "cheek": {"blush": 1}, "brow": {"knit": 0.8, "neutral": 0.2}}}
+{
+ "name": "face-uneasy",
+ "face": {
+  "lid": {
+   "open": 0.6,
+   "closed": 0.4
+  },
+  "gaze": [
+   0.004,
+   0.042
+  ],
+  "mouth": {
+   "frown": 1
+  },
+  "cheek": {
+   "blush": 1
+  },
+  "brow": {
+   "worry": 0.9,
+   "knit": 0.2
+  }
+ }
+}

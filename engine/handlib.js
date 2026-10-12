@@ -24,8 +24,9 @@ export function expandHands(pose, lib, sides) {
   if (!pose.hands || !lib) return pose;
   const bones = {};
   for (const [side, sd0] of Object.entries(sides || {})) {
-    const sd = pose.handView?.[side] === 'back' && sd0.back ? sd0.back : sd0;   // a view SWAP: the pose drives the drawing it shows
-    if (pose.hands[side]) Object.assign(bones, handBones(sd.prefix, pose.hands[side], lib, sd.spreadSign));
+    // a view SWAP shows one of two drawings of the same hand: expand the shape into BOTH, so a swap timed independently
+    // of the keys (anim spec.swaps) never shows a drawing whose fingers were left at zero
+    if (pose.hands[side]) for (const sd of [sd0, sd0.back].filter(Boolean)) Object.assign(bones, handBones(sd.prefix, pose.hands[side], lib, sd.spreadSign));
   }
   return { ...pose, bones: { ...bones, ...(pose.bones || {}) } };
 }

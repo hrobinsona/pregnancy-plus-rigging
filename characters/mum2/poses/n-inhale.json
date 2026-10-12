@@ -1,0 +1,77 @@
+{
+ "name": "n-inhale",
+ "note": "the deep IN-breath through the hand, MEASURED (two fitted stills): vs the out-breath (k6) the head lifts ~15\u00b0 of nod, the shoulders rise ~10\u00b0, the chest straightens ~3\u00b0; +3\u00b0 shoulders so it reads at phone size",
+ "_recipe": "n-inhale fit-k6in1 fit-k6in2 0.5 --add clavicle.near=3,clavicle.far=-3 --note the deep IN-breath through the hand, MEASURED (two fitted stills): vs the out-breath (k6) the head lifts ~15\u00b0 of nod, the shoulders rise ~10\u00b0, the chest straightens ~3\u00b0; +3\u00b0 shoulders so it reads at phone size",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 11.0,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0105,
+  0.0267
+ ],
+ "bones": {
+  "armAbd.far": -34.2,
+  "armAbd.near": -11.8,
+  "armRot.far": 52.15,
+  "armRot.near": 2,
+  "belly": 3,
+  "chest": -6.25,
+  "clavicle.far": -12.35,
+  "clavicle.near": 5.95,
+  "foot.far": -0.9,
+  "foot.near": 3.9,
+  "foreRot.far": 1.45,
+  "foreRot.near": -0.05,
+  "forearm.far": 124.2,
+  "forearm.near": 18.55,
+  "hand.far": -2.95,
+  "hand.near": 0.75,
+  "head": -1.65,
+  "hipAbd.far": 0.1,
+  "hipAbd.near": 0,
+  "neck": 0.9,
+  "pelvis": 0.3,
+  "shin.far": -0.75,
+  "shin.near": -2,
+  "shoulderAbd.far": 16.1,
+  "shoulderAbd.near": -11.75,
+  "spineLower": 5.35,
+  "spineUpper": -2.9,
+  "thigh.far": -0.1,
+  "thigh.near": 1.35,
+  "upperArm.far": 52.4,
+  "upperArm.near": -19.25
+ },
+ "_orig": {},
+ "scale": {
+  "spineUpper": [
+   1.04,
+   1.06
+  ],
+  "chest": [
+   1.12,
+   1.04
+  ]
+ },
+ "_edits": [
+  "--scale spineUpper=1.04:1.06,chest=1.12:1.04",
+  "--fx headPitch=11,pinNear=1,armFree=0"
+ ]
+}

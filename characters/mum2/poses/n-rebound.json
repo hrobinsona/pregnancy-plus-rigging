@@ -1,0 +1,75 @@
+{
+ "name": "n-rebound",
+ "note": "the release comes a third of the way up: she stays hunched, the second hit must read against it",
+ "_recipe": "n-rebound fit-k4 n-hit2 0.55 --hands near=press --note the release comes a third of the way up: she stays hunched, the second hit must read against it",
+ "hands": {
+  "near": "press",
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 29.0,
+  "pinNear": 1.0,
+  "swivelFar": 30.0
+ },
+ "root": [
+  -0.1055,
+  0.0602
+ ],
+ "bones": {
+  "armAbd.far": -26.77,
+  "armAbd.near": -3.11,
+  "armRot.far": 63.75,
+  "armRot.near": 34.16,
+  "belly": 3,
+  "chest": 1.13,
+  "clavicle.far": -3.38,
+  "clavicle.near": -3.15,
+  "foot.far": 8.73,
+  "foot.near": 9.5,
+  "foreRot.far": 3.06,
+  "foreRot.near": 4.1,
+  "forearm.far": 128.91,
+  "forearm.near": 60.85,
+  "hand.far": -23.72,
+  "hand.near": 17.69,
+  "head": -2.08,
+  "hipAbd.far": 0.01,
+  "hipAbd.near": 0.45,
+  "neck": 0.14,
+  "pelvis": 0,
+  "shin.far": -26.56,
+  "shin.near": -23.2,
+  "shoulderAbd.far": 19.93,
+  "shoulderAbd.near": -12.43,
+  "spineLower": 12.94,
+  "spineUpper": 1.22,
+  "thigh.far": 17.65,
+  "thigh.near": 15.86,
+  "upperArm.far": 46.75,
+  "upperArm.near": -12.76
+ },
+ "_orig": {},
+ "scale": {
+  "chest": [
+   0.72,
+   1.0
+  ],
+  "neck": [
+   0.72,
+   1.0
+  ]
+ },
+ "_edits": [
+  "--scale chest=0.72:1,neck=0.72:1",
+  "--fx headPitch=29",
+  "--fx swivelFar=30",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

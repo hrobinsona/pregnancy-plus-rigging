@@ -1,0 +1,77 @@
+{
+ "name": "n-hit",
+ "note": "the hit: the retch video's own hit frame refitted with the trunk's foreshortening \u2014 shoulders and head drop, hips go back, knees give; the head bows into the hand (nod)",
+ "_recipe": "n-hit v/retch-hit-fold --set pelvis=0,spineLower=18.7,hipAbd.near=0.4,hipAbd.far=0.1,clavicle.near=-10,clavicle.far=2,thigh.near=29,shin.near=-43,foot.near=14,thigh.far=32,shin.far=-46,foot.far=14 --hands near=press --note the hit: the retch video's own hit frame refitted with the trunk's foreshortening \u2014 shoulders and head drop, hips go back, knees give; the head bows into the hand (nod)",
+ "hands": {
+  "near": "press",
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 30.0,
+  "pinNear": 1.0,
+  "swivelFar": 50.0
+ },
+ "scale": {
+  "chest": [
+   0.62,
+   1
+  ],
+  "neck": [
+   0.62,
+   1
+  ]
+ },
+ "root": [
+  -0.1857,
+  0.1536
+ ],
+ "bones": {
+  "armAbd.far": -18.8,
+  "armAbd.near": -2.3,
+  "armRot.far": 68.2,
+  "armRot.near": 35.6,
+  "belly": 3,
+  "chest": 6.2,
+  "clavicle.far": 2,
+  "clavicle.near": -10,
+  "foot.far": 14,
+  "foot.near": 14,
+  "foreRot.far": 5.4,
+  "foreRot.near": 5,
+  "forearm.far": 131.2,
+  "forearm.near": 56.4,
+  "hand.far": -22.1,
+  "hand.near": 19.8,
+  "head": -3.2,
+  "hipAbd.far": 0.1,
+  "hipAbd.near": 0.4,
+  "neck": 1.4,
+  "pelvis": 0,
+  "shin.far": -46,
+  "shin.near": -43,
+  "shoulderAbd.far": 20.2,
+  "shoulderAbd.near": -9.1,
+  "spineLower": 18.7,
+  "spineUpper": 3.1,
+  "thigh.far": 32,
+  "thigh.near": 29,
+  "upperArm.far": 44.5,
+  "upperArm.near": -10.6
+ },
+ "_orig": {
+  "chest": -3.8
+ },
+ "_edits": [
+  "--add chest=10",
+  "--fx headPitch=30",
+  "--fx swivelFar=50",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

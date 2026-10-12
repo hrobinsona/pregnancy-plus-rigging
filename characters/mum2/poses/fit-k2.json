@@ -1,0 +1,67 @@
+{
+ "name": "fit-k2",
+ "note": "fitted to characters/mum2/refs/pose/k2_unease_v2_0.json (MediaPipe landmarks, base bump-rest)",
+ "hands": {
+  "near": "press",
+  "far": "limp"
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": -1.6,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0406,
+  0.0325
+ ],
+ "bones": {
+  "spineLower": 3.4,
+  "spineUpper": -5.5,
+  "chest": -8.9,
+  "neck": 6.1,
+  "head": 5.3,
+  "belly": 6,
+  "clavicle.far": 4,
+  "clavicle.near": 17.7,
+  "upperArm.far": -18.4,
+  "forearm.far": 88,
+  "hand.far": 34,
+  "shoulderAbd.far": 8.1,
+  "upperArm.near": -24.1,
+  "forearm.near": 66.4,
+  "shoulderAbd.near": -29.7,
+  "hand.near": 13.3,
+  "pelvis": 0.7,
+  "armAbd.near": 3.9,
+  "armRot.near": 24.9,
+  "foreRot.near": 2.6,
+  "thigh.near": 0.7,
+  "shin.near": -1.6,
+  "foot.near": 4.9,
+  "hipAbd.near": 0.1,
+  "armAbd.far": -42.2,
+  "armRot.far": 42.2,
+  "foreRot.far": 70,
+  "thigh.far": -0.3,
+  "shin.far": 2.5,
+  "foot.far": -2.7,
+  "hipAbd.far": 1.6
+ },
+ "_fit": {
+  "ref": "characters/mum2/refs/pose/k2_unease_v2_0.json",
+  "scale": 0.9784,
+  "rms": 0.0524,
+  "worst": [
+   "elbowL 0.193",
+   "shoulderR 0.099",
+   "hipL 0.076",
+   "shoulderL 0.060",
+   "earL 0.056"
+  ]
+ },
+ "_contact": "--side far --at 0.83,-3.62 --surface bump --back 1 --gap 0.04 --phi 0 --handDir 140 --hand limp (base fit-k2)",
+ "_orig": {},
+ "_edits": [
+  "--fx pinNear=1,armFree=0"
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "name": "n-cue",
+ "note": "nausea cue at the mouth: a small hunch on a hard swallow, shoulders creep up a little",
+ "_recipe": "n-cue fit-k4 --add chest=2,clavicle.near=3,clavicle.far=-3,neck=3 --hands near=press --note nausea cue at the mouth: a small hunch on a hard swallow, shoulders creep up a little",
+ "hands": {
+  "near": "press",
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 14.0,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0057,
+  0.0366
+ ],
+ "bones": {
+  "armAbd.far": -36.5,
+  "armAbd.near": -4.1,
+  "armRot.far": 58.3,
+  "armRot.near": 32.4,
+  "belly": 3,
+  "chest": -5.5,
+  "clavicle.far": -9.3,
+  "clavicle.near": 7,
+  "foot.far": 2.3,
+  "foot.near": 4,
+  "foreRot.far": 0.2,
+  "foreRot.near": 3,
+  "forearm.far": 126.1,
+  "forearm.near": 66.3,
+  "hand.far": -25.7,
+  "hand.near": 15.1,
+  "head": -0.7,
+  "hipAbd.far": -0.1,
+  "hipAbd.near": 0.5,
+  "neck": 1.6,
+  "pelvis": 0,
+  "shin.far": -2.8,
+  "shin.near": 1,
+  "shoulderAbd.far": 19.6,
+  "shoulderAbd.near": -16.5,
+  "spineLower": 5.9,
+  "spineUpper": -2.3,
+  "thigh.far": 0.1,
+  "thigh.near": -0.2,
+  "upperArm.far": 49.5,
+  "upperArm.near": -15.4
+ },
+ "_orig": {},
+ "_edits": [
+  "--fx headPitch=14,pinNear=1,armFree=0"
+ ]
+}

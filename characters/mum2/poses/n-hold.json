@@ -1,0 +1,69 @@
+{
+ "name": "n-hold",
+ "note": "uncurls slowly, still a little hunched",
+ "_recipe": "n-hold fit-k6 n-hit 0.3 --note uncurls slowly, still a little hunched",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 24.0,
+  "pinNear": 1.0,
+  "swivelFar": 10.0
+ },
+ "root": [
+  -0.0495,
+  0.0452
+ ],
+ "bones": {
+  "armAbd.far": -31.19,
+  "armAbd.near": -4.61,
+  "armRot.far": 65.96,
+  "armRot.near": 28.25,
+  "belly": 3,
+  "chest": -0.8,
+  "clavicle.far": -3.39,
+  "clavicle.near": -8.95,
+  "foot.far": 4.69,
+  "foot.near": 8.12,
+  "foreRot.far": 1.69,
+  "foreRot.near": 2.83,
+  "forearm.far": 126.3,
+  "forearm.near": 61.79,
+  "hand.far": -25.67,
+  "hand.near": 16.72,
+  "head": -7.68,
+  "hipAbd.far": 0.38,
+  "hipAbd.near": 0.12,
+  "neck": 1.33,
+  "pelvis": 0.21,
+  "shin.far": -11.77,
+  "shin.near": -12.76,
+  "shoulderAbd.far": 19.99,
+  "shoulderAbd.near": -10.01,
+  "spineLower": 8.97,
+  "spineUpper": 1,
+  "thigh.far": 7.78,
+  "thigh.near": 8.63,
+  "upperArm.far": 47.02,
+  "upperArm.near": -16.2
+ },
+ "_orig": {},
+ "_edits": [
+  "--fx headPitch=24",
+  "--fx swivelFar=10",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

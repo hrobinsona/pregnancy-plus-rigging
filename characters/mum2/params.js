@@ -29,7 +29,11 @@ export const joints = {
   neck: [-0.07, -4.86], head: [-0.08, -5.1], headTip: lm('skullTop'),
   bellyBase: [0.22, -3.42], bellyApex: lm('bellyApex'),
   clavicleNear: [-0.16, -4.76], shoulderNear: lm('shoulderNear'), elbowNear: lm('elbowNear'), wristNear: lm('wristNear'),
-  clavicleFar: [0.06, -4.76], shoulderFar: lm('shoulderFar'), elbowFar: lm('elbowFar'), wristFar: lm('wristFar'),
+  clavicleFar: [0.06, -4.76], shoulderFar: lm('shoulderFar'), wristFar: lm('wristFar'),
+  // the 3D arm needs TRUE segment lengths, equal on both sides: the far arm's drawn elbow (rest ref) sat low, giving a 1.0 H
+  // upper arm and a 0.79 H forearm (the near arm: 0.88 / 0.89) — a far hand raised to the mouth then fell short. Put the far
+  // elbow at the near arm's upper-arm length along the drawn direction.
+  elbowFar: ((s, e, L) => { const d = Math.hypot(e[0] - s[0], e[1] - s[1]); return [s[0] + (e[0] - s[0]) * L / d, s[1] + (e[1] - s[1]) * L / d]; })(lm('shoulderFar'), lm('elbowFar'), Math.hypot(lm('elbowNear')[0] - lm('shoulderNear')[0], lm('elbowNear')[1] - lm('shoulderNear')[1])),
   hipNear: lm('hipNear'), kneeNear: lm('kneeNear'), ankleNear: lm('ankleNear'), ballNear: [-0.03, -0.01], toeNear: [lm('toeNear')[0] - 0.18, lm('toeNear')[1] + 0.05],
   hipFar: lm('hipFar'), kneeFar: [lm('kneeFar')[0], lm('kneeFar')[1] - 0.03], ankleFar: [lm('ankleFar')[0], lm('ankleFar')[1] - 0.07], ballFar: [0.75, -0.17], toeFar: [lm('toeFar')[0], lm('toeFar')[1] - 0.07],   // far foot sits back in depth
 };
@@ -71,7 +75,9 @@ export const P = {
   hem: { near: lm('hemNear'), front: lm('hemFront'), far: lm('hemFar') },
   shoulderTop: { near: lm('shoulderTopNear'), far: lm('shoulderTopFar') },
   // sleeves: half-widths along shoulder → elbow → cuff
-  cuffEnd: { near: 0.92, far: 0.84 },   // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
+  wrapFingers: { shift: 0 },   // fingertips wrapped round the bump rim (parts/wrap.js): placed up the rim from the hidden hand, at mid-bump as in refs k1/k8
+  cuffEnd: { near: 0.92, far: 0.9 },   // far 0.84 → 0.9 when its forearm got its true length (0.79 → 0.91 H)
+    // cuff's flat end as a fraction elbow→wrist (its rounded end then lands on the reference cuff edge)
   sleeve: { near: [0.2, 0.2, 0.19, 0.2], far: [0.19, 0.19, 0.18, 0.19], outer: [1.0, 1.1, 1.04, 1.0], inner: [1.0, 0.92, 0.88, 1.0] },
   // legs (jogger half-widths at hip, knee, above cuff) and centre offsets measured as widths
   leg: { near: { hip: 0.34, knee: 0.3, cuff: 0.2, calfK: 1.06, outer: [1.06, 1.2, 1.06, 1.0, 1], inner: [1.12, 1.16, 1.08, 0.94, 1] }, far: { hip: 0.32, knee: 0.28, cuff: 0.18, cuffK: 0.92, calfK: 1.06, outer: [1.02, 1.16, 1.02, 0.94, 1], inner: [1.0, 1.08, 1.05, 0.94, 1] } },   // ¾: legs nearly touch at the crotch and open as a narrow wedge (measured ref gap 0.05 H @-2.0 → 0.16 @-1.2); far ≈ 0.94× near; the near knee bulges inward
@@ -106,7 +112,18 @@ export const handSpecs = {
 // far (her left) hand, BACK view: the swap drawing used when the far hand turns its palm away (resting on the bump). Same
 // size as the far hand, back-of-hand construction like the near hand, mirrored for the left hand (thumbSide −1, flexion
 // senses flipped). Its own bones (hand.farB.*) hang off the same wrist bone (hand.far); a pose picks it with handView.far.
-handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', thumbSide: -1, flexFx: -0.1, thumbFx: 0.15, palmLines: false, lineStart: undefined, crease: undefined, creaseHook: undefined,
+handSpecs.farBack = { ...handSpecs.far, id: 'hand.farB', view: 'back', length: 0.46, wristW: 0.27, palmW: 0.29,   // its TRUE size (= the near hand; refs: wrist→middle tip 0.45 H at the mouth): the far palm drawing (0.38) is foreshortened round the bump
+  thumbSide: -1, flexFx: -0.1, thumbFx: 0.15, palmLines: false, lineStart: undefined, crease: undefined, creaseHook: undefined,
   thumb: { mcp: [0.4, 1.05], dir: 19, w: 1.05, taper: [1, 0.88, 0.76] }, thenarEdge: [1.25, 1.15], thumbWeb: [0.88, 0.86], hypo: 0.018, fingerLen: [0.86, 1.0, 0.94, 0.76], thumbLine: false };
+// DEPTH PROXIES (engine/depth.js): the body as a few 3D volumes on its midline, for draw-order decisions of the 3D arm.
+// Measured on the rest drawing in the ¾ view (forwardX 0.72): the shoulder joints sit 0.735 H either side of the midline;
+// each proxy's SCREEN silhouette is matched to the drawing (tools/depth_view.mjs); the face front ≈ 0.5 H before the head centre.
+export const depth = { midL: 0.735, proxies: [
+  { name: 'trunk', kind: 'cylinder', bone: 'spineUpper', at: [-0.08, -3.75], F: 0.0, axes: [0.42, 1.15, 0.62] },
+  { name: 'bump', kind: 'ellipsoid', bone: 'belly', at: [0.43, -3.6], F: 0.0, axes: [0.44, 0.53, 0.44] },   // sized to the DRAWN bump's silhouette (screen x 0…0.87, y −4.12…−3.06): a swap is invisible only where proxy and drawing agree
+  { name: 'neck', kind: 'cylinder', bone: 'neck', at: [-0.07, -4.98], F: 0.0, axes: [0.24, 0.2, 0.22] },
+  { name: 'head', kind: 'ellipsoid', bone: 'head', at: [-0.05, -5.6], F: 0.0, axes: [0.5, 0.65, 0.42] },
+  { name: 'jaw', kind: 'ellipsoid', bone: 'head', at: [-0.05, -5.2], F: 0.22, axes: [0.32, 0.32, 0.3] },   // the face's lower half juts forward: mouth, chin
+] };
 export const frame = { bbox: [[-1.45, -6.5], [1.5, 0.05]], fill: 0.86, dy: 0 };   // fits the A-pose hands (detail audit)
 export const ref = { sizePx: L.sizePx, groundPx: L.ground, Hpx, image: 'ref/standing_34.jpg' };

@@ -1,5 +1,5 @@
 // head.js — face, ear, features (bone: head). Construction points come from landmarks + design offsets.
-// Face rig channels (pose.face): lid {open|closed|wide} (normalised weights), gaze [dx,dy] (H), mouth {smile|neutral|warm|blow}, cheek {blush|sick}.
+// Face rig channels (pose.face): lid {open|closed|wide} (normalised weights), gaze [dx,dy] (H), mouth {smile|neutral|warm|blow|frown}, brow {knit|worry}, cheek {blush|sick}.
 import { loop, taper, ellipse, egg } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { mapGeom, lerp } from '../../../engine/geom.js';
@@ -11,7 +11,8 @@ const MOUTHS = {   // offsets from the mouth landmark (H): 5 centreline points +
   smile: { p: [[-0.07, -0.013], [-0.036, 0.011], [0.004, 0.02], [0.044, 0.01], [0.08, -0.018]], w: [0.016, 0.02, 0.022, 0.02, 0.016] },
   neutral: { p: [[-0.06, 0.004], [-0.03, 0.01], [0.004, 0.012], [0.038, 0.009], [0.068, 0.002]], w: [0.016, 0.019, 0.02, 0.019, 0.016] },
   warm: { p: [[-0.078, -0.022], [-0.04, 0.012], [0.004, 0.024], [0.048, 0.011], [0.088, -0.026]], w: [0.017, 0.022, 0.024, 0.022, 0.017] },
-  blow: { p: [[-0.032, 0.006], [-0.016, 0.013], [0.003, 0.016], [0.021, 0.013], [0.036, 0.006]], w: [0.014, 0.03, 0.038, 0.03, 0.014] },   // a sigh / slow out-breath: short, rounded, parted
+  blow: { p: [[-0.032, 0.006], [-0.016, 0.013], [0.003, 0.016], [0.021, 0.013], [0.036, 0.006]], w: [0.014, 0.03, 0.038, 0.03, 0.014] },
+  frown: { p: [[-0.056, 0.02], [-0.03, 0.008], [0.004, 0.004], [0.036, 0.008], [0.062, 0.02]], w: [0.014, 0.018, 0.019, 0.018, 0.014] },   // corners down: worry, unease (ref k2)   // a sigh / slow out-breath: short, rounded, parted
 };
 
 export const ANCHORS = { 'face': 9, 'ear': 8, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'brow.near': 8, 'brow.far': 8,
@@ -65,7 +66,10 @@ export function build({ P: C, C: char, pose }) {
     const b = X.brows[side], L = X.brows.len[side === 'near' ? 0 : 1], dy = open > 1 ? (1 - open) * 0.06 : (1 - open) * 0.012;   // wide eyes lift the brows
     // knit (worry / nausea): the INNER ends drop and pull toward the nose, the middle lifts a touch (pose.face.brow.knit)
     const kn = wsum(pose.face?.brow, 'knit'), inR = side === 'near' ? 1 : 0;        // near brow: inner end is the right end
-    const kd = (end) => (end === inR ? [(inR ? -1 : 1) * 0.012 * kn, 0.022 * kn] : [0, -0.004 * kn]);
+    // worry (pose.face.brow.worry): the INNER ends rise and draw together, the outer ends sink a little — the "oh no" brow
+    // (ref k2), unlike knit's lowered inner ends (the squeeze of nausea)
+    const wo = wsum(pose.face?.brow, 'worry');
+    const kd = (end) => (end === inR ? [(inR ? -1 : 1) * (0.012 * kn + 0.01 * wo), 0.022 * kn - 0.03 * wo] : [0, -0.004 * kn + 0.012 * wo]);
     const e0 = kd(0), e1 = kd(1);
     out.push(part(`brow.${side}`, 54, C.hair, taper([[b[0] - L / 2 + e0[0], b[1] + 0.012 + dy + e0[1]], [b[0], b[1] - 0.008 + dy - 0.006 * kn], [b[0] + L / 2 + e1[0], b[1] + 0.006 + dy + e1[1]]], [0.014, X.brows.w, 0.012], 'round')));
   }

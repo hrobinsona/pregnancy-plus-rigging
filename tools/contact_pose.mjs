@@ -1,0 +1,49 @@
+// contact_pose.mjs — make a key pose whose hand RESTS ON the body at a chosen spot, with the 3D arm solved to it.
+//   node tools/contact_pose.mjs <char> <basePose> <outPose> --side far --at x,y (screen H, the wrist) --surface bump
+//        [--gap 0.05] [--back] [--phi deg (elbow swivel; default: the base pose's)] [--handDir deg (screen angle the hand points)]
+//        [--hand '{"pose":"relaxed","mix":{"cup":0.35}}'] [--view back]
+// For contacts no reference shows (or shows badly): the wrist goes on the proxy's near surface at that point of the screen
+// (engine/depth.js), the arm comes from 2-bone 3D IK at the given swivel, the hand is turned to point along the surface.
+// Everything else is copied from the base pose; the recipe is stored in the pose (_contact) so it can be re-made.
+import fs from 'node:fs';
+import { createRig } from '../engine/rig.js';
+import { armFrame, armPoints, proxies, rayHits, swivelOf, ik2, armAngles } from '../engine/depth.js';
+const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : d; };
+const [char, baseName, outName] = argv, D = `characters/${char}/`;
+const C = (await import(`../${D}character.js`)).default, rig = createRig(C), J = C.joints, BONE = rig.BONE;
+const base = JSON.parse(fs.readFileSync(`${D}poses/${baseName}.json`)), pose = structuredClone(base); pose.bones ||= {};
+const side = arg('side', 'far'), S = side === 'near' ? 'Near' : 'Far', ua = `upperArm.${side}`, fa = `forearm.${side}`, ha = `hand.${side}`, ab = `armAbd.${side}`, ar = `armRot.${side}`;
+const at = arg('at').split(',').map(Number), gap = +arg('gap', 0.05);
+const L = (a, b) => Math.hypot(J[b][0] - J[a][0], J[b][1] - J[a][1]), L1 = L('shoulder' + S, 'elbow' + S), L2 = L('elbow' + S, 'wrist' + S);
+const st0 = rig.solve(pose), fr0 = armFrame(rig, st0, side), A0 = armPoints(rig, st0, side);
+const phi = arg('phi') !== undefined ? +arg('phi') * Math.PI / 180 : swivelOf(A0.el, A0.wr);
+let z = fr0.depthOf(A0.wr);
+if (arg('surface')) {
+  const q = proxies(rig, st0, fr0).find((p) => p.name === arg('surface')), h = q && rayHits(fr0.toBody(at, 0), fr0, [q])[0];
+  if (!h) throw new Error(`the point ${at} is not over the ${arg('surface')} proxy`);
+  z = arg('back') !== undefined ? h.t1 + gap : h.t0 - gap;   // --back: on the FAR surface (a hand round the far side of the bump)
+}
+const keyed = { e: pose.bones[ua] || 0, al: pose.bones[ab] || 0, tau: pose.bones[ar] || 0 }, lim = (b) => [BONE[b].min ?? -180, BONE[b].max ?? 180];
+let aim = at.slice();
+for (let it = 0; it < 4; it++) {
+  const fr = armFrame(rig, rig.solve(pose), side), sol = ik2(fr.fromScreen(aim, z), L1, L2, phi), g = armAngles(sol.el, sol.wr, L1, L2, keyed, { e: lim(ua), al: lim(ab) });
+  Object.assign(pose.bones, { [ua]: g.e, [ab]: g.al, [ar]: g.tau, [fa]: g.c });
+  const w = rig.solve(pose)[ha].pos; aim = [aim[0] + at[0] - w[0], aim[1] + at[1] - w[1]];
+}
+if (arg('handDir') !== undefined) {
+  // the hand's direction on screen comes from the wrist bend AND the forearm's twist (which turns the plane it bends in):
+  // scan both, prefer little twist
+  const want = +arg('handDir'), r0 = rig.restAngle(BONE[ha]), fr_ = `foreRot.${side}`;
+  const err = (v, t) => { const p = { ...pose, bones: { ...pose.bones, [ha]: v, [fr_]: t } }; return Math.abs(((r0 + rig.solve(p)[ha].rot - want + 540) % 360) - 180); };
+  let best = [pose.bones[ha] || 0, pose.bones[fr_] || 0], be = Infinity;
+  for (let t = -90; t <= 90; t += 10) for (let v = BONE[ha].min; v <= BONE[ha].max; v += 2) { const e = err(v, t) + 0.05 * Math.abs(t); if (e < be) { be = e; best = [v, t]; } }
+  pose.bones[ha] = best[0]; pose.bones[fr_] = best[1]; if (err(...best) > 10) console.warn(`hand direction: closest reachable is ${err(...best).toFixed(0)}° off`);
+}
+if (arg('hand')) { let h = arg('hand'); try { h = JSON.parse(h); } catch {} pose.hands = { ...(pose.hands || {}), [side]: h }; }
+if (arg('view')) pose.handView = { ...(pose.handView || {}), [side]: arg('view') };
+for (const k of [ua, fa, ha, ab, ar]) pose.bones[k] = Math.round(pose.bones[k] * 10) / 10;
+pose.name = outName; pose._contact = argv.slice(3).join(' ') + ` (base ${baseName})`;
+delete pose._orig; delete pose._edits;
+fs.writeFileSync(`${D}poses/${outName}.json`, JSON.stringify(pose, null, 1));
+const w = rig.solve(pose)[ha].pos;
+console.log(`${outName}: ${side} wrist at ${w.map((v) => v.toFixed(3))} (asked ${at}), depth ${z.toFixed(2)}, swivel ${(phi * 180 / Math.PI).toFixed(0)}°; arm e ${pose.bones[ua]} abd ${pose.bones[ab]} rot ${pose.bones[ar]} elbow ${pose.bones[fa]} hand ${pose.bones[ha]}`);

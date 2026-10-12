@@ -1,238 +1,121 @@
 {
  "name": "nausea-to-belly",
  "fps": 30,
- "duration": 10.0,
+ "duration": 12,
  "loop": true,
  "exposure": "ones",
- "story": "Calm, one hand resting on her bump, her thumb stroking it. Something's not right \u2014 a small intake, her fingers press in, she swallows and her eyes drop. Then the nausea comes: her hand lifts in front of her and covers her mouth as her eyes squeeze shut; her throat clenches and she retches \u2014 a sharp hit, a release, a smaller second one \u2014 her other hand grabbing her cardigan; she rides it out with two slow, controlled breaths through her hand; it passes \u2014 her hand peels away and falls back to her bump with a long sigh, and she softens, looking down at it with relief.",
+ "story": "Calm, both hands resting on her bump, her thumb stroking it. Something's not right \u2014 a small intake, her fingers press in, she swallows and her eyes drop. The nausea rises: her far hand leaves her bump and comes up to cover her mouth as her eyes close; she swallows hard behind her hand, then takes one deep breath in \u2014 shoulders and ribcage rising \u2014 and lets it out slowly, her shoulders dropping. It passes: her hand eases off her lips and comes down to hold her bump, and with both hands on it she softens, looking down at it with love.",
  "beats": [
   {
    "name": "calm",
    "from": 0,
-   "to": 40
+   "to": 34
   },
   {
    "name": "unease",
-   "from": 38,
-   "to": 54
+   "from": 32,
+   "to": 62
   },
   {
    "name": "hand to mouth",
-   "from": 49,
-   "to": 80
+   "from": 58,
+   "to": 86
   },
   {
-   "name": "retch",
-   "from": 78,
-   "to": 120
+   "name": "nausea cues",
+   "from": 82,
+   "to": 112
   },
   {
-   "name": "breath 1",
-   "from": 116,
-   "to": 186
+   "name": "deep breath in",
+   "from": 108,
+   "to": 152
   },
   {
-   "name": "breath 2",
-   "from": 184,
-   "to": 226
+   "name": "long breath out",
+   "from": 148,
+   "to": 212
   },
   {
-   "name": "hand down + sigh",
-   "from": 222,
-   "to": 262
+   "name": "hand down",
+   "from": 208,
+   "to": 242
   },
   {
-   "name": "relief, looking down",
-   "from": 258,
-   "to": 300
+   "name": "relief, loving hold",
+   "from": 238,
+   "to": 360
   }
  ],
  "keys": [
   {
-   "t": 0.2667,
-   "pose": "bump-rest",
-   "ease": "slowIn",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   }
+   "t": 0.3,
+   "pose": "fit-k1",
+   "ease": "inOut",
+   "note": "calm: both hands on the bump, near thumb stroking (k1)"
+  },
+  {
+   "t": 1.1,
+   "pose": "fit-k1",
+   "ease": "inOut"
   },
   {
    "t": 1.3,
-   "pose": "bump-rest",
+   "pose": "fit-k2",
    "ease": "inOut",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   }
+   "note": "something's off: a small intake, near fingers press in, brows go up, eyes drop"
   },
   {
-   "t": 1.4667,
-   "pose": "recoil",
-   "ease": "snap",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   },
-   "note": "jolt: a small intake, slight head pull-back, fingers press into the bump"
-  },
-  {
-   "t": 1.6667,
-   "pose": "recoil-swallow",
+   "t": 1.75,
+   "pose": "n-swallow",
    "ease": "inOut",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   },
-   "note": "a swallow: chin dips, eyes drop to the belly"
+   "note": "a swallow: chin dips, eyes on the bump"
   },
   {
-   "t": 2.4,
-   "pose": "mouth-cover",
+   "t": 2,
+   "pose": "n-swallow",
    "ease": "inOut",
-   "note": "the hand arrives over the mouth (reach f51\u201371); head comes forward to meet it"
+   "kind": "breakdown",
+   "note": "\u2014 and the nausea rises"
   },
   {
-   "t": 2.7,
-   "pose": "gag-wind",
+   "t": 2.42,
+   "pose": "n-lift",
    "ease": "inOut",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "wind-up: chin tucks, hard swallow, shoulders creep up; far hand grabs the cardigan"
+   "kind": "breakdown",
+   "note": "the far hand rises in front of her chest, head comes forward to meet it (k3)"
   },
   {
-   "t": 2.8667,
-   "pose": "gag-wind",
+   "t": 2.68,
+   "pose": "n-lift",
    "ease": "inOut",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   }
+   "only": [
+    "bone.hand.far",
+    "bone.hand.farB"
+   ],
+   "note": "one loose curl until the lips; the fingers open over the mouth on contact"
   },
   {
-   "t": 3.0333,
-   "pose": "gag",
-   "ease": "heave",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "the hit (5f): shoulders up, back curls, head drives into the hand, knees soften"
-  },
-  {
-   "t": 3.1,
-   "pose": "gag",
+   "t": 2.8,
+   "pose": "fit-k4",
    "ease": "inOut",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "held 2f"
+   "note": "hand over the mouth, head dips into it (k4)"
   },
   {
-   "t": 3.3333,
-   "pose": "gag-rebound",
+   "t": 3.25,
+   "pose": "n-cue",
    "ease": "inOut",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "release"
+   "note": "nausea cue: a small hunch on a hard swallow behind the hand"
   },
   {
-   "t": 3.4667,
-   "pose": "gag-small",
-   "ease": "heave",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "second hit, smaller"
-  },
-  {
-   "t": 3.5333,
-   "pose": "gag-small",
+   "t": 3.7,
+   "pose": "n-cue",
    "ease": "inOut",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   }
+   "note": "holds it"
   },
   {
-   "t": 3.9333,
-   "pose": "gag-hold",
-   "ease": "slowIn",
-   "shift": {
-    "pelvis": 1,
-    "spineLower": 1,
-    "spineUpper": -1,
-    "chest": -2,
-    "clavicle.near": -1,
-    "clavicle.far": -3,
-    "neck": -3,
-    "head": -4
-   },
-   "note": "releases, still curled, knees soft"
-  },
-  {
-   "t": 4.8667,
-   "pose": "hunch-in",
+   "t": 5,
+   "pose": "n-inhale",
    "ease": "breath",
    "shift": {
     "spineUpper": 1,
@@ -241,11 +124,11 @@
     "neck": 1,
     "head": 2
    },
-   "note": "breath 1 IN: shoulders, chest and the raised elbow lift, head comes up"
+   "note": "ONE deep breath IN through the hand (1.3 s): ribcage swells, shoulders and the raised elbow rise, the head lifts a touch"
   },
   {
-   "t": 6.1333,
-   "pose": "hunch-out",
+   "t": 6.9,
+   "pose": "n-exhale",
    "ease": "breath",
    "shift": {
     "spineUpper": 1,
@@ -254,130 +137,479 @@
     "neck": 1,
     "head": 2
    },
-   "note": "breath 1 OUT: shoulders drop, head bows"
+   "note": "the long breath OUT (1.9 s): shoulders drop, a soft slump \u2014 it passes"
   },
   {
-   "t": 7.0,
-   "pose": "hunch-in",
-   "ease": "breath",
-   "shift": {
-    "spineUpper": 1,
-    "clavicle.near": 3,
-    "clavicle.far": 1,
-    "neck": 1,
-    "head": 2
-   },
-   "note": "breath 2 IN"
-  },
-  {
-   "t": 7.4,
-   "pose": "hunch-in",
+   "t": 7.12,
+   "pose": "fit-k7",
    "ease": "inOut",
-   "shift": {
-    "spineUpper": 1,
-    "clavicle.near": 3,
-    "clavicle.far": 1,
-    "neck": 1,
-    "head": 2
-   },
-   "note": "held at the top: it has passed"
+   "kind": "breakdown",
+   "except": [
+    "hand.far",
+    "hand.farB"
+   ],
+   "note": "the hand eases off her lips (k7)"
   },
   {
-   "t": 8.1333,
-   "pose": "relief-sigh",
+   "t": 7.13,
+   "pose": "n-sigh",
    "ease": "inOut",
-   "shift": {
-    "spineUpper": 1,
-    "clavicle.near": 3,
-    "clavicle.far": 1,
-    "neck": 1,
-    "head": 2
-   },
-   "note": "the sigh, seen: shoulders drop as the hand falls"
+   "only": [
+    "bone.hand.far",
+    "bone.hand.farB"
+   ],
+   "note": "the fingers come together, relaxed, as they leave the lips"
   },
   {
-   "t": 8.5333,
-   "pose": "bump-rest",
+   "t": 7.6,
+   "pose": "n-sigh",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "except": [
+    "hand.far",
+    "hand.farB"
+   ],
+   "note": "shoulders settle as the hand comes down"
+  },
+  {
+   "t": 7.61,
+   "pose": "n-sigh",
+   "ease": "inOut",
+   "only": [
+    "bone.hand.far",
+    "bone.hand.farB"
+   ],
+   "note": "relaxed fingers as the hand comes down"
+  },
+  {
+   "t": 8.25,
+   "pose": "fit-k8",
    "ease": "slowIn",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   },
-   "note": "the hand settles on the bump"
+   "note": "the hand settles round the far side of the bump: both hands holding it"
   },
   {
-   "t": 9.2,
-   "pose": "relief-look",
+   "t": 9,
+   "pose": "n-look",
    "ease": "slowIn",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   },
-   "note": "chin drops toward the bump"
+   "note": "chin drops toward the bump: relieved, looking down at it with love"
   },
   {
-   "t": 9.7333,
-   "pose": "relief-look",
-   "ease": "inOut",
-   "shift": {
-    "spineUpper": -1,
-    "clavicle.near": 0,
-    "clavicle.far": -2,
-    "neck": -2,
-    "head": -3
-   }
+   "t": 11.4,
+   "pose": "n-look",
+   "ease": "inOut"
   }
  ],
  "wrapEase": "slowIn",
  "reach": {
-  "near": [
+  "far": [
    {
-    "t": 1.7,
-    "pose": "bump-rest",
+    "t": 1.98,
+    "pose": "fit-k2",
     "on": "belly"
    },
    {
     "t": 0,
-    "pose": "lift-via",
-    "on": "chest",
-    "via": true
+    "pose": "fit-k2",
+    "on": "belly",
+    "via": true,
+    "dp": [
+     0.02,
+     -0.35
+    ],
+    "surface": "bump",
+    "gap": 0.06,
+    "front": true,
+    "note": "slides up off the side of the bump, fingers trailing"
    },
    {
-    "t": 2.3667,
-    "pose": "mouth-cover",
+    "t": 0,
+    "pose": "fit-k3",
+    "on": "chest",
+    "via": true,
+    "front": true,
+    "note": "rises a little in front of the chest and approaches the chin from the side (k3)"
+   },
+   {
+    "t": 2.8,
+    "pose": "fit-k4",
     "on": "head",
     "handLag": 3,
-    "skew": 0.25
+    "skew": 0.15,
+    "front": true,
+    "path": {
+     "seg": "lift",
+     "src": [
+      1.3333,
+      1.7917
+     ],
+     "on": "chest",
+     "m": 1,
+     "reg": 0.05,
+     "bend": 10,
+     "bias": [
+      {
+       "s0": -0.05,
+       "s1": 0.85,
+       "dp": [
+        0.1,
+        0.02
+       ]
+      }
+     ],
+     "zBy": 0.5,
+     "zFrom": 0.2,
+     "bendFrom": "contacts",
+     "twistFrom": "keys",
+     "twistAt": [
+      [
+       0,
+       "A"
+      ],
+      [
+       0.2,
+       65
+      ],
+      [
+       0.86,
+       65
+      ],
+      [
+       1,
+       "B"
+      ]
+     ],
+     "bendAt": [
+      [
+       0,
+       "A"
+      ],
+      [
+       0.25,
+       28
+      ],
+      [
+       0.86,
+       28
+      ],
+      [
+       1,
+       "B"
+      ]
+     ],
+     "rollAt": [
+      [
+       0,
+       1
+      ],
+      [
+       0.25,
+       0.75
+      ],
+      [
+       0.82,
+       0.75
+      ],
+      [
+       1,
+       1
+      ]
+     ],
+     "front": [
+      [
+       0,
+       0
+      ],
+      [
+       0.2,
+       0
+      ],
+      [
+       0.32,
+       1
+      ],
+      [
+       1,
+       1
+      ]
+     ],
+     "frame": "torso",
+     "t": [
+      1.98,
+      2.0545,
+      2.1291,
+      2.2036,
+      2.2782,
+      2.3527,
+      2.4273,
+      2.5018,
+      2.5764,
+      2.6509,
+      2.7255,
+      2.8
+     ],
+     "p": [
+      [
+       0.8552,
+       0.8662
+      ],
+      [
+       0.8711,
+       0.7949
+      ],
+      [
+       0.8888,
+       0.7054
+      ],
+      [
+       0.8941,
+       0.5916
+      ],
+      [
+       0.8807,
+       0.4462
+      ],
+      [
+       0.8407,
+       0.2645
+      ],
+      [
+       0.7746,
+       0.0558
+      ],
+      [
+       0.6955,
+       -0.1711
+      ],
+      [
+       0.6206,
+       -0.3818
+      ],
+      [
+       0.5533,
+       -0.5427
+      ],
+      [
+       0.4971,
+       -0.6354
+      ],
+      [
+       0.4625,
+       -0.6558
+      ]
+     ],
+     "z": [
+      0.2857,
+      0.2028,
+      0.1231,
+      0.0624,
+      0.0278,
+      0.0188,
+      0.029,
+      0.0524,
+      0.0699,
+      0.0676,
+      0.0384,
+      -0.0134
+     ],
+     "phi": [
+      -1.1055,
+      -0.9566,
+      -0.8186,
+      -0.7042,
+      -0.5973,
+      -0.4772,
+      -0.3393,
+      -0.178,
+      0.0064,
+      0.1883,
+      0.3158,
+      0.3725
+     ],
+     "rot": [
+      67.97,
+      77.48,
+      89.38,
+      102.11,
+      114.91,
+      127.17,
+      138.26,
+      148.21,
+      157,
+      164.74,
+      171.2,
+      175.77
+     ],
+     "local": [
+      40.53,
+      39.18,
+      37.65,
+      37.05,
+      37.56,
+      38.39,
+      38.15,
+      35.92,
+      30.67,
+      22.55,
+      12.61,
+      2.63
+     ],
+     "twist": [
+      66.09,
+      65.58,
+      63.59,
+      61.33,
+      59.31,
+      57.82,
+      56.84,
+      55.92,
+      54.7,
+      53.32,
+      52.08,
+      51.61
+     ],
+     "s": [
+      0,
+      0.0205,
+      0.068,
+      0.1254,
+      0.2058,
+      0.3131,
+      0.4391,
+      0.5761,
+      0.7114,
+      0.8379,
+      0.9576,
+      1
+     ],
+     "uv": [
+      [
+       1.3866,
+       0.612
+      ],
+      [
+       1.387,
+       0.5868
+      ],
+      [
+       1.3864,
+       0.5505
+      ],
+      [
+       1.3779,
+       0.4993
+      ],
+      [
+       1.3535,
+       0.431
+      ],
+      [
+       1.3081,
+       0.3453
+      ],
+      [
+       1.2442,
+       0.251
+      ],
+      [
+       1.1651,
+       0.1558
+      ],
+      [
+       1.0763,
+       0.0718
+      ],
+      [
+       0.9832,
+       0.0055
+      ],
+      [
+       0.9043,
+       -0.0403
+      ],
+      [
+       0.855,
+       -0.0652
+      ]
+     ],
+     "euv": [
+      [
+       1.2028,
+       0.4033
+      ],
+      [
+       1.2183,
+       0.4065
+      ],
+      [
+       1.232,
+       0.4104
+      ],
+      [
+       1.2446,
+       0.4143
+      ],
+      [
+       1.2577,
+       0.4191
+      ],
+      [
+       1.2713,
+       0.426
+      ],
+      [
+       1.2825,
+       0.4348
+      ],
+      [
+       1.2879,
+       0.4451
+      ],
+      [
+       1.2839,
+       0.4545
+      ],
+      [
+       1.2712,
+       0.4592
+      ],
+      [
+       1.2529,
+       0.4546
+      ],
+      [
+       1.2342,
+       0.4377
+      ]
+     ],
+     "elbowW": 1
+    },
+    "limp": 0
    },
    {
-    "t": 7.4667,
-    "pose": "mouth-cover",
-    "on": "head"
-   },
-   {
-    "t": 0,
-    "pose": "mouth-peel",
+    "t": 7,
+    "pose": "fit-k4",
     "on": "head",
-    "via": true
+    "front": true,
+    "note": "holds over the mouth through the breath"
    },
    {
     "t": 0,
-    "pose": "drop-via",
+    "pose": "n-fall-via",
     "on": "chest",
-    "via": true
+    "via": true,
+    "front": true,
+    "note": "halfway down: in front of her chest, the forearm about level, the wrist relaxed"
    },
    {
-    "t": 8.4667,
-    "pose": "bump-rest",
+    "t": 8.1,
+    "pose": "fit-k8",
     "on": "belly",
     "handLag": 3,
-    "skew": -0.2
+    "skew": 0,
+    "limp": 0.7,
+    "note": "comes down from the mouth to hold the far side of the bump",
+    "limpBend": -35,
+    "curve": 0.05
    }
   ]
  },
@@ -397,72 +629,74 @@
      "ease": "inOut"
     },
     {
-     "t": 1.2667,
+     "t": 1.1,
      "pose": "face-calm",
      "ease": "inOut"
     },
     {
-     "t": 1.5,
+     "t": 1.3,
      "pose": "face-uneasy",
      "ease": "snap",
-     "note": "eyes drop toward the belly, brows knit, lips press"
+     "note": "the smile drops, brows go up and together, eyes drop"
     },
     {
-     "t": 1.9333,
-     "pose": "face-uneasy",
+     "t": 1.8,
+     "pose": "face-uneasy2",
+     "ease": "inOut",
+     "note": "the swallow: eyes right down on the bump"
+    },
+    {
+     "t": 2.1,
+     "pose": "face-uneasy2",
      "ease": "inOut"
     },
     {
-     "t": 2.4,
+     "t": 2.6,
      "pose": "face-sick",
      "ease": "inOut",
-     "note": "eyes squeeze shut as the hand lands"
+     "note": "eyes close tight as the hand lands"
     },
     {
-     "t": 4.8667,
+     "t": 3.6,
      "pose": "face-sick",
      "ease": "inOut"
     },
     {
-     "t": 6.2,
+     "t": 4.3,
      "pose": "face-sick-soft",
-     "ease": "breath"
+     "ease": "breath",
+     "note": "the deep breath in: eyes closed, the squeeze easing"
     },
     {
-     "t": 7.0667,
-     "pose": "face-sick",
-     "ease": "breath"
-    },
-    {
-     "t": 7.5333,
+     "t": 5,
      "pose": "face-sick-soft",
      "ease": "inOut"
     },
     {
-     "t": 8.0,
+     "t": 6.1,
      "pose": "face-sigh",
-     "ease": "inOut",
-     "note": "the sigh: lips parted, eyes softly closed"
+     "ease": "breath",
+     "note": "the long breath out: lips parted behind the hand, eyes softly closed"
     },
     {
-     "t": 8.5333,
+     "t": 7.8,
      "pose": "face-sigh",
      "ease": "inOut"
     },
     {
-     "t": 8.8667,
+     "t": 8.3,
      "pose": "face-relief",
      "ease": "inOut",
-     "note": "the smile arrives once the hand has landed"
+     "note": "eyes open softly, looking down at the bump, the smile arrives"
     },
     {
-     "t": 9.3333,
+     "t": 9,
      "pose": "face-tender",
      "ease": "slowIn",
      "note": "eyes down to the bump"
     },
     {
-     "t": 9.8667,
+     "t": 11.5,
      "pose": "face-tender",
      "ease": "inOut"
     }
@@ -470,7 +704,7 @@
   }
  },
  "breath": {
-  "period": 5.0,
+  "period": 4,
   "phase0": 0.42,
   "amp": [
    {
@@ -478,19 +712,19 @@
     "amp": 1
    },
    {
-    "t": 1.3333,
+    "t": 1.1,
     "amp": 1
    },
    {
-    "t": 1.7333,
+    "t": 1.5,
     "amp": 0.25
    },
    {
-    "t": 7.4,
+    "t": 7,
     "amp": 0.25
    },
    {
-    "t": 8.3333,
+    "t": 8.3,
     "amp": 1
    }
   ],
@@ -520,7 +754,7 @@
   "gain": {
    "chestAlong": 0.022,
    "chestAcross": 0.026,
-   "chestDeg": -1.0,
+   "chestDeg": -1,
    "shoulderDeg": 1.6,
    "headDeg": -0.8,
    "belly": 0.012
@@ -565,7 +799,7 @@
   "samples": 512,
   "hair": {
    "near": {
-    "f": 1.0,
+    "f": 1,
     "zeta": 0.55,
     "kRot": 1.8,
     "kGrav": 0.3
@@ -578,17 +812,8 @@
    }
   },
   "belly": {
-   "f": 4.0,
+   "f": 4,
    "zeta": 0.7
-  },
-  "arms": {
-   "far": {
-    "rest": "bump-rest",
-    "f": 0.9,
-    "zeta": 0.45,
-    "kGrav": 1.0,
-    "kRot": 0.1
-   }
   }
  },
  "events": [
@@ -598,7 +823,7 @@
   },
   {
    "type": "blink",
-   "t": 9.6,
+   "t": 11.6,
    "open": 9
   }
  ],
@@ -623,50 +848,352 @@
   "forearm.far": 3,
   "hand.far": 5,
   "face": 0,
-  "fx": 0
+  "fx": 0,
+  "armAbd.far": 2,
+  "armRot.far": 2,
+  "foreRot.far": 4,
+  "fx.headPitch": 0,
+  "fx.swivelFar": 1
  },
  "fidget": [
   {
-   "t0": 0.3333,
-   "t1": 1.3333,
+   "t0": 0.25,
+   "t1": 1.15,
    "cycles": 1,
    "bones": {
-    "hand.near.t1": -25,
-    "hand.near.t2": -30,
-    "hand.near.ts": 10,
-    "hand.near": 4,
-    "hand.near.f1a": 6,
-    "hand.near.f2a": 5
+    "hand.near.t1": -45,
+    "hand.near.t2": -50,
+    "hand.near.ts": 20,
+    "hand.near": 12,
+    "hand.near.f1a": 12,
+    "hand.near.f2a": 10,
+    "hand.near.f3a": 6,
+    "fx.slide.near.x": 0.12,
+    "fx.slide.near.y": -0.04
+   },
+   "note": "calm: one slow stroke over the bump \u2014 the whole hand slides a little along it and back, the thumb sweeping (the thumb alone was invisible, critic R23\u2013R24)"
+  },
+  {
+   "t0": 1.3,
+   "t1": 1.75,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": 21,
+    "hand.near.f2a": 21,
+    "hand.near.f3a": 21,
+    "hand.near.f4a": 21,
+    "hand.near.f1b": 15,
+    "hand.near.f2b": 15,
+    "hand.near.f3b": 15,
+    "hand.near.f4b": 15,
+    "hand.near.t1": 12
+   },
+   "note": "the fingers press in on the jolt"
+  },
+  {
+   "t0": 0.2,
+   "t1": 1.2,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1a": 8,
+    "hand.far.f2a": 8,
+    "hand.far.f3a": 8,
+    "hand.far.f4a": 8
+   },
+   "note": "calm: the far hand's fingers curl a touch round the bump and ease"
+  },
+  {
+   "t0": 3,
+   "t1": 3.55,
+   "cycles": 1,
+   "bones": {
+    "neck": 3,
+    "head": 1.5,
+    "fx.headPitch": 5,
+    "chest": -1
+   },
+   "note": "nausea cue: a hard swallow behind the hand, the chin dipping into it"
+  },
+  {
+   "t0": 2.95,
+   "t1": 3.6,
+   "cycles": 1,
+   "bones": {
+    "hand.farB.f1a": 12,
+    "hand.farB.f2a": 12,
+    "hand.farB.f3a": 12,
+    "hand.farB.f4a": 12,
+    "hand.far": -4
+   },
+   "note": "the cover hand presses on the swallow"
+  },
+  {
+   "t0": 3.8,
+   "t1": 5.1,
+   "cycles": 1,
+   "bones": {
+    "hand.farB.f1a": 10,
+    "hand.farB.f2a": 10,
+    "hand.farB.f3a": 10,
+    "hand.farB.f4a": 10,
+    "hand.far": -3
+   },
+   "note": "tightens a little as she breathes in"
+  },
+  {
+   "t0": 5.2,
+   "t1": 6.5,
+   "cycles": 1,
+   "bones": {
+    "fx.slide.near.x": 0.1,
+    "fx.slide.near.y": -0.03,
+    "hand.near": 6
+   },
+   "note": "the near hand rubs the bump slowly on the out-breath (comfort)"
+  },
+  {
+   "t0": 6.2,
+   "t1": 6.85,
+   "cycles": 1,
+   "bones": {
+    "hand.farB.f1a": -14,
+    "hand.farB.f2a": -12,
+    "hand.farB.f3a": -10,
+    "hand.farB.f4a": -8,
+    "hand.far": 4
+   },
+   "note": "the cover fingers loosen as it passes"
+  },
+  {
+   "t0": 8.3,
+   "t1": 10.2,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1a": -12,
+    "hand.far.f2a": -12,
+    "hand.far.f3a": -12,
+    "hand.far.f4a": -12
+   },
+   "note": "relief: the far hand eases its hold on the bump and settles again"
+  },
+  {
+   "t0": 8.9,
+   "t1": 10.2,
+   "cycles": 1,
+   "bones": {
+    "hand.near.t1": -45,
+    "hand.near.t2": -50,
+    "hand.near.ts": 20,
+    "hand.near": 12,
+    "hand.near.f1a": 12,
+    "hand.near.f2a": 10,
+    "hand.near.f3a": 6,
+    "fx.slide.near.x": 0.12,
+    "fx.slide.near.y": -0.04
+   },
+   "note": "relief: a slow loving stroke of the bump"
+  },
+  {
+   "t0": 10.4,
+   "t1": 11.6,
+   "cycles": 1,
+   "bones": {
+    "hand.near.t1": -35,
+    "hand.near.t2": -40,
+    "hand.near.ts": 15,
+    "hand.near": 8,
+    "fx.slide.near.x": 0.08,
+    "fx.slide.near.y": -0.03
+   },
+   "note": "and another, smaller"
+  }
+ ],
+ "version": 11,
+ "swaps": [
+  {
+   "t": 2.05,
+   "handView": {
+    "far": "back"
    }
   },
   {
-   "t0": 1.3667,
-   "t1": 1.6,
-   "cycles": 1,
-   "bones": {
-    "hand.near.f1a": 14,
-    "hand.near.f2a": 14,
-    "hand.near.f3a": 14,
-    "hand.near.f4a": 14,
-    "hand.near.f1b": 10,
-    "hand.near.f2b": 10,
-    "hand.near.f3b": 10,
-    "hand.near.f4b": 10,
-    "hand.near.t1": 8
-   }
-  },
-  {
-   "t0": 8.8,
-   "t1": 9.8,
-   "cycles": 1,
-   "bones": {
-    "hand.near.t1": -25,
-    "hand.near.t2": -30,
-    "hand.near.ts": 10,
-    "hand.near": 4,
-    "hand.near.f1a": 6,
-    "hand.near.f2a": 5
+   "t": 8.1,
+   "handView": {}
+  }
+ ],
+ "pins": {
+  "channels": {
+   "pinNear": {
+    "side": "near",
+    "on": "belly",
+    "plant": "fit-k1"
    }
   }
- ]
+ },
+ "plantFeet": "ik",
+ "feelZoom": [
+  {
+   "name": "reach",
+   "from": 58,
+   "to": 86,
+   "box": [
+    450,
+    200,
+    1000,
+    1000
+   ],
+   "w": 150,
+   "cols": 14
+  },
+  {
+   "name": "breath",
+   "from": 84,
+   "to": 212,
+   "step": 4,
+   "box": [
+    60,
+    100,
+    1000,
+    1500
+   ],
+   "w": 130,
+   "cols": 14
+  },
+  {
+   "name": "return",
+   "from": 206,
+   "to": 242,
+   "box": [
+    450,
+    200,
+    1000,
+    1000
+   ],
+   "w": 150,
+   "cols": 14
+  }
+ ],
+ "feelRefs": [
+  [
+   "characters/mum2/refs/keys_sheet.png",
+   "the ILLUSTRATOR'S key poses this shot was built from (reference only: compare staging and feel of each key with ours)"
+  ],
+  [
+   "characters/mum2/refs/vref_lift.png",
+   "MOTION REFERENCE for the lift (frames of a generated style-matched video, the window the shot uses; measured, not traced): how the hand leaves the far side of the bump and comes up to the mouth"
+  ],
+  [
+   "characters/mum2/refs/vref_return.png",
+   "MOTION REFERENCE for the return (window used): the hand peels off the mouth and falls down the far side to the rim of the bump"
+  ]
+ ],
+ "video": [
+  {
+   "seg": "lift",
+   "kind": "path",
+   "side": "far",
+   "stop": 2.8,
+   "on": "chest",
+   "src": [
+    1.3,
+    1.8
+   ],
+   "smooth": 0.09,
+   "note": "seedance first\u2192last video (k2 \u2192 k4), retargeted through a TORSO frame (u across the shoulders, v shoulders\u2192hips, measured on the video's landmarks and rebuilt on her body every frame): the wrist rises up her far side (u\u22481.36) with the elbow held out at her side (u\u22481.25, v\u22480.43), then swings in to the mouth \u2014 the video's own shape and timing (fast off, cushioned in); the elbow guided to the measured elbow by its swivel; depth toward the camera by a quarter of the way; the wrist eases from the rest bend to the cover bend",
+   "m": 1,
+   "reg": 0.05,
+   "zBy": 0.5,
+   "bendFrom": "contacts",
+   "twistFrom": "keys",
+   "front": [
+    [
+     0,
+     0
+    ],
+    [
+     0.2,
+     0
+    ],
+    [
+     0.32,
+     1
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "bend": 10,
+   "easeEnds": 0.15,
+   "frame": "torso",
+   "elbowW": 1,
+   "twistAt": [
+    [
+     0,
+     "A"
+    ],
+    [
+     0.2,
+     65
+    ],
+    [
+     0.86,
+     65
+    ],
+    [
+     1,
+     "B"
+    ]
+   ],
+   "zFrom": 0.2,
+   "bendAt": [
+    [
+     0,
+     "A"
+    ],
+    [
+     0.25,
+     28
+    ],
+    [
+     0.86,
+     28
+    ],
+    [
+     1,
+     "B"
+    ]
+   ],
+   "bias": [
+    {
+     "s0": -0.05,
+     "s1": 0.85,
+     "dp": [
+      0.1,
+      0.02
+     ]
+    }
+   ],
+   "rollAt": [
+    [
+     0,
+     1
+    ],
+    [
+     0.25,
+     0.75
+    ],
+    [
+     0.82,
+     0.75
+    ],
+    [
+     1,
+     1
+    ]
+   ]
+  }
+ ],
+ "layers": [],
+ "intensity": "gentle and tender. No retching, no doubling over, no fast or violent moves. The nausea reads in her face, a swallow behind her hand and one slow deep breath; relief and love for the bump are the payoff."
 }

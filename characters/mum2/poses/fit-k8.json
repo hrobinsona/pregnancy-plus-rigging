@@ -1,0 +1,72 @@
+{
+ "name": "fit-k8",
+ "note": "fitted to characters/mum2/refs/pose/k8_relief_v2_0.json (MediaPipe landmarks, base bump-rest)",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "limp"
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": -3.4,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.005,
+  0.041
+ ],
+ "bones": {
+  "spineLower": 5.2,
+  "spineUpper": -3,
+  "chest": -6.6,
+  "neck": 5.2,
+  "head": 7.6,
+  "belly": -4,
+  "clavicle.far": 2.5,
+  "clavicle.near": 10.6,
+  "upperArm.far": -11.7,
+  "forearm.far": 87.9,
+  "hand.far": 30,
+  "shoulderAbd.far": 9.4,
+  "upperArm.near": -21.9,
+  "forearm.near": 64.3,
+  "shoulderAbd.near": -27.4,
+  "hand.near": 9.3,
+  "pelvis": 0.1,
+  "armAbd.near": -0.4,
+  "armRot.near": 28.3,
+  "foreRot.near": 1.6,
+  "thigh.near": 0.3,
+  "shin.near": -0.1,
+  "foot.near": 5.4,
+  "hipAbd.near": 0.9,
+  "armAbd.far": -37,
+  "armRot.far": 37,
+  "foreRot.far": 80,
+  "thigh.far": -0.6,
+  "shin.far": 0.4,
+  "foot.far": 2.4,
+  "hipAbd.far": 0.3
+ },
+ "_fit": {
+  "ref": "characters/mum2/refs/pose/k8_relief_v2_0.json",
+  "scale": 0.9773,
+  "rms": 0.0394,
+  "worst": [
+   "indexL 0.083",
+   "elbowL 0.077",
+   "elbowR 0.073",
+   "pinkyL 0.061",
+   "indexR 0.058"
+  ]
+ },
+ "_contact": "--side far --at 0.83,-3.62 --surface bump --back 1 --gap 0.04 --phi 0 --handDir 140 --hand limp (base fit-k8)",
+ "_orig": {},
+ "_edits": [
+  "--fx pinNear=1,armFree=0"
+ ]
+}

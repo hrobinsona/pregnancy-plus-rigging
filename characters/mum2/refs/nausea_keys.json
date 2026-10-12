@@ -1,0 +1,13 @@
+{
+ "base": "Same character as the reference image: same face, hair bun, skin tone, pink cardigan, lilac top, purple joggers, yellow socks; same flat vector illustration style with no outlines, same colours, same proportions, same 3/4 view facing right, plain white background, full body visible head to feet.",
+ "poses": {
+  "k1_calm": "She stands calmly with both hands resting gently on her pregnant belly: her near hand on the lower front of the bump, fingers relaxed and following the curve; her far hand on the far side of the bump with the fingers spread around its curve. Soft content smile, relaxed shoulders.",
+  "k2_unease": "Something feels wrong: both hands still on her pregnant belly but the fingers press in slightly, her brows knit, her eyes look down toward her belly, lips pressed together, shoulders slightly raised as she takes a small breath in.",
+  "k3_lift": "A wave of nausea: her near hand is halfway between her belly and her mouth, rising in the air in front of her chest (not touching her body), the forearm turned so the palm faces her face, fingers loosely curled, elbow forward and low. Her far hand stays on the far side of her bump. Queasy face, brows knit.",
+  "k4_cover": "Nauseous: her near hand covers her mouth, palm over her lips, fingers along her far cheek, eyes squeezed shut, brows knit, head dipped slightly into the hand. Her far hand holds the far side of her pregnant bump protectively.",
+  "k5_retch": "She retches: upper body curled forward from the hips, shoulders hunched up toward her ears, head bowed down into the hand covering her mouth, knees slightly bent, her far hand gripping the side of her bump. Eyes squeezed shut.",
+  "k6_breath": "Riding out the nausea with a slow deep breath in: standing a little more upright, shoulders and chest lifted, her near hand still covering her mouth, eyes closed, far hand resting on her bump.",
+  "k7_sigh": "Relief: the nausea passes, she lets out a long sigh — lips parted, eyes softly closed, shoulders dropping — her near hand falling away from her mouth, limp wrist, at chest height in front of her body, fingers trailing down. Far hand on her bump.",
+  "k8_relief": "Both hands back on her pregnant belly, near hand on the lower front of the bump, far hand around the far side; her head tilted down looking at her bump with a soft relieved smile, eyes lowered."
+ }
+}

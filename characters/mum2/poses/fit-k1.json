@@ -1,0 +1,72 @@
+{
+ "name": "fit-k1",
+ "note": "fitted to characters/mum2/refs/pose/k1_calm_0.json (MediaPipe landmarks, base bump-rest)",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "limp"
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 0.7,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0126,
+  0.0237
+ ],
+ "bones": {
+  "spineLower": 4.4,
+  "spineUpper": -3.6,
+  "chest": -6.6,
+  "neck": 1.6,
+  "head": 2.1,
+  "belly": -5.3,
+  "clavicle.far": 3.1,
+  "clavicle.near": 8.1,
+  "upperArm.far": -11.8,
+  "forearm.far": 85.6,
+  "hand.far": 28,
+  "shoulderAbd.far": 8.7,
+  "upperArm.near": -20,
+  "forearm.near": 62.8,
+  "shoulderAbd.near": -23.3,
+  "hand.near": 10.3,
+  "pelvis": 0,
+  "armAbd.near": -0.3,
+  "armRot.near": 27.1,
+  "foreRot.near": 1.4,
+  "thigh.near": 0.3,
+  "shin.near": -0.2,
+  "foot.near": 3.1,
+  "hipAbd.near": 0.4,
+  "armAbd.far": -37.6,
+  "armRot.far": 37.6,
+  "foreRot.far": 70,
+  "thigh.far": -1.8,
+  "shin.far": 1.5,
+  "foot.far": -0.6,
+  "hipAbd.far": 0.1
+ },
+ "_fit": {
+  "ref": "characters/mum2/refs/pose/k1_calm_0.json",
+  "scale": 0.9734,
+  "rms": 0.0419,
+  "worst": [
+   "indexL 0.105",
+   "elbowL 0.077",
+   "shoulderR 0.068",
+   "pinkyL 0.065",
+   "earL 0.062"
+  ]
+ },
+ "_contact": "--side far --at 0.83,-3.62 --surface bump --back 1 --gap 0.04 --phi 0 --handDir 140 --hand limp (base fit-k1)",
+ "_orig": {},
+ "_edits": [
+  "--fx pinNear=1,armFree=0"
+ ]
+}

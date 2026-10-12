@@ -1,0 +1,72 @@
+{
+ "name": "v/retch_f0000",
+ "note": "fitted to characters/mum2/refs/pose/v/retch/f0000.json (MediaPipe landmarks, base fit-k4)",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0,
+  "pinNear": 1
+ },
+ "root": [
+  0.0248,
+  0.0451
+ ],
+ "bones": {
+  "spineLower": 5.7,
+  "spineUpper": -3.5,
+  "chest": -12,
+  "neck": -4.7,
+  "head": 21.9,
+  "belly": 3,
+  "clavicle.far": -0.2,
+  "clavicle.near": 8.5,
+  "upperArm.far": 47.6,
+  "forearm.far": 128.3,
+  "hand.far": -13.8,
+  "shoulderAbd.far": 24.1,
+  "upperArm.near": -17,
+  "forearm.near": 66.1,
+  "shoulderAbd.near": -17.1,
+  "hand.near": 15.2,
+  "pelvis": 0,
+  "armAbd.near": 0.4,
+  "armRot.near": 33.1,
+  "foreRot.near": 4.1,
+  "thigh.near": -0.9,
+  "shin.near": 1.4,
+  "foot.near": 5,
+  "hipAbd.near": 0.8,
+  "armAbd.far": -28.7,
+  "armRot.far": 58.7,
+  "foreRot.far": 3.6,
+  "thigh.far": -3.2,
+  "shin.far": -2.6,
+  "foot.far": 5.8,
+  "hipAbd.far": -1.9
+ },
+ "_fit": {
+  "ref": "characters/mum2/refs/pose/v/retch/f0000.json",
+  "scale": 0.9541,
+  "rms": 0.0615,
+  "worst": [
+   "elbowL 0.131",
+   "thumbL 0.121",
+   "earR 0.109",
+   "eyeOuterR 0.099",
+   "indexL 0.089"
+  ]
+ }
+}

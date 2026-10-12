@@ -1,0 +1,74 @@
+{
+ "name": "n-out",
+ "note": "breath OUT (k6): shoulders drop, a small slump",
+ "_recipe": "n-out fit-k6 --add clavicle.near=-12,clavicle.far=12,spineUpper=-2,neck=2 --note breath OUT (k6): shoulders drop, a small slump",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "cover"
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 27.0,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.015,
+  0.0474
+ ],
+ "bones": {
+  "armAbd.far": -36.5,
+  "armAbd.near": -5.6,
+  "armRot.far": 65,
+  "armRot.near": 25.1,
+  "belly": 3,
+  "chest": -3.8,
+  "clavicle.far": 6.3,
+  "clavicle.near": -20.5,
+  "foot.far": 0.7,
+  "foot.near": 5.6,
+  "foreRot.far": 0.1,
+  "foreRot.near": 1.9,
+  "forearm.far": 124.2,
+  "forearm.near": 64.1,
+  "hand.far": -27.2,
+  "hand.near": 15.4,
+  "head": -9.6,
+  "hipAbd.far": 0.5,
+  "hipAbd.near": 0,
+  "neck": 3.3,
+  "pelvis": 0.3,
+  "shin.far": 2.9,
+  "shin.near": 0.2,
+  "shoulderAbd.far": 19.9,
+  "shoulderAbd.near": -10.4,
+  "spineLower": 4.8,
+  "spineUpper": -1.9,
+  "thigh.far": -2.6,
+  "thigh.near": -0.1,
+  "upperArm.far": 48.1,
+  "upperArm.near": -18.6
+ },
+ "_orig": {},
+ "scale": {
+  "chest": [
+   0.9,
+   1.0
+  ]
+ },
+ "_edits": [
+  "--scale chest=0.9:1",
+  "--fx headPitch=27",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

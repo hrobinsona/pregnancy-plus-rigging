@@ -1,1 +1,0 @@
-detail audit mum2/_au_fist: 0 findings (4 allowed by audit_allow.json) (render 1851x4593, 692 px/H, thin < 0.024 H)

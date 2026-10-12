@@ -1,0 +1,63 @@
+{
+ "name": "n-look",
+ "note": "relief: chin drops toward the bump, looking down at it",
+ "_recipe": "n-look fit-k8 --add neck=5,head=8,chest=2,spineUpper=1 --note relief: chin drops toward the bump, looking down at it",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": "limp"
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 16.0,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.005,
+  0.041
+ ],
+ "bones": {
+  "armAbd.far": -37,
+  "armAbd.near": -0.4,
+  "armRot.far": 37,
+  "armRot.near": 28.3,
+  "belly": -4,
+  "chest": -4.6,
+  "clavicle.far": 2.5,
+  "clavicle.near": 10.6,
+  "foot.far": 2.4,
+  "foot.near": 5.4,
+  "foreRot.far": 80,
+  "foreRot.near": 1.6,
+  "forearm.far": 87.9,
+  "forearm.near": 64.3,
+  "hand.far": 30,
+  "hand.near": 9.3,
+  "head": 11.6,
+  "hipAbd.far": 0.3,
+  "hipAbd.near": 0.9,
+  "neck": 10.2,
+  "pelvis": 0.1,
+  "shin.far": 0.4,
+  "shin.near": -0.1,
+  "shoulderAbd.far": 9.4,
+  "shoulderAbd.near": -27.4,
+  "spineLower": 5.2,
+  "spineUpper": -2,
+  "thigh.far": -0.6,
+  "thigh.near": 0.3,
+  "upperArm.far": -11.7,
+  "upperArm.near": -21.9
+ },
+ "_orig": {
+  "head": 15.6
+ },
+ "_edits": [
+  "--add head=-4 --fx headPitch=16",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

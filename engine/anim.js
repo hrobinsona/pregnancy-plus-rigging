@@ -21,6 +21,7 @@
 // draw-order swaps) are held from the key that is active at t (a swap happens ON a key, like a drawing swap in cut-out).
 
 // ---------------------------------------------------------------- easing
+import { armFrame, armPoints, proxies, rayHits, swivelOf, ik2, armAngles } from './depth.js';
 export function cubicBezier(x1, y1, x2, y2) {
   const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
   const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
@@ -86,6 +87,21 @@ function flattenRaw(pose) {          // only the channels the pose actually sets
   return c;
 }
 
+// ---------------------------------------------------------------- dense sampled curves (video tracks)
+/** Catmull-Rom through samples Y (numbers or equal-length arrays) at increasing times T, evaluated at t — Barry–Goldman
+ *  pyramid with the sample TIMES as knots (the curve keeps the video's own speed); ends get mirrored phantom samples. */
+export function crTime(T, Y, t) {
+  const n = T.length; if (t <= T[0]) return Y[0]; if (t >= T[n - 1]) return Y[n - 1];
+  let k = 0; { let lo = 0, hi = n - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (T[m] <= t) lo = m; else hi = m; } k = lo; }
+  const vec = Array.isArray(Y[0]), V = (j) => (vec ? Y[j] : [Y[j]]);
+  const P = (j) => (j < 0 ? V(0).map((x, c) => 2 * x - V(1)[c]) : j >= n ? V(n - 1).map((x, c) => 2 * x - V(n - 2)[c]) : V(j));
+  const K = (j) => (j < 0 ? 2 * T[0] - T[1] : j >= n ? 2 * T[n - 1] - T[n - 2] : T[j]);
+  const p0 = P(k - 1), p1 = P(k), p2 = P(k + 1), p3 = P(k + 2), t0 = K(k - 1), t1 = K(k), t2 = K(k + 1), t3 = K(k + 2);
+  const L = (a, b, ta, tb) => a.map((x, c) => ((tb - t) * x + (t - ta) * b[c]) / (tb - ta));
+  const A1 = L(p0, p1, t0, t1), A2 = L(p1, p2, t1, t2), A3 = L(p2, p3, t2, t3), B1 = L(A1, A2, t0, t2), B2 = L(A2, A3, t1, t3), r = L(B1, B2, t1, t2);
+  return vec ? r : r[0];
+}
+
 // ---------------------------------------------------------------- closed-form second-order spring
 /** Complex transfer function of x'' + 2ζω0 x' + ω0² x = (a·ω0² + b·d²/dt²) u, at angular frequency w. Returns [re, im]. */
 function springH(f, zeta, w, a, b) {
@@ -140,7 +156,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (keyCache.has(ch)) return keyCache.get(ch);
     let ks = keys;
     for (const g of groups) if (owns(g, ch)) { ks = g.keys; break; }
-    ks = ks.filter((k) => !k.only || k.only.some((p) => ch === p || ch.startsWith(p + '.')));
+    // key.except = [channel prefixes]: the opposite — the key shapes every curve BUT those (e.g. a retch hit that keeps its
+    // shoulders and hands while a video layer owns the spine and legs over that window)
+    const hit = (p) => ch === p || ch.startsWith(p + '.') || ch === 'bone.' + p || ch.startsWith('bone.' + p + '.');
+    ks = ks.filter((k) => (!k.only || k.only.some((p) => ch === p || ch.startsWith(p + '.'))) && !(k.except && k.except.some(hit)));
     keyCache.set(ch, ks);
     return ks;
   };
@@ -156,6 +175,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const allCh = [...new Set([...keys.flatMap((k) => Object.keys(k.ch)),
     ...groups.flatMap((g) => g.keys.flatMap((k) => Object.keys(k.ch)).filter((ch) => owns(g, ch)))])];
   const lagOf = (ch) => {
+    if (spec.lags?.[ch] !== undefined) return spec.lags[ch] / fps;   // a full channel name (e.g. fx.headPitch: the nod trails the trunk like the head)
     const m = ch.match(/^(?:bone|scale)\.(.+?)(?:\.[01])?$/);
     return ((m ? spec.lags?.[m[1]] : spec.lags?.[ch.split('.')[0]]) ?? 0) / fps;
   };
@@ -263,6 +283,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // discrete properties held from the active key (swaps land ON keys)
     const act = (() => { let k = keys[0]; for (const kk of keys) if (kk.t <= tt + 1e-9) k = kk; return lib[k.pose]; })();
     for (const prop of ['handView', 'zBias']) if (act?.[prop] !== undefined) pose[prop] = act[prop];
+    // SWAPS (spec.swaps = [{t, handView, zBias}]): drawing swaps timed on their own — when a limb is clear of the body
+    // (a far hand passing the bump's edge), not on whichever body key happens to be active. The latest one ≤ t holds.
+    { let sw = null; for (const s of spec.swaps || []) if (s.t <= tt + 1e-9) sw = s; if (!sw && loop && spec.swaps?.length) sw = spec.swaps[spec.swaps.length - 1];
+      if (sw) for (const prop of ['handView', 'zBias']) if (sw[prop] !== undefined) pose[prop] = sw[prop]; }
     for (const ch of allCh) {
       const val = sample(ch, tt - lagOf(ch), keysFor(ch));
       const [kind, a, b] = ch.split('.');
@@ -272,8 +296,16 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       else if (kind === 'fx') pose.fx[a] = val;
       else if (kind === 'root') (pose.root ||= [0, 0])[+a] = val;
     }
-    const keyed = { bones: { ...pose.bones }, scale: Object.fromEntries(Object.entries(pose.scale).map(([k, v]) => [k, [...v]])) };
     const add = (b, v) => { pose.bones[b] = (pose.bones[b] || 0) + v; };
+    // VIDEO LAYERS (spec.layers, written by tools/vtrack_apply.mjs): a performance measured from a reference video, added on
+    // top of the keys as its DEVIATION from its own start→end chord (zero at both ends, so the keys still own where the
+    // move starts and lands — motion warping, Witkin & Popović 1995). amp scales it (a generated video overacts).
+    for (const Ly of spec.layers || []) {
+      const T_ = Ly.t, n = T_.length; if (tt <= T_[0] || tt >= T_[n - 1]) continue;
+      const amp = track(Ly.amp ?? 1, tt, 'amp');
+      for (const [b, arr] of Object.entries(Ly.ch)) { const v = amp * crTime(T_, arr, tt); if (b.startsWith('fx.')) pose.fx[b.slice(3)] = (pose.fx[b.slice(3)] || 0) + v; else add(b, v); }
+    }
+    const keyed = { bones: { ...pose.bones }, scale: Object.fromEntries(Object.entries(pose.scale).map(([k, v]) => [k, [...v]])) };
     // breathing wave
     const G = BR.gain, f = (n) => breathAt(tt - (delays[n] ?? 0) / fps);
     const bc = f('chest'), bs = f('shoulders'), bh = f('head');
@@ -292,6 +324,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     for (const [b, a] of Object.entries(DR.bones || {})) if (!b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     // contact: re-plant pinned hands against the additive layers, then let the hands themselves drift
+    // a pinned hand can SLIDE on its surface (a stroke): fidget channels fx.slide.<side>.x / .y (H, in the frame of the
+    // surface bone) shift the planted wrist — evaluated here, before the pin, since fidgets otherwise land after it
+    fidgetAt(pose, tt, (b) => b.startsWith('fx.slide.'));
     for (const [ch, P] of PINS) {
       const w = clamp01(pose.fx[ch] ?? 0);
       if (w <= 0) continue;
@@ -310,7 +345,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     // REACH: goal-directed hand moves planned in HAND space (spec.reach[side]) — the arm is solved to the hand
     for (const side of Object.keys(spec.reach || {})) reachArm(pose, tt, side);
-    fidgetAt(pose, tt);
+    fidgetAt(pose, tt, (b) => !b.startsWith('fx.slide.'));
     for (const [b, a] of Object.entries(DR.bones || {})) if (b.startsWith('hand.')) add(b, amp * a * driftSig(b, tt));
     return pose;
   }
@@ -329,28 +364,62 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (!lib[name]) throw new Error(`reach: missing pose ${name}`);
     return (reachRefCache[name] ||= solve({ ...lib[name], bones: { ...lib[name].bones }, scale: { ...(lib[name].scale || {}) } }));
   };
-  function contact(st, side, e) {
+  // 3D arms (rig plane 'arm3'): each contact also carries the key's wrist DEPTH (relative to the shoulder) and the elbow
+  // SWIVEL, so the reach interpolates a 3D wrist and a swivel and solves the arm in 3D (no mirror-branch jumps)
+  const is3 = (side) => BONE['upperArm.' + side]?.plane === 'arm3' && !!C.params?.depth;
+  const info3Cache = {};
+  const info3 = (name, side) => (info3Cache[name + side] ||= (() => { const st = reachRef(name), fr = armFrame(rig, st, side), A = armPoints(rig, st, side); return { z: fr.depthOf(A.wr), phi: swivelOf(A.el, A.wr) }; })());
+  function contact(st, side, e, P_) {
     const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
-    return { p: apM(st[on].M, apM(inv(ref[on].M), ref[ha].pos)), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    let loc = apM(inv(ref[on].M), ref[ha].pos);
+    // a contact on a WARPED bone (C.warps: the nodding head) moves with the warped drawing: carry the point by the
+    // difference between the warp now and the warp in the contact's own pose
+    if (C.warps?.[on] && P_) { const j = J[BONE[on].joint], v = [loc[0] + j[0], loc[1] + j[1]], a = C.warps[on](P_)(v), b = C.warps[on](lib[e.pose])(v); loc = [loc[0] + a[0] - b[0], loc[1] + a[1] - b[1]]; }
+    const c = { p: apM(st[on].M, loc), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    if (is3(side)) {
+      // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
+      // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
+      const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(S_[on].pos)); };
+      c.z = (e.z ?? i3.z) + dMid(st) - dMid(ref); c.phi = e.phi !== undefined ? e.phi * Math.PI / 180 : i3.phi;
+    }
+    // an OFFSET via (e.dp screen H, e.dz depth H, e.dphi deg): a waypoint defined from a key's contact — e.g. LIFT-OFF: the
+    // hand first comes away from the surface it rested on (round the bump's silhouette edge, never through the bump)
+    if (e.dp) { const r = (st[on].rot - ref[on].rot) * Math.PI / 180; c.p = [c.p[0] + Math.cos(r) * e.dp[0] - Math.sin(r) * e.dp[1], c.p[1] + Math.sin(r) * e.dp[0] + Math.cos(r) * e.dp[1]]; }
+    if (e.dz !== undefined && c.z !== undefined) c.z += e.dz;
+    // e.surface: the hand LIES ON that body proxy's near surface at this point of the screen (sliding round the front of
+    // the bump instead of passing through it): depth = where the camera ray through the point enters the proxy, + e.gap
+    if (e.surface && c.z !== undefined) {
+      const fr = armFrame(rig, st, side), q = proxies(rig, st, fr).find((x) => x.name === e.surface);
+      const h = q && rayHits(fr.toBody(c.p, 0), fr, [q])[0];
+      if (h) c.z = h.t0 - (e.gap ?? 0.06);
+    }
+    if (e.dphi !== undefined && c.phi !== undefined) c.phi += e.dphi * Math.PI / 180;
+    return c;
   }
   // A MOVE runs from one stop entry to the next; entries marked via:true in between shape the path without stopping (one
   // movement, one bell-shaped speed profile over the whole move): the wrist follows a Catmull-Rom curve through the
   // contacts, parameterised by chord length, at s = minjerk(warp(u)); skew > 0 front-loads it (fast off, cushion in).
   // The hand's wrist angle (local to the forearm) and its ROLL (across-scale: <1 = turned toward edge-on, thumb up)
   // interpolate along the same curve, trailing by handLag; at the two stops the hand matches its contact.
-  function reachTarget(side, tt, st) {
+  // a HELD hand keeps its screen angle relative to what it touches, by a wrist bend held CLOSE to the key's own (the fitted
+  // bend): without that pull the 2D secant step flipped an edge-on hand between bends 70° apart in four frames as she bowed
+  // into it (the "four hand shapes" at the mouth, critic R22). spec.reach.holdReg: degrees of angle error per degree of bend
+  const holdBend = (side, e) => (is3(side) ? { local: lib[e.pose].bones?.['hand.' + side] ?? 0, reg: e.reg ?? RC.holdReg ?? 0.3 } : {});
+  function reachTarget(side, tt, st, P_) {
     const L = RC[side], n = L.length, stops = L.map((e, k) => (e.via ? -1 : k)).filter((k) => k >= 0);
     let i = -1; for (const k of stops) if (L[k].t <= tt + 1e-9) i = k;
     let s0, s1, t0, t1;
     const si = stops.indexOf(i);
     if (i >= 0 && si < stops.length - 1) { s0 = i; s1 = stops[si + 1]; t0 = L[s0].t; t1 = L[s1].t; }
     else if (loop) { s0 = i >= 0 ? i : stops[stops.length - 1]; s1 = stops[(stops.indexOf(s0) + 1) % stops.length]; t0 = L[s0].t - (i < 0 ? D : 0); t1 = L[s1].t + (i >= 0 ? D : 0); }
-    else return contact(st, side, L[Math.max(0, i)]);
+    else { const e0 = L[Math.max(0, i)]; return { ...contact(st, side, e0, P_), ...holdBend(side, e0), frontW: e0.front ? 1 : 0 }; }
     const idx = []; for (let k = s0; ; k = (k + 1) % n) { idx.push(k); if (k === s1) break; }
     const E = idx.map((k) => L[k]), a = E[0], b = E[E.length - 1];
-    const A = contact(st, side, a);
-    if (E.length === 2 && a.pose === b.pose && a.on === b.on) return A;  // a hold: the hand stays where it was put
-    const P = E.map((e, k) => (k === 0 ? A : contact(st, side, e)));
+    if (b.path) return pathTarget(side, tt, st, a, b, P_);
+    const A = contact(st, side, a, P_);
+    const same = (x, y) => ['pose', 'on', 'dp', 'dz', 'dphi', 'surface', 'gap', 'z', 'phi'].every((k) => JSON.stringify(x[k]) === JSON.stringify(y[k]));
+    if (E.length === 2 && same(a, b)) return { ...A, ...holdBend(side, a), frontW: a.front ? 1 : 0 };  // a hold: the hand stays where it was put (same pose, same offsets)
+    const P = E.map((e, k) => (k === 0 ? A : contact(st, side, e, P_)));
     const u = clamp01((tt - t0) / (t1 - t0)), warp = (x) => Math.pow(clamp01(x), 1 - (b.skew ?? 0)), sP = mj(warp(u));
     const ch = [0]; for (let k = 1; k < P.length; k++) ch.push(ch[k - 1] + Math.hypot(P[k].p[0] - P[k - 1].p[0], P[k].p[1] - P[k - 1].p[1]));
     const tot = ch[ch.length - 1] || 1, cf = ch.map((c) => c / tot);
@@ -360,32 +429,279 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       const d = [P[1].p[0] - A.p[0], P[1].p[1] - A.p[1]], Ld = Math.hypot(d[0], d[1]) || 1, nn = [d[1] / Ld, -d[0] / Ld];
       const bow = (b.curve ?? 0.08) * Ld * 4 * sP * (1 - sP);
       p = [A.p[0] + sP * d[0] + nn[0] * bow, A.p[1] + sP * d[1] + nn[1] * bow];
+      if (A.z !== undefined) p.push(A.z + sP * (P[1].z - A.z));
     } else {                                                               // through vias: Catmull-Rom
-      const [k, v] = seg(sP), q = (j) => P[Math.max(0, Math.min(P.length - 1, j))].p, v2 = v * v, v3 = v2 * v;
+      // CENTRIPETAL Catmull-Rom (Barry–Goldman, knots spaced by √chord): a uniform CR overshoots into a loop where a
+      // long segment meets a short one (the hand shot past the mouth and came back: a hitch on arrival). Ends get
+      // mirrored phantom points so the first and last segments stay well defined.
+      const [k, v] = seg(sP), pt = (e) => (e.z !== undefined ? [...e.p, e.z] : e.p), n_ = P.length;
+      const q = (j) => j < 0 ? pt(P[0]).map((x, c) => 2 * x - pt(P[1])[c]) : j >= n_ ? pt(P[n_ - 1]).map((x, c) => 2 * x - pt(P[n_ - 2])[c]) : pt(P[j]);
       const p0 = q(k - 1), p1 = q(k), p2 = q(k + 1), p3 = q(k + 2);
-      p = [0, 1].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * v + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * v2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * v3));
+      const dk = (a, b) => Math.max(1e-6, Math.sqrt(Math.hypot(b[0] - a[0], b[1] - a[1]))), t0_ = 0, t1_ = dk(p0, p1), t2_ = t1_ + dk(p1, p2), t3_ = t2_ + dk(p2, p3), t = t1_ + v * (t2_ - t1_);
+      const L_ = (a, b, ta, tb) => a.map((x, c) => ((tb - t) * x + (t - ta) * b[c]) / (tb - ta));
+      const A1 = L_(p0, p1, t0_, t1_), A2 = L_(p1, p2, t1_, t2_), A3 = L_(p2, p3, t2_, t3_), B1 = L_(A1, A2, t0_, t2_), B2 = L_(A2, A3, t1_, t3_);
+      p = L_(B1, B2, t1_, t2_);
     }
     const sH = mj(warp(u - (b.handLag ?? 2) / fps / (t1 - t0)));
     const [kh, vh] = seg(sH), loc = (e) => lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
     const ea = E[kh], eb = E[Math.min(E.length - 1, kh + 1)];
     let local = loc(ea) + vh * (loc(eb) - loc(ea)), roll = rl(ea) + vh * (rl(eb) - rl(ea));
-    if (P.length === 2) local *= 1 - (b.neutral ?? 0.5) * Math.sin(Math.PI * u);
+    local *= 1 - (b.neutral ?? 0.5) * Math.sin(Math.PI * u);   // mid-flight the wrist relaxes toward straight: the hand is CARRIED, not posed
     const B = P[P.length - 1];
-    return { p, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)) };
+    let phi;
+    if (A.phi !== undefined) { const pa = P[kh].phi, pb = P[Math.min(P.length - 1, kh + 1)].phi; phi = pa + vh * (Math.atan2(Math.sin(pb - pa), Math.cos(pb - pa))); }
+    // front flag along the path (vias included), interpolated like the hand's local angle
+    const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
+    return { limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)), reg: b.reg ?? a.reg };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+  }
+  // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
+  // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —
+  // at the video's own timing (retimed to the move), instead of a planned spline. The two contacts still own the ends:
+  // the path is WARPED onto them (offsets at start and end, blended by how far along the path the hand is, so a hand
+  // that has not moved yet stays exactly on its contact). Hand space throughout, so it rides the body as it moves.
+  const dMidOf = (S_, side, on) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(S_[on].pos)); };
+  const wrapPi = (x) => Math.atan2(Math.sin(x), Math.cos(x)), wrap180 = (x) => ((x % 360) + 540) % 360 - 180;
+  const pathRows = new Map(), pathEnds = new Map(), pathUV = new Map(), pathElb = new Map();
+  // the TORSO frame of a solved pose: origin the near shoulder, u across to the far shoulder, v from mid-shoulders down to
+  // mid-hips (screen). The same frame measured on the reference video's landmarks makes a wrist/elbow path portable
+  // between bodies of different build (tools/vtrack_apply.mjs, V.frame 'torso')
+  const RO = rig.C.roles || {}, rb = (k, s, d) => RO[k]?.[s]?.[d === 'upper' ? 'upper' : 'thigh'] ?? (d === 'upper' ? `upperArm.${s}` : `thigh.${s}`);
+  const torsoFrame = (S_) => {
+    const o = S_[rb('arms', 'near', 'upper')].pos, f = S_[rb('arms', 'far', 'upper')].pos, hn = S_[rb('legs', 'near', 'thigh')].pos, hf = S_[rb('legs', 'far', 'thigh')].pos;
+    const ex = [f[0] - o[0], f[1] - o[1]], ey = [(hn[0] + hf[0] - o[0] - f[0]) / 2, (hn[1] + hf[1] - o[1] - f[1]) / 2], det = ex[0] * ey[1] - ex[1] * ey[0];
+    return { to: (q) => [o[0] + q[0] * ex[0] + q[1] * ey[0], o[1] + q[0] * ex[1] + q[1] * ey[1]],
+      of: (p) => { const d = [p[0] - o[0], p[1] - o[1]]; return [(d[0] * ey[1] - d[1] * ey[0]) / det, (ex[0] * d[1] - ex[1] * d[0]) / det]; } };
+  };
+  // the measured (u, v) path resampled at even PROGRESS s (24 knots): looked up by s, so a designed timing still walks the
+  // measured shape, and eased ends (s nearly flat) cannot make the spline's knots collide
+  const uvRows = (Q) => pathUV.get(Q) || (() => {
+    const S0 = Q.s, n = S0.length, m = 24, ks = [], w = [], e = [];
+    const lin = (Y, s) => { let k = 0; while (k < n - 2 && S0[k + 1] < s) k++; const g = S0[k + 1] - S0[k], u = g > 1e-9 ? Math.max(0, Math.min(1, (s - S0[k]) / g)) : 0; return [Y[k][0] + u * (Y[k + 1][0] - Y[k][0]), Y[k][1] + u * (Y[k + 1][1] - Y[k][1])]; };
+    for (let j = 0; j <= m; j++) { const s = j / m; ks.push(s); w.push(lin(Q.uv, s)); if (Q.euv) e.push(lin(Q.euv, s)); }
+    const r = { s: ks, w, e: Q.euv ? e : null }; pathUV.set(Q, r); return r;
+  })();
+  function pathTarget(side, tt, st, a, b, P_) {
+    const Q = b.path, on = Q.on, T_ = Q.t, n = T_.length, three = is3(side) && !!Q.z;
+    if (!pathRows.has(Q)) pathRows.set(Q, T_.map((_, k) => [Q.p[k][0], Q.p[k][1], three ? Q.z[k] : 0, three ? Q.phi[k] : 0, Q.rot[k], Q.local[k], Q.s[k]]));
+    const rows = pathRows.get(Q), M = st[on].M, dm = three ? dMidOf(st, side, on) : 0;
+    const A = contact(st, side, a, P_), B = contact(st, side, b, P_);
+    const scr = (r) => ({ p: apM(M, [r[0], r[1]]), z: r[2] + dm, phi: r[3], rot: st[on].rot + r[4] });
+    const off = (C_, c) => ({ p: [C_.p[0] - c.p[0], C_.p[1] - c.p[1]], z: three ? C_.z - c.z : 0, phi: three ? wrapPi(C_.phi - c.phi) : 0, rot: wrap180(C_.rot - c.rot) });
+    const d0 = off(A, scr(rows[0])), d1 = off(B, scr(rows[n - 1]));
+    // path.bias = [{s0, s1, dp: [x, y] (screen H), dz (depth H, + = away)}]: a designed detour over part of the path (sin²
+    // window in path progress, zero at both ends) — e.g. keep a falling hand out beside the body's far edge, and behind it,
+    // where the video's (differently built) body let it cross in front of the bump
+    const bias = (s) => { let x = 0, y = 0, z = 0, f = 0; for (const B_ of Q.bias || []) { const v = (s - B_.s0) / (B_.s1 - B_.s0); if (v <= 0 || v >= 1) continue; const w = Math.sin(Math.PI * v) ** 2; x += w * (B_.dp?.[0] ?? 0); y += w * (B_.dp?.[1] ?? 0); z += w * (B_.dz ?? 0); f += w * (B_.dphi ?? 0) * Math.PI / 180; } return [x, y, z, f]; };   // dphi: the elbow's swivel (deg)
+    const at = (tq) => {
+      const r = crTime(T_, rows, tq), c = scr(r), s = clamp01(r[6]), mx = (x0, x1) => (1 - s) * x0 + s * x1, bs = bias(s);
+      return { p: [c.p[0] + mx(d0.p[0], d1.p[0]) + bs[0], c.p[1] + mx(d0.p[1], d1.p[1]) + bs[1]], z: c.z + mx(d0.z, d1.z) + bs[2], phi: c.phi + mx(d0.phi, d1.phi) + bs[3], rot: c.rot + mx(d0.rot, d1.rot), local: r[5], s };
+    };
+    // the hand TRAILS the wrist by handLag frames mid-move, never at the ends (lag × sin πu): a plain shift left the hand
+    // short of its contact bend when the move ended and the hold took over (a 24° snap on arrival)
+    const tq = Math.max(T_[0], Math.min(T_[n - 1], tt)), uq = (tq - T_[0]) / (T_[n - 1] - T_[0]);
+    const tH = Math.max(T_[0], tq - Math.min((b.handLag ?? 0) / fps, 0.9 * (T_[n - 1] - T_[0]) / Math.PI) * Math.sin(Math.PI * uq)), N = at(tq), H = at(tH);
+    // path.timing 'mj': a DESIGNED speed profile instead of the video's (minimum jerk, front-loaded by path.skew) — for a
+    // move whose measured timing did not transfer (the return: a quick flick off the lips then a slow drift read as a
+    // jump and a hang; a hand falling under its own weight is one even arc)
+    if (Q.timing === 'mj') {
+      const w_ = (x) => Math.pow(clamp01(x), 1 - (Q.skew ?? 0)), u_ = (tq - T_[0]) / (T_[n - 1] - T_[0]), uh = (tH - T_[0]) / (T_[n - 1] - T_[0]);
+      N.s = mj(w_(u_)); H.s = mj(w_(uh));
+    }
+    // path.zBy (0…1): DEPTH from the two contacts instead of the video (one view measures depth worst): the hand reaches the
+    // end contact's depth by that much of the way — a far hand falling back to the far side of the bump goes behind the
+    // body early (as a real far arm does) instead of crossing in front of it
+    if (Q.zBy !== undefined && three) { const w = smooth01((N.s - (Q.zFrom ?? 0)) / (Q.zBy - (Q.zFrom ?? 0))); N.z = (1 - w) * A.z + w * B.z + bias(N.s)[2]; }
+    // path.uv (V.frame 'torso'): the WRIST follows the video's measured path in the torso frame, rebuilt on our body every
+    // frame (it rides her as she bends), warped onto the two contacts; path.euv gives the ELBOW's measured path the same
+    // way — reachArm turns the elbow about the shoulder→wrist line to put it there (weight path.elbowW, zero at the
+    // contacts). The chest-frame path could not transfer: the video's hand rose up the middle of OUR chest (critic R22)
+    let elbowP, elbowWt = 0;
+    if (Q.uv) {
+      const TF = torsoFrame(st), K = uvRows(Q), S = N.s, last = K.s.length - 1;
+      const w0 = TF.to(K.w[0]), w1 = TF.to(K.w[last]), c = TF.to(crTime(K.s, K.w, S)), bs = bias(S);
+      N.p = [c[0] + (1 - S) * (A.p[0] - w0[0]) + S * (B.p[0] - w1[0]) + bs[0], c[1] + (1 - S) * (A.p[1] - w0[1]) + S * (B.p[1] - w1[1]) + bs[1]];
+      // path.elbowPath 'chord': the elbow goes STRAIGHT from where it is at one contact to where it is at the other (in the
+      // torso frame) — the whole arm lowers, the upper arm swinging back as the forearm opens. Without a target the swivel
+      // interpolation took the elbow out wide and round (client: "swinging at the elbow"); held at the video's elbow it
+      // stayed put while the forearm swung round it like a clock hand
+      if (Q.elbowPath === 'chord') {
+        const E = pathElb.get(Q) || (() => { const f = (t_) => { const S_ = solve(basePose(t_)); return torsoFrame(S_).of(S_['forearm.' + side].pos); }, r = [f(T_[0] - 1e-4), f(T_[n - 1] + 1e-4)]; pathElb.set(Q, r); return r; })();
+        const w = smooth01(S);
+        elbowP = TF.to([E[0][0] + w * (E[1][0] - E[0][0]), E[0][1] + w * (E[1][1] - E[0][1])]);
+        elbowWt = (Q.elbowW ?? 1) * Math.min(1, 10 * S * (1 - S));
+      } else if (K.e) {
+        // our own elbow at the two contacts (poses just outside the move, cached) in OUR torso frame: the measured elbow
+        // path is warped onto them, so guidance starts and ends where the arm already is
+        const E = pathElb.get(Q) || (() => { const f = (t_) => { const S_ = solve(basePose(t_)); return torsoFrame(S_).of(S_['forearm.' + side].pos); }, r = [f(T_[0] - 1e-4), f(T_[n - 1] + 1e-4)]; pathElb.set(Q, r); return r; })();
+        const q = crTime(K.s, K.e, S), e0 = K.e[0], e1 = K.e[last];
+        // path.elbowBias = [{s0, s1, du, dv}] (torso units, sin² window): a designed nudge of the elbow target — e.g. the
+        // elbow out and low at her far side as the lift starts, so the forearm reads as a diagonal instead of end-on
+        let bu = 0, bv = 0; for (const B_ of Q.elbowBias || []) { const v = (S - B_.s0) / (B_.s1 - B_.s0); if (v <= 0 || v >= 1) continue; const w = Math.sin(Math.PI * v) ** 2; bu += w * (B_.du ?? 0); bv += w * (B_.dv ?? 0); }
+        elbowP = TF.to([q[0] + (1 - S) * (E[0][0] - e0[0]) + S * (E[1][0] - e1[0]) + bu, q[1] + (1 - S) * (E[0][1] - e0[1]) + S * (E[1][1] - e1[1]) + bv]);
+        elbowWt = (Q.elbowW ?? 1) * Math.min(1, 6 * S * (1 - S));
+      }
+    }
+    // path.shape = 'chord': the video gives only the TIMING (how far along the move the hand is at each instant: its speed
+    // profile, the cushion, the settle); the SHAPE is one designed arc between the contacts — A→B plus path.bow (screen
+    // H, a sideways bulge 4s(1−s)) plus any bias. For moves where the video's body differs too much from ours for its
+    // path to transfer (critic: "climbs her outline", "out, in, out"), the hand's own path is the simplest arc
+    // path.shape = 'corner': a quadratic Bézier whose control point is the CORNER of an L between the contacts — corner
+    // {x: 'A'|'B', y: 'A'|'B', d: [dx, dy]} takes its x from one contact and its y from the other: the return goes OUT
+    // from the lips first (x of the rim, y of the mouth) then down the far side; the lift goes UP the far side first (x of
+    // the rim, y of the mouth) then in to the mouth — the forearm hinging at an elbow that stays at her side
+    if (Q.shape === 'corner') {
+      const K_ = Q.corner || {}, Cx = (K_.x === 'A' ? A.p[0] : B.p[0]) + (K_.d?.[0] ?? 0), Cy = (K_.y === 'B' ? B.p[1] : A.p[1]) + (K_.d?.[1] ?? 0), wq = K_.w ?? 1;
+      const arc = (S_) => { const bs = bias(S_), a0 = (1 - S_) ** 2, a1 = 2 * S_ * (1 - S_) * wq, a2 = S_ * S_, den = a0 + a1 + a2; return [(a0 * A.p[0] + a1 * Cx + a2 * B.p[0]) / den + bs[0], (a0 * A.p[1] + a1 * Cy + a2 * B.p[1]) / den + bs[1]]; };
+      N.p = arc(N.s);
+      if (three && Q.zBy === undefined) N.z = A.z + (B.z - A.z) * N.s + bias(N.s)[2];
+      // path.elbowLead (fraction of the move): the ELBOW leads — its swivel runs ahead of the hand (the elbow swings
+      // forward first, the forearm follows, critic R21)
+      const sE = Q.elbowLead ? (Q.timing === 'mj' ? mj(clamp01((tq - T_[0]) / (T_[n - 1] - T_[0]) + Q.elbowLead)) : clamp01(at(Math.min(T_[n - 1], tq + Q.elbowLead * (T_[n - 1] - T_[0]))).s)) : N.s;
+      if (three) N.phi = A.phi + wrapPi(B.phi - A.phi) * sE + bias(N.s)[3];
+      H.rot = A.rot + wrap180(B.rot - A.rot) * H.s;
+    }
+    if (Q.shape === 'chord') {
+      const arc = (S_) => { const w = 4 * S_ * (1 - S_), bs = bias(S_); return [A.p[0] + (B.p[0] - A.p[0]) * S_ + (Q.bow?.[0] ?? 0) * w + bs[0], A.p[1] + (B.p[1] - A.p[1]) * S_ + (Q.bow?.[1] ?? 0) * w + bs[1]]; };
+      N.p = arc(N.s);
+      if (three && Q.zBy === undefined) N.z = A.z + (B.z - A.z) * N.s + bias(N.s)[2];
+      if (three) N.phi = A.phi + wrapPi(B.phi - A.phi) * N.s + bias(N.s)[3];
+      H.rot = A.rot + wrap180(B.rot - A.rot) * H.s;
+    }
+    // forearm TWIST (pronation) from the video too — it turns the plane the wrist bends in, so without it the measured
+    // hand direction is unreachable (the hand snaps edge-on) — warped onto the keyed twist at the two ends
+    let twist;
+    // path.twistAt = [[s, deg | 'A' | 'B'], …]: a DESIGNED forearm twist along the move (piecewise smooth in the hand's
+    // progress; 'A'/'B' = the keyed twist at the move's start/end). The lift keeps the forearm turned (≈65°) so the hand
+    // rises flexed toward her chest, knuckles up, as in the video (its fit measured 66→52°), and turns to the cover's twist
+    // only on the last stretch to the mouth — at the keys' 0° mid-move the flexed hand read as an open palm, fingers up (an oath)
+    if (Q.twistAt) {
+      const ch = 'bone.foreRot.' + side, K = (t_) => sample(ch, t_ - lagOf(ch), keysFor(ch)), val = (v) => (v === 'A' ? K(T_[0]) : v === 'B' ? K(T_[n - 1]) : v);
+      const F_ = Q.twistAt, sH = H.s; let k = 0; while (k < F_.length - 2 && sH > F_[k + 1][0]) k++;
+      const [s0, v0] = F_[k], [s1, v1] = F_[Math.min(k + 1, F_.length - 1)];
+      twist = s1 > s0 ? val(v0) + (val(v1) - val(v0)) * smooth01((sH - s0) / (s1 - s0)) : val(v0);
+    } else if (Q.twist && Q.twistFrom !== 'keys') {   // path.twistFrom 'keys': the forearm twist stays the keys' (no video)
+      const ch = 'bone.foreRot.' + side, K = (t_) => sample(ch, t_ - lagOf(ch), keysFor(ch)), tw = (tq_) => crTime(T_, Q.twist, tq_);
+      const sH = H.s, o0 = K(T_[0]) - Q.twist[0], o1 = K(T_[n - 1]) - Q.twist[n - 1];
+      twist = tw(tH) + (1 - sH) * o0 + sH * o1;
+    }
+    // front flag: the start contact's fades as the hand leaves, the end contact's comes in as it arrives
+    const fa = a.front ? 1 : 0, fb = b.front ? 1 : 0, fw = Q.frontRamp ?? 0.35;
+    let frontW = fa * (1 - smooth01(N.s / fw)) + fb * smooth01((N.s - (1 - fw)) / fw);
+    // path.front = [[s, w], …]: the stated front-of-body flag along the move (piecewise smooth) — a hand falling down the
+    // FRONT of her chest onto the bump is in front of it however the 3D proxies judge the measured depth
+    if (Q.front) { const F_ = Q.front; let k = 0; while (k < F_.length - 2 && N.s > F_[k + 1][0]) k++; const [s0, w0] = F_[k], [s1, w1] = F_[Math.min(k + 1, F_.length - 1)]; frontW = s1 > s0 ? w0 + (w1 - w0) * smooth01((N.s - s0) / (s1 - s0)) : w0; }
+    // the WRIST BEND: a hand seen nearly edge-on has no stable screen angle (a few degrees of bend sweep it through 180°),
+    // so in flight the hand takes the video's measured bend, warped onto the bends the hand actually has on its two
+    // contacts (read from the poses just before and just after the move — cached, still a pure function of t)
+    let local = H.local, m = 1;
+    if (Q.mode === 'rot') m = (Q.m ?? 0) * Math.min(1, 6 * H.s * (1 - H.s));
+    else {
+      const ends = pathEnds.get(Q) || (() => { const e = [basePose(T_[0] - 1e-4)._reach?.[side]?.hand, basePose(T_[n - 1] + 1e-4)._reach?.[side]?.hand]; pathEnds.set(Q, e); return e; })();
+      const l0 = Q.local[0], l1 = Q.local[n - 1];
+      // path.bendAt = [[s, deg | 'A' | 'B'], …]: a DESIGNED wrist bend along the move ('A'/'B' = the bends on the two
+      // contacts), piecewise smooth in the hand's progress — the lift keeps the hand curled toward the mouth (flexed) until
+      // the last stretch, where it opens over the lips (a linear blend opened it halfway up: an oath palm, critic R23)
+      const pw = (F_, x, val) => { let k = 0; while (k < F_.length - 2 && x > F_[k + 1][0]) k++; const [s0, v0] = F_[k], [s1, v1] = F_[Math.min(k + 1, F_.length - 1)]; return s1 > s0 ? val(v0) + (val(v1) - val(v0)) * smooth01((x - s0) / (s1 - s0)) : val(v0); };
+      if (Q.bendAt) local = pw(Q.bendAt, H.s, (v) => (v === 'A' ? (ends[0] ?? l0) : v === 'B' ? (ends[1] ?? l1) : v));
+      else local = Q.bendFrom === 'contacts'   // path.bendFrom 'contacts': the wrist eases from one contact's bend to the other's (no video)
+        ? (1 - H.s) * (ends[0] ?? l0) + H.s * (ends[1] ?? l1) + (Q.bend ?? 0) * Math.min(1, 6 * H.s * (1 - H.s))
+        : H.local + (1 - H.s) * ((ends[0] ?? l0) - l0) + H.s * ((ends[1] ?? l1) - l1) + (Q.bend ?? 0) * Math.min(1, 6 * H.s * (1 - H.s));   // path.bend: a designed wrist offset mid-flight (the video's hand is small and its bend poorly measured)
+    }
+    // path.behindFrom (s): from there on the arm is drawn BEHIND the body (it is going round her far side), however the
+    // depth proxies judge single frames
+    const behindW = Q.behindFrom !== undefined ? smooth01((N.s - Q.behindFrom) / 0.04) : undefined;
+    // path.rollAt = [[s, k], …]: the hand's across-scale along the move (< 1 = turned toward edge-on, thumb side to us)
+    let roll; if (Q.rollAt) { const F_ = Q.rollAt; let k = 0; while (k < F_.length - 2 && H.s > F_[k + 1][0]) k++; const [s0, v0] = F_[k], [s1, v1] = F_[Math.min(k + 1, F_.length - 1)]; roll = s1 > s0 ? v0 + (v1 - v0) * smooth01((H.s - s0) / (s1 - s0)) : v0; }
+    return { limp: b.limp ?? 0, limpBend: b.limpBend, mid: Math.min(1, 7 * uq * (1 - uq)), frontW, behindW, roll,   // limp by TIME, not progress: the wrist drops first, while the (accelerating) fall has barely begun P: rows.map((r) => scr(r).p), u: (tq - T_[0]) / (T_[n - 1] - T_[0]), sP: N.s,
+      p: N.p, z: three ? N.z : undefined, phi: three ? N.phi : undefined, rot: H.rot, local, m, twist, reg: Q.reg, elbowP, elbowWt };   // path.m: mid-path the wrist takes the measured BEND instead of the measured direction
   }
   function reachArm(pose, tt, side) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
-    const T = reachTarget(side, tt, solve(pose)), h = 0.5;
+    const st0 = solve(pose), T = reachTarget(side, tt, st0, pose), h = 0.5;
+    (pose._reach ||= {})[side] = { p: T.p, z: T.z, phi: T.phi, P: T.P, u: T.u, sP: T.sP, rot: T.rot, local: T.local, m: T.m };          // diagnostics only (never drawn)
+    // e.front on a contact: the hand rests on the FRONT of what it touches (seen in the reference: the hand over the
+    // mouth). A contact is a few hundredths of a head deep — too fine for depth proxies to judge — so it is stated.
+    pose.fx['front.' + side] = T.frontW ?? 0;
+    if (T.behindW !== undefined) pose.fx['behind.' + side] = T.behindW;
+    if (T.twist !== undefined) pose.bones['foreRot.' + side] = T.twist;
     const at = (b, d) => { const p = { ...pose, bones: { ...pose.bones, [b]: (pose.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
-    for (let it = 0; it < 6; it++) {                                        // fixed Newton budget: no state, no iteration-to-tolerance drift
+    if (is3(side) && T.z !== undefined && T.phi !== undefined) {
+      // 3D: the wrist target (screen + depth) in the arm's frame → 2-bone IK at the interpolated swivel → the rig's angles
+      // (the representation nearest the keyed values); the 2D steps below then only correct the small rest-tilt residue
+      const S_ = side === 'near' ? 'Near' : 'Far', Lb = (a, b) => Math.hypot(J[b][0] - J[a][0], J[b][1] - J[a][1]);
+      const L1 = Lb('shoulder' + S_, 'elbow' + S_), L2 = Lb('elbow' + S_, 'wrist' + S_), fr = armFrame(rig, st0, side);
+      const ab = 'armAbd.' + side, ar = 'armRot.' + side, keyed = { e: pose.bones[ua] || 0, al: pose.bones[ab] || 0, tau: pose.bones[ar] || 0 };
+      // the drawn arm differs a little from the 3D model (each bone turns relative to its own rest angle on screen):
+      // aim the 3D target, see where the drawn wrist lands, shift the aim by the miss (same depth) — 3 fixed passes
+      // fx.swivelNear / fx.swivelFar (deg, keyed): turn the elbow about the shoulder→wrist line on top of the contact's own
+      // swivel — the elbow stays out at her side while the torso folds under a hand held at the mouth
+      const sw = (pose.fx['swivel' + S_] ?? 0) * Math.PI / 180;
+      let aim = T.p.slice(), phiU = T.phi + sw;
+      // ELBOW GUIDANCE (a torso-frame video path): scan the swivel for the elbow that lands nearest the measured elbow on
+      // screen (36 steps round the circle + a refine), pulled weakly toward the interpolated swivel so of two mirror
+      // solutions (elbow forward / back, same screen point) the one on the keyed side wins; blended in by the path's weight
+      if (T.elbowP && T.elbowWt > 1e-3) {
+        const W3 = fr.fromScreen(T.p, T.z), err = (ph) => { const e = fr.toScreen(ik2(W3, L1, L2, ph).el); return Math.hypot(e[0] - T.elbowP[0], e[1] - T.elbowP[1]) + 0.03 * Math.abs(wrapPi(ph - phiU)); };
+        let bp = phiU, be = err(bp);
+        for (let k = -17; k <= 18; k++) { const ph = phiU + k * Math.PI / 18, e = err(ph); if (e < be) { be = e; bp = ph; } }
+        for (const d of [0.08, -0.08, 0.04, -0.04, 0.02, -0.02, 0.01, -0.01]) { const e = err(bp + d); if (e < be) { be = e; bp += d; } }
+        phiU += T.elbowWt * wrapPi(bp - phiU);
+        pose._reach[side].elbowP = T.elbowP; pose._reach[side].phiE = bp;
+      }
+      for (let it = 0; it < 3; it++) {
+        const sol = ik2(fr.fromScreen(aim, T.z), L1, L2, phiU), lim = (b) => [BONE[b].min ?? -180, BONE[b].max ?? 180];
+        const g = armAngles(sol.el, sol.wr, L1, L2, keyed, { e: lim(ua), al: lim(ab) });
+        pose.bones[ua] = g.e; pose.bones[ab] = g.al; pose.bones[ar] = g.tau; pose.bones[fa] = g.c;
+        const w = solve(pose)[ha].pos; aim = [aim[0] + T.p[0] - w[0], aim[1] + T.p[1] - w[1]];
+      }
+    }
+    // DAMPED least squares toward the KEYED angles: with a 3D arm a 2D wrist target has two arm solutions (elbow forward
+    // or back — mirror images in depth); plain Newton can jump between them from one frame to the next (the elbow flipped
+    // behind the body mid-reach). The prior keeps the solve on the keyed branch: minimise |e − JΔ|² + λ|θ + Δ − θkey|².
+    const seedU = pose.bones[ua] || 0, seedF = pose.bones[fa] || 0, lam = RC.lambda ?? 4e-6;
+    for (let it = 0; it < 8; it++) {                                        // fixed budget: no state, no iteration-to-tolerance drift
       const W0 = solve(pose)[ha].pos, ex = T.p[0] - W0[0], ey = T.p[1] - W0[1];
-      if (Math.hypot(ex, ey) < 1e-6) break;
       const Wu = at(ua, h), Wf = at(fa, h);
-      const Jm = [(Wu[0] - W0[0]) / h, (Wu[1] - W0[1]) / h, (Wf[0] - W0[0]) / h, (Wf[1] - W0[1]) / h], det = Jm[0] * Jm[3] - Jm[2] * Jm[1];
-      if (Math.abs(det) < 1e-9) break;
-      let du = (Jm[3] * ex - Jm[2] * ey) / det, df = (-Jm[1] * ex + Jm[0] * ey) / det;
-      const m = Math.hypot(du, df); if (m > 30) { du *= 30 / m; df *= 30 / m; }
+      const a = (Wu[0] - W0[0]) / h, b = (Wu[1] - W0[1]) / h, c = (Wf[0] - W0[0]) / h, d = (Wf[1] - W0[1]) / h;   // J = [[a c],[b d]]
+      const A11 = a * a + b * b + lam, A12 = a * c + b * d, A22 = c * c + d * d + lam;
+      const r1 = a * ex + b * ey + lam * (seedU - (pose.bones[ua] || 0)), r2 = c * ex + d * ey + lam * (seedF - (pose.bones[fa] || 0));
+      const det = A11 * A22 - A12 * A12; if (Math.abs(det) < 1e-14) break;
+      let du = (A22 * r1 - A12 * r2) / det, df = (A11 * r2 - A12 * r1) / det;
+      const m = Math.hypot(du, df); if (m > 20) { du *= 20 / m; df *= 20 / m; }
       pose.bones[ua] = (pose.bones[ua] || 0) + du; pose.bones[fa] = (pose.bones[fa] || 0) + df;
+    }
+    if (is3(side) && T.local !== undefined) {
+      // 3D arm: at a contact the hand keeps its angle RELATIVE TO WHAT IT TOUCHES (the hand over the mouth turns with the
+      // head as she bows into it); in flight it takes the keys' own local wrist angle. The contact angle is matched by a
+      // scan over the wrist's range (the screen angle can depend weakly and non-monotonically on the wrist bend when the
+      // hand turns edge-on — a secant step there flapped the hand between its limits), then one refining secant.
+      const lo = BONE[ha].min ?? -50, hi = BONE[ha].max ?? 40, errAt = (v) => { const q = { ...pose, bones: { ...pose.bones, [ha]: v } }; return Math.abs(((T.rot - solve(q)[ha].rot + 540) % 360) - 180); };
+      let best = T.local, be = (T.m ?? 0) >= 1 ? -1 : errAt(best);   // m = 1: the bend is given, no scan
+      const rg = T.reg ?? 0.02;   // pull toward the wanted bend: where the hand is edge-on many bends give the same angle
+      for (let v = lo; v <= hi + 1e-9; v += 6) { const e = errAt(v) + rg * Math.abs(v - T.local); if (e < be) { be = e; best = v; } }
+      for (const dv of [3, -3, 1.5, -1.5]) { const v = Math.max(lo, Math.min(hi, best + dv)), e = errAt(v) + rg * Math.abs(v - T.local); if (e < be) { be = e; best = v; } }
+      pose.bones[ha] = (1 - (T.m ?? 0)) * best + (T.m ?? 0) * T.local;
+      // LIMP WRIST (move flag limp: 0…1): a hand that falls (the drop from the mouth after the nausea) hangs from the wrist —
+      // fingers trailing straight down, whatever the arm does; strongest mid-move, gone at the contacts
+      const mw = T.mid ?? T.m;
+      if (T.limp && mw && T.limpBend !== undefined) {   // a DESIGNED limp bend (stop.limpBend): continuous by construction
+        pose.bones[ha] += T.limp * mw * (T.limpBend - pose.bones[ha]);
+      } else if (T.limp && mw) {
+        // the fingers hang DOWN: scan the wrist bend AND the forearm's twist (the twist turns the plane the wrist bends in;
+        // with the bend alone the best a back-view hand could do was point out sideways — a "wing", critic R9)
+        const fr_ = 'foreRot.' + side, t0_ = pose.bones[fr_] || 0, r0 = rig.restAngle(BONE[ha]);
+        const dn = (v, tw) => { const q = { ...pose, bones: { ...pose.bones, [ha]: v, [fr_]: tw } }; return Math.abs(((r0 + solve(q)[ha].rot - 90 + 540) % 360) - 180); };
+        // regularised toward the path's own bend (continuous in t): where two bends hang the fingers equally well, the
+        // scan must not jump between them from one frame to the next (a 118° flip in one frame, R14)
+        const rgL = (v) => 0.6 * Math.abs(v - (T.local ?? v));
+        let bv = pose.bones[ha], bt = t0_, bd = dn(bv, bt) + rgL(bv);
+        const tl = [BONE[fr_]?.min ?? -90, BONE[fr_]?.max ?? 90];
+        for (let dt = -30; dt <= 30; dt += 10) { const tw = Math.max(tl[0], Math.min(tl[1], t0_ + dt)); for (let v = lo; v <= hi + 1e-9; v += 6) { const e = dn(v, tw) + 0.4 * Math.abs(dt) + rgL(v); if (e < bd) { bd = e; bv = v; bt = tw; } } }
+        pose.bones[ha] += T.limp * mw * (bv - pose.bones[ha]); pose.bones[fr_] = t0_ + T.limp * mw * (bt - t0_);
+      }
+      if (T.roll !== undefined && Math.abs(T.roll - 1) > 1e-4) { const sc = (pose.scale[ha] ||= [1, 1]); sc[1] *= T.roll; }
+      pose._reach[side].hand = pose.bones[ha];   // the bend the solve settled on (a path move warps onto it)
+      return;
     }
     for (let it = 0; it < 2; it++) {                                        // hand angle (the rig clamps it to the wrist's real range)
       const c2 = solve(pose), e0 = ((T.rot - c2[ha].rot + 540) % 360) - 180;
@@ -394,16 +710,17 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     if (T.m) pose.bones[ha] = (1 - T.m) * pose.bones[ha] + T.m * T.local;
     if (T.roll !== undefined && Math.abs(T.roll - 1) > 1e-4) { const sc = (pose.scale[ha] ||= [1, 1]); sc[1] *= T.roll; }
+    pose._reach[side].hand = pose.bones[ha];
   }
 
   // FIDGET: small human life on top of the keys — a thumb stroke on the bump, fingers pressing — as smooth out-and-back
   // bumps: spec.fidget = [{t0, t1, cycles, bones: {bone: deg}}] adds deg·½(1 − cos 2π·cycles·u) over [t0, t1].
-  const fidgetAt = (pose, tt) => {
+  const fidgetAt = (pose, tt, sel = () => true) => {
     for (const F of spec.fidget || []) {
       let u = (tt - F.t0) / (F.t1 - F.t0); if (loop && u < 0) u = (tt + D - F.t0) / (F.t1 - F.t0);
       if (u <= 0 || u >= 1) continue;
       const w = 0.5 * (1 - Math.cos(2 * Math.PI * (F.cycles ?? 1) * u));
-      for (const [b, a] of Object.entries(F.bones)) pose.bones[b] = (pose.bones[b] || 0) + a * w;
+      for (const [b, a] of Object.entries(F.bones)) { if (!sel(b)) continue; if (b.startsWith('fx.')) pose.fx[b.slice(3)] = (pose.fx[b.slice(3)] || 0) + a * w; else pose.bones[b] = (pose.bones[b] || 0) + a * w; }   // fx.* too (a nod pulse: fx.headPitch)
     }
   };
 
@@ -429,7 +746,8 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       w *= 1 - smooth01((Math.hypot(a[0] - b[0], a[1] - b[1]) - d0) / (d1 - d0));
       if (w <= 0) return;
     }
-    const T = apM(cur[on].M, apM(inv(ref[on].M), ref[ha].pos));          // planted wrist, carried with the surface
+    const L0 = apM(inv(ref[on].M), ref[ha].pos), sx = pose.fx['slide.' + side + '.x'] ?? 0, sy = pose.fx['slide.' + side + '.y'] ?? 0;
+    const T = apM(cur[on].M, [L0[0] + sx, L0[1] + sy]);          // planted wrist, carried with the surface (+ a stroke's slide)
     const h = 0.5, at = (b, d, P) => { const p = { ...P, bones: { ...P.bones, [b]: (P.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
     const target = { ...pose, bones: { ...pose.bones } };
     for (let it = 0; it < 3; it++) {                                        // three Newton steps: a fixed cost, no state
@@ -519,6 +837,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     return b;
   };
 
+  let footRest = null, footRef = null;
   function poseAt(t) {
     const tt = wrapT(t);
     const pose = basePose(tt);
@@ -546,6 +865,44 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     pose.lattice = { belly: lat };
     delete pose._breathBelly;
+    // FOOT LOCK (spec.plantFeet): blending leg and pelvis angles between keys slides the feet ("skating") even when every
+    // key has its feet planted. Shift the root each frame so heels and balls stay where they are at rest — one solve,
+    // closed form, pure in t. (The arm contacts above ride the body, so they move with the root as they should.)
+    if (spec.plantFeet && C.roles?.legs) {
+      const st = solve(pose), Lg = C.roles.legs, pts = ['near', 'far'].flatMap((sd) => [[Lg[sd].foot, Lg[sd].ankle], [Lg[sd].foot, Lg[sd].ball]]);
+      const now = pts.map(([b, j]) => rig.carry(st, b, j)), rest = (footRest ||= (() => { const s0 = spec.plantFeet === 'ik' ? solve(lib[spec.plantFeetRef || spec.keys[0].pose]) : solve({}); return pts.map(([b, j]) => rig.carry(s0, b, j)); })());
+      const dx = rest.reduce((a, q, i) => a + q[0] - now[i][0], 0) / pts.length, dy = Math.max(...now.map((q) => q[1])) - Math.max(...rest.map((q) => q[1]));
+      pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) - dy];
+      // plantFeet "ik": the root shift only fixes the feet on AVERAGE — when the legs bend differently (a crouch, a 3/4
+      // stance) each sock still slides against the floor (critic R11: "both socks sliding inward"). Each leg then gets
+      // its own two-bone solve (thigh, shin: three fixed Newton steps) bringing its ankle back to its rest spot, and the
+      // foot turns back flat to its rest angle. Fixed cost, pure in t.
+      if (spec.plantFeet === 'ik') {
+        // the stance every foot keeps: the shot's own (spec.plantFeetRef, default its first key), not the rest drawing's
+        const s0 = (footRef ||= solve(lib[spec.plantFeetRef || spec.keys[0].pose])), h = 0.5, lam = 2e-5;
+        const clampB = (b, v) => Math.max(BONE[b].min ?? -180, Math.min(BONE[b].max ?? 180, v));
+        for (const sd of ['near', 'far']) {
+          const L_ = C.roles.legs[sd], ank = (P_) => rig.carry(solve(P_), L_.shin, L_.ankle), goal = rig.carry(s0, L_.shin, L_.ankle);
+          for (let it = 0; it < 7; it++) {   // damped least squares, inside the joint limits (a knee never hyperextends to reach)
+            const W0 = ank(pose), ex = goal[0] - W0[0], ey = goal[1] - W0[1]; if (Math.hypot(ex, ey) < 1e-5) break;
+            // three joints for a 2D ankle: hip abduction (a sock sliding sideways), thigh and shin — Δ = Jᵀ(JJᵀ + λI)⁻¹e,
+            // the abduction weighted down (w) so the knee does most of the work
+            const bump = (b) => ank({ ...pose, bones: { ...pose.bones, [b]: (pose.bones[b] || 0) + h } });
+            const Bs = [L_.abd, L_.thigh, L_.shin], wts = [0.35, 1, 1], Jc = Bs.map((b, k) => { const W = bump(b); return [wts[k] * (W[0] - W0[0]) / h, wts[k] * (W[1] - W0[1]) / h]; });
+            const M11 = Jc.reduce((s_, j) => s_ + j[0] * j[0], 0) + lam, M12 = Jc.reduce((s_, j) => s_ + j[0] * j[1], 0), M22 = Jc.reduce((s_, j) => s_ + j[1] * j[1], 0) + lam, det = M11 * M22 - M12 * M12;
+            if (Math.abs(det) < 1e-12) break;
+            const y0 = (M22 * ex - M12 * ey) / det, y1 = (M11 * ey - M12 * ex) / det;
+            let dl = Jc.map((j, k) => wts[k] * (j[0] * y0 + j[1] * y1)); const m = Math.hypot(...dl); if (m > 15) dl = dl.map((v) => v * 15 / m);
+            Bs.forEach((b, k) => { pose.bones[b] = clampB(b, (pose.bones[b] || 0) + dl[k]); });
+          }
+          for (let it = 0; it < 2; it++) {   // the sole back to its angle in the stance pose
+            const c0 = solve(pose)[L_.foot].rot, e0 = ((s0[L_.foot].rot - c0 + 540) % 360) - 180;
+            const c1 = solve({ ...pose, bones: { ...pose.bones, [L_.foot]: (pose.bones[L_.foot] || 0) + h } })[L_.foot].rot, sl = (((c1 - c0) + 540) % 360 - 180) / h;
+            if (Math.abs(sl) > 1e-6) pose.bones[L_.foot] = (pose.bones[L_.foot] || 0) + Math.max(-20, Math.min(20, e0 / sl));
+          }
+        }
+      }
+    }
     return pose;
   }
   return { fps, duration: D, loop, frames: Math.round(D * fps), poseAt, basePose, breathAt, hairAt, blinkAt, phaseAt };

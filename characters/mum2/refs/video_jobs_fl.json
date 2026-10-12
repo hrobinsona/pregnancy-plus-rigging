@@ -1,0 +1,152 @@
+[
+ {
+  "name": "fl_lift_sd",
+  "model": "fal-ai/bytedance/seedance/v1/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. She suddenly feels sick: the hand that is wrapped round the far side of her belly (the hand on the RIGHT of the picture) comes forward off her belly and quickly rises in front of her chest to cover her mouth; the elbow swings forward and up; her other hand stays resting on her belly. Quick natural reach, about half a second, then she holds it there.",
+  "first": "characters/mum2/refs/images/k2_unease_v2_0.png",
+  "last": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "args": {
+   "duration": "3",
+   "resolution": "720p"
+  }
+ },
+ {
+  "name": "fl_lift_k25",
+  "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. She suddenly feels sick: the hand that is wrapped round the far side of her belly (the hand on the RIGHT of the picture) comes forward off her belly and quickly rises in front of her chest to cover her mouth; the elbow swings forward and up; her other hand stays resting on her belly. Quick natural reach, about half a second, then she holds it there.",
+  "first": "characters/mum2/refs/images/k2_unease_v2_0.png",
+  "last": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "args": {
+   "duration": "5"
+  }
+ },
+ {
+  "name": "fl_lift_ko1",
+  "model": "fal-ai/kling-video/o1/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. From @Image1 to @Image2. She suddenly feels sick: the hand that is wrapped round the far side of her belly (the hand on the RIGHT of the picture) comes forward off her belly and quickly rises in front of her chest to cover her mouth; the elbow swings forward and up; her other hand stays resting on her belly. Quick natural reach, about half a second, then she holds it there.",
+  "first": "characters/mum2/refs/images/k2_unease_v2_0.png",
+  "last": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "args": {
+   "duration": "3"
+  }
+ },
+ {
+  "name": "fl_lift_hl",
+  "model": "fal-ai/minimax/hailuo-02/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. She suddenly feels sick: the hand that is wrapped round the far side of her belly (the hand on the RIGHT of the picture) comes forward off her belly and quickly rises in front of her chest to cover her mouth; the elbow swings forward and up; her other hand stays resting on her belly. Quick natural reach, about half a second, then she holds it there.",
+  "first": "characters/mum2/refs/images/k2_unease_v2_0.png",
+  "last": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "args": {}
+ },
+ {
+  "name": "fl_lift_veo",
+  "model": "fal-ai/veo3.1/first-last-frame-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. She suddenly feels sick: the hand that is wrapped round the far side of her belly (the hand on the RIGHT of the picture) comes forward off her belly and quickly rises in front of her chest to cover her mouth; the elbow swings forward and up; her other hand stays resting on her belly. Quick natural reach, about half a second, then she holds it there.",
+  "first": "characters/mum2/refs/images/k2_unease_v2_0.png",
+  "last": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "args": {
+   "duration": "4s",
+   "resolution": "720p"
+  }
+ },
+ {
+  "name": "fl_retch_sd",
+  "model": "fal-ai/bytedance/seedance/v1/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. With her hand over her mouth she retches twice: her stomach pulls in and her upper body jerks forward and down over her belly, shoulders hunched, chin tucked, knees softening; a smaller second retch; then she slowly straightens and takes a slow deep breath through her hand, eyes closed. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "last": "characters/mum2/refs/images/k6_out_v2_0.png",
+  "args": {
+   "duration": "5",
+   "resolution": "720p"
+  }
+ },
+ {
+  "name": "fl_retch_k25",
+  "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. With her hand over her mouth she retches twice: her stomach pulls in and her upper body jerks forward and down over her belly, shoulders hunched, chin tucked, knees softening; a smaller second retch; then she slowly straightens and takes a slow deep breath through her hand, eyes closed. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "last": "characters/mum2/refs/images/k6_out_v2_0.png",
+  "args": {
+   "duration": "5"
+  }
+ },
+ {
+  "name": "fl_retch_ko1",
+  "model": "fal-ai/kling-video/o1/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. From @Image1 to @Image2. With her hand over her mouth she retches twice: her stomach pulls in and her upper body jerks forward and down over her belly, shoulders hunched, chin tucked, knees softening; a smaller second retch; then she slowly straightens and takes a slow deep breath through her hand, eyes closed. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "last": "characters/mum2/refs/images/k6_out_v2_0.png",
+  "args": {
+   "duration": "5"
+  }
+ },
+ {
+  "name": "fl_retch_hl",
+  "model": "fal-ai/minimax/hailuo-02/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. With her hand over her mouth she retches twice: her stomach pulls in and her upper body jerks forward and down over her belly, shoulders hunched, chin tucked, knees softening; a smaller second retch; then she slowly straightens and takes a slow deep breath through her hand, eyes closed. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "last": "characters/mum2/refs/images/k6_out_v2_0.png",
+  "args": {}
+ },
+ {
+  "name": "fl_retch_veo",
+  "model": "fal-ai/veo3.1/first-last-frame-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. With her hand over her mouth she retches twice: her stomach pulls in and her upper body jerks forward and down over her belly, shoulders hunched, chin tucked, knees softening; a smaller second retch; then she slowly straightens and takes a slow deep breath through her hand, eyes closed. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k4_cover_v2_0.png",
+  "last": "characters/mum2/refs/images/k6_out_v2_0.png",
+  "args": {
+   "duration": "6s",
+   "resolution": "720p"
+  }
+ },
+ {
+  "name": "fl_return_sd",
+  "model": "fal-ai/bytedance/seedance/v1/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. The nausea passes: she lowers her hand from her mouth with a long sigh, the wrist relaxed, and it falls gently back to rest wrapped round the far side of her belly; she looks down at her bump with a soft relieved smile. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k7_peel_v2_0.png",
+  "last": "characters/mum2/refs/images/k8_relief_v2_0.png",
+  "args": {
+   "duration": "3",
+   "resolution": "720p"
+  }
+ },
+ {
+  "name": "fl_return_k25",
+  "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. The nausea passes: she lowers her hand from her mouth with a long sigh, the wrist relaxed, and it falls gently back to rest wrapped round the far side of her belly; she looks down at her bump with a soft relieved smile. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k7_peel_v2_0.png",
+  "last": "characters/mum2/refs/images/k8_relief_v2_0.png",
+  "args": {
+   "duration": "5"
+  }
+ },
+ {
+  "name": "fl_return_ko1",
+  "model": "fal-ai/kling-video/o1/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. From @Image1 to @Image2. The nausea passes: she lowers her hand from her mouth with a long sigh, the wrist relaxed, and it falls gently back to rest wrapped round the far side of her belly; she looks down at her bump with a soft relieved smile. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k7_peel_v2_0.png",
+  "last": "characters/mum2/refs/images/k8_relief_v2_0.png",
+  "args": {
+   "duration": "3"
+  }
+ },
+ {
+  "name": "fl_return_hl",
+  "model": "fal-ai/minimax/hailuo-02/pro/image-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. The nausea passes: she lowers her hand from her mouth with a long sigh, the wrist relaxed, and it falls gently back to rest wrapped round the far side of her belly; she looks down at her bump with a soft relieved smile. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k7_peel_v2_0.png",
+  "last": "characters/mum2/refs/images/k8_relief_v2_0.png",
+  "args": {}
+ },
+ {
+  "name": "fl_return_veo",
+  "model": "fal-ai/veo3.1/first-last-frame-to-video",
+  "prompt": "2D flat vector cartoon animation of this exact character, same flat colours, no outlines added, static locked camera, plain white background, full body in frame, no cuts. The nausea passes: she lowers her hand from her mouth with a long sigh, the wrist relaxed, and it falls gently back to rest wrapped round the far side of her belly; she looks down at her bump with a soft relieved smile. Her other hand stays on her belly.",
+  "first": "characters/mum2/refs/images/k7_peel_v2_0.png",
+  "last": "characters/mum2/refs/images/k8_relief_v2_0.png",
+  "args": {
+   "duration": "4s",
+   "resolution": "720p"
+  }
+ }
+]

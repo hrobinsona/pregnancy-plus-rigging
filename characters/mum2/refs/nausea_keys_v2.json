@@ -1,0 +1,14 @@
+{
+ "base": "Image 1 shows the character design and art style; image 2 shows her starting pose and the exact framing. Draw the SAME character in the SAME flat vector illustration style (no outlines, same colours: pink cardigan, lilac top, purple joggers, yellow socks), at the SAME size and position in the frame as image 2, same 3/4 view facing right, plain white background, full body head to feet. Hands: her NEAR hand (on the lower front of the bump in image 2) and her FAR hand (wrapped round the far side of the bump in image 2). Pose:",
+ "poses": {
+  "k2_unease": "Something feels wrong: both hands still where they are in image 2, but the fingers press in slightly; her brows knit, her eyes look down toward her belly, lips pressed together, shoulders slightly raised on a small breath in.",
+  "k3_lift": "A wave of nausea: her FAR hand has left her bump and is rising toward her mouth — the far elbow bent and out to the side at chest height, the forearm angled up in front of her chest, palm turning toward her face, fingers loosely curled. Her NEAR hand stays on the lower front of the bump. Queasy face, brows knit.",
+  "k4_cover": "Nauseous: her FAR hand covers her mouth — palm over her lips, fingers up along her cheek, the far elbow out to the side below her chin. Eyes squeezed shut, brows knit, head dipped slightly into the hand. Her NEAR hand stays on the lower front of the bump.",
+  "k5_retch": "She retches: upper body curled forward from the hips, shoulders hunched up, head bowed down into her FAR hand which covers her mouth, knees slightly bent. Her NEAR hand grips the lower front of her bump. Eyes squeezed shut.",
+  "k6_in": "Riding it out, a slow deep breath IN: standing more upright, shoulders and chest lifted, her FAR hand still covering her mouth, eyes closed. NEAR hand on the lower front of the bump.",
+  "k6_out": "Riding it out, a slow breath OUT: shoulders dropped, head bowed a little, her FAR hand still covering her mouth, eyes closed. NEAR hand on the lower front of the bump.",
+  "k7_peel": "The nausea passes: her FAR hand peels away from her mouth, palm still facing her face, a little in front of her lips; lips parted as she breathes out, eyes softly closed. NEAR hand on the lower front of the bump.",
+  "k7_fall": "A long relieved sigh: her FAR hand falls down in front of her chest, wrist limp, fingers trailing down, on its way back to her bump; shoulders dropping, eyes closed, lips parted. NEAR hand on the lower front of the bump.",
+  "k8_relief": "Both hands back exactly as in image 2 (far hand round the far side of the bump, near hand on the lower front); her head tilted down, looking at her bump with a soft relieved smile, eyes lowered."
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "name": "n-peel",
+ "note": "the peel (k7) with the wrist flexed: palm still toward her face, fingers loosely together (the fitted k7 hand stood upright, fingers up: an oath, critic R26)",
+ "_recipe": "n-peel fit-k7 --add hand.far=30 --note the peel (k7) with the wrist flexed: palm still toward her face, fingers loosely together (the fitted k7 hand stood upright, fingers up: an oath, critic R26)",
+ "hands": {
+  "near": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.35
+   }
+  },
+  "far": {
+   "pose": "relaxed",
+   "mix": {
+    "cup": 0.5
+   }
+  }
+ },
+ "handView": {
+  "far": "back"
+ },
+ "zBias": {
+  "arm.far.fore": 55
+ },
+ "fx": {
+  "armFree": 0.0,
+  "headPitch": 15.4,
+  "pinNear": 1.0
+ },
+ "root": [
+  0.0041,
+  0.0558
+ ],
+ "bones": {
+  "armAbd.far": -26.9,
+  "armAbd.near": -6.6,
+  "armRot.far": 52,
+  "armRot.near": 23,
+  "belly": 3,
+  "chest": -5.8,
+  "clavicle.far": -5.6,
+  "clavicle.near": -1.2,
+  "foot.far": 4.3,
+  "foot.near": 6.4,
+  "foreRot.far": 0.7,
+  "foreRot.near": 2.5,
+  "forearm.far": 129.6,
+  "forearm.near": 66.4,
+  "hand.far": 0.6,
+  "hand.near": 25.7,
+  "head": -7.4,
+  "hipAbd.far": 0,
+  "hipAbd.near": 0.8,
+  "neck": -0.3,
+  "pelvis": 0,
+  "shin.far": -0.1,
+  "shin.near": 1.4,
+  "shoulderAbd.far": 18.1,
+  "shoulderAbd.near": -10.7,
+  "spineLower": 5.9,
+  "spineUpper": -2.1,
+  "thigh.far": -1.6,
+  "thigh.near": -0.6,
+  "upperArm.far": 42,
+  "upperArm.near": -16.1
+ },
+ "_orig": {},
+ "_edits": [
+  "--hand far={\"pose\":\"relaxed\",\"mix\":{\"cup\":0.5}}",
+  "--fx pinNear=1,armFree=0"
+ ]
+}

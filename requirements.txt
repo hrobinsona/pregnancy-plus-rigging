@@ -1,0 +1,11 @@
+# Python tools (pose estimation, fitting helpers, review packs, audits)
+numpy
+scipy
+pillow
+scikit-image
+scikit-learn
+matplotlib
+opencv-python-headless
+mediapipe>=0.10.14
+# optional: reference generation through fal.ai (tools/fal_gen.py); not needed if images come from another tool
+fal-client
