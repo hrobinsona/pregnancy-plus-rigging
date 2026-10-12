@@ -205,7 +205,9 @@ or composited.
    outline"; `tools/tip_check.mjs` draws her without that arm and walks each fingertip along its finger: v2's resting
    tips were 14–21 px PAST the under-curve, its stroke top 9–11 px. The cure was the contact, not the hand: `dp`
    [-0.03, -0.22] on every resting stop put the hand on the bump's lower FRONT (tips 35–45 px inside) and a cupped hand
-   shape (`wrap`) at the stroke's top. Gate: every tip ≥ 4 px inside while the hand is on her.
+   shape (`wrap`) at the stroke's top. Gate: every tip ≥ 4 px inside while the hand is on her. And ≥ 9 px CLEAR of the
+   outline in any direction (`clear` column): v4's tips were 6 px inside along the finger while the finger ran along the
+   bump's edge, its side touching it, and the A/B reviewer saw "tips clipped against the outline, a tangent".
 34. **The elbow's swivel is part of the pose: put the same `dphi` on EVERY stop of the arm's path.** A hand on the bump
    from a fitted still bowed the upper arm back with the elbow behind her back line (v2 feel critic); `dphi: -35` swings
    the elbow in under the shoulder. Given only to the bump stops, the vias kept their own swivel (the elbow jittered
@@ -223,6 +225,23 @@ or composited.
    out first (`n-prep`, half way to the breath-out pose), ~2 s in, a short hold, the out as a sigh (ease
    [0.3, 0.15, 0.25, 1]: most of the drop early, a long sink), the hand on the bump riding out and back (`dp` on the
    breath's reach stops) and one small finger spread and press (`spec.fidget`) so the resting hand isn't frozen.
+37. **A hand that rests on her must be able to lie ON her: the wrist needs flexion, not just deviation.** All three v3
+   critics: "the hand changes size", 129 px hanging, 100–113 on the bump, 82 at the stroke top ("a stubby paw"). MEASURED
+   before touching the drawing: the 3D arm's projected lengths (`st[bone].a3.len`) were forearm 0.6, hand 0.49–0.65. The
+   rig's wrist bent only in the palm's own plane (radial/ulnar deviation, what a back-view hand shows on screen), so the
+   palm stayed in the forearm's plane, and the contact's forearm pointed at the camera: the hand pointed at it too.
+   A real wrist extends so the palm lies on what it touches. Now: a second wrist DOF (`flex: 'wristFlex.<side>'` on the
+   hand bone, + = extension) and `lie: '<proxy>'` on a contact stop. The hand keeps the screen angle the reach chose
+   and takes the depth of that proxy's TANGENT plane under the wrist (closed form in the forearm's frame, then the
+   deviation re-matched): on the bump's near face it draws at full length (128 px vs 129 hanging), toward the outline it
+   wraps away and foreshortens, as a real hand does. Moves blend `lie` in and out. Swinging the elbow (`dphi`) could not
+   fix it: with the wrist where the still put it, every swivel that keeps the elbow out of her body points the forearm
+   into depth.
+38. **A held hand ticks when its solver changes regime at the stop.** v3's resting hand stepped 1–2° in one frame as each
+   hold began or ended (hands critic: "ticks" at 2.65, 7.30, 7.85, 10.30 s). Two causes, both in the wrist scan: it pulled
+   toward the key's bend hard in a hold (0.3) and weakly in a move (0.02), switching at the stop; and it refined only to a
+   1.5° grid. Now the pull blends continuously across a move's ends and the scan refines to 0.15°. Check with a per-frame
+   trace of the drawn hand (wrist→middle-tip angle and length) across every move↔hold switch: no step over ~0.5°.
 
 ## From the reels rig (merged 2026-10-12)
 

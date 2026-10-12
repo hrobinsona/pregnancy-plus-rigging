@@ -408,6 +408,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       if (h) c.z = h.t0 - (e.gap ?? 0.06);
     }
     if (e.dphi !== undefined && c.phi !== undefined) c.phi += e.dphi * Math.PI / 180;
+    if (e.lie && c.z !== undefined) { c.lie = e.lie; c.lieW = 1; }
     return c;
   }
   // A MOVE runs from one stop entry to the next; entries marked via:true in between shape the path without stopping (one
@@ -419,6 +420,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   // bend): without that pull the 2D secant step flipped an edge-on hand between bends 70° apart in four frames as she bowed
   // into it (the "four hand shapes" at the mouth, critic R22). spec.reach.holdReg: degrees of angle error per degree of bend
   const holdBend = (side, e) => (is3(side) ? { local: lib[e.pose].bones?.['hand.' + side] ?? 0, reg: e.reg ?? RC.holdReg ?? 0.3 } : {});
+  // the wrist scan's pull toward the planned bend, CONTINUOUS across a move's ends: a hold pulls hard (holdBend), a move
+  // only weakly mid-flight — switching at the stop stepped the hand 1–2° in one frame as each hold began or ended (mum3 v3)
+  const moveReg = (side, a, b, u) => { if (!is3(side)) return undefined; const hr = (e) => e.reg ?? RC.holdReg ?? 0.3, h = hr(a) + u * (hr(b) - hr(a)), m = Math.min(1, 6 * u * (1 - u)); return 0.02 + (h - 0.02) * (1 - m); };
   function reachTarget(side, tt, st, P_) {
     const L = RC[side], n = L.length, stops = L.map((e, k) => (e.via ? -1 : k)).filter((k) => k >= 0);
     let i = -1; for (const k of stops) if (L[k].t <= tt + 1e-9) i = k;
@@ -471,7 +475,8 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (A.phi !== undefined) { const pa = P[kh].phi, pb = P[Math.min(P.length - 1, kh + 1)].phi; phi = pa + vh * (Math.atan2(Math.sin(pb - pa), Math.cos(pb - pa))); }
     // front flag along the path (vias included), interpolated like the hand's local angle
     const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
-    return { limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)), reg: b.reg ?? a.reg };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+    const lA = E[kh].lie ? 1 : 0, lB = E[Math.min(E.length - 1, kh + 1)].lie ? 1 : 0, lie = E.find((e) => e.lie)?.lie;
+    return { lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
   }
   // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
   // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —
@@ -634,6 +639,43 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     return { limp: b.limp ?? 0, limpBend: b.limpBend, mid: Math.min(1, 7 * uq * (1 - uq)), frontW, behindW, roll,   // limp by TIME, not progress: the wrist drops first, while the (accelerating) fall has barely begun P: rows.map((r) => scr(r).p), u: (tq - T_[0]) / (T_[n - 1] - T_[0]), sP: N.s,
       p: N.p, z: three ? N.z : undefined, phi: three ? N.phi : undefined, rot: H.rot, local, m, twist, reg: Q.reg, elbowP, elbowWt };   // path.m: mid-path the wrist takes the measured BEND instead of the measured direction
   }
+  // LIE (stop.lie = a depth proxy, e.g. 'bump'): the palm lies ON that surface. The wrist's screen point is cast onto the
+  // proxy; the hand's 3D direction keeps its screen direction (the bend scan matched it) but takes the depth that puts it
+  // in the surface's TANGENT plane there; the wrist's flexion (hand bone `flex`) and deviation are then read off that
+  // direction in the forearm's frame (closed form), and the deviation is re-matched to the screen angle with the flexion
+  // held. On the near face of the bump the hand lies nearly in the picture plane (full length); toward the bump's
+  // outline it wraps away round the curve (foreshortens) — what a real hand does. Weighted by T.lieW (moves blend in/out).
+  function lieFlat(pose, side, T, lo, hi) {
+    const ha = 'hand.' + side, fl = BONE[ha].flex, st = solve(pose), fr = armFrame(rig, st, side), q = proxies(rig, st, fr).find((x) => x.name === T.lie);
+    if (!q) return;
+    const p0 = fr.toBody(st[ha].pos, 0), h = rayHits(p0, fr, [q])[0];
+    // the outward normal at the entry point (or, if the ray misses, at the nearest point of the proxy's silhouette)
+    const P = h ? p0.map((x, i) => x + h.t0 * fr.view[i]) : p0, o = P.map((x, i) => x - q.c[i]), [aF, aD, aL] = q.axes;
+    let N = [o[0] / aF ** 2, q.kind === 'cylinder' ? 0 : o[1] / aD ** 2, o[2] / aL ** 2]; const nl = Math.hypot(...N) || 1; N = N.map((x) => x / nl);
+    // body (upright) → camera coords of the ARM frame: x/y rotate by (chest − arm base), depth is shared
+    const s_ = fr.s, SQ_ = Math.sqrt(1 - rig.fx ** 2), cb = [rig.fx * N[0] + s_ * SQ_ * N[2], N[1], -SQ_ * N[0] + s_ * rig.fx * N[2]];
+    const ua = st['upperArm.' + side], kb = ((st.chest?.rot ?? 0) - ((ua.baseRot ?? 0) + rig.restAngle(BONE['upperArm.' + side]) - 90)) * Math.PI / 180;
+    const Nc = [Math.cos(kb) * cb[0] - Math.sin(kb) * cb[1], Math.sin(kb) * cb[0] + Math.cos(kb) * cb[1], cb[2]];
+    const cam = st[ha].a3.cam, sl = Math.hypot(cam[0], cam[1]) || 1, sx = cam[0] / sl, sy = cam[1] / sl;
+    // tangent: a·(s·N_xy) + d·N_z = 0, a² + d² = 1 (|d| capped: edge-on at the silhouette would point it straight into depth)
+    const r = Math.abs(Nc[2]) > 1e-6 ? -(sx * Nc[0] + sy * Nc[1]) / Nc[2] : Math.sign(sx * Nc[0] + sy * Nc[1]) * 3, rc = Math.max(-1.2, Math.min(1.2, r));
+    const a = 1 / Math.hypot(1, rc), d = rc * a, u = [sx * a, sy * a, d];
+    // arm camera → arm local (toCam is a rotation; its inverse is the transpose), then into the forearm's frame
+    const ul = [rig.fx * u[0] - SQ_ * u[2], u[1], s_ * (SQ_ * u[0] + rig.fx * u[2])];
+    const F = st['forearm.' + side].a3, vf = F.v, gf = F.g, nf = [vf[1] * gf[2] - vf[2] * gf[1], vf[2] * gf[0] - vf[0] * gf[2], vf[0] * gf[1] - vf[1] * gf[0]];
+    const dt = (x, y) => x[0] * y[0] + x[1] * y[1] + x[2] * y[2], DEGr = 180 / Math.PI;
+    const fW = Math.asin(Math.max(-1, Math.min(1, -dt(ul, nf)))) * DEGr, w = Math.min(1, T.lieW);
+    const flex = (1 - w) * (pose.bones[fl] || 0) + w * Math.max(BONE[fl].min ?? -60, Math.min(BONE[fl].max ?? 70, fW));
+    pose.bones[fl] = flex;
+    // the flexion moved the hand's screen angle: re-match the deviation to the angle the reach had settled on (whatever
+    // decided it: the contact scan, the planned bend mid-move, the limp wrist), starting from the closed-form bend
+    const rot0 = st[ha].rot, errR = (v) => { const q = { ...pose, bones: { ...pose.bones, [ha]: v } }; return Math.abs(((rot0 - solve(q)[ha].rot + 540) % 360) - 180); };
+    const cW = Math.atan2(dt(ul, gf), dt(ul, vf)) * DEGr, b0 = pose.bones[ha];
+    let best = Math.max(lo, Math.min(hi, (1 - w) * b0 + w * cW)), be = errR(best) + 0.02 * Math.abs(best - b0);
+    for (const dv of [6, -6, 3, -3, 1.5, -1.5, 0.75, -0.75, 0.3, -0.3]) { const v = Math.max(lo, Math.min(hi, best + dv)), e = errR(v) + 0.02 * Math.abs(v - b0); if (e < be) { be = e; best = v; } }
+    pose.bones[ha] = best;
+    pose._reach[side].lie = { flex, len: solve(pose)[ha].a3.len, N: Nc };
+  }
   function reachArm(pose, tt, side) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
     const st0 = solve(pose), T = reachTarget(side, tt, st0, pose), h = 0.5;
@@ -698,7 +740,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       let best = T.local, be = (T.m ?? 0) >= 1 ? -1 : errAt(best);   // m = 1: the bend is given, no scan
       const rg = T.reg ?? 0.02;   // pull toward the wanted bend: where the hand is edge-on many bends give the same angle
       for (let v = lo; v <= hi + 1e-9; v += 6) { const e = errAt(v) + rg * Math.abs(v - T.local); if (e < be) { be = e; best = v; } }
-      for (const dv of [3, -3, 1.5, -1.5]) { const v = Math.max(lo, Math.min(hi, best + dv)), e = errAt(v) + rg * Math.abs(v - T.local); if (e < be) { be = e; best = v; } }
+      for (const dv of [3, -3, 1.5, -1.5, 0.75, -0.75, 0.35, -0.35, 0.15, -0.15]) { const v = Math.max(lo, Math.min(hi, best + dv)), e = errAt(v) + rg * Math.abs(v - T.local); if (e < be) { be = e; best = v; } }   // down to 0.15°: a 1.5° grid stepped the held hand 1–2° in one frame
       pose.bones[ha] = (1 - (T.m ?? 0)) * best + (T.m ?? 0) * T.local;
       // LIMP WRIST (move flag limp: 0…1): a hand that falls (the drop from the mouth after the nausea) hangs from the wrist —
       // fingers trailing straight down, whatever the arm does; strongest mid-move, gone at the contacts
@@ -718,6 +760,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         for (let dt = -30; dt <= 30; dt += 10) { const tw = Math.max(tl[0], Math.min(tl[1], t0_ + dt)); for (let v = lo; v <= hi + 1e-9; v += 6) { const e = dn(v, tw) + 0.4 * Math.abs(dt) + rgL(v); if (e < bd) { bd = e; bv = v; bt = tw; } } }
         pose.bones[ha] += T.limp * mw * (bv - pose.bones[ha]); pose.bones[fr_] = t0_ + T.limp * mw * (bt - t0_);
       }
+      if (T.lie && T.lieW > 1e-4 && BONE[ha].flex) lieFlat(pose, side, T, lo, hi);
       if (T.roll !== undefined && Math.abs(T.roll - 1) > 1e-4) { const sc = (pose.scale[ha] ||= [1, 1]); sc[1] *= T.roll; }
       pose._reach[side].hand = pose.bones[ha];   // the bend the solve settled on (a path move warps onto it)
       return;
