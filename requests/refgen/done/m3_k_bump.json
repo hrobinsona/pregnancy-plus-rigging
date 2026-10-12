@@ -1,0 +1,17 @@
+{
+  "char": "mum3",
+  "name": "m3_k_bump",
+  "prompt_file": "docs/prompts/m3_k_bump.txt",
+  "refs": [
+    "characters/mum3/ref/master.png",
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/m3_k_bump_0.png",
+    "characters/mum3/refs/images/m3_k_bump_1.png",
+    "characters/mum3/refs/images/m3_k_bump_2.png"
+  ],
+  "finished": "2026-10-12 17:09:38"
+}
