@@ -53,3 +53,23 @@ What was done (v2):
    frames; the down key rounds the upper back (chest +1.5°, upper spine +0.8°); the shoulders soften after the head lands
    on the way down; the breath gain up ~40%.
 6. The eyes lift with the gaze over 0.45 s, only a little wider (wide 0.1).
+
+Blind A/B v2 vs v1 (one fresh reviewer, crop of the upper body): v1 6.5, v2 6 — v1 preferred, low confidence (55–60%).
+- v2 better: the body joins the look up (back, shoulders, upper arm ease back with the head).
+- v1 better: the expression arc. v2's beam settled to 0.4 by 4.3 s, below where the teeth clear the lip line, so the
+  hold read as "a wide-eyed, unchanging closed smile" for 2 s; and v2's open upper lids on the way down kept the eyes
+  reading as ON us until 6.1 s (the gaze shift alone doesn't read with the head up).
+- v1 better: v2's descent read as even steps with a dead stop at 7.1 s.
+- Both: the near hand glides as one rigid piece (v2's finger curls of 4–6° are in DEPTH for a hand seen from the back:
+  they foreshorten by ~1% and never read); the far hand is static.
+
+What was done (v3):
+1. The hold keeps the open smile with teeth (beam 0.9 at the peak, settling to 0.65, still clear of the lip line);
+   it blooms as the head lands (3.15 s).
+2. Smiling eyes: `lid.smile` now ARCHES the lower lid up in the middle (a crescent) instead of flattening the oval;
+   0.18 at the peak (the stills keep the eyes round and open: 0.25 already read as squinting).
+3. The return: the lids lower WITH the eyes' drop (5.4–5.8), the head starts at 5.5, through n-ret at 6.4 to a long soft
+   landing at 7.3 (1.8 s).
+4. The near hand's life moved into what a back-of-hand view shows: the fan (fingers spread and the thumb sweeps out
+   with the caress, gather back on the return), and a "holding you" gather at the smile (curl 8–14° per joint: the
+   fingers shorten ~8% and draw together), then a spread re-settle index first.

@@ -51,7 +51,10 @@ export function build({ P: C, C: char, pose }) {
     if (open < 0.999) { const yc = c[1] + ry * 0.35, k = Math.max(0.08, open); fx.push((p) => [p[0], yc + (p[1] - c[1]) * k + (c[1] - yc) * open]); }
     else if (open > 1.001) fx.push((p) => [c[0] + (p[0] - c[0]) * (1 + (open - 1) * 0.4), c[1] + (p[1] - c[1]) * open]);
     if (sm > 0 || hf > 0) { const cy = c[1] + ry * 0.35 * (1 - Math.min(1, open)), fB = Math.max(-0.6, 1 - 2.2 * sm), fT = Math.max(0.06, 1 - 2.2 * hf);
-      fx.push((p) => [p[0], cy + (p[1] - cy) * (p[1] > cy ? fB : fT)]); }
+      // the smile's lower lid ARCHES up in the middle (a crescent: the eye smiles), never just flattens: v1's flat-bottomed
+      // half-moon under the lash line read as sleepy, and a smaller flattening didn't read at all (feel + blind A/B, v2)
+      const rx = Math.max(E.rx, E.ry), arch = (x) => 1.1 * sm * ry * Math.max(0, 1 - ((x - c[0]) / rx) ** 2);
+      fx.push((p) => [p[0], p[1] > cy ? Math.max(cy - 0.35 * ry * sm, cy + (p[1] - cy) * fB - arch(p[0])) : cy + (p[1] - cy) * fT]); }
     const lid = (p) => fx.reduce((q, f) => f(q), p);
     const ft = { warp: 'feature', warpAt: c };   // a nod moves the eye, its catch-light and lashes as one, without shearing them (engine/rig.js)
     out.push(part(`eye.${side}`, 53, C.eye, mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid), ft));

@@ -85,19 +85,19 @@
    "note": "a moving hold: the head tips a little (warm tilt)"
   },
   {
-   "t": 5.65,
+   "t": 5.5,
    "pose": "n-up",
    "ease": "inOut",
-   "note": "the head starts down ~5 frames after the eyes (v1 waited 0.7 s with the eyes down: aloof)"
+   "note": "the head starts down a few frames after the eyes (v1 waited 0.7 s with the eyes down: aloof)"
   },
   {
-   "t": 6.35,
+   "t": 6.4,
    "pose": "n-ret",
    "kind": "breakdown",
    "note": "back down on its own softer path: forward and tipped toward the bump, not the look up in reverse"
   },
   {
-   "t": 7.1,
+   "t": 7.3,
    "pose": "n-down",
    "ease": [
     0.3,
@@ -111,7 +111,7 @@
     "clavicle.near": 6,
     "clavicle.far": 6
    },
-   "note": "settles back into the look down (1.45 s, a drift); the shoulders soften after the head arrives"
+   "note": "settles back into the look down (1.8 s, a drift with a long soft landing; v2's 7.1 read as a dead stop); the shoulders soften after the head arrives"
   }
  ],
  "reach": {
@@ -230,7 +230,7 @@
      "t": 2.05,
      "pose": "face-rise",
      "ease": "inOut",
-     "note": "the eyes lead: on us before the head moves, the brows lift (she sees us)"
+     "note": "the eyes lead: on us before the head moves, the lids lifting with the gaze"
     },
     {
      "t": 2.95,
@@ -238,10 +238,10 @@
      "ease": "inOut"
     },
     {
-     "t": 3.35,
+     "t": 3.3,
      "pose": "face-beam",
      "ease": "inOut",
-     "note": "the smile reaches the eyes: the lower lids lift"
+     "note": "the smile reaches the eyes: the lower lids arch up a little"
     },
     {
      "t": 4.3,
@@ -250,21 +250,15 @@
      "note": "and eases off a little: the hold lives"
     },
     {
-     "t": 5.45,
+     "t": 5.4,
      "pose": "face-warm",
      "ease": "inOut"
     },
     {
-     "t": 5.75,
-     "pose": "face-drop",
-     "ease": "inOut",
-     "note": "the eyes go back to the bump first, the upper lids still open"
-    },
-    {
-     "t": 7.15,
+     "t": 5.8,
      "pose": "face-tender",
      "ease": "inOut",
-     "note": "the lids lower as the head drops"
+     "note": "the eyes go back to the bump first, the lids lowering with them (v2 kept them open: the eyes read as still on us), the head follows at once"
     }
    ]
   },
@@ -290,32 +284,32 @@
      "note": "the tender smile still closed as the head comes up"
     },
     {
-     "t": 2.95,
+     "t": 2.8,
      "pose": "face-rise",
      "ease": "inOut"
     },
     {
-     "t": 3.35,
+     "t": 3.15,
      "pose": "face-beam",
      "ease": "inOut",
-     "note": "the beam blooms AFTER the head lands: she sees us, then smiles (v1 showed teeth before it landed)"
+     "note": "the beam blooms as the head lands: she sees us, then smiles"
     },
     {
      "t": 4.3,
      "pose": "face-warm",
      "ease": "inOut",
-     "note": "settles: lips barely parted"
+     "note": "settles a little, still open"
     },
     {
-     "t": 5.5,
+     "t": 5.45,
      "pose": "face-warm",
      "ease": "inOut"
     },
     {
-     "t": 6.05,
-     "pose": "face-drop",
+     "t": 6.0,
+     "pose": "face-tender",
      "ease": "inOut",
-     "note": "the lips close over 0.55 s, slower than the eyes drop (v1 shut the teeth in 2 frames)"
+     "note": "the lips close over 0.55 s, a beat behind the eyes"
     }
    ]
   },
@@ -448,60 +442,67 @@
    "t1": 1.85,
    "cycles": 1,
    "bones": {
-    "hand.near.t0": 12,
-    "hand.near.t1": 8
+    "hand.near.f1s": -5,
+    "hand.near.f2s": -2,
+    "hand.near.f3s": 2,
+    "hand.near.f4s": 5,
+    "hand.near.ts": -8
    },
-   "note": "with the caress the thumb sweeps out and back"
+   "note": "the caress: the fingers fan open and the thumb sweeps out as the hand slides down, and gather back as it returns (a seen-from-the-back hand shows its life in the FAN: v2's finger curls of 4\u20136\u00b0 were in depth and never read)"
   },
   {
-   "t0": 2.0,
-   "t1": 4.4,
+   "t0": 2.9,
+   "t1": 4.7,
    "cycles": 1,
    "bones": {
-    "hand.near.f1s": -3,
-    "hand.near.f4s": 4,
-    "hand.near.f1a": -4,
-    "hand.near.f2a": -4,
-    "hand.near.f3a": -4,
-    "hand.near.f4a": -4
+    "hand.near.f1a": 12,
+    "hand.near.f1b": 14,
+    "hand.near.f2a": 12,
+    "hand.near.f2b": 14,
+    "hand.near.f3a": 10,
+    "hand.near.f3b": 12,
+    "hand.near.f4a": 8,
+    "hand.near.f4b": 10,
+    "hand.near.f1s": 4,
+    "hand.near.f4s": -4
    },
-   "note": "the breath in and the smile: the fingers press flatter and spread (v1's 2\u20133\u00b0 didn't read)"
+   "note": "as she smiles at us the fingertips gather a little on the bump ('holding you') and release: the fingers shorten ~8% and draw together"
   },
   {
    "t0": 5.6,
-   "t1": 7.0,
+   "t1": 6.9,
    "cycles": 1,
    "bones": {
-    "hand.near.f1a": 6,
-    "hand.near.f1b": 3
+    "hand.near.f1s": -4,
+    "hand.near.f1a": -3
    },
-   "note": "as her gaze comes back the hand answers: a small re-settle, index first"
+   "note": "as her gaze comes back the hand answers: the fingers re-settle, index first"
   },
   {
    "t0": 5.68,
-   "t1": 7.08,
+   "t1": 6.98,
    "cycles": 1,
    "bones": {
-    "hand.near.f2a": 5,
-    "hand.near.f2b": 3
+    "hand.near.f2s": -1.5,
+    "hand.near.f2a": -3
    }
   },
   {
    "t0": 5.76,
-   "t1": 7.16,
+   "t1": 7.06,
    "cycles": 1,
    "bones": {
-    "hand.near.f3a": 5,
-    "hand.near.f3b": 2
+    "hand.near.f3s": 1.5,
+    "hand.near.f3a": -3
    }
   },
   {
    "t0": 5.84,
-   "t1": 7.24,
+   "t1": 7.14,
    "cycles": 1,
    "bones": {
-    "hand.near.f4a": 4,
-    "hand.near.f4b": 2
+    "hand.near.f4s": 4,
+    "hand.near.f4a": -3
    }
   }
  ]
