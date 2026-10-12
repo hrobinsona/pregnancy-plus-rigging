@@ -175,3 +175,13 @@ What was done (v5):
    edges match the master within a few px row by row.
 
 Checks: `qa_checks` PASS (with limbs), `tip_check` PASS over the whole shot (every tip ≥ 4 px inside and ≥ 9 px clear).
+
+Blind A/B of v5 against v4 (fresh reviewer): **v5 wins, 6.5 vs 6**, moderate confidence (60–65%). Only the near arm and
+hand differ. The reviewer's clearest point, measured: v4's forearm drew about 30% shorter whenever the hand was on the
+bump, and the arm's area fell from ~1,720 px at rest to ~1,405 px at the stroke top ("reads as the arm shrinking and the
+hand looking big"); v5 keeps its rest length all shot. Also for v5: the elbow breaks her back line and takes part in the
+stroke; the hand reads as cupping the dome (thumb out, fingers fanned, tips on the outline). Against v5: the four fingers
+stack a little comb-like at the stroke top (9.0 s); v4's tucked arm is softer, if stiffer. Both: the step where the
+forearm meets the heel of the hand, the stroking hand as one rigid piece, a breath that shows only in the head. Caveat:
+partway through, after the forearm measurement, the reviewer saw a CLAUDE.md notice describing v5, so the verdict is
+not fully blind.
