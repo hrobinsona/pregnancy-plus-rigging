@@ -1,7 +1,7 @@
 {
  "name": "n-lift",
  "note": "lift breakdown: elbow a third bent, hand trailing",
- "_recipe": "n-lift rest n-bump 0.35 --hands near=limp --note lift breakdown: elbow a third bent, hand trailing",
+ "_recipe": "n-lift n-rest n-bump 0.35 --hands near=limp --note lift breakdown: elbow a third bent, hand trailing",
  "hands": {
   "near": "limp",
   "far": "relaxed"
@@ -19,7 +19,7 @@
   "foot.far": 0.56,
   "foot.near": 1.01,
   "foreRot.near": -0.24,
-  "forearm.near": 18.59,
+  "forearm.near": 25.09,
   "hand.near": 0.84,
   "head": 2.24,
   "hipAbd.far": 0.0,
@@ -33,6 +33,6 @@
   "spineUpper": -0.07,
   "thigh.far": 0.0,
   "thigh.near": -0.03,
-  "upperArm.near": -2.13
+  "upperArm.near": -4.08
  }
 }

@@ -1,7 +1,7 @@
 {
  "name": "n-out",
  "note": "end of the long breath out: settled lower than the start",
- "_recipe": "n-out fit-m3_k_bump --hands near=lay --add chest=1.2,spineUpper=0.4,clavicle.near=-2,head=1.5,neck=0.5 --note end of the long breath out: settled lower than the start",
+ "_recipe": "n-out fit-m3_k_bump --hands near=lay --add clavicle.near=-2,head=1.5,neck=0.5 --note end of the long breath out: settled lower than the start",
  "hands": {
   "near": "lay",
   "far": "relaxed"
@@ -14,7 +14,7 @@
   "armAbd.near": -0.8,
   "armRot.near": -13.7,
   "belly": 0,
-  "chest": 0.6,
+  "chest": -0.6,
   "clavicle.near": -3.5,
   "foot.far": 1.6,
   "foot.near": 2.9,
@@ -30,9 +30,23 @@
   "shin.near": -1.2,
   "shoulderAbd.near": 1,
   "spineLower": 0,
-  "spineUpper": 0.2,
+  "spineUpper": -0.2,
   "thigh.far": 0,
   "thigh.near": -0.1,
   "upperArm.near": -6.1
- }
+ },
+ "_orig": {},
+ "scale": {
+  "chest": [
+   0.99,
+   1.0
+  ],
+  "spineUpper": [
+   0.995,
+   1.0
+  ]
+ },
+ "_edits": [
+  "--scale chest=0.99:1,spineUpper=0.995:1"
+ ]
 }

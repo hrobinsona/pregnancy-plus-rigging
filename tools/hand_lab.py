@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""hand_lab.py <char> [--px 420] [--pose stand]
+"""hand_lab.py <char> [--px 420] [--pose stand|rest]
 Large close-ups of every hand-library pose on both hands (rest arms), plus both hands in a body pose: the sheet to
 judge hand construction and joint direction at the size a lead would. Crops are centred on the POSED wrist and
 the hand's own length, so nothing is cut. Writes out/<char>_hand_lab.png"""
 import sys, json, subprocess, argparse, os
 from PIL import Image, ImageDraw, ImageFont
-ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('--px', type=int, default=420); ap.add_argument('--pose', default='stand')
+ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('--px', type=int, default=420); ap.add_argument('--pose', default=None)
 a = ap.parse_args(); c = a.char
+if a.pose is None:   # mum2's standing pose is 'stand'; a character made by new_char.py has 'rest'
+    a.pose = 'stand' if os.path.exists(f'characters/{c}/poses/stand.json') else 'rest'
 meta = json.loads(subprocess.run(['node', '-e', f"import('./characters/{c}/character.js').then(m=>console.log(JSON.stringify({{lib:m.default.handLibrary,ref:m.default.ref,spec:Object.fromEntries(Object.entries(m.default.params.handSpecs).map(([k,v])=>[k,v.length]))}})))"], check=True, capture_output=True, text=True).stdout)
 Hpx, G = meta['ref']['Hpx'], meta['ref']['groundPx']; tmp = f'out/tmp_handlab'; os.makedirs(tmp, exist_ok=True)
 F = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 20)

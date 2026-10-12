@@ -201,6 +201,28 @@ or composited.
 32. **A hand that stays on her is not carried.** Mid-move the wrist relaxes toward straight (`neutral`), right for a hand
    in flight; for a hold or a stroke on the same body part it dipped the wrist 8° and back. Default now 0 when both stops
    are `on` the same bone. And a stop that only changes `gap` is a zero-length MOVE, not a hold: drop it.
+33. **Measure where the fingertips end; don't argue it from the frames.** Two rounds of reviewers said "tips past the bump's
+   outline"; `tools/tip_check.mjs` draws her without that arm and walks each fingertip along its finger: v2's resting
+   tips were 14–21 px PAST the under-curve, its stroke top 9–11 px. The cure was the contact, not the hand: `dp`
+   [-0.03, -0.22] on every resting stop put the hand on the bump's lower FRONT (tips 35–45 px inside) and a cupped hand
+   shape (`wrap`) at the stroke's top. Gate: every tip ≥ 4 px inside while the hand is on her.
+34. **The elbow's swivel is part of the pose: put the same `dphi` on EVERY stop of the arm's path.** A hand on the bump
+   from a fitted still bowed the upper arm back with the elbow behind her back line (v2 feel critic); `dphi: -35` swings
+   the elbow in under the shoulder. Given only to the bump stops, the vias kept their own swivel (the elbow jittered
+   6 px/frame at the lift's start) and the rest stop's HOLD took the pose's own swivel (the elbow snapped 5 px as the drop
+   arrived). Same offset on the rest stops, the vias and the contacts: no pops. And a relaxed hanging arm is never locked
+   straight: bend the rest pose's elbow ~10° (`n-rest`), or the lift starts in the singularity of lesson 31.
+35. **A dot eye that only shrinks reads alert, not tender.** Lowering the lids by squashing the eye left a smaller round
+   dot under a brow that now sat higher above it: "studying, slightly surprised" (v2 feel critic). Give the eye lid
+   LINES: `lid.half` flattens its top into a lowered upper lid, `lid.smile` lifts the lower lid into a crescent, and the
+   brow follows a lowering lid down.
+36. **A breath is a VERTICAL rise with a lead-in and a sigh; check its direction in numbers.** v2's breath accents (chest
+   and spine rotated back) moved the shoulder 15 px BACK and 5 px up and the head 20 px back: reviewers saw a sway or
+   nothing. Lengthen the ribcage instead (`pose_set --scale chest=1.04:1.03,spineUpper=1.03:1.02`) and lift the clavicle:
+   v3 rises 12 px with 2.7 px of drift (`tools/anim_dump.mjs` over the breath's frames). Then perform it: a little air
+   out first (`n-prep`, half way to the breath-out pose), ~2 s in, a short hold, the out as a sigh (ease
+   [0.3, 0.15, 0.25, 1]: most of the drop early, a long sink), the hand on the bump riding out and back (`dp` on the
+   breath's reach stops) and one small finger spread and press (`spec.fidget`) so the resting hand isn't frozen.
 
 ## From the reels rig (merged 2026-10-12)
 

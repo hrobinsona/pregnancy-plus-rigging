@@ -1,0 +1,38 @@
+{
+ "name": "n-prep",
+ "note": "before the deep breath in: a little air out first",
+ "_recipe": "n-prep n-bump n-out 0.5 --hands near=lay --note before the deep breath in: a little air out first",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "armAbd.near": -0.8,
+  "armRot.near": -13.7,
+  "belly": 0.0,
+  "chest": -0.6,
+  "clavicle.near": -2.5,
+  "foot.far": 1.6,
+  "foot.near": 2.9,
+  "foreRot.near": -0.7,
+  "forearm.near": 53.1,
+  "hand.near": 2.4,
+  "head": 7.15,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": 0.05,
+  "pelvis": 0.0,
+  "shin.far": -1.6,
+  "shin.near": -1.2,
+  "shoulderAbd.near": 1.0,
+  "spineLower": 0.0,
+  "spineUpper": -0.2,
+  "thigh.far": 0.0,
+  "thigh.near": -0.1,
+  "upperArm.near": -6.1
+ }
+}
