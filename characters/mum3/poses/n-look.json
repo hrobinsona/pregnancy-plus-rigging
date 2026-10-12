@@ -1,0 +1,40 @@
+{
+ "name": "n-look",
+ "note": "head/neck-only breakdown: a third of the way up from the look-down",
+ "_recipe": "n-look n-top n-rest 0.35 --hands near=crest --note head/neck-only breakdown: a third of the way up from the look-down",
+ "hands": {
+  "near": "crest",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0146,
+  0.0092
+ ],
+ "bones": {
+  "armAbd.near": 6.63,
+  "armRot.near": 25.68,
+  "belly": 0.0,
+  "chest": -0.39,
+  "clavicle.near": -2.02,
+  "foot.far": 1.04,
+  "foot.near": 1.89,
+  "foreRot.near": 2.6,
+  "forearm.near": 42.7,
+  "hand.near": 5.72,
+  "head": 7.09,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": 5.72,
+  "pelvis": 0.0,
+  "shin.far": -1.04,
+  "shin.near": -0.78,
+  "shoulderAbd.near": -1.1,
+  "spineLower": 0.0,
+  "spineUpper": -0.13,
+  "thigh.far": 0.0,
+  "thigh.near": -0.07,
+  "toe.far": 0.0,
+  "toe.near": 0.0,
+  "upperArm.near": -9.24
+ }
+}

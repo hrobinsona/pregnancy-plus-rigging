@@ -98,3 +98,90 @@ finger change; the breath still shows mostly in the face at phone size.
 Drawing fix after it (no A/B needed): the nape notch with the head down — the chest skin's back edge sat on the neck's
 back line and jutted out once the neck bent forward (seen with the new `tools/part_tint.mjs`); its top now starts
 inside the neck base.
+
+## Round 3 (v3) — FEEL: NOT YET · LASSETER 6.7/10 · HANDS 6/10 (NOT YET)
+Three fresh reviewers. Landed: the lift (wrist leads, late turn, soft landing, tips inside the outline), one body on the
+breath (head, neck, shoulder, strap and upper arm rise together), the elbow under the shoulder, the acting order (eyes,
+then head, then hand), the head no longer tossing back. Off, as the three saw it:
+1. The hand changes size: 129 px hanging, 100–113 on the bump, 82 at the stroke top ("a stubby paw" whose fingers then
+   flick open in 6–8 frames). All three named it; the hands critic called it the reels client's exact complaint.
+2. The look-down is a quick dip (0.4 s, most of it in 8.07–8.23) and then parks.
+3. The return drops rather than drifts: the hand leaves at ~10.95 and is at her hip by ~11.4, the quickest move in the
+   film; the head rises mostly in 10.8–11.13 and the soft eyes pop open while it is still rising.
+4. The breath reads in the face: the "air out" before it does not read, the eyes shut in 8 frames mid-breath, the out
+   (2.15 s) is barely longer than the in (2.0 s) and slides at an even rate.
+5. The hanging hand is still a rake (straight parallel fingers, a thumb peg); the tender face keeps the neutral brow;
+   a knob on top of the hand at the wrist and a step under it; one-frame ticks as each hold starts or ends.
+
+What was done (v4):
+1. MEASURED the size change before touching the drawing: the 3D arm's projected lengths on the bump were forearm 0.6,
+   hand 0.49–0.65 — the forearm points at the camera and the rig's wrist (deviation only) made the hand point with it.
+   New wrist FLEXION DOF and `lie: 'bump'` on every bump stop: the palm lies in the bump's tangent plane (PIPELINE
+   lesson 37). Hand 128 px on the bump, 123 at the stroke top, 129 hanging.
+2. The stroke top uses `crest` (only the pads curve over the dome), a 0.2 s pause there in the same shape, then the
+   fingers open over the whole way down (flat by 9.9) and settle back onto the curve by 10.45.
+3. The held hand's ticks: the wrist scan switched its pull from 0.3 (hold) to 0.02 (move) at the stop and refined only
+   to 1.5°. Now continuous and to 0.15° (lesson 38): no step over 0.7° anywhere.
+4. Timing: the look-down 7.65 → 8.73 on a long ease-out; the head comes up through a breakdown at 10.75 (n-look, a third
+   of the way) and is up by 11.4; the soft lids and smile hold to 11.1, the eyes open by 11.3; the hand peels off at
+   10.5 and drifts down over 1.45 s (the lift takes 1.25).
+5. The breath: a visible air-out first (shoulders down 7 px at 2.9 s, chin down), the eyes drift shut from 2.75 over
+   18 frames, in 2.8 → 4.5 (shoulder up 17.7 px from the low), a hold, then the out as a sigh to 7.4 (2.55 s, two thirds
+   of the drop by ~5.85 s). The hand rides it further (dp), the fingers fan on the in and press at the pads on the out
+   (no longer straightening: v3's fingers crept), and soften after it.
+6. Drawing: `hang` grades the curl steeply from the index to the little finger, the fingers converging, the thumb along
+   the index; `brow.soft` drops the brow and flattens its arch (tender face); the thenar edge no longer stands up as a
+   knob on top of the hand (it is a palm-side pad, and the hand is seen from the back).
+
+Blind A/B v3 vs v4 (first cut, fresh reviewer, relabelled): **v4 wins, 6.5 vs 6** — "the hand drifts back to her side
+without a drop", "a real stroking palm" on the lower front of the bump; the breath's lead-in sag and the eyes closing
+at the start "make the breath read in the body, not only in the face" (small at phone size). Against v4: from 8.77 to
+10.2 s (and faintly 5.1–6.9) the fingertips ran exactly along the bump's front edge — a tangent. Wrong in both: the
+stroking hand moves as one rigid piece; the chest and bump outline barely change on the breath; the hand stops dead
+at her side.
+
+What was done after it: `tip_check.mjs` now also measures each tip's clearance to the outline in ANY direction (a finger
+running along the edge was 6 px inside along itself but touching sideways); the resting and stroke contacts moved ~3 px
+in and the down stroke bows inward: every tip ≥ 10 px clear. The stroke got life: the hand's angle trails the wrist by
+6 frames going up, and the fingers part and drag a little while it travels, then close over the dome at the top.
+
+Blind A/B of that fix (final v4) against the first v4 cut (fresh reviewer): **the first cut wins narrowly, 6.5 vs 6**,
+with low confidence (60/40), on one thing: in the final cut the elbow eased BACK 4–5 px as the stroke began and swung
+forward again as the hand arrived (8.1–9.0 s), out of step with the hand. Both: a rigid stroking mitt, a breath that
+reads mostly in the face, a step where the forearm meets the hand. The final v4 shipped (its fingertips no longer ran
+along the outline); the elbow path was rebuilt in v5 anyway.
+
+## Round 5: Harry on v3 (18:06), answered in v5
+
+Harry, verbatim: "When the arm moves it looks it sort of shrinks. The movement is decent but it makes her arm looked
+deformed once moving"; "fingers almost there but slightly too 'all together' or not feeling like it follows the
+protruding bump"; "ankles are a super weird shape". (They reached the thread after v4 was sent; v4 had fixed only the
+hand's own size.)
+
+What was done (v5):
+1. MEASURED the arm: v4's forearm drew at 57–65% of its length on the bump, the upper arm at 80% at the stroke top. The
+   fitted still had put the wrist 0.33 H in front of the bump, v3 had lifted the hand 45 px, and `dphi` −35 held the elbow
+   under her shoulder. Now the wrist lies ON the bump (`surface`), the hand stays where the bump still has it (13 px
+   lift), and the swivel comes from a scan of the drawn lengths (−25 resting, +20 at the stroke top, 53 px up): every arm
+   segment 93–100% all shot, the elbow just behind her back as in the stills (PIPELINE lesson 39; new `limbs` gate in
+   `qa_checks.mjs`, which fails v4 and passes v5).
+2. The hand, after the bump stills: the thumb out, apart from the index; the fingers a little fanned; each finger curled
+   just enough that the tips end in a line ~9 px inside the bump's outline, as if they run on round it (lay, crest and
+   flat redrawn; limp curls as much so the tips don't graze the edge arriving or peeling off). Tried first: curling the
+   fingers through the hand's real 3D frame; with this camera the curl moved the tips forward, hooked over the edge
+   (lesson 40).
+3. The ankles: the shin tube ran into a round cap at the ankle (a pinch in front, a knob behind). Now it runs on into the
+   shoe and the foot's front edge leaves the shin tangentially along an instep measured on the master (lesson 41); the
+   edges match the master within a few px row by row.
+
+Checks: `qa_checks` PASS (with limbs), `tip_check` PASS over the whole shot (every tip ≥ 4 px inside and ≥ 9 px clear).
+
+Blind A/B of v5 against v4 (fresh reviewer): **v5 wins, 6.5 vs 6**, moderate confidence (60–65%). Only the near arm and
+hand differ. The reviewer's clearest point, measured: v4's forearm drew about 30% shorter whenever the hand was on the
+bump, and the arm's area fell from ~1,720 px at rest to ~1,405 px at the stroke top ("reads as the arm shrinking and the
+hand looking big"); v5 keeps its rest length all shot. Also for v5: the elbow breaks her back line and takes part in the
+stroke; the hand reads as cupping the dome (thumb out, fingers fanned, tips on the outline). Against v5: the four fingers
+stack a little comb-like at the stroke top (9.0 s); v4's tucked arm is softer, if stiffer. Both: the step where the
+forearm meets the heel of the hand, the stroking hand as one rigid piece, a breath that shows only in the head. Caveat:
+partway through, after the forearm measurement, the reviewer saw a CLAUDE.md notice describing v5, so the verdict is
+not fully blind.

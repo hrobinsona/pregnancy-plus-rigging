@@ -79,6 +79,11 @@ export function createRig(C) {
       g = g0.map((x, i) => Math.cos(c) * x - Math.sin(c) * v0[i]);
       if (b.pron) g = rotAbout(g, v, param(b.pron, bonesIn));   // forearm twist: turns the plane the wrist bends in (and the palm)
       n = cross(v, g);                          // palm normal (rest: medial)
+      // WRIST FLEXION (b.flex, + = extension: the back of the hand toward the forearm's back). The bend above is in the
+      // palm's own plane (radial/ulnar deviation: what a back-view hand shows on screen); without this second DOF the
+      // palm stays in the plane of the forearm, so a forearm pointing at the camera points the hand at it too and the
+      // drawn hand shrinks (mum3 v3: 129 px hanging, 82–103 px on the bump). A real hand on a surface lies ON it.
+      if (b.flex) { const f = param(b.flex, bonesIn); v = rotAbout(v, g, f); n = cross(v, g); }
     }
     const cam = toCam(v, side);
     return { v, g, n, side, cam, ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };

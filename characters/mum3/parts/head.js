@@ -1,6 +1,6 @@
 // head.js — mum3's face in PROFILE (bone: head). The front edge IS the silhouette (forehead → nose → lips → chin), so the
 // face is one skin shape through the measured profile points; the back of it hides under the hair and the ear.
-// Face rig channels (pose.face): lid {open|closed|wide|smile|half} (normalised weights), gaze [dx,dy] (H), mouth {smile|neutral|warm|soft}, brow {worry|knit}.
+// Face rig channels (pose.face): lid {open|closed|wide|smile|half} (normalised weights), gaze [dx,dy] (H), mouth {smile|neutral|warm|soft}, brow {worry|knit|soft}.
 import { loop, taper, ellipse, egg } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { mapGeom } from '../../../engine/geom.js';
@@ -57,9 +57,11 @@ export function build({ P: C, C: char, pose }) {
     geo = mapGeom(geo, (p) => [p[0], cy + (p[1] - cy) * (p[1] > cy ? fB : fT)]); }
   out.push(part('eye', 53, C.eye, geo));
   // brow: a tapered arc that lifts with wide eyes and drops a little with closed ones; worry lifts its front end
-  const B = X.brow.p, wo = wsum(pose.face?.brow, 'worry'), kn = wsum(pose.face?.brow, 'knit');
-  const dy = (open > 1 ? (1 - open) * 0.06 : (1 - open) * 0.022) + 0.008 * sm + 0.03 * hf;   // the brow follows a lowering lid (v2: the gap grew)
-  out.push(part('brow', 54, C.brow, taper(B.map((p, i) => [p[0] + (i === 2 ? -0.01 * kn : 0), p[1] + dy + (i === 2 ? -0.025 * wo + 0.02 * kn : i === 1 ? -0.008 * wo : 0)]), X.brow.w, 'round')));
+  // soft: the brow relaxes — it drops toward the lid and its arch flattens (v3 critics: the tender face kept the neutral
+  // face's high arch, "pleased and attentive more than melting")
+  const B = X.brow.p, wo = wsum(pose.face?.brow, 'worry'), kn = wsum(pose.face?.brow, 'knit'), so = wsum(pose.face?.brow, 'soft');
+  const dy = (open > 1 ? (1 - open) * 0.06 : (1 - open) * 0.022) + 0.008 * sm + 0.03 * hf + 0.018 * so;   // the brow follows a lowering lid (v2: the gap grew)
+  out.push(part('brow', 54, C.brow, taper(B.map((p, i) => [p[0] + (i === 2 ? -0.01 * kn : 0), p[1] + dy + (i === 2 ? -0.025 * wo + 0.02 * kn + 0.004 * so : i === 1 ? -0.008 * wo + 0.014 * so : 0)]), X.brow.w, 'round')));
   // mouth: blend of library shapes from the lips' front corner
   let mw = pose.face?.mouth || { smile: 1 };
   const keys = Object.keys(MOUTHS);

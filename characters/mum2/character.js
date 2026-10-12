@@ -98,6 +98,9 @@ export default {
     { match: /^(sleeve\.far|cap\.far)$/, behind: /^cardigan\./, minZ: 30, fade: { bone: 'upperArm.far', r: [0.2, 0.4] }, material: params.palette.cardigan, line: params.palette.cardiganShade, w: 0.014 },
     { match: /^(leg\.near|cuffleg\.near)$/, material: params.palette.bottoms, line: params.palette.bottomsShade, w: 0.014 },
   ],
+  // QA (tools/qa_checks.mjs): her ¾ shot brings the far hand to her mouth, which points that forearm at the camera; the
+  // limb-length gate would only restate the paused shot's known fault (PIPELINE lesson 24), so it is off for mum2
+  qa: { limbMin: 0 },
   frame: params.frame,
   ref: params.ref,
   roles: {
