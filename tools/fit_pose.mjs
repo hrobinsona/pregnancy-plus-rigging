@@ -91,8 +91,11 @@ const VARS = ['root.0', 'root.1', 'pelvis', 'spineLower', 'spineUpper', 'chest',
   // doubling over bends toward the camera: her shoulders DROP more than they move sideways (measured on the retch video:
   // nose 1.2 H down, 0.6 H forward). Flat rotations alone can only swing them sideways ("topples like a post").
   .concat(flag('fold') ? ['scale.chest.0', 'scale.neck.0'] : []);   // (not the upper spine: it carries the top of the bump, which must keep its size — critic R18 "the bump shrinks")
-const basePose = expandHands({ ...base }, handLib, C.handSides);
-const b0 = { ...basePose.bones, ...fixed }, r0 = base.root || [0, 0];
+// a fixed fx.* channel (--fix fx.headPitch=22: a nod measured on the face, tools/head_pose.py) is held in the pose's fx,
+// not among the bones (it was silently dropped)
+const fixedFx = Object.fromEntries(Object.entries(fixed).filter(([k]) => k.startsWith('fx.')).map(([k, v]) => [k.slice(3), v]));
+const basePose = expandHands({ ...base, ...(Object.keys(fixedFx).length ? { fx: { ...(base.fx || {}), ...fixedFx } } : {}) }, handLib, C.handSides);
+const b0 = { ...basePose.bones, ...Object.fromEntries(Object.entries(fixed).filter(([k]) => !k.startsWith('fx.'))) }, r0 = base.root || [0, 0];
 const val0 = (v) => (v.startsWith('root') ? r0[+v.slice(5)] : v.startsWith('fx.') ? (base.fx?.[v.slice(3)] ?? 0) : v.startsWith('scale.') ? (base.scale?.[v.split('.')[1]]?.[+v.split('.')[2]] ?? 1) : (b0[v] ?? 0));
 const lim = (v) => (v.startsWith('root') ? [-0.6, 0.6] : v === 'fx.headPitch' ? [-30, 45] : v.startsWith('scale.') ? [0.62, 1.1] : [BONE[v].min ?? -180, BONE[v].max ?? 180]);
 const poseOf = (x) => { const bones = { ...b0 }, root = [...r0], fx = { ...(basePose.fx || {}) }, scale = Object.fromEntries(Object.entries(basePose.scale || {}).map(([k, v]) => [k, [...v]]));
@@ -175,7 +178,7 @@ rep.sort((a, b) => b[1] - a[1]);
 const handArg = Object.fromEntries((arg('hand', '') || '').split(',').filter(Boolean).map((kv) => kv.split('=')));   // --hand far=cover: the library shape SEEN in the reference
 const out = { name: outName, note: arg('note', `fitted to ${refJson} (MediaPipe landmarks, base ${baseName})`), ...((base.hands || arg('hand')) && !flag('hands') ? { hands: { ...(base.hands || {}), ...handArg } } : {}),
   ...(base.handView || arg('view') ? { handView: { ...(base.handView || {}), ...Object.fromEntries((arg('view', '') || '').split(',').filter(Boolean).map((kv) => kv.split('='))) } } : {}),
-  ...(base.zBias || arg('z') ? { zBias: { ...(base.zBias || {}), ...Object.fromEntries((arg('z', '') || '').split(',').filter(Boolean).map((kv) => { const [a, b] = kv.split('='); return [a, +b]; })) } } : {}), ...(base.fx || poF.fx?.headPitch ? { fx: { ...(base.fx || {}), ...(VARS.includes('fx.headPitch') ? { headPitch: Math.round(poF.fx.headPitch * 10) / 10 } : {}) } } : {}), ...(base.scale || flag('fold') ? { scale: Object.fromEntries(Object.entries(poF.scale || {}).map(([k, v]) => [k, v.map((q) => Math.round(q * 1000) / 1000)])) } : {}),
+  ...(base.zBias || arg('z') ? { zBias: { ...(base.zBias || {}), ...Object.fromEntries((arg('z', '') || '').split(',').filter(Boolean).map((kv) => { const [a, b] = kv.split('='); return [a, +b]; })) } } : {}), ...(basePose.fx || poF.fx?.headPitch ? { fx: { ...(basePose.fx || {}), ...(VARS.includes('fx.headPitch') ? { headPitch: Math.round(poF.fx.headPitch * 10) / 10 } : {}) } } : {}), ...(base.scale || flag('fold') ? { scale: Object.fromEntries(Object.entries(poF.scale || {}).map(([k, v]) => [k, v.map((q) => Math.round(q * 1000) / 1000)])) } : {}),
   root: [+poseOf(x).root[0].toFixed(4), +poseOf(x).root[1].toFixed(4)],
   bones: Object.fromEntries(Object.entries(poseOf(x).bones).filter(([k]) => flag('hands') || !/^hand\.(near|far|farB)\./.test(k)).map(([k, v]) => [k, Math.round(v * 10) / 10])),
   _fit: { ref: refJson, scale: +s.toFixed(4), rms: +Math.sqrt(rep.reduce((a, r) => a + r[1] ** 2, 0) / rep.length).toFixed(4), worst: rep.slice(0, 5).map(([n, d]) => `${n} ${d.toFixed(3)}`) } };

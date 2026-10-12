@@ -40,6 +40,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | Tool | What it's for |
 |---|---|
 | ★ `fit_pose.mjs` | Fit the rig to a still's measured landmarks → `poses/fit-*.json`. Check rms and joint limits. |
+| `head_pose.py <char> --fit <name>` | A ¾ or front HEAD on a fitted pose: keeps the body fit, sets the nod (`fx.headPitch`), neck and head rolls so a render's head pitch, roll and face centre match the still's (MediaPipe's face matrix). `head_pose.py <char> <img...>` prints each image's head angles vs the master. Run after `fit_pose` on every turned-face key (`fit_keys.sh`). |
 | ★ `fit_video.py` | Fit a tracked video segment frame by frame → `refs/tracks/vtrack_<seg>.json`. |
 | ★ `vtrack_apply.mjs` | Turn video tracks into timeline data (path moves, timing) in place in the anim JSON. Re-run after spec edits. |
 | ★ `pose_blend.py`, `pose_set.py` | Derive accents/in-betweens from FITTED poses (`--add/--set/--fx/--scale/--hand`). |

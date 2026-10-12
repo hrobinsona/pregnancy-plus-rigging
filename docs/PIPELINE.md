@@ -287,6 +287,14 @@ or composited.
    round end now flattens with elevation), and the armpit fill drawn to close a gap at rest became a skin sliver down
    her back with the arm raised (the arm's own front now meets the dress, as the still's deltoid does; the fill stops
    where the armpit's crease ends).
+45. **On a turned face the body fitter cannot tell a nod from a roll: set the head from the face's own 3D pose.** Both move
+   the eye, ear and mouth landmarks down the picture. On mum3q's look-down still `fit_pose` chose the head tilted
+   sideways with the chin UP (pitch −9.7, neck +12.9); holding the nod and refitting the body made the trunk roll
+   instead (rms 0.05–0.07). `head_pose.py` reads MediaPipe's facial transformation matrix on a 3× crop, relative to the
+   master, keeps the body fit and searches only (nod, neck, head) on renders until the render's head pitch and roll and
+   its face centre match the still's (within 1° on all three keys). Nelder–Mead from two seeds (the fit's head, and a
+   bow: nod 2.5× the still's pitch, neck forward, head counter-rolled): the valley is diagonal (more nod, less roll),
+   single-axis steps stopped at a 15° roll. Measure at the rig's scale (`C.ref.Hpx`), not the view's own head size.
 
 ## From the reels rig (merged 2026-10-12)
 
