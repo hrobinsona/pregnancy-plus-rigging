@@ -50,7 +50,7 @@ git add requests/refgen/h_fore3.json docs/prompts/h_fore3.txt && git commit -m "
 About a minute per image later, the worker pushes the samples to `characters/<char>/refs/images/<name>_<i>.png` with a ledger line. It also moves the request to `requests/refgen/done/<name>.json`, which records `status` (`ok`, `partial`, `failed` or `rejected`), `outputs` and `error`. `git pull` and check that file.
 
 - **Rules:** the prompt must be a `.txt` under `docs/prompts/`; give 1–3 refs under `characters/`, in the order image 1 (sheet), image 2 (previous pose), image 3 (target pose); `n` is 1–4. A name that already has samples is rejected unless the request has `"force": true`.
-- **Budget:** at most 12 images per run and 60 a day. Requests over the daily budget stay queued until the next day.
+- **Budget:** none; Harry approved as many images as the job needs. Runs take 12 images at a time (the rest follow on the next runs), and 1000 a day is only a guard against a runaway loop.
 - **No pose estimation:** the worker doesn't run `--est`; run `tools/pose_est.py` where it is set up.
 - **Only when the Mac is on:** it works only while the Mac is awake and logged in. A request that sits unanswered for more than about 10 minutes means the Mac is asleep.
 - **Pinned code:** the worker runs a pinned copy in `~/.refgen-worker`, so a change to `refgen_worker.py` or `refgen.py` takes effect only after someone runs `python3 tools/refgen_worker.py --install` on the Mac. Use `--status` to see readiness and the queue; the log is `~/.refgen-worker/worker.log`.

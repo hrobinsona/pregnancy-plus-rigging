@@ -21,7 +21,7 @@ Harry approved running it unattended (2026-10-12).
 Safety: launchd runs the PINNED copy in ~/.refgen-worker, never code from the repo, so a push cannot change what runs on
 the Mac; re-run --install on the Mac to update it. From the repo it reads only request JSON, prompt text and reference
 images, each checked to be a plain file inside its own clone. Codex runs locked down as in refgen.py (read-only, empty
-folder, image tool only). Budget: at most MAX_PER_RUN images per run and MAX_PER_DAY a day. It works in its own clone
+folder, image tool only). No image budget (Harry: as many as the job needs); MAX_PER_DAY is only a runaway guard. It works in its own clone
 (~/.refgen-worker/repo), pushes only to claude/* branches, and runs only while the Mac is awake and logged in."""
 import argparse
 import datetime
@@ -44,7 +44,7 @@ PLIST = os.path.join(os.path.expanduser('~'), 'Library', 'LaunchAgents', LABEL +
 REMOTE = 'https://github.com/hrobinsona/pregnancy-plus-rigging'
 QUEUE = 'requests/refgen'
 MAX_PER_RUN = 12
-MAX_PER_DAY = 60
+MAX_PER_DAY = 1000                                       # no budget (Harry, 2026-10-12): only a runaway guard
 INTERVAL = 120
 NAME = re.compile(r'^[a-z0-9][a-z0-9_]{0,47}$')
 IMG_EXT = ('.png', '.jpg', '.jpeg', '.webp')
