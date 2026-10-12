@@ -1,0 +1,14 @@
+{
+ "name": "x-far",
+ "note": "STRESS pose for the \u00be drawing (tools/char_pose_sheet.py gate), not a shot key",
+ "hands": {
+  "near": "hang",
+  "far": "lay"
+ },
+ "bones": {
+  "upperArm.far": 20,
+  "forearm.far": 75,
+  "head": 8,
+  "neck": 4
+ }
+}

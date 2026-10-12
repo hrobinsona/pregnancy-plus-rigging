@@ -1,0 +1,13 @@
+{
+ "name": "x-reach",
+ "note": "STRESS pose for the \u00be drawing (tools/char_pose_sheet.py gate), not a shot key",
+ "hands": {
+  "near": "open",
+  "far": "hang"
+ },
+ "bones": {
+  "upperArm.near": 85,
+  "forearm.near": 15,
+  "head": -6
+ }
+}

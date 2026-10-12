@@ -26,7 +26,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 |---|---|
 | ★ `new_pose.py gen\|fit <char> <name>` | Recipe "new pose": refgen 3 samples (Mac), then pose-estimate, fit each, keep the lowest rms, gate (rms ≤ 0.06 H, no bone on a limit), record in `refs/fit_keys.sh`, sheet `out/new_pose_<name>.png`. |
 | `new_char.py <id> [--from mum3]` | Recipe "new character": scaffold a character from a template (drawing code, hand library, base poses, refs folders) and print the next steps. Template mum3 (profile, bare arms) by default. |
-| `master_measure.py <id> <master.png>` | Measure a new master drawing: palette (named materials), MediaPipe joints, named profile points, torso stations, limb widths → `ref/landmarks.json` + `ref/measure.png` (look at every point). |
+| `master_measure.py <id> <master.png>` | Measure a new master drawing: palette (named materials), MediaPipe joints, named profile points, torso stations, limb widths, both hands → `ref/landmarks.json` + `ref/measure.png` (look at every point). A ¾ or front master has no profile on its face's edge: those points are left out, measure the face with `face_measure.py`. |
 | ★ `refgen.py <char> <name>` | Make reference stills with the Codex CLI on the ChatGPT login (image 1 sheet, 2 previous pose, 3 target), then register them. Runs where Codex is logged in (Harry's Mac). Tests: `test_refgen.py`. |
 | ★ `refgen_worker.py --install\|--status` | Unattended refgen on Harry's Mac: launchd polls `claude/*` branches for `requests/refgen/<name>.json`, generates via Codex (ChatGPT login), pushes the stills and `requests/refgen/done/<name>.json`. Runs a pinned copy; no image budget. See `docs/REF_PROMPTS.md`. |
 | ★ `ref_register.py` | Bring in stills from ANY image tool (Codex CLI / ChatGPT, fal, …): copies to `refs/images/`, writes the ledger, `--est` runs pose estimation. |
@@ -49,6 +49,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | `sil_fit.mjs`, `seg_ref.py`, `segment.py`, `sil_view.py` | Refine a fit against the reference's material silhouette. |
 | `fit_overlay.py`, `fit_sheet.py` | Fit vs reference overlays — check a fit by eye. |
 | `hand_fit.py`, `hand_lab.py` | Fit and audition hand shapes (build these early for a new character). `hand_fit` skips a hand the character hides by design. |
+| `face_measure.py <id> [--k 3]` | Measure a ¾ or front FACE after `master_measure.py`: MediaPipe's face landmarker on a 3× crop finds each feature, then the drawing's own blobs give its shape (eyes as ellipses with catch-lights, brows and mouth as 5 stations with widths, ear, nose tip/bridge, chin, the face's far edge row by row, the hairline in 9 columns) → `face` in `ref/landmarks.json` + `ref/face.png` (look at it). |
 | `measure_ref.py` | mum2's character-sheet measurer (its palette is wired to mum2); for a new master use `master_measure.py`. |
 
 ## Review and audit

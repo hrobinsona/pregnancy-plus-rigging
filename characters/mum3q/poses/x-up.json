@@ -1,0 +1,22 @@
+{
+ "name": "x-up",
+ "note": "STRESS pose for the \u00be drawing (tools/char_pose_sheet.py gate), not a shot key",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "mouth": {
+   "smile": 1
+  }
+ },
+ "bones": {
+  "head": -14,
+  "neck": -8,
+  "upperArm.near": -18,
+  "forearm.near": 50
+ }
+}

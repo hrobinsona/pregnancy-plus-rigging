@@ -1,0 +1,36 @@
+{
+ "name": "press",
+ "f1": [
+  -3,
+  -2,
+  0
+ ],
+ "f2": [
+  -3,
+  -2,
+  0
+ ],
+ "f3": [
+  -2,
+  -1,
+  0
+ ],
+ "f4": [
+  -2,
+  -1,
+  0
+ ],
+ "s": [
+  0.5,
+  0,
+  -0.5,
+  0
+ ],
+ "t": [
+  0,
+  0
+ ],
+ "to": 5,
+ "ts": -10,
+ "_note": "palm flat on a surface (mouth, chest, bump): fingers straight and together"
+}

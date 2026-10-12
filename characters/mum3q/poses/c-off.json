@@ -1,0 +1,7 @@
+{
+ "name": "c-off",
+ "note": "contact shadow off (hand not on her)",
+ "fx": {
+  "contact.near": 0
+ }
+}

@@ -267,6 +267,26 @@ or composited.
    shape"). Now the tube runs on into the shoe at the ankle's width (the back of the ankle is one line into the heel), and
    the foot's front edge leaves the shin's front line tangentially and bends into the instep along points measured row by
    row on the master (`P.instep`). Same fill, so the overlap is invisible; only the union's outline is seen.
+42. **A new view is a sibling character on the same skeleton, at ONE scale.** mum3q (¾) copies mum3's bone list and
+   imports its palette; only `params.js` and `parts/` are redrawn. Its `Hpx` is the profile's (210 px): both stills
+   measure 1499 px skull top to sole, so every bone keeps its length and a pose or hand shape means the same thing in
+   either view (the ¾ head itself measures 220 px: the chin drops as the face turns toward us). Yaw comes from the
+   drawing: the shoulders span 0.82 H on screen = 2·0.6·sin(yaw) → 43°, `forwardX = cos(yaw)` 0.74; a depth proxy's
+   centre sits √((a·fx)² + (c·sin yaw)²) inside its silhouette edge (the bump's 0.47 H inside its apex).
+43. **A turned face has its features inside it: measure them as named points, then draw.** The profile measurer reads
+   the face off its front edge; a ¾ face has no such edge, so `face_measure.py` finds each feature with MediaPipe's face
+   landmarker and takes its shape from the drawing's own blobs (eye ellipses, brow and mouth stations, ear, the far
+   cheek's edge row by row, the hairline in columns). The parts use NAMED points from those (edge at the eye row, the
+   mouth row, half way to the chin; hairline temple, mid, peak, far), never a sampled contour (shapes.js rule). Two
+   corrections the numbers needed: a dark-run scan misses each edge's anti-aliased pixel (brows +0.008 H), and the
+   rows showed what the eye missed (a straight jaw where the still's is a bowl; a calf peaking a third of the way down,
+   averaged away by too few stations).
+44. **The rest pose can pass at 97% and still break when she moves: gate a view on stress poses too.** mum3q's rest
+   matched (IoU 0.969, edges within 0.02 H), then `char_pose_sheet` on `x-*` poses found two faults the still can't
+   show: the taller shoulder cap the still needs pushed a lump out BEHIND the shoulder when the arm rose forward (the
+   round end now flattens with elevation), and the armpit fill drawn to close a gap at rest became a skin sliver down
+   her back with the arm raised (the arm's own front now meets the dress, as the still's deltoid does; the fill stops
+   where the armpit's crease ends).
 
 ## From the reels rig (merged 2026-10-12)
 
