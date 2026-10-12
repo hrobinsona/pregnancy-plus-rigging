@@ -15,6 +15,13 @@ node tools/char_check.mjs mum2                                    # fast gate
 node tools/char_anim.mjs --char mum2 --anim nausea-to-belly       # → out/mum2_nausea-to-belly.mp4
 ```
 
+## Using a character in a reel
+This is the only repo that rigs and animates characters. `pregnancy-plus-reels` (the article-to-video pipeline) has no
+rig of its own: it serves a checkout of this repo at `/rigging/` and imports `engine/shot.js`, which loads a character
+and a shot and returns its SVG for any t (usage in its header). A film needs the character and the shot to exist here
+first; build them with the skill, then the reel places her in its set. Anything a reel needs from a character (a new
+pose, shot, outfit or character) is made here.
+
 ## Docs
 - `CLAUDE.md`: current status, rules and next steps (start here in Claude Code).
 - `.claude/skills/code-character-animation/SKILL.md`: the workflow as a skill. Claude Code loads it from this folder.
