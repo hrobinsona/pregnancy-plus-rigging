@@ -24,6 +24,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 ## References (make, register, measure)
 | Tool | What it's for |
 |---|---|
+| ★ `refgen.py <char> <name>` | Make reference stills with the Codex CLI on the ChatGPT login (image 1 sheet, 2 previous pose, 3 target), then register them. Runs where Codex is logged in (Harry's Mac). Tests: `test_refgen.py`. |
 | ★ `ref_register.py` | Bring in stills from ANY image tool (Codex CLI / ChatGPT, fal, …): copies to `refs/images/`, writes the ledger, `--est` runs pose estimation. |
 | ★ `pose_est.py` | MediaPipe body + hands landmarks for an image or video (models in `$MUM_MODELS`, `models/` or `~/models`). |
 | `fal_gen.py`, `fal_batch.py` | fal.ai stills (and video) with a provenance ledger. Key from `~/.secrets/fal_key` or `$FAL_KEY` — never commit it. |

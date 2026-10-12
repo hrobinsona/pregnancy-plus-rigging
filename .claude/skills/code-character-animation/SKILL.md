@@ -27,7 +27,7 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
 1. **Brief.** Write the story beat by beat with times, and the intensity in one sentence. Agree it with the client before building.
 2. **References: stills, not videos.**
    - Generate one still per key and **two in-betweens per hand move**, using the framing-locked prompts in `docs/REF_PROMPTS.md`. Any image tool works; Codex CLI / ChatGPT images is the user's default.
-   - Register them with `tools/ref_register.py … --est`.
+   - Make them with `tools/refgen.py <char> <name> --prompt-file … --ref sheet --ref prev --ref next -n 3` (Codex CLI on the ChatGPT login; runs on Harry's Mac, not in a cloud container). It registers them through `tools/ref_register.py`. Stills from any other tool: `tools/ref_register.py … --canvas WxH --est`.
    - Use video only to get the TIMING of a fast move: one model, one generation, its own key stills as first and last frame. Take its speed profile, never its path (`PIPELINE.md` §1 scoreboard: 18 of 21 videos were unused).
 3. **Fit.** Run `node tools/fit_pose.mjs <char> refs/pose/<x>.json fit-<name> --base bump-rest [flags]`. Keep the sample with the lowest rms and correct contacts, and record the command in `refs/fit_keys.sh`.
    - If rms > 0.06 H or joints sit on their limits, a DOF is missing. Add it rather than accepting the miss: this is how the head nod (`fx.headPitch`, `engine/warp.js`) and the trunk fold (`--fold` scale DOFs) arrived.

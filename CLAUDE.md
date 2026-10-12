@@ -18,7 +18,7 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
 
 ## Rules
 - Every frame is a pure function of t. References are for MEASUREMENT only and are never drawn. No linear easing. Hands move in hand space.
-- Reference images: Harry generates them with the **Codex CLI on his ChatGPT subscription**. Save the samples and register them with `tools/ref_register.py … --est` (see `docs/REF_PROMPTS.md`).
+- Reference images: Harry generates them with the **Codex CLI on his ChatGPT subscription**. `tools/refgen.py` runs Codex and registers the samples in one go; it needs Codex logged in, so it runs on his Mac (see `docs/REF_PROMPTS.md`).
   - fal.ai (`tools/fal_gen.py`) also works, with a funded key in `~/.secrets/fal_key` or `$FAL_KEY`. The balance ran out on 2026-10-12.
   - **Never commit, log or print API keys.**
 - **Stills over videos.** One still per key plus two in-betweens per hand move. Video only for the timing of a fast move (`docs/PIPELINE.md` §1).
