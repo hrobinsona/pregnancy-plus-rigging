@@ -19,3 +19,37 @@ still's face by `tools/head_pose.py` (within 1°).
      bump's front faces us and the still's fingers lie flat at full length (lay read as a short paw).
   4. No `lie` on the bump hold: projecting the palm into the bump proxy's tangent plane foreshortened the hand to 79% of
      its length in ¾ (`qa_checks` limbs); the fitted hand already lies along the bump as in the stills (90–100%).
+
+## Round 1 (v1) — FEEL: NOT YET · LASSETER 6.2/10 · HANDS 5/10
+Three fresh reviewers (critic_F --lens all). Right: the look up (the eyes reach us 0.2 s before the head moves; one eased
+arc with a soft arrival; bun, ear and face turn as one head); the slow sink while she looks down; the clean loop seam; the
+near hand's placement and full length (drape, no lie). Off, as all three saw it:
+1. The return stalls: the eyes drop at 5.5 s but the head waits until 6.4 (the mid key is nearly the up key: nod 3.4 vs
+   1.6, so up → mid moved nothing); 0.9 s of eyes down, head up, half lids reads aloof; the teeth vanish in 2–4 frames.
+2. The hold is a posed photo: the same toothy beam 2.9–5.4 s, round eyes with nothing smiling in them; the teeth show by
+   2.6 s, before the head lands (look and smile arrive as one idea).
+3. The far hand swings on its own, in and out behind the skirt by half its width (each still's fit has its own far arm:
+   forearm 10° → −3° → 3°): the biggest motion in every hold.
+4. The near hand is a decal: frozen 8 s (the 2–3° fan/press/soften fidgets don't read); straight parallel fingers (a
+   comb), the thumb a long tab.
+5. The body doesn't join: the head pivots on a still torso (shoulders, straps identical down and up); the breath shows
+   only in the far hand.
+6. (feel, low confidence) the eyes' lead goes from slits to wide in 2 frames: a touch startled.
+
+What was done (v2):
+1. Return: the head starts ~5 frames after the eyes (n-up hold to 5.65) and drifts down over 1.45 s through its own
+   breakdown (n-ret: forward and tipped toward the bump, nod 13), not the look up reversed; the upper lids stay open
+   until the head drops (face-drop); the lips close over 0.55 s on their own track, slower than the eyes.
+2. The smile staged after the look: the tender closed smile while the head rises, the beam blooms 2.95–3.35 s with the
+   LOWER lids lifting (face-beam), then settles to lips barely parted by 4.3 (face-warm). Eyes and mouth are separate
+   tracks.
+3. The far arm and legs are the look-down key's in every key, and the far upper arm counter-rotates the trunk's change so
+   it hangs plumb (far hand tip ≤ 1.7 px/frame).
+4. Near hand: one slow caress down the bump while she looks down (~8 px, with a thumb sweep), it rides up with the breath
+   in (3.7 s) and back down, the fingers press flatter and spread at the smile, and re-settle index first as her gaze
+   returns. `drape` redrawn: graded curl (index nearly straight → little finger most), fanned −9…8°, thumb folded and
+   nearer the index.
+5. Body: the up key opens the chest (−1°, ribcage lengthened 2%) and lifts the shoulders 2.5°, trailing the head by 4
+   frames; the down key rounds the upper back (chest +1.5°, upper spine +0.8°); the shoulders soften after the head lands
+   on the way down; the breath gain up ~40%.
+6. The eyes lift with the gaze over 0.45 s, only a little wider (wide 0.1).

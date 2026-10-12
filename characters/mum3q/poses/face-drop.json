@@ -1,0 +1,1 @@
+{"name": "face-drop", "note": "the eyes go back to the bump first: the gaze down, the upper lids still at eye-contact height (they lower only as the head drops; v1's half lids with the head still up read as aloof)", "face": {"lid": {"open": 0.85, "smile": 0.15}, "gaze": [0.006, 0.03], "mouth": {"warm": 1}, "brow": {"soft": 0.6, "neutral": 0.4}}}
