@@ -3,13 +3,13 @@
 //  · chest skin: the décolletage and shoulder top above the dress, on the chest
 //  · dress: ONE outline — strap → neckline → bust → under-bust notch → bump → skirt → hem → back — chain-skinned up the
 //    spine, its bump region carried by the belly bone (breath, bump nudges), so the silhouette never seams
-//  · strap: the band over the shoulder, drawn OVER the near arm's top (the arm comes out from under it, as in the master)
+//  · the strap over the near shoulder is drawn in arms.js, on the arm's own contour
 import { loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { lerp } from '../../../engine/geom.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
-export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24, 'dress.strap': 7 };
+export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };   // the strap is in arms.js: it is built on the arm's contour
 
 export function build({ P: C, C: char }) {
   const X = char.params.P, J = char.joints, out = [];
@@ -23,7 +23,7 @@ export function build({ P: C, C: char }) {
   // ---- chest skin: from the neck base forward and down to the neckline, back over the shoulder top behind the strap
   out.push(part('chest.skin', 'chest', 24, C.skin, ensureCW(loop([
     [N.front[0], N.front[1] - 0.02, { a: 85 }], [X.chestFront[0], X.chestFront[1], { a: 35 }], [nl.front[0] + 0.01, nl.front[1] + 0.02, { a: 60 }],
-    [nl.front[0] - 0.05, nl.front[1] + 0.2], [bk.shoulder[0] + 0.05, nl.front[1] + 0.2], [st.back[0], st.back[1] + 0.02, { a: -60 }], [N.back[0], N.back[1] - 0.02, { a: -20 }]]))));   // the trapezius slopes from the nape to the strap's back end
+    [nl.front[0] - 0.05, nl.front[1] + 0.2], [bk.shoulder[0] + 0.05, nl.front[1] + 0.2], [st.back[0] + 0.1, st.back[1] - 0.01, { a: -35 }], [N.back[0] + 0.004, N.back[1] - 0.03, { a: -80 }]]))));   // the trapezius slopes from the nape onto the strap (inside it: the strap and the arm's cap make the shoulder's silhouette, as in the master)
   // ---- dress
   const under = b.under, apex = b.apex, bot = b.bottom;
   const dressG = ensureCW(loop([
@@ -44,22 +44,15 @@ export function build({ P: C, C: char }) {
     [bk.seat[0], bk.seat[1], { a: -90 }], [bk.seat[0] + 0.05, bk.seat[1] - 0.4],
     [bk.waist[0], bk.waist[1], { a: -90 }],
     [bk.blade[0], bk.blade[1], { a: -90 }], [bk.shoulder[0], bk.shoulder[1], { a: -80 }],
-    [st.back[0], st.back[1], { c: true, ai: -100, ao: -20, ti: 0.6, to: 0.6 }],
-    [st.top[0], st.top[1], { a: 0 }],
-    [st.front[0] - 0.08, st.front[1] - 0.04, { a: 18 }],
+    [st.back[0] + 0.04, st.back[1] + 0.05, { a: -55 }],                                // round over the shoulder's back, inside the arm's cap
+    [st.top[0] + 0.03, st.top[1] + 0.045, { a: 0 }],                                   // under the strap, inside the arm's cap
+    [st.front[0] - 0.08, st.front[1] - 0.02, { a: 18 }],
   ]));
   // the bump's points follow the belly bone (region skin), the rest rides the spine chain
+  // and the strap's part of the outline follows the clavicle, as the strap itself does (else the two step apart when the
+  // shoulder moves: a ragged tab at the back of the shoulder)
   const bumpC = [apex[0] - 0.25, apex[1]];
   out.push(part('dress', 'chest', 30, C.dress, dressG,
-    { skin: { chain: ['pelvis', 'spineLower', 'spineUpper', 'chest'], zone: 0.3, regions: [{ bone: 'belly', c: bumpC, r: [0.35, 0.65] }] } }));
-  // ---- strap over the near shoulder, above the arm: from the back edge over the top, its front end sinking into the
-  // dress in front of the arm (same colour: no seam)
-  // the strap: the same top edge, drawn over the arm, its lower edge the line where the arm comes out from under it;
-  // its front end sinks into the dress in front of the arm (same colour, no seam)
-  const sw = st.w;
-  out.push(part('dress.strap', 'clavicle.near', 62, C.dress, ensureCW(loop([
-    [st.back[0] - 0.01, st.back[1] + sw, { c: true, t: 0.5 }], [st.back[0], st.back[1], { c: true, ai: -100, ao: -20, ti: 0.6, to: 0.6 }],
-    [st.top[0], st.top[1], { a: 0 }], [st.front[0], st.front[1], { a: 30 }], [nl.low[0] - 0.08, nl.low[1] + 0.02],
-    [st.front[0] - 0.02, st.front[1] + sw * 1.4], [st.top[0], st.top[1] + sw, { a: 180 }]]))));
+    { skin: { chain: ['pelvis', 'spineLower', 'spineUpper', 'chest'], zone: 0.3, regions: [{ bone: 'belly', c: bumpC, r: [0.35, 0.65] }, { bone: 'clavicle.near', c: st.top, r: [0.14, 0.3] }] } }));
   return out;
 }

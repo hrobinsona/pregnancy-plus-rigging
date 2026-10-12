@@ -1,0 +1,49 @@
+{
+ "name": "fit-m3_k_stroke",
+ "note": "fitted to characters/mum3/refs/pose/m3_k_stroke_0.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "root": [
+  -0.0067,
+  0.0127
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": -3.2,
+  "spineUpper": -0.2,
+  "chest": 0.8,
+  "neck": 12.3,
+  "head": 15.4,
+  "belly": 0,
+  "clavicle.near": -3.1,
+  "shoulderAbd.near": -1.7,
+  "upperArm.near": -12.6,
+  "armAbd.near": 10.2,
+  "armRot.near": 39.5,
+  "forearm.near": 60.3,
+  "foreRot.near": 4,
+  "hand.near": 8.8,
+  "thigh.near": 0,
+  "shin.near": -0.1,
+  "foot.near": 2.6,
+  "hipAbd.near": 0,
+  "thigh.far": 1.6,
+  "shin.far": -2.2,
+  "foot.far": 0.7,
+  "hipAbd.far": 0.3
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/m3_k_stroke_0.json",
+  "scale": 0.9805,
+  "rms": 0.036,
+  "worst": [
+   "earR 0.063",
+   "mouthR 0.051",
+   "heelR 0.051",
+   "earL 0.050",
+   "elbowR 0.047"
+  ]
+ }
+}

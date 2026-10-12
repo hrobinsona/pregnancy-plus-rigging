@@ -158,8 +158,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     for (const g of groups) if (owns(g, ch)) { ks = g.keys; break; }
     // key.except = [channel prefixes]: the opposite — the key shapes every curve BUT those (e.g. a retch hit that keeps its
     // shoulders and hands while a video layer owns the spine and legs over that window)
-    const hit = (p) => ch === p || ch.startsWith(p + '.') || ch === 'bone.' + p || ch.startsWith('bone.' + p + '.');
-    ks = ks.filter((k) => (!k.only || k.only.some((p) => ch === p || ch.startsWith(p + '.'))) && !(k.except && k.except.some(hit)));
+    // a prefix ending in '*' matches raw ('bone.hand.near.*' = the fingers and thumb, not the wrist 'bone.hand.near')
+    const star = (p) => p.endsWith('*') && ch.startsWith(p.slice(0, -1));
+    const hit = (p) => star(p) || ch === p || ch.startsWith(p + '.') || ch === 'bone.' + p || ch.startsWith('bone.' + p + '.');
+    ks = ks.filter((k) => (!k.only || k.only.some((p) => star(p) || ch === p || ch.startsWith(p + '.'))) && !(k.except && k.except.some(hit)));
     keyCache.set(ch, ks);
     return ks;
   };
@@ -375,7 +377,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   // SWIVEL, so the reach interpolates a 3D wrist and a swivel and solves the arm in 3D (no mirror-branch jumps)
   const is3 = (side) => BONE['upperArm.' + side]?.plane === 'arm3' && !!C.params?.depth;
   const info3Cache = {};
-  const info3 = (name, side) => (info3Cache[name + side] ||= (() => { const st = reachRef(name), fr = armFrame(rig, st, side), A = armPoints(rig, st, side); return { z: fr.depthOf(A.wr), phi: swivelOf(A.el, A.wr) }; })());
+  // a nearly STRAIGHT arm (elbow bent < 15°: a hand hanging at her side) has no defined swivel — the elbow lies on the
+  // shoulder→wrist line — so its phi is noise; a move from it takes the swivel of the other end (mum3: the elbow jumped
+  // 11 px in one frame as the lift from her side began, the swivel sweeping from noise to the bump's)
+  const info3 = (name, side) => (info3Cache[name + side] ||= (() => { const st = reachRef(name), fr = armFrame(rig, st, side), A = armPoints(rig, st, side);
+    const v1 = st[`upperArm.${side}`].a3.v, v2 = st[`forearm.${side}`].a3.v, straight = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2] > Math.cos(15 * Math.PI / 180);
+    return { z: fr.depthOf(A.wr), phi: swivelOf(A.el, A.wr), straight }; })());
   function contact(st, side, e, P_) {
     const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
     let loc = apM(inv(ref[on].M), ref[ha].pos);
@@ -387,7 +394,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
       // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
       const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(S_[on].pos)); };
-      c.z = (e.z ?? i3.z) + dMid(st) - dMid(ref); c.phi = e.phi !== undefined ? e.phi * Math.PI / 180 : i3.phi;
+      c.z = (e.z ?? i3.z) + dMid(st) - dMid(ref); c.phi = e.phi !== undefined ? e.phi * Math.PI / 180 : i3.phi; c.straight = e.phi === undefined && i3.straight;
     }
     // an OFFSET via (e.dp screen H, e.dz depth H, e.dphi deg): a waypoint defined from a key's contact — e.g. LIFT-OFF: the
     // hand first comes away from the surface it rested on (round the bump's silhouette edge, never through the bump)
@@ -427,6 +434,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     const same = (x, y) => ['pose', 'on', 'dp', 'dz', 'dphi', 'surface', 'gap', 'z', 'phi'].every((k) => JSON.stringify(x[k]) === JSON.stringify(y[k]));
     if (E.length === 2 && same(a, b)) return { ...A, ...holdBend(side, a), frontW: a.front ? 1 : 0 };  // a hold: the hand stays where it was put (same pose, same offsets)
     const P = E.map((e, k) => (k === 0 ? A : contact(st, side, e, P_)));
+    if (P.some((c) => c.straight) && P.some((c) => c.phi !== undefined && !c.straight)) P.forEach((c, k) => {   // see info3: a straight arm's swivel is the nearest bent contact's
+      if (!c.straight) return; let best = null; P.forEach((q, j) => { if (!q.straight && q.phi !== undefined && (best === null || Math.abs(j - k) < Math.abs(best - k))) best = j; }); P[k] = { ...c, phi: P[best].phi };
+    });
     const u = clamp01((tt - t0) / (t1 - t0)), warp = (x) => Math.pow(clamp01(x), 1 - (b.skew ?? 0)), sP = mj(warp(u));
     const ch = [0]; for (let k = 1; k < P.length; k++) ch.push(ch[k - 1] + Math.hypot(P[k].p[0] - P[k - 1].p[0], P[k].p[1] - P[k - 1].p[1]));
     const tot = ch[ch.length - 1] || 1, cf = ch.map((c) => c / tot);
@@ -453,7 +463,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     const [kh, vh] = seg(sH), loc = (e) => lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
     const ea = E[kh], eb = E[Math.min(E.length - 1, kh + 1)];
     let local = loc(ea) + vh * (loc(eb) - loc(ea)), roll = rl(ea) + vh * (rl(eb) - rl(ea));
-    local *= 1 - (b.neutral ?? 0.5) * Math.sin(Math.PI * u);   // mid-flight the wrist relaxes toward straight: the hand is CARRIED, not posed
+    // mid-flight the wrist relaxes toward straight: the hand is CARRIED, not posed. Not while it stays on the same body part
+    // (a hold or a stroke slides ON her: mum3 v2, the wrist dipped 8° and back while lingering at the stroke's top)
+    local *= 1 - (b.neutral ?? (a.on && a.on === b.on ? 0 : 0.5)) * Math.sin(Math.PI * u);
     const B = P[P.length - 1];
     let phi;
     if (A.phi !== undefined) { const pa = P[kh].phi, pb = P[Math.min(P.length - 1, kh + 1)].phi; phi = pa + vh * (Math.atan2(Math.sin(pb - pa), Math.cos(pb - pa))); }

@@ -5,13 +5,20 @@
 // Near arm in front of the body; far arm behind it, one step darker (it is hidden in the master's pose).
 import { tube } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
+import { add, sub, mulS, norm, perpL, lerp, loop, ap } from '../../../engine/geom.js';
 
-export const ANCHORS = { 'arm.near': 16, 'arm.far': 16 };
+export const ANCHORS = { 'arm.near': 16, 'arm.far': 16, 'dress.strap': 8 };
+
+const bez = (p0, c1, c2, p3, t) => { const u = 1 - t; return [0, 1].map((k) => u * u * u * p0[k] + 3 * u * u * t * c1[k] + 3 * u * t * t * c2[k] + t * t * t * p3[k]); };
+const bezD = (p0, c1, c2, p3, t) => { const u = 1 - t; return [0, 1].map((k) => 3 * u * u * (c1[k] - p0[k]) + 6 * u * t * (c2[k] - c1[k]) + 3 * t * t * (p3[k] - c2[k])); };
+const deg = (v) => Math.atan2(v[1], v[0]) * 180 / Math.PI;
 
 export function build(ctx) {
   const { P: C, C: char, st } = ctx, X = char.params.P, out = [];
   for (const side of ['near', 'far']) {
+    // an arm hidden by design (C.fit.hidden) is not drawn: kept behind her, it still slid out past her back as she leaned
+    // (v1, 8.2 s: a skin sliver down the back of the dress)
+    if (char.fit?.hidden?.includes(`${side}.arm`)) continue;
     const zb = (side === 'near' ? 55 : 8) + (ctx.pose?.zBias?.[`arm.${side}`] ?? 0);
     const fill = side === 'near' ? C.skin : C.skinFar;
     const Sp = st[`upperArm.${side}`].pos, Ep = st[`forearm.${side}`].pos, Wp = st[`hand.${side}`].pos;
@@ -33,9 +40,32 @@ export function build(ctx) {
       if (concR) { r *= 1 - 0.18 * e; l *= 1 + 0.06 * e; } else { l *= 1 - 0.18 * e; r *= 1 + 0.06 * e; }
       return { r, l };
     });
-    out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(tube(axis, widths, { capK: 0.75 })) });
+    // the wrist end barely rounds past the wrist: the palm's end covers it, and a full round end bulged out under a
+    // bent wrist (v1 8.2 s: "a lump under the wrist")
+    const g = tube(axis, widths, { capK: [0.75, 0.3] });
+    out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
+    if (side === 'near') out.push(strap(ctx, g));
     // hand (engine/hand.js) just above its arm: the palm's wrist end covers the tube's end
     out.push(...char.hands[side].parts(ctx, { fill, line: C.skinLine, zBase: zb + 0.5 }));
   }
   return out;
+}
+
+// The dress strap over the near shoulder, drawn OVER the arm. Its outer edge from the back of the shoulder up to the
+// top IS the arm's own contour (the tube's segment back-at-shoulder → cap top), so it can never step off the arm or
+// stick out past it as the arm swings (mum3 v1: a ragged tab at 8.2 s, the strap and the arm on different bones).
+// Its back end tapers to a point on that contour, as in the master; the front runs over the shoulder top into the
+// dress in front of the arm (same colour: no seam), carried by the clavicle.
+function strap({ P: C, C: char, st }, g) {
+  const X = char.params.P, sw = X.strap.w, nl = X.neckline, S = X.strap, n = g.P.length;
+  const p0 = g.P[n - 1], c1 = g.hout[n - 1], c2 = g.hin[0], p3 = g.P[0];   // tube anchors: 0 = cap tip, n-1 = back side at the shoulder
+  const at = (t) => bez(p0, c1, c2, p3, t), tan = (t) => deg(bezD(p0, c1, c2, p3, t));
+  const M = st['clavicle.near'].M, j = char.joints.clavicleNear, W = (v) => ap(M, sub(v, j)), rot = st['clavicle.near'].rot ?? 0;
+  const mid = at(0.5), inw = norm(sub(st['upperArm.near'].pos, mid)), inner = add(mid, mulS(inw, sw * 0.9));
+  return { id: 'dress.strap', bone: 'clavicle.near', z: 62, fill: C.dress, world: true, geom: ensureCW(loop([
+    [...p0, { c: true, ao: tan(0), ai: deg(sub(inner, p0)), to: 0.9, ti: 0.6 }],                      // the tail: a point on the arm's back contour
+    [...mid, { a: tan(0.5) }], [...p3, { a: tan(1) }],
+    [...W(S.front), { a: 30 + rot }], [...W([nl.low[0] - 0.08, nl.low[1] + 0.02])],
+    [...W([S.front[0] - 0.02, S.front[1] + sw * 1.4])], [...W([S.top[0] + 0.03, S.top[1] + sw + 0.03]), { a: 180 + rot }],
+    [...inner, { a: tan(0.5) + 180 }]])) };
 }

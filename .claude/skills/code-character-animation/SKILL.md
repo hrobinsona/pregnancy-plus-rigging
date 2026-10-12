@@ -5,7 +5,9 @@ description: Build, rig and animate a code-drawn flat-vector character (pure-cod
 
 # Code-drawn character animation
 
-You are working in a repo where characters are parametric SVG rigs. Shots are timelines of fitted key poses, hand-space reaches and procedural life, rendered deterministically. The current character is **mum2**, a standing pregnant woman in ¾ view. The current shot is `characters/mum2/anims/nausea-to-belly.json`.
+You are working in a repo where characters are parametric SVG rigs. Shots are timelines of fitted key poses, hand-space reaches and procedural life, rendered deterministically. Characters:
+- **mum3** (current): a standing pregnant woman in near profile, bare arms, sleeveless dress, designed for the rig. Shot `characters/mum3/anims/breathe-stroke.json`. The template for new characters.
+- **mum2** (paused test bed): the same woman in ¾ view in a cardigan. Shot `characters/mum2/anims/nausea-to-belly.json`.
 
 **Read first:**
 - `CLAUDE.md` for the current status and next steps.
@@ -28,10 +30,10 @@ The repo's job is that each of these is routine. Run the gate; don't hand a resu
 
 | Recipe | Input | Commands | Gate |
 |---|---|---|---|
-| **New pose** | one sentence + the character | prompt in `docs/prompts/<name>.txt` → `python3 tools/new_pose.py gen <char> <name> --prompt-file … --ref <sheet> --ref <prev key> -n 3` (Mac) → commit → `python3 tools/new_pose.py fit <char> <name> --fit-args "…"` | rms ≤ 0.06 H, no bone on a limit (script), contacts right in `out/new_pose_<name>.png` (look) |
-| **New move** | two poses | 2 in-between stills (New pose ×2) → a reach stop with the first as a via AND an arm-only key (`only` far-arm bones) at its time (lesson 20) → `uv_check --poses` and a path `bias` where the shot misses the stills (lesson 21). Landing settle and finger ripple come from the engine defaults | `--tracks-only` (no pop > 2× neighbours), `node tools/qa_checks.mjs`, a frame strip |
+| **New pose** | one sentence + the character | prompt in `docs/prompts/<name>.txt` (elbow and hand by body landmarks: the prompt IS the pose) → push `requests/refgen/<name>.json` (the Mac worker draws 3 and pushes them; or `new_pose.py gen` on the Mac) → `git pull` → `python3 tools/new_pose.py fit <char> <name>` | rms ≤ 0.06 H, no bone on a limit (script), contacts right in `out/new_pose_<name>.png` (look) |
+| **New move** | two poses | 2 in-between stills (New pose ×2) → `uv_check --poses` first: a still the path already passes adds nothing, and one that drifted onto the target is no in-between (lesson 30) → a reach via AND an arm-only key (`only` arm bones, `bone.hand.<side>.*` for the fingers) at its time (lesson 20). From or to a HANGING arm, the via is a joint-space breakdown (`pose_blend rest key 0.35`, lesson 31). Landing settle and finger ripple come from the engine defaults | `--tracks-only` (no pop > 2× neighbours), `node tools/qa_checks.mjs`, a frame strip |
 | **New shot** | brief + intensity | beats in `spec.story`/`spec.intensity` → New pose per key → New move per hand move → breath/face/fidgets → render | `qa_checks` PASS (or each fail explained), `critic_F.py --lens all` (three fresh reviewers), `blind_ab.py` against the previous version for each change; Harry's eye last |
-| **New character** | one master drawing | `python3 tools/new_char.py <id> --from mum2 --master <sheet>` → its printed steps (measure, rest fit, hands early, stress poses) | `char_check`, stress-pose sheet, hand checks (`qa_checks` hands) |
+| **New character** | a design brief | the checklist at the end: master designed for the rig → `new_char.py` (template mum3) → `master_measure.py` → params and parts from the measurements → hidden limbs, hands → key stills | `char_check`, `char_compare.py <id> rest` IoU ≥ 0.95, `hand_fit.py`, stress poses |
 | **New outfit / hand view** | stills of the view | New pose for each view → a fitted replacement drawing in `parts/` or the hand library | `detail_audit.py`, `corner_audit.py`, `qa_closeups.mjs` at the stress times |
 
 **Engine defaults from the reels rig** (on unless the shot turns them off):
@@ -47,7 +49,7 @@ These won no blind A/B on their own in the nausea shot (the far hand lands half 
    - Generate one still per key and **two in-betweens per hand move**, using the framing-locked prompts in `docs/REF_PROMPTS.md`. Any image tool works; Codex CLI / ChatGPT images is the user's default.
    - Make them with `tools/refgen.py <char> <name> --prompt-file … --ref sheet --ref prev --ref next -n 3` (Codex CLI on the ChatGPT login; runs on Harry's Mac, not in a cloud container). It registers them through `tools/ref_register.py`. Stills from any other tool: `tools/ref_register.py … --canvas WxH --est`.
    - Use video only to get the TIMING of a fast move: one model, one generation, its own key stills as first and last frame. Take its speed profile, never its path (`PIPELINE.md` §1 scoreboard: 18 of 21 videos were unused).
-3. **Fit.** Run `node tools/fit_pose.mjs <char> refs/pose/<x>.json fit-<name> --base bump-rest [flags]`. Keep the sample with the lowest rms and correct contacts, and record the command in `refs/fit_keys.sh`.
+3. **Fit.** `python3 tools/new_pose.py fit <char> <name>` (or `node tools/fit_pose.mjs <char> refs/pose/<x>.json fit-<name> [--base rest] [flags]`; the base defaults to `bump-rest` if the character has one, else `rest`). Keep the sample with the lowest rms and correct contacts, and record the command in `refs/fit_keys.sh`.
    - If rms > 0.06 H or joints sit on their limits, a DOF is missing. Add it rather than accepting the miss: this is how the head nod (`fx.headPitch`, `engine/warp.js`) and the trunk fold (`--fold` scale DOFs) arrived.
 4. **Derive.** Build accents and in-betweens from FITTED poses with `tools/pose_blend.py` and `tools/pose_set.py` (`--add/--set/--fx/--scale/--hand`). Then `tools/plant_feet.mjs`, all in `refs/derive_<shot>.sh`. Re-run the whole script after any change; it is the source of truth for derived poses.
 5. **Timeline** (`anims/<shot>.json`):
@@ -74,6 +76,10 @@ These won no blind A/B on their own in the nausea shot (the far hand lands half 
 ```sh
 scripts/setup.sh                                                   # once: playwright, python deps, MediaPipe models
 node tools/char_check.mjs mum2                                     # <1 s gate: loads, anchor contract
+python3 tools/master_measure.py mum3 characters/mum3/ref/master.png   # a new master → ref/landmarks.json + ref/measure.png (LOOK)
+python3 tools/char_compare.py mum3 rest                            # the drawing vs its master: IoU + out/mum3_compare.png
+python3 tools/hand_fit.py mum3                                     # the hand vs the master's: widths, runs, IoU
+sh characters/mum3/refs/derive_breathe.sh                          # mum3's derived poses (n-*)
 sh characters/mum2/refs/derive_nausea.sh                           # rebuild derived poses
 node tools/vtrack_apply.mjs mum2 nausea-to-belly                   # re-apply video-derived data after spec edits
 node tools/char_anim.mjs --char mum2 --anim nausea-to-belly        # render frames + mp4 (out/)
@@ -116,9 +122,12 @@ node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is draw
 
 ## New character checklist
 
-`python3 tools/new_char.py <id> --from mum2` copies mum2's structure: `character.js` (parts, roles, warps, outline groups, hand library, contact shadow), `params.js`, `parts/*.js`, depth proxies, `poses/hands/*`.
+Worked through end to end with mum3 (2026-10-12; PIPELINE lessons 26–32). Template: mum3 (profile, bare arms); mum2 only for a ¾ figure in a cardigan.
 
-1. Start from a clean character sheet image. Measure it with `tools/measure_ref.py` and fit the rest pose. Make limb lengths left = right (rest art foreshortens).
-2. Build the hands early, fitted (`tools/hand_fit.py`, `hand_lab.py`). Generic bending hands read as paws.
-3. Prove the rig with stress poses (`char_pose_sheet.py`, `detail_audit.py`, `corner_audit.py`) before animating.
-4. Then follow the loop above. Log every lesson in `docs/PIPELINE.md`.
+1. **Design the master for the rig** (REF_PROMPTS "Design rules"): bare arms or fitted short sleeves, near profile or a ¾ view whose moves cross the picture plane, the far arm hidden or simple, top and bottoms in different values, plain white background, full body. A sleeve or cuff is a separate piece pivoting on a pin: that is where mum2's bleed and "pinned on" look came from. Generate candidates through the worker (`requests/refgen/<name>.json`, 1–3 refs) and let the client pick.
+2. **Scaffold:** `python3 tools/new_char.py <id> --master <png>` copies mum3's code, hand library and base poses and prints the steps.
+3. **Measure:** `python3 tools/master_measure.py <id> characters/<id>/ref/master.png` → `ref/landmarks.json` + `ref/measure.png`. LOOK at every point on the overlay; a wrong point is a wrong drawing (lesson 27). Calibrate the fitter: `python3 tools/pose_est.py characters/<id>/ref/master.png --out characters/<id>/refs/pose/master.json`.
+4. **Draw from the measurements:** `params.js` (joints, named points, widths, hand spec) and `parts/*.js`. Each limb is ONE tube built in posed space (a filleted elbow, no sleeve over a joint); clothing that crosses a joint is skinned to both bones or built on the limb's own contour (mum3's strap). Gate: `char_check`, `char_compare.py <id> rest` IoU ≥ 0.95, and look at the compare image row by row.
+5. **Declare what the design hides:** `fit: { hidden: ['far.arm'] }` (skipped by the fit, not drawn, skipped by QA and the critic's hand pages). Gate the contact shadow by a contact track (`groups: [{match, gate: 'contact.near'}]`) so a hanging hand casts none.
+6. **Hands early:** `python3 tools/hand_fit.py <id>` against the master (centre the hand on the wrist's WIDTH, not the estimator's wrist point; mum3's sign error left a shelf). Add view shapes to `poses/hands/` as the shots need them (mum3: `lay`, fingers curved onto a surface).
+7. **Key stills → fits → a simple first shot** (breathing, a hand to the bump) through the loop above, then the three-lens review. Fix the skill wherever it gets stuck, and log each lesson in `docs/PIPELINE.md`.

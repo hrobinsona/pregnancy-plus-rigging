@@ -18,6 +18,20 @@ Ask for **3 samples** at the same aspect as image 2 (mum2 keys are 768×1344). P
 - **Say what stays put** ("…stays on the lower front of the bump exactly as in image 2") and **what the wrist, fingers and elbow do**. Hand shape is the part that changes most between samples.
 - Describe the moment, not the motion: "one third of the way: the hand is in front of her upper chest…".
 - Keep the style sentence verbatim (see `docs/prompts/*.txt`).
+- **The prompt IS the pose.** Write where the elbow goes in body landmarks ("under her shoulder, NOT behind her back"). mum3's
+  first stroke still put the elbow behind her back because its prompt said so, and the fit reproduced it faithfully.
+- **An in-between drifts toward image 3.** With the target pose as image 3, "two thirds of the way" came back as the
+  target itself. Describe the in-between by landmarks ("the hand beside her hip, at the height of the bottom of the bump")
+  and check it with `uv_check --poses` before using it.
+- **Poses made from poses drift by tens of px** (reels): image 2 is the previous POSE, so framing errors accumulate along a
+  chain. Always pass the character sheet as image 1, and use a key still (not an in-between) as image 2.
+- **`moderation_blocked` is usually a false flag** (reels): retry, or reword anything body-related more neutrally.
+- **Design rules for a NEW character's master** (mum3; reels character skill):
+  - fitted or short sleeves, or bare arms, on any arm that moves (a sleeve is a separate piece pivoting on a pin);
+  - top and bottoms in different values, or the bump merges into the lap; clothes distinct from any furniture;
+  - near profile or a ¾ view whose moves travel ACROSS the picture plane, never toward the camera;
+  - the far arm hidden or simple; plain white background, full body, the figure about 85 % of the frame height
+    (reels framing for phone reading is mid-thigh up: frame the SHOT tighter, not the master).
 
 ## Making them with ChatGPT (Codex CLI): one command
 

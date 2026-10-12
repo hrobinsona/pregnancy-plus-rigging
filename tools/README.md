@@ -10,7 +10,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | ★ `frame_at.mjs` | Single frames to PNG; `--mods JSON` overrides spec fields to isolate a layer. |
 | ★ `frame_strip.py` | Strip of frames f0..f1 with a crop box — the way to *see* a move. |
 | ★ `pose_probe.mjs` | A/B one channel (bone, `fx.*`, `scale.<bone>.<0\|1>`, `--add/--set`) at time t before keying it. |
-| ★ `uv_check.mjs` | Where the far wrist and elbow actually go in the torso frame, per frame; `--poses a,b` gives the same for fitted poses, to compare stills with the shot. |
+| ★ `uv_check.mjs` | Where a wrist and elbow actually go in the torso frame, per frame (side `far` by default, or `near`); `--poses a,b` gives the same for fitted poses, to compare stills with the shot. For a profile character u is the spine's forward normal (both axes in shoulder-to-hip lengths). |
 | ★ `anim_dump.mjs` | Channel values or body landmarks per frame ("lunge vs fold", "what pops at frame N"). |
 | ★ `parts_dump.mjs` | Drawn parts of one frame: id, z, fill, stroke, clip — draw-order and bleed questions. |
 | `char_still.mjs` | Render one pose to PNG (`--sil` for the silhouette). |
@@ -25,7 +25,8 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | Tool | What it's for |
 |---|---|
 | ★ `new_pose.py gen\|fit <char> <name>` | Recipe "new pose": refgen 3 samples (Mac), then pose-estimate, fit each, keep the lowest rms, gate (rms ≤ 0.06 H, no bone on a limit), record in `refs/fit_keys.sh`, sheet `out/new_pose_<name>.png`. |
-| `new_char.py <id> --from mum2` | Recipe "new character": scaffold a character from a template (drawing code, hand library, rest poses, refs folders) and print the next steps. |
+| `new_char.py <id> [--from mum3]` | Recipe "new character": scaffold a character from a template (drawing code, hand library, base poses, refs folders) and print the next steps. Template mum3 (profile, bare arms) by default. |
+| `master_measure.py <id> <master.png>` | Measure a new master drawing: palette (named materials), MediaPipe joints, named profile points, torso stations, limb widths → `ref/landmarks.json` + `ref/measure.png` (look at every point). |
 | ★ `refgen.py <char> <name>` | Make reference stills with the Codex CLI on the ChatGPT login (image 1 sheet, 2 previous pose, 3 target), then register them. Runs where Codex is logged in (Harry's Mac). Tests: `test_refgen.py`. |
 | ★ `refgen_worker.py --install\|--status` | Unattended refgen on Harry's Mac: launchd polls `claude/*` branches for `requests/refgen/<name>.json`, generates via Codex (ChatGPT login), pushes the stills and `requests/refgen/done/<name>.json`. Runs a pinned copy; no image budget. See `docs/REF_PROMPTS.md`. |
 | ★ `ref_register.py` | Bring in stills from ANY image tool (Codex CLI / ChatGPT, fal, …): copies to `refs/images/`, writes the ledger, `--est` runs pose estimation. |
@@ -47,8 +48,8 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | `char_ik.mjs`, `pose_tool.mjs` | Author poses from IK targets (offline, numeric). |
 | `sil_fit.mjs`, `seg_ref.py`, `segment.py`, `sil_view.py` | Refine a fit against the reference's material silhouette. |
 | `fit_overlay.py`, `fit_sheet.py` | Fit vs reference overlays — check a fit by eye. |
-| `hand_fit.py`, `hand_lab.py` | Fit and audition hand shapes (build these early for a new character). |
-| `measure_ref.py` | Measure a character-sheet image (proportions, palette) for a new character. |
+| `hand_fit.py`, `hand_lab.py` | Fit and audition hand shapes (build these early for a new character). `hand_fit` skips a hand the character hides by design. |
+| `measure_ref.py` | mum2's character-sheet measurer (its palette is wired to mum2); for a new master use `master_measure.py`. |
 
 ## Review and audit
 | Tool | What it's for |

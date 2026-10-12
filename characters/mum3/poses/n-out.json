@@ -1,0 +1,38 @@
+{
+ "name": "n-out",
+ "note": "end of the long breath out: settled lower than the start",
+ "_recipe": "n-out fit-m3_k_bump --hands near=lay --add chest=1.2,spineUpper=0.4,clavicle.near=-2,head=1.5,neck=0.5 --note end of the long breath out: settled lower than the start",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "armAbd.near": -0.8,
+  "armRot.near": -13.7,
+  "belly": 0,
+  "chest": 0.6,
+  "clavicle.near": -3.5,
+  "foot.far": 1.6,
+  "foot.near": 2.9,
+  "foreRot.near": -0.7,
+  "forearm.near": 53.1,
+  "hand.near": 2.4,
+  "head": 7.9,
+  "hipAbd.far": 0,
+  "hipAbd.near": 0,
+  "neck": 0.3,
+  "pelvis": 0,
+  "shin.far": -1.6,
+  "shin.near": -1.2,
+  "shoulderAbd.near": 1,
+  "spineLower": 0,
+  "spineUpper": 0.2,
+  "thigh.far": 0,
+  "thigh.near": -0.1,
+  "upperArm.near": -6.1
+ }
+}

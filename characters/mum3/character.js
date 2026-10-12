@@ -60,7 +60,7 @@ const X = params.P;
 export default {
   name: 'mum3',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,

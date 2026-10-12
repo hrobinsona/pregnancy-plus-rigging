@@ -1,0 +1,14 @@
+{
+ "name": "n-limp",
+ "note": "fingers-only key: the hand relaxes in flight",
+ "_recipe": "n-limp rest --hands near=limp --note fingers-only key: the hand relaxes in flight",
+ "hands": {
+  "near": "limp",
+  "far": "relaxed"
+ },
+ "root": [
+  0,
+  0
+ ],
+ "bones": {}
+}

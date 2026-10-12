@@ -80,12 +80,12 @@ export const P = {
 // held together; back of the hand toward us, thumb forward (her front = right)
 const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
-  near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] + 0.045, joints.wristNear[1] + 0.03],   // the forearm's axis runs near its FRONT edge (front 0.07 / back 0.12 H at the wrist): the hand sits centred on the wrist's width
+  near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] - 0.03, joints.wristNear[1] + 0.03],   // the estimator's wrist sits near the wrist's FRONT edge (front 0.07 / back 0.12 H): the hand is centred on the wrist's width, BEHIND the joint (measured in the master: 7 px; v1 had the sign wrong and the forearm stuck out behind the hand as a shelf)
           dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
           length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
           thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.2, 1.1], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },
 };
-handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] + 0.045, joints.wristFar[1] + 0.03] };
+handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03] };
 
 // DEPTH PROXIES (engine/depth.js) for the 3D arm's draw order: the shoulder joints sit midL either side of the midline
 export const depth = { midL: 0.6, proxies: [

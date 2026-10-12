@@ -170,6 +170,38 @@ or composited.
    it. Size it with the FINGERS: a big back of the hand with no finger lines reads as a "mitten" or "lump" (lost), while
    longer fingers curling over the rim read as "a hand holding her".
 
+26. **Design the character for the rig before drawing a line (mum3, 2026-10-12).** mum2's worst faults were structural to a
+   cut-out rig drawn from a ¾ master: sleeves and cuffs as separate pieces pivoting on pins (bleed, "pinned on"), a far
+   hand that had to turn toward the camera (the palm flip), a weak master. mum3's master was CHOSEN for the rig: near
+   profile (forwardX 0.95), bare arms (one skin tube shoulder → wrist, nothing to slide over a joint), a sleeveless dress,
+   the far arm hidden behind her, and moves that travel across the picture plane. Her first render had none of mum2's
+   bleed or flips; all three v1 reviewers' complaints were about acting, not construction.
+27. **Measure the master with a tool, then LOOK at every measured point.** `tools/master_measure.py` (palette by k-means
+   into named materials, MediaPipe joints, named profile points, 21 torso stations, limb widths) writes
+   `ref/measure.png`; nine of its first points were wrong in ways only the overlay showed (a sign error put the bump's
+   bottom at the hem, the garment top on the lips, the skull top on the forehead slope, the bun centroid in the back
+   hair, MediaPipe's ear 40 px off). The drawing then reached silhouette IoU 0.96 against the master
+   (`char_compare.py`). A measured point is a claim: check it on the overlay before building on it.
+28. **A limb hidden by design must be declared hidden** (`C.fit.hidden: ['far.arm']`). The pose estimator always guesses
+   a far arm; fitting those guesses pulled mum3's far arm out past her back. Declared, its landmarks and variables are
+   skipped in the fit, it is not drawn (it still slid out past her back as she leaned), and `qa_checks` / `critic_F`
+   skip its hand.
+29. **Your prompt is the pose.** v1's stroke top had the elbow wrenched behind her back, and all three reviewers called it
+   "chicken wing". The fit was faithful: my prompt had said "elbow … behind her back line". A new still asked for "elbow
+   under the shoulder, NOT behind her back" and fixed it. Before blaming the fit or the rig, re-read the prompt.
+30. **In-between stills drift to the target (image 3).** m3_lift2 ("two thirds of the way") came back as the key itself
+   (wrist 0.15,0.82 vs the key's 0.15,0.84 in spine lengths); m3_lift1 was a true in-between, and the shot's path already
+   passed it within 0.01. Check a still with `uv_check --poses` before adding it as a via: a via the path already passes
+   adds nothing.
+31. **A hanging arm is a singularity: lift it in JOINT space.** A hand-space line from a straight arm lifts the wrist
+   toward the shoulder, and near full extension the elbow's bend goes as √(distance): it snapped 11 px in one frame. A
+   joint-space breakdown (`n-lift` = a third of rest → key) as a via AND an arm-only key at the same time (lesson 20)
+   makes the forearm swing forward from the elbow first, as a real arm does; the same on the way down. A straight arm
+   also has no defined elbow swivel: the engine now takes it from the bent end of the move.
+32. **A hand that stays on her is not carried.** Mid-move the wrist relaxes toward straight (`neutral`), right for a hand
+   in flight; for a hold or a stroke on the same body part it dipped the wrist 8° and back. Default now 0 when both stops
+   are `on` the same bone. And a stop that only changes `gap` is a zero-length MOVE, not a hold: drop it.
+
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
@@ -225,7 +257,8 @@ the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080
   painted skin only), parting from the hand as it lifts (up to ~9,16 px): that says "in front of her neck", not "on it".
   Blurred and offset it read as a sticker lifting off; no blur filters on per-frame paths (they rendered differently out
   of order), and no motion blur (it doubles flat edges). `LESSONS.md §Hands, §Edges and layers, §Determinism` — code
-  rig: not yet (only the arm's cast shade on the cardigan, `parts/arms.js`).
+  rig: has it (`C.contactShadow`, lesson 22; a group's `gate: '<fx channel>'` keyed by a contact track, so a hand hanging
+  at her side casts none).
 - **A thin hand edge in her own skin shade, never a heavy dark outline** (dark = "stickers in another style").
   `LESSONS.md §Hands` — code rig: has it (`outlineGroups`, `skinLine`, w 0.012). Conflict: reels outlined the hand
   everywhere (an edge fading as the hand left her face read as a swap); the code rig outlines only over the same
@@ -261,9 +294,12 @@ the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080
   leaves the lips outward first, path `shape: 'corner'`; no fingertip peel off the bump).
 - **Keep the two hands ≥ 15 px apart every frame**; route round the other hand, never deep under it (it dipped onto her
   lap and bounced); stroke across the bump and a touch down, away from it. `LESSONS.md §Hands, §Paths and timing` — code
-  rig: not yet (no hands check; specified in the plan §2c).
+  rig: has it (`qa_checks` hands: the closest the two hands come, listed for a look).
 - **One hand style and size for both hands** (an odd resting hand "stands out now vs everything else"). `LESSONS.md
   §Hands` — code rig: has it (both from `makeHand`; per-view sizes per PIPELINE lesson 8).
+- **One hand scale per character, never per pose; the moving hand within ~10 % of the resting hand.** `LESSONS.md
+  §Hands` — code rig: has it by construction (one `makeHand` spec per side); `qa_checks` prints the far/near ratio
+  but doesn't gate it.
 - **Never steer the hand on its own or swap hand drawings.** Turned up to 90° from its forearm = a cut-out on a pin;
   swapped drawings (any number of in-betweens, cut or crossfaded) read as swaps, crossfades as ghost hands. `LESSONS.md
   §Hands` — code rig: partly (the hand rides the forearm inside the wrist's range; `spec.swaps` are still discrete).
@@ -293,6 +329,9 @@ the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080
   nod. The version the client liked heaved ~17 px up, then tucked ~29 px over ~0.5 s: measure against what was liked.
   `LESSONS.md §Face, §Performance`, `perform.js:107-117,145-147` — code rig: partly (chin dip and `fx.headPitch` fidget;
   no throat line, no cheek fill).
+- **Every face preset carries every key** (a preset missing `puff` blended to NaN), **the mouth hidden under a hand comes
+  back at full size, not as a dot**, and **pupils show from nearly shut** (at 12 % open they popped in). `LESSONS.md
+  §Face` — code rig: partly (`FACE_DEFAULT` fills missing keys; mouth size and pupil threshold unchecked).
 - **Never warp the face outline for puffed cheeks** (read as "badly rigged"), and don't move painted features with an
   expression (the blush lifted with the smile showed a dark crescent). `LESSONS.md §Face, §Performance` — code rig: has
   it (only the nod warps the head).
@@ -326,10 +365,13 @@ the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080
 - **Put every principles-driven change through a blind A/B.** Lasseter's 11 principles (a score and a fix each) found
   timing, anticipation and staging faults the rubric missed, and its top changes won the A/B for both characters (7 vs
   6.5); its one miss (shrink the gulp: "barely registers" on a phone) would have shipped without it. `LESSONS.md
-  §Performance`, LEDGER §Review — code rig: not yet.
+  §Performance`, LEDGER §Review — code rig: has it (`critic_F.py --lens lasseter`, `blind_ab.py`).
 - **A panel of three lenses:** overall rubric, Lasseter, hands (with measurements). Check every claim on the frames
   before acting: several were wrong (blinks, cheek lift, sizes; "upper arm widens 25–30 %"). LEDGER §Review — code rig:
-  not yet (critic F + critic C as lint; also PIPELINE lessons 5, 12).
+  has it (`critic_F.py --lens all`: feel, Lasseter, hands, one fresh reviewer each; critic C as lint).
+- **When to stop: every rubric category ≥ 7 and the overall ≥ 7, judged by agreement across rounds** (one reviewer's 7
+  is noise; two rounds agreeing is a result). LEDGER §Review — code rig: has it as the rule; the scores come from
+  critic_F's lenses (Lasseter and hands score per category; feel says READY / NOT YET).
 - **The client's eye overrules a reviewer, so get it early.** Three client notes on the hands found more than eight
   blind rounds had. A question from the client is a question: answer it and ask before changing anything (the gulp was
   shrunk on "was it meant to be…?" and had to be put back). `LESSONS.md §Hands, §Performance` — also PIPELINE lesson 16.
@@ -367,6 +409,9 @@ the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080
   work` — code rig: has it for the near sleeve (`parts/arms.js` creases); none on the far sleeve.
 - **Her top answers the arm:** as the elbow swings out, two tapered pull folds grow on her top from the armpit toward
   the bump, gone below a minimum size (a short fold is a speck). `LESSONS.md §Performance` — code rig: not yet.
+- **An SVG clip goes on an unmoved group that holds the moved shape;** a clip on the moved shape travels with its own
+  transform. `LESSONS.md §Edges and layers` — code rig: has it (every clip wraps the part in an untransformed `<g>`, and
+  the clip shapes carry their own transforms: `engine/rig.js`).
 - **Fingers are separate shapes:** drawn together a hand read as "a mitten with three stripes"; evenly fanned with the
   thumb parallel, as a fan; spread over the mouth, the mouth showed through. `LESSONS.md §Hands` — code rig: has it
   (fingers touch by construction, shade rims only where they overlap, `hand.js`).

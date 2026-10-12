@@ -245,7 +245,9 @@
    {
     "t": 1.98,
     "pose": "fit-k2",
-    "on": "belly"
+    "on": "belly",
+    "neutral": 0.5,
+    "_neutral_note": "kept at the old default so v17 renders bit-identically (from 2026-10-12 a move between two stops on the same bone defaults to neutral 0)"
    },
    {
     "t": 0,
