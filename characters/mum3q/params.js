@@ -17,7 +17,7 @@ const jt = (k) => at(L.joints[k]);
 const F = L.face, fa = (k) => at(F[k]);
 const W = (k, f) => { const s = L.widths[k].find((q) => Math.abs(q.f - f) < 0.01); return { front: s.l / Hpx, back: s.r / Hpx }; };   // measured half-widths across a limb (front = facing side)
 
-export const palette = { ...PAL3, eyeHi: '#fbe9dc', noseLine: '#f2a06f' };   // mum3's colours; the ¾ eyes carry a catch-light
+export const palette = { ...PAL3, eyeHi: '#fbe9dc', noseLine: '#f2a06f', teeth: '#fcf6f2' };   // mum3's colours; the ¾ eyes carry a catch-light
 
 // forwardX = cos(yaw): the shoulders measure 0.82 H apart on screen = 2·midL·sin(yaw) with midL 0.6 → yaw ≈ 43°, cos ≈ 0.74
 export const design = { facing: 'right', forwardX: 0.74, ground: '#efe0d0', view: 'q' };

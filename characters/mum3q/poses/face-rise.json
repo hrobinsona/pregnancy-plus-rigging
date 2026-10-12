@@ -1,0 +1,1 @@
+{"name": "face-rise", "note": "looking up: the eyes reach us first, the lids open a touch wider (she sees us), the lips part as the smile starts (still q_k_mid_2)", "face": {"lid": {"open": 0.85, "wide": 0.15}, "gaze": [0, 0], "mouth": {"smile": 0.4, "beam": 0.45, "soft": 0.15}, "brow": {"neutral": 1}}}

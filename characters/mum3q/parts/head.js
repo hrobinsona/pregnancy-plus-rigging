@@ -2,7 +2,7 @@
 // one narrower), two brows, a nose drawn as one shade line down the far side of the nose, a mouth seen from the front. The
 // face is one skin shape: hidden under the hair at the top, the far cheek's edge (measured named points) on the right, the
 // chin, and the jaw back under the near ear on the left. Face rig channels as mum3 (pose.face): lid {open|closed|wide|
-// smile|half}, gaze [dx,dy] (H), mouth {smile|neutral|warm|soft}, brow {worry|knit|soft}, so mum3's face poses carry over.
+// smile|half}, gaze [dx,dy] (H), mouth {smile|neutral|warm|soft|beam (open, teeth)}, brow {worry|knit|soft}, so mum3's face poses carry over.
 import { loop, taper, ellipse, egg } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { mapGeom } from '../../../engine/geom.js';
@@ -14,10 +14,10 @@ const wsum = (w, k) => { const e = Object.entries(w || {}); const s = e.reduce((
 const mouthLib = (m) => {
   const c = m.p[2], off = m.p.map((q) => [q[0] - c[0], q[1] - c[1]]);
   const mk = (sx, sy, sw, lift = 0) => ({ p: off.map(([x, y], i) => [x * sx, y * sy - (i === 0 || i === 4 ? lift : 0)]), w: m.w.map((v) => v * sw) });
-  return { smile: mk(1, 1, 1), warm: mk(1.08, 1.25, 1.1, 0.008), neutral: mk(0.9, 0.35, 0.42), soft: mk(0.62, 0.3, 1.05) };
+  return { smile: mk(1, 1, 1), warm: mk(1.08, 1.25, 1.1, 0.008), neutral: mk(0.9, 0.35, 0.42), soft: mk(0.62, 0.3, 1.05), beam: mk(1.12, 1.3, 0.5, 0.012) };
 };
 
-export const ANCHORS = { 'face': 11, 'ear': 4, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'eye.near.hi': 4, 'eye.far.hi': 4, 'brow.near': 12, 'brow.far': 12, 'nose': 12, 'mouth': 12, 'jaw.shade': 6, 'lash.near': 14, 'lash.far': 14 };
+export const ANCHORS = { 'face': 11, 'ear': 4, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'eye.near.hi': 4, 'eye.far.hi': 4, 'brow.near': 12, 'brow.far': 12, 'nose': 12, 'mouth': 12, 'mouth.open': 8, 'mouth.teeth': 8, 'jaw.shade': 6, 'lash.near': 14, 'lash.far': 14 };
 
 export function build({ P: C, C: char, pose }) {
   const X = char.params.P, f = X.face, out = [];
@@ -90,6 +90,13 @@ export function build({ P: C, C: char, pose }) {
   const mc = X.mouth.p[2];
   const pts = lib.smile.p.map((_, i) => keys.reduce((a, k) => [a[0] + wt(k) * lib[k].p[i][0], a[1] + wt(k) * lib[k].p[i][1]], [0, 0]));
   const ws = lib.smile.w.map((_, i) => keys.reduce((a, k) => a + wt(k) * lib[k].w[i], 0));
-  out.push(part('mouth', 55, C.mouth, taper(pts.map(([x, y]) => [mc[0] + x, mc[1] + y]), ws, 'round')));
+  const M = pts.map(([x, y]) => [mc[0] + x, mc[1] + y]);
+  out.push(part('mouth', 55, C.mouth, taper(M, ws, 'round')));
+  // beam: the smile OPENS (stills q_k_mid/up): below the lip line a crescent of lip, 0.06 H deep at full beam, a band of
+  // teeth across its top (60% of the depth). Both grow from zero area with the beam's weight, so the mouth opens, never pops
+  const b = wt('beam'), dep = [0, 0.75, 1, 0.8, 0].map((v) => v * 0.065 * b), tee = dep.map((v) => v * 0.6);
+  const under = (d, o = 0) => [3, 2, 1].map((i) => [M[i][0], M[i][1] + o + d[i]]);
+  out.push(part('mouth.open', 54.8, C.mouth, loop([[...M[0], { c: true }], ...M.slice(1, 4), [...M[4], { c: true }], ...under(dep)])));
+  out.push(part('mouth.teeth', 54.9, C.teeth, loop([[...M[0], { c: true }], ...M.slice(1, 4).map(([x, y]) => [x, y + 0.004 * b]), [...M[4], { c: true }], ...under(tee, 0.004 * b)])));
   return out;
 }

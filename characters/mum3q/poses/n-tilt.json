@@ -1,0 +1,49 @@
+{
+ "name": "n-tilt",
+ "note": "eye contact, the head tipped a little: a warm tilt in the hold",
+ "_recipe": "n-tilt n-up --hands near=drape --add head=2.5,neck=1 --note eye contact, the head tipped a little: a warm tilt in the hold",
+ "hands": {
+  "near": "drape",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": 1.6
+ },
+ "root": [
+  -0.006,
+  0
+ ],
+ "bones": {
+  "armAbd.far": -0.2,
+  "armAbd.near": 2,
+  "armRot.far": 0,
+  "armRot.near": 2,
+  "belly": 0,
+  "chest": 0.6,
+  "clavicle.far": 2.3,
+  "clavicle.near": -0.1,
+  "foot.far": -0.6,
+  "foot.near": 0.4,
+  "foreRot.far": -0.2,
+  "foreRot.near": 1.8,
+  "forearm.far": 3.1,
+  "forearm.near": 57.6,
+  "hand.far": -2.9,
+  "hand.near": 4.3,
+  "head": 6.5,
+  "hipAbd.far": 1.1,
+  "hipAbd.near": -0.6,
+  "neck": -7.1,
+  "pelvis": 0,
+  "shin.far": 2.8,
+  "shin.near": -3.9,
+  "shoulderAbd.far": -2.1,
+  "shoulderAbd.near": -1.8,
+  "spineLower": 0.1,
+  "spineUpper": 0.8,
+  "thigh.far": 0.4,
+  "thigh.near": 1.3,
+  "upperArm.far": 1.3,
+  "upperArm.near": -9.6
+ }
+}
