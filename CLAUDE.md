@@ -72,6 +72,6 @@ Latest render: `renders/mum2_nausea-to-belly_v14c.mp4`. The earlier violent-retc
     - `fit_keys.sh` and `derive_nausea.sh` rebuild every pose.
     - `ledger.jsonl` records the provenance of each reference.
   - `feel_log_*.md`: the review history.
-- `tools/`: render, fit, derive, probe, audit and review-pack tools. Each has a usage line at the top.
+- `tools/`: render, fit, derive, probe, audit and review-pack tools. Index: `tools/README.md`. Each has a usage line at the top.
 - `docs/`: `PIPELINE.md` (lessons), `REF_PROMPTS.md`, `prompts/`, `research.md`.
 - `renders/`: current deliverable videos. `out/`, `review/` and `models/` are generated and gitignored.

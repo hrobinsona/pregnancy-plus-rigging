@@ -32,6 +32,13 @@ or composited.
    rounds while the client saw a stiff, detached, dead-handed arm. Critic F (look and feel only, NO numbers, asked to
    first describe how a real person does the action, then compare; checks the client's own past flags) caught what
    mattered. Use F as the gate, C as a technical lint.
+6. **Lint the rig, not just the picture.** Hidden failures found the hard way:
+   - joint limits silently CLAMP keyed values (clavicle ±10° ate every shrug for three rounds);
+   - sign conventions differ per side (+ lowers the far clavicle);
+   - normalised blend weights (`{lid: {open: 0.75}}` renders fully open);
+   - per-key shifts that differ between neighbouring keys squeeze a channel's segment to 1 frame (a pop) —
+     `makeAnim` now warns;
+   - an IK tool that copies a whitelist of fields drops scale/fx.
 7. **Arms are 3D, even in a flat 2D style.** A sagittal-hinge arm cannot draw a hand brought to the mouth with the elbow
    down at the side: in a ¾ view the forearm folds back OVER the upper arm (projected elbow bend ≈ 190°). Every fit of
    those poses failed (rms 0.12–0.15 H, the solver yanking clavicles to cheat) until the arm became a 3D chain projected
@@ -91,13 +98,23 @@ or composited.
 16. **The brief beats the reviewer.** The feel critic pushed the retch to a violent, accurate heave; the client wanted
    a gentle beat (nausea cues, one deep breath in, a long breath out, relief, a loving hold). Put the intended INTENSITY
    in the brief the critic sees, and check it with the client before polishing an extreme.
-6. **Lint the rig, not just the picture.** Hidden failures found the hard way:
-   - joint limits silently CLAMP keyed values (clavicle ±10° ate every shrug for three rounds);
-   - sign conventions differ per side (+ lowers the far clavicle);
-   - normalised blend weights (`{lid: {open: 0.75}}` renders fully open);
-   - per-key shifts that differ between neighbouring keys squeeze a channel's segment to 1 frame (a pop) —
-     `makeAnim` now warns;
-   - an IK tool that copies a whitelist of fields drops scale/fx.
+17. **Audit for bleed frame by frame, and mask outlines to what is visible.** "Clothing bleeding through limbs" was
+   invisible in stills: an outline group clipped to the WHOLE shape of the same-material parts behind it drew a pink
+   hairline over the neck where the neck covers the cardigan's collar; the far cuff poked past the bump's rim as a
+   ragged tab while the hand wrapped. `tools/anim_audit.py` (every Nth rendered frame: specks, slivers, gaps, each
+   classed by what surrounds it and merged into tracks across frames) finds them; the engine now masks outlines to the
+   VISIBLE region of the material (occluders between painted black, in z order). Most remaining hits are deliberate
+   lines — check the crops before "fixing" a crease.
+18. **Elbows: neither pinned nor free — on a chord.** Holding the elbow at a video's measured position made the forearm
+   swing round it like a clock hand (client: "swinging at the elbow"); with no target the swivel interpolation took the
+   elbow out wide and round. Steering it STRAIGHT from where it is at one contact to where it is at the other (torso
+   frame, `elbowPath: 'chord'`) — or passing the hand through a fitted/designed waypoint whose elbow is where you want
+   it — lowers the whole arm: the upper arm swings back as the forearm opens.
+19. **Slow, gentle moves: design them through a waypoint; copy timing only from fast ones.** A video path walked at a
+   slower, designed pace still carried its shape problems (the hand dragged down the middle of her chest, then shot to
+   the rim in 2 frames). A plain hand-space move from the cover to the bump through ONE waypoint in front of the chest
+   (minimum jerk, limp wrist by time, a designed limp bend) read calmer than every video-derived version. The waypoint
+   should be a fitted in-between still (`docs/REF_PROMPTS.md`) — the designed one is a stopgap.
 
 ## 1. Reference generation (fal.ai) — see `tools/fal_gen.py`, ledger in `characters/<c>/refs/ledger.jsonl`
 
@@ -139,10 +156,31 @@ out as flick-then-drift. Stills keep identity, proportions and framing, so every
 ## 2. Rig and drawing
 
 (see the big lessons; details accumulate here)
+- Head NOD = a 2.5D warp of the head's drawing (`engine/warp.js`, ellipsoid lifted, turned about the ear axis,
+  projected back); contacts on the head ride the warp. A flat rotation of a ¾ head reads as a roll.
+- Trunk FOLD toward the camera = along-scale of chest and neck (`fit_pose --fold`), never the upper spine (it carries
+  the bump, which must keep its size).
+- The far hand wrapped round the bump is a REPLACEMENT drawing (`parts/wrap.js`) that grows continuously with how far
+  round the hand is (`wrapW`); its cuff is cut away round the bump while wrapping.
+- Far-arm draw order is automatic from the 3D depth proxies; a path can STATE front (`front`) or behind
+  (`behindFrom`) where single-frame judgments flicker.
+- Outline groups (same material over same material: sleeve over cardigan, hand over face) are masked to the VISIBLE
+  material — never let a line run over skin that covers the cloth.
 
 ## 3. Motion
 
 - Keyframes in angle space for the body; hand-space reaches for the hands; procedural breath/drift/springs as seasoning.
+- Reach options worth knowing (engine/anim.js): stops/vias, `skew`, `handLag` (tapered: never late at the end),
+  `limp` + `limpBend` (designed, by TIME so the wrist drops first), `reg` (pull the wrist scan toward the planned bend),
+  `reach.holdReg` (a held hand keeps its fitted bend). Path moves add: torso-frame retarget (`uv/euv`), `elbowPath`,
+  `bendAt` / `twistAt` / `rollAt` profiles (`'A'`/`'B'` = the contacts' own values), `front`, `behindFrom`, `bias`.
+- Keys: `shift` per channel against `spec.lags` (overlap); `only` / `except` for channel-limited keys (a fingers-only key
+  keeps a hand curled until contact); fx channels can be lagged by full name (`fx.headPitch`).
+- Fidgets: out-and-back life; `fx.slide.<side>.x/y` slides a PINNED hand along its surface (a visible stroke — a thumb
+  sweep alone was invisible at phone size).
+- Gentle beat that the client accepted in direction (v14): cues at the mouth (hunch + swallow) → ONE deep breath in
+  (≈1.3 s, shoulders and ribcage up, head lifts) → long breath out (≈1.9 s) → hand lowers (≈1.1 s) → loving hold with
+  two slow strokes.
 - Spasm/startle: all trunk links fire together (+1f), not as a wave; breaths and sighs are waves (ribcage +3,
   shoulders +5, neck/head +7).
 - Timing that read right to the feel critic: reach to the mouth ≈0.7 s with a front-loaded bell; return ≈1 s

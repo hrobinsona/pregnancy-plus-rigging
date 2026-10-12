@@ -19,6 +19,8 @@ node tools/char_anim.mjs --char mum2 --anim nausea-to-belly       # → out/mum2
 - `.claude/skills/code-character-animation/SKILL.md`: the workflow as a skill. Claude Code loads it from this folder.
 - `docs/PIPELINE.md`: what worked, what didn't, and why. Includes the reference-generation scoreboard.
 - `docs/REF_PROMPTS.md`: making and registering reference stills with any image tool (Codex CLI, fal, …).
+- `tools/README.md`: index of every tool, grouped by stage.
+- `characters/mum2/feel_log_nausea-to-belly.md`: every review round and client redirect, with what was done.
 
 ## Requirements
 Node ≥ 20, Python ≥ 3.10, ffmpeg. The Python packages are in `requirements.txt`. The MediaPipe pose and hand models go in `models/`; `scripts/setup.sh` downloads them.

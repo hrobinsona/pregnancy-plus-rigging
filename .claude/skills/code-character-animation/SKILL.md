@@ -11,6 +11,7 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
 - `CLAUDE.md` for the current status and next steps.
 - `docs/PIPELINE.md` "0. The big lessons" and "1. Reference generation".
 - `docs/REF_PROMPTS.md` before making any reference image.
+- `tools/README.md` for the full tool index (★ = current loop).
 
 ## Non-negotiables
 
@@ -63,6 +64,7 @@ node tools/pose_probe.mjs --anim nausea-to-belly --t 7.37 --vary hand.far=-40,0,
 node tools/uv_check.mjs mum2 nausea-to-belly 7.0 8.1              # wrist/elbow in the torso frame, frame by frame
 python3 tools/critic_F.py mum2 nausea-to-belly > out/critic_prompt.md
 python3 tools/anim_audit.py mum2 nausea-to-belly --every 3        # bleed audit → out/mum2_nausea-to-belly_bleed.{txt,png}
+node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is drawn where (id, z, fill, clip) at one frame
 ```
 
 ## Engine facts that bite

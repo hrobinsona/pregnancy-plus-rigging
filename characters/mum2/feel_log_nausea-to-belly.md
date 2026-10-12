@@ -535,3 +535,27 @@ What was done (v13f):
 3. Retch: the fold's pump ends before the release (no stacking); the release eases over the whole 0.45 s; the second
    hit is smaller in the KNEES and lower back (50%), its shoulder-and-head jerk kept sharp.
 4. The uneasy look keeps both eyes visibly open (lids 0.7) while they look down.
+What was done (v13f) — see the round-27 list above; then the CLIENT reviewed v13f:
+
+## Client round (v13f → v14c) — REDIRECT
+Client: "Better. But the nausea part is far too extreme and fast moving. It should be a flow from feeling nauseous with
+some cues, taking a deep inhale, then exhale, feel better and hold/touch bump in a relaxing/loving way. The secondary
+arm moves in an unnatural way as it moves down — swinging at the elbow. There's also a lot of bleed from clothing
+through to limbs and vice versa."
+LESSON: six critic rounds polished a violent, accurate retch the client never wanted — the intensity was not in the
+brief. `spec.intensity` now carries it into every critic pack.
+What was done (v14a–c):
+1. The retch, heave, second hit, pumping and the retch video layer removed. New beat: cues at the mouth (a small hunch,
+   a hard swallow, the cover fingers pressing) 2.8–3.7 s → ONE deep breath in 3.7–5.0 s, its pose FITTED from two unused
+   stills (k6_in_v2_1/2: vs the out-breath the nod lifts ≈15°, shoulders rise ≈10°, chest straightens ≈3°) → a long
+   breath out 5.0–6.9 s → the hand lowers 7.0–8.1 s → both hands hold the bump, two slow strokes, looking down with a
+   smile.
+2. The lowering: first a video path with the elbow on a straight chord between its contact positions (the elbow had
+   been held where the video's was, so the forearm swung round it; with no target it swung out wide); then — calmer —
+   a plain hand-space move through one waypoint in front of the chest, minimum jerk over 1.1 s, a designed limp bend
+   (an engine bug had dropped it for plain moves: the wrist flipped 45° in one frame).
+3. Bleed: a frame-by-frame audit (tools/anim_audit.py). Fixed: the far sleeve's outline drew a pink hairline over the
+   neck (outline groups are now masked to the VISIBLE material); the far cuff poked past the bump's rim as a ragged
+   tab while wrapping (cut away round the bump). Asked the client for timestamps of what they saw.
+4. Still open: a few frames of fingers-up around 7.3–7.4 s; the in-between stills that would replace the designed
+   waypoint (fal balance exhausted; prompts in docs/prompts/ for the Codex CLI).
