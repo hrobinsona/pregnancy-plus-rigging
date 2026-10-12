@@ -132,6 +132,207 @@ or composited.
    (`{s0,s1,dp}`) where they disagree. Lift v14e: at the chin the shot already matched (0.03 u); at chest height the
    still's hand was 0.11 u further out in front of the far shoulder, so the hand now rises in front and then comes in.
 
+## From the reels rig (merged 2026-10-12)
+
+The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
+spent ~30 blind-review rounds on PERFORMANCE (scores /10, 7 = would ship; Maya / Amara). Tracing- and cutting-only
+lessons are left out (tracing, palette snapping, parts sheets, body layer, traced shoulder hull, `herSoft` clips,
+`kits/figure` swaps). Each entry: rule; evidence; source (`LESSONS.md` = reels `kits/rig/LESSONS.md`; `perform.js`,
+`acts.js` = reels `kits/rig/demo/perform.js`, `kits/rig/acts.js`; LEDGER = reels `.claude/skills/LEDGER.md`); whether
+the code rig does it (checked in `engine/` and mum2, 2026-10-12). Pixels at 1080×1920.
+
+### Performance and acting
+- **One main action at a time.** Idle drift tiny (head and sway ±0.25°), smaller again once she settles; find what moves
+  when it shouldn't by motion per region (frame differences in boxes, ignoring sub-pixel anti-aliasing). Client: "a lot
+  of movement on independent body parts". `LESSONS.md §Performance`, `perform.js:120,127` — code rig: partly
+  (`drift.amp` is a track, but mum2 runs head 0.4°, chain to 0.45°, far hand 0.6° at amp 1 all shot; no per-region
+  motion check).
+- **Into tenderness: eyes open, a pause, the head bows, THEN the hand moves.** Eyes, head and hand starting together
+  read as surprise (judge panel, Lasseter 6.0 / 6.5). Then act it: head bowed and held, a soft closed-mouth smile as the
+  hand lands (A/B: better; mum2 has this part). `LESSONS.md §Performance`, `perform.js:35-37` — code rig: partly (v14d
+  staggers them, but hand first with eyes shut 7.0–8.1 s, eyes 8.3, head 9.0: reels order untried).
+- **A relief breath is three steps:** in with the mouth closed (chest widens, shoulders and head rise ~13 px, a hand on
+  the chest rides up), held, then the mouth opens and she breathes out quick-then-slow (body sinks ~24 px). Started
+  while the hand was still landing it didn't read; anything pressing on the chest follows the breath OUT, never against
+  the in. Client's own words. `LESSONS.md §Performance`, `perform.js:30-34,74-78` — code rig: partly (in after the hand
+  lands, PIPELINE §3; no hold, see Timing).
+- **Breathing is local.** The quiet cycle widens the rib cage ~0.3 % and lifts the shoulders ~1 px; a heave (gulp, sigh)
+  is a separate, bigger rise; nothing scales about the seat (client: "her entire body increases and decreases").
+  `LESSONS.md §Performance` — code rig: has it (breath wave on chest, clavicles, head, belly lattice; heaves are keys).
+- **The ending must not freeze.** Settled breath ~2 px (at ~1 px it looked frozen), a head dip and glance down on the
+  first stroke, content heavy-lidded eyes, blinks every 2–3 s. Judge panel 2. `LESSONS.md §Hands`,
+  `perform.js:136,197,204` — code rig: partly (breath amp back to 1 at 8.3 s, two strokes, head down at 9.0; but one
+  blink in the last 4 s and no dip-and-glance on a stroke).
+- **The other hand answers, by a few degrees and late.** Its fingers lift as the stroking hand comes under them, it
+  turns a few degrees with each stroke (10° floated it up 13–20 px), ~0.3 s behind (in time it bobbed like a metronome);
+  static, the hands read as colliding. `LESSONS.md §Performance`, `perform.js:207-213` — code rig: not yet (the far hand
+  relaxes once, fidget 8.3–10.2 s; nothing is driven by the near hand's slide).
+- **The shoulder takes part:** drops ~1° as the hand comes down to the chest, lifts ~2° as the elbow swings out; still,
+  the arm looked hinged at the armpit. `perform.js:122-126` — code rig: has it (rig `drivers`, also PIPELINE lesson 4).
+- **Strokes move the whole arm, 40–70 px on screen** (upper arm 8–12°, forearm 2.5–4°, wrist 8°); a forearm-only stroke
+  moved the hand 10–20 px and a 15 px stroke was invisible on a phone. `LESSONS.md §Performance` — code rig: has it
+  (`fx.slide` moves the pinned wrist, the pin IK the arm, PIPELINE §3); on-screen size unmeasured.
+- **Two strokes of different length and speed, each an oval, then a settle.** Out slower than back, the second shorter,
+  pressing a little lower going out; four even halves read as "a wiper". Each whole, rest → out → rest. Blind A/B:
+  preferred for both characters. `LESSONS.md §Performance`, `perform.js:48-54` — code rig: partly (two strokes, 0.12 and
+  0.08 H, but each fidget is ½(1−cos) on one straight line: out = back, no oval).
+- **Tangents read as touching:** fingertips exactly on a cheek line or neckline; keep ~10 px clear or overlap clearly.
+  LEDGER §Film — code rig: not yet (`anim_audit` finds slivers and gaps, not tangents).
+
+### Hands
+- **The hand keeps its size off the body; its SHADOW says it is lifted.** A lift effect that grew it 10 % read as
+  "changes size as they move down". Check the hand's true area per frame (±3 %). `LESSONS.md §Hands` — code rig: has it
+  (no lift scale; `roll` narrows on purpose); area per frame not checked.
+- **A near-hard contact shadow under a hand on her** (~12 % opacity, blur ≤ 1 px, offset a few px, on her clothes and
+  painted skin only), parting from the hand as it lifts (up to ~9,16 px): that says "in front of her neck", not "on it".
+  Blurred and offset it read as a sticker lifting off; no blur filters on per-frame paths (they rendered differently out
+  of order), and no motion blur (it doubles flat edges). `LESSONS.md §Hands, §Edges and layers, §Determinism` — code
+  rig: not yet (only the arm's cast shade on the cardigan, `parts/arms.js`).
+- **A thin hand edge in her own skin shade, never a heavy dark outline** (dark = "stickers in another style").
+  `LESSONS.md §Hands` — code rig: has it (`outlineGroups`, `skinLine`, w 0.012). Conflict: reels outlined the hand
+  everywhere (an edge fading as the hand left her face read as a swap); the code rig outlines only over the same
+  material (no-outline style, PIPELINE lesson 17). Keep the code rule; check the frame the hand leaves her face.
+- **The wrist narrower than palm (~85 %) and cuff, bending smoothly, ≤ 30°.** As wide as the cuff the hand read "plugged
+  in", "not her real hands" (client). `LESSONS.md §Hands` — code rig: partly (the palm's wrist end tucks under the cuff
+  as a semicircle, but near `wristW` = `palmW` = 0.29; far 0.25 / 0.265; wrist range −50…40°).
+- **No spring in the hand.** Under-damped springs (ζ 0.42–0.52) and a mid-move wrist bend out and back made "an odd sort
+  of spring" (client); damped (ζ 0.82–0.85, fingers 0.72) the hand lags and catches up. Check that the hand's screen
+  angle runs one way through a move. `LESSONS.md §Hands` — code rig: partly (no arm springs, `handLag` never overshoots;
+  but a spline reach's `neutral` (default 0.5) relaxes the wrist toward straight mid-flight, an out-and-back).
+- **Fingers relax in flight and open to land one by one, index first** (~40 ms apart); all at once the hand "read as a
+  drawing". `LESSONS.md §Hands`, `acts.js:330,357-361` — code rig: partly (fingers-only keys relax the hand in flight;
+  all four move together; per-finger `spec.lags` could stagger them, none set).
+- **Each finger on its own.** Hands scored 6 every round while the fingers bent as one block: outer fingers trail and
+  curl a little more; they press at slightly different moments, squeeze in turn on a gulp, settle one after another.
+  `LESSONS.md §Hands`, `perform.js:70-71,100-102` — code rig: partly (separate finger bones, fidgets set them per
+  finger; the hand library blends all four as one).
+- **Fingers trail the hand.** A fingertip target on a loose spring (4.5 Hz, ζ 0.42, gain 1.25, ±16°); the fingers bend
+  toward it from the knuckles, trail by a few frames, swing past and settle. Bent by speed alone (no lag): rigid, "hands
+  6"; gain 1.6: a claw. `LESSONS.md §Hands`, `acts.js:396-406` — code rig: not yet (and `anim.js` springs are loop-only:
+  a non-loop shot needs the keyed-motion spring first).
+- **Land once: a small press, a settle, then only the breath.** The fingers spread a little as the hand takes weight,
+  then settle, swinging side to side over ~6 frames (2.6 Hz, e^−4.5t, +40 ms per finger). Still at once: "frozen";
+  press-and-release plus the breath: "a soft bounce". `LESSONS.md §Hands`, `perform.js:61-63,90-92` — code rig: partly
+  (`EASES.settle` overshoots; `press` events dent the belly lattice; no hand settle or wag).
+- **A resting hand is never a fixed drawing:** fingers press and ease on her face (harder on a gulp), ease with each
+  breath on her chest, lift a little at each stroke's turn. `perform.js:67-71,81-82` — code rig: partly (keyed fidgets
+  at story beats; nothing tied to the breath wave).
+- **Peel off a surface:** the fingertips stay a few frames while the wrist pulls away, spreading a little as they curl
+  (curled together they fused into a mitten). But off the FACE go at once and out to the side: peeled down her chin it
+  read as "a clutch at the throat". `LESSONS.md §Hands, §Performance`, `acts.js:358-365` — code rig: partly (the return
+  leaves the lips outward first, path `shape: 'corner'`; no fingertip peel off the bump).
+- **Keep the two hands ≥ 15 px apart every frame**; route round the other hand, never deep under it (it dipped onto her
+  lap and bounced); stroke across the bump and a touch down, away from it. `LESSONS.md §Hands, §Paths and timing` — code
+  rig: not yet (no hands check; specified in the plan §2c).
+- **One hand style and size for both hands** (an odd resting hand "stands out now vs everything else"). `LESSONS.md
+  §Hands` — code rig: has it (both from `makeHand`; per-view sizes per PIPELINE lesson 8).
+- **Never steer the hand on its own or swap hand drawings.** Turned up to 90° from its forearm = a cut-out on a pin;
+  swapped drawings (any number of in-betweens, cut or crossfaded) read as swaps, crossfades as ghost hands. `LESSONS.md
+  §Hands` — code rig: partly (the hand rides the forearm inside the wrist's range; `spec.swaps` are still discrete).
+  Conflict with PIPELINE lesson 3: reels evidence is stronger for swaps ON A MOVING hand (5.5–6.5 over eight rounds);
+  the continuous wrap (`wrapW`) is the reels way. Prefer drawings that change continuously; time any swap where the hand
+  is clear of the body.
+
+### Face
+- **Blinks: down in three frames, up slower with an ease-in-out;** over two frames they snapped, eased out the first
+  open frame "snaps open". A blink can hide a change of gaze or lids (one on the look-up). `LESSONS.md §Face` — code
+  rig: has it (`blink` close 3 / hold 1 / open 5, smoothstep); blink-on-a-change: unused.
+- **Eyes opening after a long close: brows first, then the lids, like the end of a blink** over ~5–9 even frames (eased,
+  "closed to open in one frame"; held half open, bored; slower, sleepy or smug). `LESSONS.md §Face`,
+  `perform.js:161-164` — code rig: partly (face-sigh → face-relief over 15 f on one eased track; brows and lids keyed
+  together, though `tracks` could time them apart).
+- **Half-open lids are arches over the eye, and only while opening.** Held half-lowered on solid dark eyes they read
+  smug or a stare; closed ◡ for looking down reads as eyes shut; a smile under lowered lids reads sly. `LESSONS.md
+  §Face` — code rig: partly (critic R4 found mum2's half lids read wide open; check face-tender's 0.58 against this).
+- **Looking down tenderly:** eyes ~0.5 open, pupils low and toward what she watches, the lid a little over the eye,
+  inner brows lifted, a soft centred smile, the head bowed (dy) more than rolled; level pupils still read as looking at
+  the camera. `LESSONS.md §Face` — code rig: has it (face-tender gaze low; n-look nods 16°).
+- **The eyes lead a reach; the head goes toward the hand she watches,** tilting to where it lands only as it lands;
+  following it while it still lay on her chest read as "side-eye". `perform.js:180-182,195-196` — code rig: partly
+  (`face.gaze` is keyed per face pose; nothing ties it to the wrist).
+- **The gulp in two beats:** cheeks fill (the blush swells) for a few frames, then the swallow — a short curve on the
+  throat that appears, dips and goes, the head dips and the chin pulls back 3–4 px, brows pinch. A dip alone read as a
+  nod. The version the client liked heaved ~17 px up, then tucked ~29 px over ~0.5 s: measure against what was liked.
+  `LESSONS.md §Face, §Performance`, `perform.js:107-117,145-147` — code rig: partly (chin dip and `fx.headPitch` fidget;
+  no throat line, no cheek fill).
+- **Never warp the face outline for puffed cheeks** (read as "badly rigged"), and don't move painted features with an
+  expression (the blush lifted with the smile showed a dark crescent). `LESSONS.md §Face, §Performance` — code rig: has
+  it (only the nod warps the head).
+- **The "o" grows from a pursed line at the line's size** (lips purse to a third first), ≥ 17×20 px at full (12 px read
+  as a dot); a soft smile drawn centred (off-centre under a tilted head: a smirk). `LESSONS.md §Face, §Performance` —
+  code rig: partly (mouth shapes blend with equal point counts; size and purse step unchecked).
+
+### Timing and easing
+- **Time the film from the breath, not the breath from the film.** A deep breath is ~1.3 s in (an even sine: a cubic
+  barely moved for its first 0.4 s), ~0.25 s held, ~1.7 s out (quick then slow); 0.6 s in / 0.75 s out read as a huff
+  (client: "very quick, rather than a deep inhale/exhale"). `LESSONS.md §Performance`, `perform.js:33-39` — code rig:
+  partly (1.3 s in, 1.9 s out, PIPELINE §3; no hold: n-inhale 5.0 → n-exhale 6.9; the `breath` ease is a cubic).
+- **Beats of different lengths; the relief beat longer than the move into it.** Two equal 24-frame moves made relief and
+  tenderness feel alike; fast out, slow in (`skew`), not one even ease for every move; 0.45 s off the mouth was rushed.
+  A/B: better. `perform.js:27-28` — code rig: has it (lift 0.8 s, lowering 1.1 s, `skew`; also PIPELINE lesson 2).
+- **Ease every added motion in (sin², not sin):** a finger curl starting at speed mid-move read as a hitch. `LESSONS.md
+  §Performance` — code rig: has it (fidgets ½(1−cos), `bias` windows sin²).
+- **A hold that eases out must overlap the next move's start;** ending exactly as the move began left a two-frame dead
+  stop. `LESSONS.md §Face` — code rig: partly (breakdown keys pass through; a plain key stops at zero speed: find dead
+  stops with `--tracks-only`).
+- **Waypoints go sideways to the travel; no bumps against it** (`push` / `arc` slowed the hand mid-move: a hitch); a bow
+  far out off the face flicked out and back; the elbow's swing runs on the wrist's clock (also PIPELINE lesson 18).
+  Measure every route: one speed hump, the forearm ≥ half its length on screen, no contact with the other hand.
+  `LESSONS.md §Paths and timing` — code rig: has it (vias, min-jerk on the whole move, `--tracks-only`); forearm-length
+  and hand-contact checks: not yet.
+
+### Review
+- **Blind every round: a fresh reviewer, relabelled clips, not told what changed.** Reviewers differ by ~1 point, so
+  look for agreement across rounds. `LESSONS.md §Process` — code rig: partly (critic F is fresh each round but sees the
+  brief and past flags; no relabelled A/B).
+- **Put every principles-driven change through a blind A/B.** Lasseter's 11 principles (a score and a fix each) found
+  timing, anticipation and staging faults the rubric missed, and its top changes won the A/B for both characters (7 vs
+  6.5); its one miss (shrink the gulp: "barely registers" on a phone) would have shipped without it. `LESSONS.md
+  §Performance`, LEDGER §Review — code rig: not yet.
+- **A panel of three lenses:** overall rubric, Lasseter, hands (with measurements). Check every claim on the frames
+  before acting: several were wrong (blinks, cheek lift, sizes; "upper arm widens 25–30 %"). LEDGER §Review — code rig:
+  not yet (critic F + critic C as lint; also PIPELINE lessons 5, 12).
+- **The client's eye overrules a reviewer, so get it early.** Three client notes on the hands found more than eight
+  blind rounds had. A question from the client is a question: answer it and ask before changing anything (the gulp was
+  shrunk on "was it meant to be…?" and had to be put back). `LESSONS.md §Hands, §Performance` — also PIPELINE lesson 16.
+- **Check every detail close up, at every pose,** with tiles that follow the joints (shoulder, elbow, wrist, fingers,
+  thumb, contact, cuff, face): the client spotted crinkled fingers at phone size. `LESSONS.md §Process, §Tools`
+  (`closeups.py`) — code rig: partly (`zoom_tour.py`, `detail_audit.py`, `corner_audit.py` on stills; no joint-following
+  close-ups of a shot). When a fault's cause isn't obvious, recolour one layer at a time: it found the "kite" lines in
+  one look after several blind guesses (code rig: `parts_dump.mjs` lists parts; no recolour view).
+- **Determinism, tested hard:** frames rendered out of order at their exact times (`repr(i / FPS)`: 6-place rounding
+  moved an edge 0.1 px), markup identical alone vs after its predecessors (a stroke width set in one frame leaked into
+  later ones), and a jump check against the mean of the neighbours that exist. `LESSONS.md §Determinism, §Tools` — code
+  rig: partly (`char_anim --verify k` re-renders every k-th frame; no out-of-order or markup check).
+
+### Drawing a continuous limb
+- **Why one continuous limb.** Whole posed drawings swapped (`kits/figure`) and drawn pieces with swapped hands stopped
+  at 5.5–6.5 over eight rounds ("pins", "cut-out on a pin", "swapped"); ~28 more drawings per character only moved where
+  the swap showed; one drawing bent along its bones reached 7–8 ("one model 8"). Live2D, Spine and Harmony agree: one
+  drawing per part, deformed continuously; shape changes are keyforms, never cuts. `LESSONS.md §The big picture` — code
+  rig: has it (one bendy sleeve, PIPELINE lesson 4; the hand is one generated drawing posed by its finger bones).
+- **Bend over a zone, not a point:** the outside sweeps round, the inside folds into a crease; the forearm a little
+  narrower than the upper arm with a tighter elbow zone (an even tube bent tight ballooned). Foreshortening is scaling
+  along the bone; the tube keeps its width. `LESSONS.md §The limb, §Elbow` — code rig: has it (filleted elbow, lesson 4;
+  projected 3D arm, lesson 7).
+- **Lines constant, hidden by overlap, never faded by bend angle** (fading read as lines popping on, as drawings
+  swapping); draw a folded forearm again over the upper arm, or one outline shows the hidden edge ("kite" lines). A
+  sleeve the colour of the top needs its edge the whole length, or only "a cuff floating over her" reads. `LESSONS.md
+  §Line work, §Edges and layers` — code rig: has it (outlines masked to the visible material, lesson 17; the sleeve's
+  `fade` is by distance, not angle).
+- **Lines are tapered pen strokes** (round caps read as cut off, floating). A line through a tight joint keeps its
+  longest stretch that doesn't double back and is cut where it turns > 100° within 18 px (else a Z or a hook); inside
+  the elbow both edges stop short of the crease, outside they run round. `LESSONS.md §Line work, §Edges and layers` —
+  code rig: partly (hand rims and creases are `taper()`; sleeve outlines are constant-width strokes).
+- **Folds grow in length with the bend (width tied to length)** from ~25°, angled back toward the elbow from the V
+  between the inner edges; widened only, they read as fading; straight off the edge, as scratches. `LESSONS.md §Line
+  work` — code rig: has it for the near sleeve (`parts/arms.js` creases); none on the far sleeve.
+- **Her top answers the arm:** as the elbow swings out, two tapered pull folds grow on her top from the armpit toward
+  the bump, gone below a minimum size (a short fold is a speck). `LESSONS.md §Performance` — code rig: not yet.
+- **Fingers are separate shapes:** drawn together a hand read as "a mitten with three stripes"; evenly fanned with the
+  thumb parallel, as a fan; spread over the mouth, the mouth showed through. `LESSONS.md §Hands` — code rig: has it
+  (fingers touch by construction, shade rims only where they overlap, `hand.js`).
+
 ## 1. Reference generation (fal.ai) — see `tools/fal_gen.py`, ledger in `characters/<c>/refs/ledger.jsonl`
 
 ### Scoreboard (mum2, nausea shot): what paid off and what did not
