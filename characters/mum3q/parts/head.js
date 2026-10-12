@@ -53,7 +53,8 @@ export function build({ P: C, C: char, pose }) {
     if (sm > 0 || hf > 0) { const cy = c[1] + ry * 0.35 * (1 - Math.min(1, open)), fB = Math.max(-0.6, 1 - 2.2 * sm), fT = Math.max(0.06, 1 - 2.2 * hf);
       fx.push((p) => [p[0], cy + (p[1] - cy) * (p[1] > cy ? fB : fT)]); }
     const lid = (p) => fx.reduce((q, f) => f(q), p);
-    out.push(part(`eye.${side}`, 53, C.eye, mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid)));
+    const ft = { warp: 'feature', warpAt: c };   // a nod moves the eye, its catch-light and lashes as one, without shearing them (engine/rig.js)
+    out.push(part(`eye.${side}`, 53, C.eye, mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid), ft));
     // the upper lid's lash line, as in the still: over the eye's top from the inner corner, thickening to the outer corner and
     // flicking out past it (the near eye's outer corner is on the left, toward the ear; the far eye's on the right)
     const ca = Math.cos(E.rot * Math.PI / 180), sa = Math.sin(E.rot * Math.PI / 180);
@@ -62,10 +63,10 @@ export function build({ P: C, C: char, pose }) {
     const s = side === 'near' ? -1 : 1, angs = side === 'near' ? [-25, -60, -95, -135, -172] : [-158, -122, -85, -48, -10];
     const lash = angs.map(onEye), o = lash[4];
     lash.push([o[0] + s * 0.03, o[1] - 0.012]);
-    out.push(part(`lash.${side}`, 53.6, C.eye, taper(lash.map(lid), [0.005, 0.012, 0.016, 0.019, 0.017, 0.005], 'round')));
+    out.push(part(`lash.${side}`, 53.6, C.eye, taper(lash.map(lid), [0.005, 0.012, 0.016, 0.019, 0.017, 0.005], 'round'), ft));
     // the catch-light shrinks away as the lid closes or the smile lifts the lower lid
     const hk = Math.max(0, Math.min(1, open) - 0.6 * sm - 0.7 * hf) ** 1.5, hr = 0.014 * (side === 'near' ? 1 : 0.85) * hk;
-    out.push(part(`eye.${side}.hi`, 53.5, C.eyeHi, ellipse([E.hi[0] + g[0], E.hi[1] + g[1] - (1 - Math.min(1, open)) * 0.01], Math.max(1e-4, hr), Math.max(1e-4, hr))));
+    out.push(part(`eye.${side}.hi`, 53.5, C.eyeHi, ellipse([E.hi[0] + g[0], E.hi[1] + g[1] - (1 - Math.min(1, open)) * 0.01], Math.max(1e-4, hr), Math.max(1e-4, hr)), ft));
   }
   // brows: tapered arcs through the measured brows (measured thickness + the anti-aliased pixel on each edge that the
   // dark-run scan leaves out), lifting with wide eyes, dropping with closed ones; worry lifts the inner

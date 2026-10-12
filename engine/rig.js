@@ -10,11 +10,23 @@
 // plane (θ from straight down, + toward the facing direction). The plane is yawed to the picture plane, so the rig
 // projects: screen dir = (sinθ·forwardX, cosθ), length factor L(θ) = √((forwardX·sinθ)² + cos²θ). A leg swinging
 // toward the camera therefore foreshortens instead of sweeping sideways.
+
 import { mul, T, R, S, I, pathD, ap, sub, add, mapGeom } from './geom.js';
 
 const DEG = Math.PI / 180;
 const wrap = (a) => ((a + 540) % 360) - 180;
 const smooth = (e0, e1, x) => { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+
+// a part through a 2.5D warp: point by point, or (mode 'feature') moved by its centre and scaled by the warp's local
+// stretch along x and y at that centre (no shear, no rotation: a feature keeps its drawn shape and tilt); part.warpAt
+// gives parts that belong together (an eye, its catch-light, its lashes) one shared centre
+function warpGeom(g, w, mode, at) {
+  if (mode !== 'feature') return mapGeom(g, w);
+  const xs = g.P.map((q) => q[0]), ys = g.P.map((q) => q[1]), c = at || [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  const h = 0.01, c2 = w(c), ex = w([c[0] + h, c[1]]), ey = w([c[0], c[1] + h]);
+  const sx = Math.hypot(ex[0] - c2[0], ex[1] - c2[1]) / h, sy = Math.hypot(ey[0] - c2[0], ey[1] - c2[1]) / h;
+  return mapGeom(g, (q) => [c2[0] + (q[0] - c[0]) * sx, c2[1] + (q[1] - c[1]) * sy]);
+}
 
 export function createRig(C) {
   const J = C.joints, BONES = C.bones, BONE = Object.fromEntries(BONES.map((b) => [b.id, b]));
@@ -197,11 +209,13 @@ export function createRig(C) {
     const ctx = { P: C.palette, C, J, pose, st, rig: api };
     const parts = [];
     // 2.5D WARPS (C.warps = {bone: (pose) => (q) => q'}): every rigid part drawn on that bone is lifted through it before
-    // the bone's matrix (engine/warp.js: a ¾ head that nods instead of rolling)
+    // the bone's matrix (engine/warp.js: a ¾ head that nods instead of rolling). A small FEATURE (part.warp = 'feature':
+    // an eye, its catch-light, its lashes) rides the warp by its centre and takes only the warp's local scale there, not its
+    // shear: point by point, the far eye near the skull's silhouette slanted and smeared as the head nodded (mum3q x-nod24)
     const warps = Object.fromEntries(Object.entries(C.warps || {}).map(([b, w]) => [b, w(pose)]));
     for (const [name, mod] of Object.entries(C.modules)) {
       for (const p0 of mod.build(ctx)) {
-        const p = warps[p0.bone] && !p0.world && !p0.skin ? { ...p0, geom: mapGeom(p0.geom, warps[p0.bone]) } : p0;
+        const p = warps[p0.bone] && !p0.world && !p0.skin ? { ...p0, geom: warpGeom(p0.geom, warps[p0.bone], p0.warp, p0.warpAt) } : p0;
         const want = mod.ANCHORS?.[p.id];
         if (want !== undefined && want !== p.geom.P.length) throw new Error(`${p.id}: ${p.geom.P.length} anchors, documented ${want}`);
         if (!st[p.bone]) throw new Error(`${p.id}: unknown bone ${p.bone}`);

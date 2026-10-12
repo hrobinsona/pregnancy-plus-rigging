@@ -4,6 +4,7 @@
 //   name, joints, bones, modules {ANCHORS, build}, palette, design {facing, forwardX, planes}, frame, ref, roles, params.
 import * as params from './params.js';
 import { makeHand } from '../../engine/hand.js';
+import { pitchWarp } from '../../engine/warp.js';
 import * as head from './parts/head.js';
 import * as hair from './parts/hair.js';
 import * as body from './parts/body.js';
@@ -69,6 +70,11 @@ export default {
   palette: params.palette,
   design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes } },
   modules: { hair: merge(hair), legs: merge(legs), body: merge(body), head: merge(head), arms: merge(arms, hands.near.ANCHORS, hands.far.ANCHORS) },
+  // ¾: the head NODS (pose.fx.headPitch, deg, + = chin down) on its depth proxy's ellipsoid: the face slides down the
+  // skull, the chin tucks toward the throat, the crown and bun come forward (engine/warp.js, as mum2); a head bone
+  // rotation alone rolls a ¾ face sideways on its neck
+  warps: { head: (pose) => { const h = params.depth.proxies.find((q) => q.name === 'head');
+    return pitchWarp({ c: h.at, axes: h.axes, fx: params.design.forwardX }, pose.fx?.headPitch ?? 0); } },
   // shoulder rhythm: past ~30° of arm flexion the clavicle lifts ≈ 1° per 5°
   drivers: [
     { bone: 'clavicle.near', from: 'upperArm.near', k: 0.18, start: 30, soft: 20, max: 60 },
