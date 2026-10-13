@@ -1,0 +1,17 @@
+{
+  "char": "mum3q",
+  "name": "q_k2_mid",
+  "prompt_file": "docs/prompts/q_k2_mid.txt",
+  "refs": [
+    "characters/mum3q/ref/master.png",
+    "characters/mum3q/refs/images/q_k_mid_2.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3q/refs/images/q_k2_mid_0.png",
+    "characters/mum3q/refs/images/q_k2_mid_1.png",
+    "characters/mum3q/refs/images/q_k2_mid_2.png"
+  ],
+  "finished": "2026-10-13 06:22:36"
+}
