@@ -9,7 +9,7 @@
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
 //             hands come (< 15 px reads as merged unless they deliberately touch), and the wrist angle running ONE way
 //             through each move (a reversal > 4° reads as springy overshoot)
-//     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (a forearm pointing at the camera reads
+//     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (exceptions: spec.qa.limbs) (a forearm pointing at the camera reads
 //             as an arm that shrinks)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
@@ -136,9 +136,20 @@ if (!skip.has('limbs')) {
   const lim = +arg('limb-min', C.qa?.limbMin ?? 0.85), segs = Object.keys(rig.BONE).filter((b) => /^(upperArm|forearm|hand)\.(near|far)$/.test(b) && rig.BONE[b].plane === 'arm3' && !(C.fit?.hidden || []).includes(`${b.split('.')[1]}.arm`));
   if (segs.length) {
     console.log(`limbs: drawn length of each 3D arm segment (want ≥ ${lim} of its length all shot)`);
-    const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]]));
-    for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; }
-    for (const b of segs) gate(lo[b][0] >= lim, `${b}: shortest ${(lo[b][0] * 100).toFixed(0)}% at ${lo[b][1].toFixed(2)} s${lo[b][0] < lim ? ' — it points at the camera: put the wrist on the surface it touches (reach surface:) and turn the elbow (dphi) until the arm lies across the picture' : ''}`);
+    const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]])), hi = Object.fromEntries(segs.map((b) => [b, 0]));
+    for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) { if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; hi[b] = Math.max(hi[b], st[b].a3.len); } }
+    // spec.qa.limbs[segment]: a shot's stated exception — {hidden: why} (drawn behind her body, inside her outline: its
+    // length can't be seen) or {min, note} (foreshortened BY DESIGN, as in the stills: the far hand lying over the top of
+    // the bump, edge-on). A designed foreshortening must still HOLD its size: the gate then wants max/min ≤ 1.1 (an arm
+    // that grows and shrinks is what reads as deformed)
+    const EX = spec.qa?.limbs || {};
+    for (const b of segs) {
+      const ex = EX[b];
+      if (ex?.hidden) { console.log(`  · ${b}: not gated, hidden (${ex.hidden}); shortest ${(lo[b][0] * 100).toFixed(0)}%`); continue; }
+      const m = ex?.min ?? lim;
+      gate(lo[b][0] >= m, `${b}: shortest ${(lo[b][0] * 100).toFixed(0)}% at ${lo[b][1].toFixed(2)} s${ex ? ` (designed ≥ ${m * 100}%: ${ex.note})` : ''}${lo[b][0] < m ? ' — it points at the camera: put the wrist on the surface it touches (reach surface:) and turn the elbow (dphi) until the arm lies across the picture' : ''}`);
+      if (ex) gate(hi[b] / lo[b][0] <= 1.1, `${b}: holds its size, longest/shortest ${(hi[b] / lo[b][0]).toFixed(2)} (want ≤ 1.1; reach stop keepSize: true)`);
+    }
   }
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

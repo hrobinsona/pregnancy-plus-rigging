@@ -3,7 +3,7 @@
  "fps": 30,
  "duration": 8,
  "loop": true,
- "story": "Seen in three-quarter view, turned toward us, her hand resting on the lower front of her bump. She is looking down at her bump with a tender smile. Then she looks up from her bump to us, the viewer, and smiles warmly, holding our eyes for a moment, before her gaze drifts back down to her bump.",
+ "story": "Seen in three-quarter view, turned toward us, both hands resting on her bump (one on its lower front, the other on its top). She is looking down at her bump with a tender smile. Then she looks up from her bump to us, the viewer, and smiles warmly, holding our eyes for a moment, before her gaze drifts back down to her bump.",
  "intensity": "gentle, warm and intimate: a private moment that turns into a quiet connection with the viewer. Unhurried; the look up is the one clear move, nothing big or fast.",
  "beats": [
   {
@@ -127,7 +127,7 @@
     "surface": "bump",
     "gap": 0.04,
     "land": false,
-    "note": "the hand rests on the lower front of the bump; the wrist ON the bump's surface. No 'lie' (in \u00be it foreshortened the hand to 79%)"
+    "note": "the hand rests on the lower front of the bump; the wrist ON the bump's surface. No 'lie' (in ¾ it foreshortened the hand to 79%)"
    },
    {
     "t": 0.3,
@@ -205,6 +205,56 @@
     "gap": 0.04,
     "land": false,
     "note": "and settles back down as the breath goes out"
+   }
+  ],
+  "far": [
+   {
+    "t": 0.0,
+    "pose": "n-down",
+    "dp": [
+     0,
+     0
+    ],
+    "on": "belly",
+    "land": false,
+    "note": "the far hand rests on the TOP of the bump, its fingers draping over the far edge (stills q_k2_*; Harry on v3: the far arm hung 'lifeless' and swung). Pinned to the belly, so it rides the breath and the look up; no surface: the hand lies on the far side of the bump, drawn over the dress by zBias. keepSize: it holds the drawn size it has in n-down while her body moves under it (without it the palm grew 48% → 61% of its length as she looked up)",
+    "keepSize": true
+   },
+   {
+    "t": 5.75,
+    "pose": "n-down",
+    "dp": [
+     0,
+     0
+    ],
+    "on": "belly",
+    "land": false,
+    "keepSize": true
+   },
+   {
+    "t": 6.55,
+    "pose": "n-down",
+    "dp": [
+     0.016,
+     0.022
+    ],
+    "on": "belly",
+    "land": false,
+    "handLag": 4,
+    "note": "as her gaze comes back to the bump the far hand answers with a small stroke down over its top (~6 px), the heel leading; offset from the near hand's caress (0.3–1.85 s) so the two never move as one",
+    "keepSize": true
+   },
+   {
+    "t": 7.45,
+    "pose": "n-down",
+    "dp": [
+     0,
+     0
+    ],
+    "on": "belly",
+    "land": false,
+    "handLag": 4,
+    "keepSize": true
    }
   ]
  },
@@ -315,7 +365,8 @@
   },
   "contact": {
    "channels": [
-    "fx.contact.near"
+    "fx.contact.near",
+    "fx.contact.far"
    ],
    "keys": [
     {
@@ -366,7 +417,7 @@
    "headDeg": -1.2,
    "belly": 0.016
   },
-  "note": "a breath in starts with the eyes' lift (1.8 s) and peaks in the eye contact; gain up from mum3's (v1: the chest moved \u2264 1 px)"
+  "note": "a breath in starts with the eyes' lift (1.8 s) and peaks in the eye contact; gain up from mum3's (v1: the chest moved ≤ 1 px)"
  },
  "blink": {
   "close": 3,
@@ -415,7 +466,8 @@
   "bones": {
    "head": 0.4,
    "clavicle.near": 0.25,
-   "hand.near": 0.4
+   "hand.near": 0.4,
+   "hand.far": 0.3
   }
  },
  "lags": {
@@ -448,7 +500,7 @@
     "hand.near.f4s": 5,
     "hand.near.ts": -8
    },
-   "note": "the caress: the fingers fan open and the thumb sweeps out as the hand slides down, and gather back as it returns (a seen-from-the-back hand shows its life in the FAN: v2's finger curls of 4\u20136\u00b0 were in depth and never read)"
+   "note": "the caress: the fingers fan open and the thumb sweeps out as the hand slides down, and gather back as it returns (a seen-from-the-back hand shows its life in the FAN: v2's finger curls of 4–6° were in depth and never read)"
   },
   {
    "t0": 2.9,
@@ -504,6 +556,47 @@
     "hand.near.f4s": 4,
     "hand.near.f4a": -3
    }
+  },
+  {
+   "t0": 0.9,
+   "t1": 2.3,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1s": -3,
+    "hand.far.f2s": -1,
+    "hand.far.f3s": 1.5,
+    "hand.far.f4s": 3
+   },
+   "note": "the far fingers open a little while she looks down, after the near hand's caress has begun (overlap, never in unison)"
+  },
+  {
+   "t0": 3.05,
+   "t1": 4.85,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1a": 8,
+    "hand.far.f1b": 10,
+    "hand.far.f2a": 8,
+    "hand.far.f2b": 10,
+    "hand.far.f3a": 7,
+    "hand.far.f3b": 9,
+    "hand.far.f4a": 6,
+    "hand.far.f4b": 8,
+    "hand.far.f1s": 2,
+    "hand.far.f4s": -2
+   },
+   "note": "'holding you' on the far hand too, 4–5 frames behind the near one: the fingertips draw in over the top of the bump and release"
   }
- ]
+ ],
+ "qa": {
+  "limbs": {
+   "forearm.far": {
+    "hidden": "behind her body; only the hand shows, coming out from under the bust (stills q_k2_*)"
+   },
+   "hand.far": {
+    "min": 0.4,
+    "note": "the back of the far hand lies over the top of the bump, edge-on to us as in the stills q_k2_*"
+   }
+  }
+ }
 }

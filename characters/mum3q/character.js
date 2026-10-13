@@ -63,7 +63,7 @@ const X = params.P;
 export default {
   name: 'mum3q',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'drape'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'drape', 'atop'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,
@@ -81,7 +81,7 @@ export default {
     { bone: 'clavicle.far', from: 'upperArm.far', k: -0.18, start: 30, soft: 20, max: 60 },
   ],
   // a hand on her casts a faint near-hard shadow onto her dress and skin (reels: ~12 %, a few px, no blur)
-  contactShadow: { opacity: 0.12, offset: [4, 6], color: '#5a1f12', groups: [{ match: '^hand\\.near\\.', gate: 'contact.near' }],   // pose.fx['contact.near']: the hanging hand casts none
+  contactShadow: { opacity: 0.12, offset: [4, 6], color: '#5a1f12', groups: [{ match: '^hand\\.near\\.', gate: 'contact.near' }, { match: '^hand\\.far\\.', gate: 'contact.far' }],   // pose.fx['contact.near']: the hanging hand casts none
     on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [

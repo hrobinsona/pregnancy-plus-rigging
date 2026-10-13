@@ -1,10 +1,10 @@
 {
  "name": "n-up",
  "note": "head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
- "_recipe": "n-up fit-q_k_down fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far --from B --hands near=drape --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
+ "_recipe": "n-up n-base fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far --from B --hands near=drape,far=atop --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
  "hands": {
   "near": "drape",
-  "far": "hang"
+  "far": "atop"
  },
  "fx": {
   "headPitch": 1.6
@@ -14,38 +14,38 @@
   0.0
  ],
  "bones": {
-  "armAbd.far": 0.1,
+  "armAbd.far": -0.8,
   "armAbd.near": 2.0,
-  "armRot.far": 3.9,
+  "armRot.far": 6,
   "armRot.near": 2.0,
   "belly": 0.0,
   "chest": -0.4,
-  "clavicle.far": -1.1,
+  "clavicle.far": 0.5,
   "clavicle.near": 4.5,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": -0.9,
+  "foreRot.far": -28.6,
   "foreRot.near": 1.8,
-  "forearm.far": 10.1,
+  "forearm.far": 124.1,
   "forearm.near": 57.6,
-  "hand.far": -5.4,
+  "hand.far": -47.5,
   "hand.near": 4.3,
   "head": 4.0,
-  "hipAbd.far": 0,
-  "hipAbd.near": 0,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
   "neck": -8.1,
   "pelvis": 0.0,
   "shin.far": 1.5,
   "shin.near": -1.2,
-  "shoulderAbd.far": 2.1,
+  "shoulderAbd.far": 7.3,
   "shoulderAbd.near": -1.8,
   "spineLower": 0.1,
   "spineUpper": 0.8,
-  "thigh.far": 0,
+  "thigh.far": 0.0,
   "thigh.near": 1.4,
   "toe.far": 0,
   "toe.near": 0,
-  "upperArm.far": -1.1,
+  "upperArm.far": -13,
   "upperArm.near": -9.6
  },
  "_orig": {},
@@ -56,6 +56,10 @@
   ]
  },
  "_edits": [
-  "--scale chest=1.02:1.01"
- ]
+  "--scale chest=1.02:1.01",
+  "--zbias arm.far.hand=40"
+ ],
+ "zBias": {
+  "arm.far.hand": 40.0
+ }
 }

@@ -45,8 +45,10 @@ export function build(ctx) {
     const ke = Math.min(1, Math.max(0, (elev - 20) / 60)), kA = cap0 + (Math.min(cap0, 0.5) - cap0) * ke * ke * (3 - 2 * ke);
     const g = tube(axis, widths, { capK: [kA, 0.3] });
     out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
-    // hand (engine/hand.js) just above its arm: the palm's wrist end covers the tube's end
-    out.push(...char.hands[side].parts(ctx, { fill, line: C.skinLine, zBase: zb + 0.5 }));
+    // hand (engine/hand.js) just above its arm: the palm's wrist end covers the tube's end. pose.zBias['arm.<side>.hand']
+    // brings ONLY the hand forward: the far hand resting on the top of the bump lies on the dress while its forearm runs
+    // behind her body (stills q_k2_*: the wrist comes out from behind the under-bust, the fingers curve over the bump)
+    out.push(...char.hands[side].parts(ctx, { fill, line: C.skinLine, zBase: zb + 0.5 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0) }));
   }
   return out;
 }

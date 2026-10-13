@@ -309,6 +309,24 @@ or composited.
    reviewers). `pose_blend --keep <far arm, legs>` holds them from the look-down key; then the far upper arm takes the
    trunk's change with the opposite sign (the far side's angles run opposite) so it stays plumb when the chest opens
    (far fingertip ≤ 1.7 px/frame, from 5.8 with the wrong sign).
+48. **A hand whose wrist the camera can't see is placed from three points marked on the still, with "the arm stays
+   hidden" as the constraint; and a hand pinned to her keeps its drawn SIZE as her body moves under it.** Harry on
+   mum3q look-up v3: the far arm "just hanging lifeless", the hand "at a very odd angle while the other one's on the
+   bump". New stills put the far hand on the top of the bump, its forearm hidden behind her, the wrist just showing
+   under the bust. MediaPipe put that hidden wrist at the fingertips (70 px off), and fitting the hand's skin blob
+   (centre, axis, area, then mask overlap) converged on a blocky hand inside the outline with the upper arm poking out
+   of the notch under the bust: the drawn hand never has the still's shape, so area terms pull anywhere. Three points
+   by eye (wrist, middle knuckle, fingertip centroid) plus a penalty for any arm sample within its half-width of the
+   body's outline (`tools/hand_place.py --keys`, solved in node by `tools/hand_keys.mjs` in 0.3 s) gave the still's
+   placement at 7.9 px rms with the elbow tucked back at her side. Then, pinned to the bump by a reach while she looked
+   up, the arm's 3D solve turned the hand toward the camera and the flat-shaded palm grew from 48% to 61% of its length
+   and back: the shrinking arm of lesson 39 in a hold. Reach stops with `keepSize: true` search the wrist's flexion and
+   deviation together (locally: two flexions give the same length, a global scan flipped the hand 166 px) for the
+   contact pose's own length at the angle the reach settled on; 47% ± 1% all shot. `lie` was no cure here: on the far
+   top of the bump it laid the hand flat to us at 99%, long and past the outline. A segment hidden behind her, or
+   foreshortened by design as in the stills, is declared in the shot (`spec.qa.limbs`) and the QA gate then checks it
+   holds its size (≤ 1.1) instead of a minimum. The hand shape `atop`: fingers draped with a light curl (crest's ~90°
+   read as a paw from the back), a small fan, the thumb tucked under on the far side (crest's stuck out into the air).
 
 ## From the reels rig (merged 2026-10-12)
 

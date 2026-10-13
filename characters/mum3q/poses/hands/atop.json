@@ -1,0 +1,36 @@
+{
+ "name": "atop",
+ "_note": "the far hand resting on the top of the bump, seen from the back (stills q_k2_*): the fingers drape down over the bump's far edge, curved a little (crest's ~90\u00b0 curl read as a short paw from the back), fanned a little (the stills' fingers run nearly parallel; a wider fan put the little finger out in the air past the outline); the thumb tucked under the palm on the far side (the stills show no thumb; crest's thumb stuck out into the air past the outline)",
+ "f1": [
+  14,
+  18,
+  16
+ ],
+ "f2": [
+  15,
+  19,
+  17
+ ],
+ "f3": [
+  13,
+  16,
+  14
+ ],
+ "f4": [
+  10,
+  13,
+  11
+ ],
+ "s": [
+  -6,
+  -2,
+  2,
+  4
+ ],
+ "t": [
+  25,
+  20
+ ],
+ "to": 30,
+ "ts": -10
+}

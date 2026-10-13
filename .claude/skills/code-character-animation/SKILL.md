@@ -121,6 +121,7 @@ node tools/parts_dump.mjs mum2 nausea-to-belly 10.0 "cuff|wrap"   # what is draw
   - With no target, the swivel interpolation can take the elbow out wide.
 - **Hands in a turned view.** A hand seen from the back moves in its fan, thumb sweep and slide, not its curl (lesson 46). In ¾ a resting palm keeps its fitted angle (no `lie`); only the wrist goes on the surface.
 - **Idle limbs.** A limb the brief doesn't move takes one key's values in every key (`pose_blend --keep`), and a hanging arm counter-rotates the trunk (the far side's sign is opposite), or the fits' noise swings it (lesson 47).
+- **A hand with a hidden wrist** (the far hand on top of the bump, its arm behind her): mark wrist, middle knuckle and fingertips on the still and run `hand_place.py --keys` (MediaPipe puts a hidden wrist at the fingertips). Pin it with a reach and `keepSize: true`, or the arm's 3D solve makes the held hand grow and shrink as her body moves; declare a hidden or designed-short segment in `spec.qa.limbs` (lesson 48).
 - **Measured motion.** `uv_check` (torso frame), `--tracks-only` (speeds) and `tools/anim_dump.mjs` (channels, head and hip positions) settle arguments: "lunge vs fold", "the head only drops".
 
 ## New character checklist

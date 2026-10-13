@@ -1,7 +1,8 @@
 {
  "name": "c-on",
- "note": "contact shadow on (hand resting on her)",
+ "note": "contact shadows on (both hands resting on her)",
  "fx": {
-  "contact.near": 1
+  "contact.near": 1,
+  "contact.far": 1
  }
 }

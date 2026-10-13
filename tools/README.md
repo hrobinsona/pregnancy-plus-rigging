@@ -14,6 +14,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | ★ `anim_dump.mjs` | Channel values or body landmarks per frame ("lunge vs fold", "what pops at frame N"). |
 | ★ `parts_dump.mjs` | Drawn parts of one frame: id, z, fill, stroke, clip — draw-order and bleed questions. |
 | `char_still.mjs` | Render one pose to PNG (`--sil` for the silhouette). |
+| `still_server.mjs --char <c> [--box …]` | The same render for search loops: one browser, one JSON line per still on stdin (`{pose, out}` → `ok`). Used by `hand_place.py`. |
 | `char_bounds.mjs`, `char_joints.mjs` | Posed bounds; joint positions in reference px (crop boxes). |
 | `depth_view.mjs` | Debug view of the 2.5D depth proxies that decide far-arm draw order. |
 | `hand_sheet.mjs` | Every hand-library pose on both hands, next to the reference's hands. |
@@ -41,6 +42,8 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 |---|---|
 | ★ `fit_pose.mjs` | Fit the rig to a still's measured landmarks → `poses/fit-*.json`. Check rms and joint limits. |
 | `head_pose.py <char> --fit <name>` | A ¾ or front HEAD on a fitted pose: keeps the body fit, sets the nod (`fx.headPitch`), neck and head rolls so a render's head pitch, roll and face centre match the still's (MediaPipe's face matrix). `head_pose.py <char> <img...>` prints each image's head angles vs the master. Run after `fit_pose` on every turned-face key (`fit_keys.sh`). |
+| `hand_place.py <char> --fit <name> --side far --keys wx,wy,kx,ky,tx,ty [--hand <shape>] [--zbias arm.far.hand=40] [--seed …]` | A hand whose WRIST the estimator can't see (the far hand on the top of the bump, forearm hidden behind her): from three points marked on the still by eye (wrist, middle knuckle, fingertip centroid), solves the arm so the hand lands on them with the upper arm and forearm kept inside her silhouette (`hand_keys.mjs`). Writes the arm into `fit-<name>`, check image `out/hand_place_<name>.png`. Record the command in `fit_keys.sh` (lesson 48). |
+| `hand_keys.mjs` | `hand_place.py`'s solver (node, no rendering): arm bones for a hand on three still points, the arm kept inside a silhouette. |
 | ★ `fit_video.py` | Fit a tracked video segment frame by frame → `refs/tracks/vtrack_<seg>.json`. |
 | ★ `vtrack_apply.mjs` | Turn video tracks into timeline data (path moves, timing) in place in the anim JSON. Re-run after spec edits. |
 | ★ `pose_blend.py`, `pose_set.py` | Derive accents/in-betweens from FITTED poses (`--add/--set/--fx/--scale/--hand`). |
