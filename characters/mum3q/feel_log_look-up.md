@@ -105,3 +105,28 @@ stays in contact. Against v4 (small, "barely shows at phone size"): the far hand
 forearm, "slightly pasted on" close up, and with the hand over it the bump's front reads a little boxier. Open in both:
 the near hand's fingers still parallel and comb-like; the head lift is brisk (most of it in 0.3–0.4 s) against a 1.5 s
 return; the open grin appears in about half a second as she reaches us. Kept v4. Render: `renders/mum3q_look-up_v4.mp4`.
+
+## v5 — the far hand lies on the bump (Harry on v4)
+Harry (2026-10-13), with a crop of v4's far hand and a photo of a pregnant woman holding her bump (kept out of this
+public repo): "Sorry no ones hand naturally lies like this." In the photo the top hand's palm lies on the dome, the
+fingers together and gently curved, wrapping toward the camera; the lower hand cups the underside. What was done:
+1. New stills asking for the photo's hand, not a drape: q_k3_down (the far hand's palm flat on the top of the bump,
+   fingers together, curving forward and down, every fingertip on the bump) and q_k4_down (both hands as in the photo,
+   kept for later). v4's prompt had said "draping over the far edge" and got fingers hanging off it.
+2. The far arm placed on q_k3_down_1 by `hand_place.py --natural` (lesson 49): the keys alone were met by an elbow
+   inside her bust; now the upper arm hangs at her side, the forearm runs forward behind the bump, and the hand lies
+   across its top, the heel just over the far edge, fingers toward us. Shape `hold`: fingers together and gently curved,
+   the thumb tucked. Its fidget eases the index instead of fanning the fingers.
+3. The far hand points nearly at us (palm 44% of its length), so it's touchy: the wrist needed room from its limit
+   (mum3q's flexion now 80°, the solve keeps 15° clear) for keepSize to hold its size (1.01 all shot), and the stroke at
+   5.75–7.45 s now runs along the hand toward the fingertips with `slide: true` (without it the fingertips swung 10 px
+   in a frame as the stroke began).
+
+Blind A/B v5 vs v4 (one fresh reviewer, upper-body crop; X = v4, Y = v5): **v5 6.5, v4 5.5, v5 more natural, ~75%
+confident.** Its reasons: v4's hand "looks like a little raised paw hanging under her bust", its arm would have to come
+down from her chest, and its fingertips poke past the bump's edge; v5's "reads as her far arm reaching round and holding
+the top of the bump", palm and fingers on it, only the back of the hand over the far outline. Against v5: its fingers
+are short, thick and parallel ("a bit like a comb or mitten") and its outline blocky (flat top edge, square heel); v4's
+hand on its own was the better drawing. Open in both: the hands barely move through the look up and back; the far
+hand's top edge is a flat line at the underbust with no wrist; the smile shows its teeth in one frame (2.9 → 3.0 s).
+Kept v5. Render: `renders/mum3q_look-up_v5.mp4`.
