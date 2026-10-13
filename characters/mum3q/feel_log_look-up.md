@@ -170,3 +170,19 @@ Reviews (fresh each round):
 - Natural lens round 3: NOT YET (top fingers straight planks, not curving down the dome; a knob at the far wrist, "a hand
   out of an elbow"; the look-down head too upright and wide-eyed). Answered by palm-down, the lids, the head bow, the
   fuller forearm.
+- Blind A/B round 4 (the committed v6) vs v5: **v6 6.5, v5 5.5, ~70%** (the far hand belongs to an arm, the near hand
+  cradles from beneath, the unhurried eyes-first look up, the eyes half-closed on the bump); against v6: the far hand
+  "starts right at the elbow bulge" (its forearm fully foreshortened); in both, the hands still read as frozen at phone
+  size and the fingers as "evenly spaced parallel strokes, comb-like".
+- Natural lens round 4: **NOT YET.** The top hand now reads as "a paw": with the curl in the end joints its fingers are
+  short stubs curling down (round 3 called the flatter version "planks"); the far wrist a round knob wider than the
+  forearm; the lower hand's fingers "four even parallel stripes", a comb; the hands' 5–18 px moves invisible on the
+  contact sheets; the bump's lower front flat; the look-down eyes a little drowsy.
+
+Kept v6 (it beat v5 in every blind A/B). Render: `renders/mum3q_look-up_v6.mp4`. The finger curl has now swung between
+"mitten", "planks" and "paw" over three rounds: tuning that ping-pongs means change the method (lesson 15). Next: the
+hand DRAWING, not its pose. engine/hand.js draws a back-view hand as one silhouette with crease lines for the fingers;
+the stills draw each finger as its own tapered shape, the tips stepping. Redraw the fingers that way (both hands, every
+pose), judge it on `hand_shapes.py` against q_k4_down_0, then re-place. Then: the far wrist (a crease where it bends
+over the edge, not a pad), visible life checked on the phone-size video rather than contact sheets, the bump's lower
+front.

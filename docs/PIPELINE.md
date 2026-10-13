@@ -395,9 +395,10 @@ or composited.
    - *Timing.* The "half way up" breakdown still (q_k_mid_2) is 85% up, so the look up did most of its travel in 0.3 s;
      a breakdown is half way in what moves, whatever its still shows (`derive_lookup.sh` holds its head back).
    An arrangement choice (which hand on top) goes to the client on a decision card with the stills, never decided alone.
-   Rounds: blind A/B against v5 6.5 vs 5.5 (draft), 6.5 vs 5 (after shape, life, eyes, timing). The natural lens said NOT
-   YET three times, each time on fewer and smaller things (mitten → planks → head bow); its round-4 verdict is in the
-   feel log.
+   Rounds: blind A/B against v5 6.5 vs 5.5 (draft), 6.5 vs 5, 6.5 vs 5.5 (final). The natural lens said NOT YET four
+   times; the top hand's curl swung "mitten" → "planks" → "paw". When a shape ping-pongs like that the fault is the
+   DRAWING, not the pose (lesson 15: change the method): a back-view hand drawn as one silhouette with crease lines reads
+   as a mitten or a comb at any curl; the stills draw each finger as its own tapered shape (the next step, feel log).
 
 ## From the reels rig (merged 2026-10-12)
 
