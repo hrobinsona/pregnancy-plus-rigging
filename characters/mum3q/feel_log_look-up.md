@@ -80,3 +80,28 @@ blooms after the eyes meet ours (eyes, then head, then smile: a reaction to the 
 over 1.6 s; the look down at the start reads as looking AT the bump. Open in both: the near hand still reads as
 straight, parallel, evenly spread fingers at the reviewer's scale (the fan and gather were not seen); the far hand does
 nothing; the hold 3.2–4.6 s starts to feel held before the slow blink. Kept v3. Render: `renders/mum3q_look-up_v3.mp4`.
+
+## v4 — both hands on the bump (Harry on v3)
+Harry (2026-10-13): "Her arm is just hanging lifeless and swings in a weird way. In reality it would likely be placed on
+her bump too" and "it's really that second hand that's the issue, as it just hangs there at a very odd angle while the
+other one's on the bump". What was done:
+1. New stills with both hands on (q_k2_down/mid/up, 3 samples each, via the Mac worker): the far hand rests on the TOP
+   of the bump, fingers draped over its far edge, the forearm hidden behind her, the wrist just showing under the bust.
+2. The far hand placed from three points marked on q_k2_down_2 (wrist, middle knuckle, fingertips): MediaPipe can't see
+   that wrist and fitting the hand's skin blob failed (PIPELINE lesson 48). `tools/hand_place.py --keys` solved the arm
+   at 7.9 px rms with the elbow tucked back at her side and nothing of the arm outside her outline. Shape `atop`:
+   fingers draped with a light curl, a small fan, the thumb tucked under.
+3. The keys keep v3's body and face (n-base = the look-down key with that far arm); the far hand is pinned to the
+   belly by a reach (it rides the breath and the look up), strokes ~6 px down over the top as her gaze returns
+   (5.75–7.45 s, not with the near hand's caress at 0.3–1.85), and its fingers open while she looks down and gather a
+   beat after the near hand's "holding you". Both hands cast the contact shadow.
+4. Engine: `keepSize` on the far stops. Pinned while her chest opened, the palm grew from 48% to 61% of its length and
+   back; now 47% ± 1% all shot. QA declares the far forearm hidden and the far hand short by design (`spec.qa.limbs`).
+
+Blind A/B v4 vs v3 (one fresh reviewer, upper-body crop): **v4 6.5, v3 5.5 — v4 preferred, high confidence.** Its
+reasons: both hands cradle the bump (the brief's pose); v3's far hand "hangs below the bump and, at phone size, looks
+like a stray hand poking out from under it", and it sways ~11 px with nothing in the body causing it; v4's far hand
+stays in contact. Against v4 (small, "barely shows at phone size"): the far hand's top edge is a straight cut with no
+forearm, "slightly pasted on" close up, and with the hand over it the bump's front reads a little boxier. Open in both:
+the near hand's fingers still parallel and comb-like; the head lift is brisk (most of it in 0.3–0.4 s) against a 1.5 s
+return; the open grin appears in about half a second as she reaches us. Kept v4. Render: `renders/mum3q_look-up_v4.mp4`.
