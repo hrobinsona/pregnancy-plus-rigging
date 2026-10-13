@@ -1,0 +1,10 @@
+{
+  "char": "mum3q",
+  "name": "q_k3_down",
+  "prompt_file": "docs/prompts/q_k3_down.txt",
+  "refs": [
+    "characters/mum3q/ref/master.png",
+    "characters/mum3q/refs/images/q_k_down_0.png"
+  ],
+  "n": 3
+}
