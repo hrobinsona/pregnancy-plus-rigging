@@ -327,6 +327,25 @@ or composited.
    foreshortened by design as in the stills, is declared in the shot (`spec.qa.limbs`) and the QA gate then checks it
    holds its size (≤ 1.1) instead of a minimum. The hand shape `atop`: fingers draped with a light curl (crest's ~90°
    read as a paw from the back), a small fan, the thumb tucked under on the far side (crest's stuck out into the air).
+49. **A hand resting on her must rest the way a hand does: judge the arm in 3D, not only by where its points land, and
+   ask the stills for the pose, not for a drape.** Harry on mum3q look-up v4's far hand: "no one's hand naturally lies
+   like this", with a photo of a pregnant woman holding her bump (the top hand's palm on the dome, fingers together and
+   gently curved, wrapping toward the camera; the lower hand cupping beneath). v4's stills (q_k2) had been asked for
+   fingers "draping over the far edge" and got them hanging off it; new stills (q_k3) asked for the photo's hand. Fitting
+   them, lesson 48's solver met its points at 1.6 px rms with the elbow inside her bust and the upper arm reaching across
+   her chest toward the camera: every 2D cost met by a body no one has. `hand_place.py --natural` adds the 3D judgement
+   (rig.js arm3's frame): the upper arm hangs (down ≥ 0.55) with the elbow out at her side (lateral ≥ 0.1), the back of
+   the hand faces us (the drawn hand is always its back), and every joint keeps `--slack` degrees from its limits (at the
+   wrist's limit the reach's keepSize couldn't hold the hand's size: 36–45%, a 12× flip at 15° → 8° slack on another
+   key). From `--restarts 60` seeds it found an arm hanging at her side, the forearm forward behind the bump and the hand
+   across its top, 0.4 px rms. Leave the knuckle key out when the still's palm curves toward us: the drawn fingers never
+   foreshorten, so wrist, knuckle and fingertips can't all be met (22 px rms with it). "Hidden" means the arm's EDGES (its
+   drawn half-widths): with a flat 9 px the upper arm's front edge showed in the notch under her bust. A hand pointing
+   nearly at the camera (palm 44% of its length) is ill-conditioned: its screen angle hardly depends on the wrist bend, so
+   a move's in-flight blend toward the key's bend swung the fingertips 10 px/frame as a 4 px stroke began; a stroke on the
+   surface the hand rests on marks its stops `slide: true` (the contact angle and the hold's pull all the way). The shape
+   `hold`: fingers together and gently curved, graded index → little, the thumb tucked; its fidgets ease, never fan.
+   mum3q's wrist flexion reaches 80°, a real wrist's (mum3 keeps 60°).
 
 ## From the reels rig (merged 2026-10-12)
 

@@ -217,7 +217,7 @@
     ],
     "on": "belly",
     "land": false,
-    "note": "the far hand rests on the TOP of the bump, its fingers draping over the far edge (stills q_k2_*; Harry on v3: the far arm hung 'lifeless' and swung). Pinned to the belly, so it rides the breath and the look up; no surface: the hand lies on the far side of the bump, drawn over the dress by zBias. keepSize: it holds the drawn size it has in n-down while her body moves under it (without it the palm grew 48% → 61% of its length as she looked up)",
+    "note": "the far hand lies across the TOP of the bump the way a mother holds it: palm on the dome, fingers together and gently curved toward us, the heel just over its far edge, the forearm hidden behind it with the elbow at her side (still q_k3_down_1, after Harry's photo; on v4's q_k2 hand, its fingers hanging off the far edge: 'no one's hand naturally lies like this'). Pinned to the belly, so it rides the breath and the look up; no surface: drawn over the dress by zBias. keepSize: it holds the drawn size it has in n-down while her body moves under it (without it the palm grew 48% → 61% of its length as she looked up)",
     "keepSize": true
    },
    {
@@ -235,14 +235,15 @@
     "t": 6.55,
     "pose": "n-down",
     "dp": [
-     0.016,
-     0.022
+     -0.016,
+     0.012
     ],
     "on": "belly",
     "land": false,
     "handLag": 4,
-    "note": "as her gaze comes back to the bump the far hand answers with a small stroke down over its top (~6 px), the heel leading; offset from the near hand's caress (0.3–1.85 s) so the two never move as one",
-    "keepSize": true
+    "note": "as her gaze comes back to the bump the far hand answers with a small stroke across its top toward the fingertips (~4 px, along the hand), the heel leading; offset from the near hand's caress (0.3–1.85 s) so the two never move as one",
+    "keepSize": true,
+    "slide": true
    },
    {
     "t": 7.45,
@@ -254,7 +255,8 @@
     "on": "belly",
     "land": false,
     "handLag": 4,
-    "keepSize": true
+    "keepSize": true,
+    "slide": true
    }
   ]
  },
@@ -562,12 +564,14 @@
    "t1": 2.3,
    "cycles": 1,
    "bones": {
-    "hand.far.f1s": -3,
-    "hand.far.f2s": -1,
-    "hand.far.f3s": 1.5,
-    "hand.far.f4s": 3
+    "hand.far.f1s": -1.5,
+    "hand.far.f2s": -0.5,
+    "hand.far.f3s": 0.5,
+    "hand.far.f4s": 1.5,
+    "hand.far.f1a": -3,
+    "hand.far.f2a": -2
    },
-   "note": "the far fingers open a little while she looks down, after the near hand's caress has begun (overlap, never in unison)"
+   "note": "the far fingers breathe while she looks down, after the near hand's caress has begun (overlap, never in unison): the index lifts a touch and the fingers ease apart by a degree or two, never a fan (they lie together, as in Harry's photo)"
   },
   {
    "t0": 3.05,
@@ -591,11 +595,11 @@
  "qa": {
   "limbs": {
    "forearm.far": {
-    "hidden": "behind her body; only the hand shows, coming out from under the bust (stills q_k2_*)"
+    "hidden": "behind the bump, the elbow at her side; only the hand shows, its heel over the far edge (still q_k3_down_1)"
    },
    "hand.far": {
     "min": 0.4,
-    "note": "the back of the far hand lies over the top of the bump, edge-on to us as in the stills q_k2_*"
+    "note": "the far hand lies across the top of the bump curving toward us, so its palm is foreshortened (44%) as in the still q_k3_down_1; the fingers keep their length"
    }
   }
  }

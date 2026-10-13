@@ -4,7 +4,7 @@
  "_recipe": "n-down n-base --hands near=drape --add chest=1.5,spineUpper=0.8 --note looking down at her bump (still q_k_down_0), hand resting on its lower front, the upper back rounded a little",
  "hands": {
   "near": "drape",
-  "far": "atop"
+  "far": "hold"
  },
  "zBias": {
   "arm.far.hand": 40.0
@@ -17,21 +17,21 @@
   -0.0175
  ],
  "bones": {
-  "armAbd.far": -0.8,
+  "armAbd.far": -17.7,
   "armAbd.near": 0.0,
-  "armRot.far": 6,
+  "armRot.far": 3.8,
   "armRot.near": 7.3,
   "belly": 0.0,
   "chest": 3.3,
-  "clavicle.far": -1.5,
+  "clavicle.far": -2.9,
   "clavicle.near": 2.0,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": -28.6,
+  "foreRot.far": 15,
   "foreRot.near": -0.1,
-  "forearm.far": 124.1,
+  "forearm.far": 112.6,
   "forearm.near": 51.3,
-  "hand.far": -47.5,
+  "hand.far": 3.5,
   "hand.near": 10.9,
   "head": -24.3,
   "hipAbd.far": 0.0,
@@ -40,14 +40,15 @@
   "pelvis": 0.0,
   "shin.far": 1.5,
   "shin.near": -1.2,
-  "shoulderAbd.far": 7.3,
+  "shoulderAbd.far": 3.4,
   "shoulderAbd.near": -2.2,
   "spineLower": 1.2,
   "spineUpper": 1.2,
   "thigh.far": 0.0,
   "thigh.near": 1.4,
-  "upperArm.far": -13,
-  "upperArm.near": 0.3
+  "upperArm.far": -19.6,
+  "upperArm.near": 0.3,
+  "wristFlex.far": -66.6
  },
  "_orig": {},
  "_edits": [

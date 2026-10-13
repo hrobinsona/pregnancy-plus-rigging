@@ -1,10 +1,10 @@
 {
  "name": "n-up",
  "note": "head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
- "_recipe": "n-up n-base fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far --from B --hands near=drape,far=atop --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
+ "_recipe": "n-up n-base fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far --from B --hands near=drape,far=hold --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch",
  "hands": {
   "near": "drape",
-  "far": "atop"
+  "far": "hold"
  },
  "fx": {
   "headPitch": 1.6
@@ -14,21 +14,21 @@
   0.0
  ],
  "bones": {
-  "armAbd.far": -0.8,
+  "armAbd.far": -17.7,
   "armAbd.near": 2.0,
-  "armRot.far": 6,
+  "armRot.far": 3.8,
   "armRot.near": 2.0,
   "belly": 0.0,
   "chest": -0.4,
-  "clavicle.far": 0.5,
+  "clavicle.far": -0.9,
   "clavicle.near": 4.5,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": -28.6,
+  "foreRot.far": 15,
   "foreRot.near": 1.8,
-  "forearm.far": 124.1,
+  "forearm.far": 112.6,
   "forearm.near": 57.6,
-  "hand.far": -47.5,
+  "hand.far": 3.5,
   "hand.near": 4.3,
   "head": 4.0,
   "hipAbd.far": 0.0,
@@ -37,7 +37,7 @@
   "pelvis": 0.0,
   "shin.far": 1.5,
   "shin.near": -1.2,
-  "shoulderAbd.far": 7.3,
+  "shoulderAbd.far": 3.4,
   "shoulderAbd.near": -1.8,
   "spineLower": 0.1,
   "spineUpper": 0.8,
@@ -45,8 +45,9 @@
   "thigh.near": 1.4,
   "toe.far": 0,
   "toe.near": 0,
-  "upperArm.far": -13,
-  "upperArm.near": -9.6
+  "upperArm.far": -19.6,
+  "upperArm.near": -9.6,
+  "wristFlex.far": -66.6
  },
  "_orig": {},
  "scale": {

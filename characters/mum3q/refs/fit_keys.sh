@@ -32,3 +32,12 @@ node tools/fit_pose.mjs mum3q $R/pose/q_k2_mid_0.json fit-q_k2_mid
 # q_k2_up (tools/new_pose.py, best of 3 by rms)
 [ -f $R/pose/q_k2_up_0.json ] || python3 tools/pose_est.py $R/images/q_k2_up_0.png --out $R/pose/q_k2_up_0.json --hands
 node tools/fit_pose.mjs mum3q $R/pose/q_k2_up_0.json fit-q_k2_up
+
+# q_k3_down (tools/new_pose.py, best of 3 by rms)
+[ -f $R/pose/q_k3_down_1.json ] || python3 tools/pose_est.py $R/images/q_k3_down_1.png --out $R/pose/q_k3_down_1.json --hands
+node tools/fit_pose.mjs mum3q $R/pose/q_k3_down_1.json fit-q_k3_down
+# its far hand (Harry on v4's: "no one's hand naturally lies like this"): the wrist just past the bump's far edge, the
+# fingertips' centroid, by eye on q_k3_down_1; no knuckle key (the still's palm curves toward us, the drawn one can't);
+# the arm solved hidden behind the bump AND natural (hanging, elbow at her side, back of the hand to us, the wrist 15°
+# clear of its limits so the reach can hold the hand's size as she looks up; lesson 49)
+python3 tools/hand_place.py mum3q --fit q_k3_down --side far --keys 632,556,558,586 --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 15 --restarts 60

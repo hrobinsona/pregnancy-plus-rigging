@@ -1,0 +1,12 @@
+{
+ "name": "hold",
+ "_note": "a hand resting on the top of the bump the way a mother holds it (Harry's photo, stills q_k3_*): fingers TOGETHER and gently curved round the dome, graded (index least, little finger most), the thumb tucked along the far side; nothing spread, nothing hanging off the outline (v4's 'atop' hung its fingers off the bump's edge: 'no one's hand naturally lies like this')",
+ "f1": [12, 15, 11],
+ "f2": [14, 17, 12],
+ "f3": [16, 19, 14],
+ "f4": [18, 22, 16],
+ "s": [-1, 0, 1, 2],
+ "t": [25, 20],
+ "to": 30,
+ "ts": -10
+}

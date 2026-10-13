@@ -423,7 +423,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const holdBend = (side, e) => (is3(side) ? { local: lib[e.pose].bones?.['hand.' + side] ?? 0, reg: e.reg ?? RC.holdReg ?? 0.3 } : {});
   // the wrist scan's pull toward the planned bend, CONTINUOUS across a move's ends: a hold pulls hard (holdBend), a move
   // only weakly mid-flight — switching at the stop stepped the hand 1–2° in one frame as each hold began or ended (mum3 v3)
-  const moveReg = (side, a, b, u) => { if (!is3(side)) return undefined; const hr = (e) => e.reg ?? RC.holdReg ?? 0.3, h = hr(a) + u * (hr(b) - hr(a)), m = Math.min(1, 6 * u * (1 - u)); return 0.02 + (h - 0.02) * (1 - m); };
+  // stop.slide (on a move's end stop): the hand SLIDES on what it touches (a stroke on the bump): it keeps its contact angle
+  // and the hold's pull all the way, no in-flight blend toward the key's bend. mum3q v5's far hand lies nearly end-on to
+  // us (palm 29% of its length), so its screen angle hardly depends on the bend: the blend swung the fingertips 10 px/frame
+  // as the stroke began
+  const flight = (b, u) => (b.slide ? 0 : Math.min(1, 6 * u * (1 - u)));
+  const moveReg = (side, a, b, u) => { if (!is3(side)) return undefined; const hr = (e) => e.reg ?? RC.holdReg ?? 0.3, h = hr(a) + u * (hr(b) - hr(a)), m = flight(b, u); return 0.02 + (h - 0.02) * (1 - m); };
   function reachTarget(side, tt, st, P_) {
     const L = RC[side], n = L.length, stops = L.map((e, k) => (e.via ? -1 : k)).filter((k) => k >= 0);
     let i = -1; for (const k of stops) if (L[k].t <= tt + 1e-9) i = k;
@@ -478,7 +483,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
     const lA = E[kh].lie ? 1 : 0, lB = E[Math.min(E.length - 1, kh + 1)].lie ? 1 : 0, lie = E.find((e) => e.lie)?.lie;
     const len = A.len !== undefined && B.len !== undefined ? A.len + sH * (B.len - A.len) : undefined;
-    return { len, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+    return { len, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
   }
   // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
   // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —

@@ -38,7 +38,9 @@ const bones = [
       { id: `armAbd.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, param: true, min: -100, max: 130 },
       { id: `armRot.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, param: true, min: -60, max: 95 },
       { id: `foreRot.${s}`, parent: `shoulderAbd.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, param: true, min: -90, max: 90 },
-      { id: `wristFlex.${s}`, parent: `shoulderAbd.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, param: true, min: -60, max: 70 },   // + = extension (engine/rig.js arm3)
+      // + = extension (engine/rig.js arm3); flexion to 80° as a real wrist's (mum3's −60 left the hand draped over the bump's
+      // top at the limit, so the reach's keepSize couldn't hold its size: 36–43%)
+      { id: `wristFlex.${s}`, parent: `shoulderAbd.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, param: true, min: -80, max: 70 },
       { id: `upperArm.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'arm3', side: s, abd: `armAbd.${s}`, twist: `armRot.${s}`, min: -60, max: 170, cap: 0.2 },
       { id: `forearm.${s}`, parent: `upperArm.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, plane: 'arm3', pron: `foreRot.${s}`, min: -5, max: 150, cap: 0.18 },
       { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'arm3', flex: `wristFlex.${s}`, min: -50, max: 40, cap: 0.08 },
@@ -63,7 +65,7 @@ const X = params.P;
 export default {
   name: 'mum3q',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'drape', 'atop'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'drape', 'atop', 'hold'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,

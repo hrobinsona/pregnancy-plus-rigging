@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""hand_place.py <char> --fit <name> --side far --keys wx,wy,kx,ky,tx,ty [--hand <shape>] [--zbias part=dz,...] [--seed a,b,... ...] [--bones ...] [--sample k] [--dry]
+"""hand_place.py <char> --fit <name> --side far --keys wx,wy[,kx,ky],tx,ty [--hand <shape>] [--zbias part=dz,...] [--seed a,b,... ...] [--restarts N] [--natural [--slack deg]] [--bones ...] [--fore fx,fy --hide upper] [--sample k] [--dry]
 Place a hand whose WRIST the pose estimator can't see: a far hand resting on the top of the bump, its forearm hidden
 behind her body. Three points are measured by eye on the still (refs/images/<fit>_<sample>.png, still px) and recorded
 with the command in refs/fit_keys.sh: W where the wrist comes out from behind her, K the middle knuckle, T the centroid
@@ -9,7 +9,10 @@ here twice, the arm out of the way up and down, intersected). Writes the arm bon
 poses/fit-<name>.json with a note, and a check image out/hand_place_<name>.png (still | render).
 Why: on mum3q's both-hands stills MediaPipe put the hidden far wrist at the fingertips (70 px off), and matching the
 hand's skin blob instead converged on a blocky hand inside the outline (the drawn hand never has the still's shape, so
-area/overlap terms pull it anywhere); three points plus 'the arm stays hidden' is well posed (PIPELINE lesson 48)."""
+area/overlap terms pull it anywhere); three points plus 'the arm stays hidden' is well posed (PIPELINE lesson 48).
+--natural --restarts N: also require an arm a body can make (upper arm hanging, elbow out at her side, back of the hand to
+us, every joint --slack degrees clear of its limits so the shot's reach can still move it) from N seeds; keys alone put
+mum3q's elbow inside her chest (lesson 49)."""
 import argparse, json, os, re, subprocess
 import numpy as np
 from PIL import Image
@@ -18,6 +21,8 @@ ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDe
 ap.add_argument('char'); ap.add_argument('--fit', required=True); ap.add_argument('--side', default='far')
 ap.add_argument('--keys', required=True); ap.add_argument('--sample', type=int); ap.add_argument('--hand'); ap.add_argument('--zbias', default='')
 ap.add_argument('--bones', default='upperArm,forearm,hand,armAbd,armRot,foreRot'); ap.add_argument('--seed', action='append', default=[])
+ap.add_argument('--restarts', type=int, default=0); ap.add_argument('--natural', action='store_true'); ap.add_argument('--slack', type=float, help='--natural: degrees each joint keeps clear of its limits (default 8)')
+ap.add_argument('--fore', help='a point on a forearm the still shows (still px)'); ap.add_argument('--hide', default='arm', choices=['arm', 'upper'])
 ap.add_argument('--dry', action='store_true', help='print the result, write nothing to the pose')
 a = ap.parse_args()
 D = f'characters/{a.char}'; L = json.load(open(f'{D}/ref/landmarks.json'))
@@ -50,7 +55,7 @@ for r in body:
 json.dump({'y0': 0, 'rows': rows}, open(f'{tmp}_sil.json', 'w'))
 pn = f'_hpl{os.getpid()}'; pj = f'{D}/poses/{pn}.json'; json.dump({**base, 'name': pn}, open(pj, 'w'))
 try:
-    cmd = ['node', 'tools/hand_keys.mjs', a.char, pn, '--side', a.side, '--keys', a.keys, '--sil', f'{tmp}_sil.json', '--bones', a.bones] + [f'--seed={s}' for s in a.seed]
+    cmd = ['node', 'tools/hand_keys.mjs', a.char, pn, '--side', a.side, '--keys', a.keys, '--sil', f'{tmp}_sil.json', '--bones', a.bones, '--hide', a.hide] + (['--fore', a.fore] if a.fore else []) + [f'--seed={s}' for s in a.seed] + (['--restarts', str(a.restarts)] if a.restarts else []) + (['--natural'] if a.natural else []) + (['--slack', str(a.slack)] if a.slack is not None else [])
     r = subprocess.run(cmd, capture_output=True, text=True); print(r.stderr, end='')
     if r.returncode: raise SystemExit(r.stderr)
     res = json.loads(r.stdout.strip().splitlines()[-1])
@@ -61,7 +66,7 @@ render(json.loads(json.dumps(base)), f'{tmp}.png'); srv.stdin.close(); srv.wait(
 k = [int(v) for v in a.keys.split(',')]; x0, y0 = max(0, min(k[0::2]) - 90), max(0, min(k[1::2]) - 90); x1, y1 = max(k[0::2]) + 90, max(k[1::2]) + 90
 st = Image.open(f'{D}/refs/images/{a.fit}_{a.sample}.png').convert('RGB').crop((x0, y0, x1, y1)); rd = Image.open(f'{tmp}.png').convert('RGB').crop((x0, y0, x1, y1)); os.remove(f'{tmp}.png')
 o = Image.new('RGB', (st.width * 2 + 6, st.height), 'white'); o.paste(st, (0, 0)); o.paste(rd, (st.width + 6, 0)); o.resize((o.width * 2, o.height * 2)).save(f'out/hand_place_{a.fit}.png')
-summary = f'{a.side} arm ({", ".join(f"{n} {v}" for n, v in zip(res["names"], res["x"]))}) on the still\'s hand points by tools/hand_place.py (rms {res["rms"]} px, arm inside her outline)'
+summary = f'{a.side} arm ({", ".join(f"{n} {v}" for n, v in zip(res["names"], res["x"]))}) on the still\'s hand points by tools/hand_place.py (rms {res["rms"]} px, ' + ('arm inside her outline' if a.hide == 'arm' else 'upper arm inside her outline, forearm through the still\'s') + (', a natural arm' if a.natural else '') + ')'
 print(f'fit-{a.fit}: {summary}; drawn at {res["at"]} → out/hand_place_{a.fit}.png')
 if a.dry: raise SystemExit(0)
 base['note'] = (re.sub(r'; \w+ arm \(.*$', '', base.get('note', '')) + '; ' + summary).lstrip('; ')
