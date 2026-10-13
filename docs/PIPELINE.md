@@ -347,6 +347,19 @@ or composited.
    `hold`: fingers together and gently curved, graded index → little, the thumb tucked; its fidgets ease, never fan.
    mum3q's wrist flexion reaches 80°, a real wrist's (mum3 keeps 60°).
 
+50. **A correction that ends as prose is made again: turn each of Harry's notes into a checklist item and a gate that
+   FAILS on the render he flagged.** By mum3q look-up v5, 49 lessons existed and Harry still had to say "creepy and
+   lifeless". v5 passed every gate: the whole-frame still check saw her head and breath move, and the fit met the top
+   hand's three points while drawing a boxy block with its fingers pointing back at her chest, where its still
+   (q_k3_down_1) has the hand curling forward over the dome. Two blind A/B reviewers preferred it. Now: `docs/HARRY_EYE.md`
+   lists his notes as questions; `spec.preflight` says how a plan avoids each one before anything is built; the
+   `qa_checks` `alive` gate measures each hand's movement ON her (relative to the belly), and fails v5's far hand at
+   0–3.2 s; `tools/ref_match.py` puts each key next to its stills; `critic_F.py --lens natural` asks a fresh reviewer every
+   checklist item against those sheets. Run blind on v5, that reviewer named all three of Harry's points before seeing
+   them ("a little mitten with no wrist", "fingers straight and spread like a comb", "only her head moves when she looks
+   up"). Measuring finger curl from the bone points does NOT work (every finger reads straight, even on hands Harry
+   liked): curl and shape are for the natural lens on the stills, not a number.
+
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

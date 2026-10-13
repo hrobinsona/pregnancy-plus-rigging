@@ -1,0 +1,75 @@
+# Harry's eye: the checklist every render answers before it reaches him
+
+Harry's notes, turned into the questions a reviewer must answer and the checks that answer them. The standard is the
+**reference still** each key was fitted from (not a photo; there won't always be one) and one question above all: **does
+this look like an illustration of a real person, and how she would really hold herself?**
+
+How it is used:
+- **Before building** a pose, move or shot: read it and note in the shot's `spec.preflight` which items apply and how the
+  plan avoids them (SKILL.md "Learning from corrections").
+- **Before review:** `qa_checks.mjs` runs the gated items; `critic_F.py --lens natural` (included in `--lens all`) gives a
+  fresh reviewer this file with the render next to its reference stills (`tools/ref_match.py`). Nothing goes to Harry
+  until every item is answered "no" or explained.
+- **After every note from Harry**: add or sharpen an item here, with his words, and a gate if it can be measured. A note
+  that slipped through means a missing item or a weak gate. Fix that as well as the shot.
+
+Each item: the question · what went wrong (character, version, Harry's words) · the gate, or **eye** when only a reviewer
+can judge it · the lesson in `docs/PIPELINE.md`.
+
+## The whole figure
+
+1. **Does she look like a real person standing, breathing and holding herself, not a puppet or a set of parts?** Weight
+   on her feet, shoulders relaxed, head carried by the neck, nothing posed for the camera. mum2: "the hands and some of
+   the shoulders look like they're on pins and moving, not as a piece of clothing over them". · eye (natural lens) · 4, 26
+2. **Does each key match its reference still in SHAPE, not only in where its joints land?** Hand silhouette, finger
+   direction and curl, wrist bend, how a hand sits on what it touches, posture. mum3q v5: the top hand was a boxy block
+   with the fingers pointing back at her chest, fitted to q_k3_down, whose hand curls forward over the dome ("still looks
+   creepy and lifeless"). · eye on `ref_match.py` sheets (natural lens) · 50
+3. **Does any limb shrink, stretch or change thickness as it moves?** mum3 v3: "when the arm moves it sort of shrinks…
+   it makes her arm look deformed". · gate `qa_checks` limbs (each arm segment ≥ 0.85–0.9 of its length; a designed
+   foreshortening must hold its size) · 39
+4. **Are the joints clean shapes a body has?** No knob, pinch, step or round cap at an ankle, elbow or wrist. mum3 v4:
+   "ankles are a super weird shape" (a round tube end at the ankle). · eye + `qa_closeups.mjs` at the stress times · 41
+5. **Does anything bleed?** Clothing through limbs, limbs through clothing or the body, outlines running over skin.
+   mum2: "the real bleeding through clothes and body parts, which looked super weird as they move". · `anim_audit.py` +
+   eye · 17
+6. **Is any limb doing nothing it would really do?** An idle arm hanging straight and swinging, a hand left dangling
+   while the other one acts. mum3q v3: "her arm is just hanging lifeless and swings in a weird way. In reality it would
+   likely be placed on her bump too"; "it's really that second hand… it just hangs there at a very odd angle". · eye (plan
+   both hands in `spec.preflight`) · 47
+
+## Hands
+
+7. **Does a resting hand lie the way a hand really does?** The palm on the surface, fingers together and gently curved
+   along it, the wrist bent so the forearm comes in from the side; a lower hand cups from beneath. Never a flat hand
+   perched on an edge with straight, parted fingers pointing off it. mum3q v4: "no one's hand naturally lies like this"
+   (with a photo); v5: "rather than being a little curled over the top of the bump". · eye + `ref_match.py` · 40, 49
+8. **Do the fingertips follow the bump?** They end along its outline, curving with it, not past the edge and not
+   bunched. mum3 v3: "fingers almost there but slightly too all together or not feeling like it follows the protruding
+   bump". · gate `tip_check.mjs` (tips ≥ 4 px inside) + eye · 33, 40
+9. **Is every visible hand joined to its arm?** No hand without a wrist leading into it, unless the arm is hidden by
+   design and the hand still reads as hers (heel of the hand tucked behind the bump's edge, as in its still). mum3q v5's
+   top hand read as stuck on. · eye · 48
+10. **Are the hands alive?** A hand resting on her rides her breath, presses a little, settles a finger now and then.
+    Never pixel-frozen on her while the rest of her moves. mum3q v5: "creepy and lifeless". · gate `qa_checks` alive
+    (each hand moves ≥ 1.5 px on her in every 2 s; a deliberate hold goes in `spec.qa.still`) · 50
+11. **Does a hand ever flip, pop or point at the camera?** A palm flipping in a few frames, a hand seen end-on, the
+    wrist springing back. mum2: the palm flip at 7.5 s; "the wrist angle looked wrong". · gate `qa_checks` hands (palm
+    pops, wrist one way per move) + eye · 24, 25
+12. **Are both hands the same hand?** The same size and style, keeping their size as they move, never reading as an
+    "oath" (flat palm to camera) or a "fist" mid-move. mum2 client: "the hand on the belly looked dead — not really a
+    hand". · gate `qa_checks` hands (palm area) + eye · 22
+
+## Motion and acting
+
+13. **Is the motion the size and speed the brief asks for?** mum2 client: "far too extreme and fast moving". · eye
+    against `spec.intensity` · 16
+14. **Do arms move along paths a body takes?** No swinging at the elbow like a clock hand, no hand travelling on a
+    circle round the shoulder. mum2 client: "swinging at the elbow". · eye + `uv_check` · 2, 18
+15. **Is it smooth?** No pops or ticks at holds, no linear moves. · gate `qa_checks` frames + `--tracks-only` · 38
+
+## Drawing quality
+
+16. **Is the starting illustration good enough to be the standard?** If the master or a still is weak (muddy shapes,
+    wrong proportions, a pose no one makes), fix the reference before fitting to it. mum2: "the underlying illustration
+    itself is not good enough quality as a starting point". · eye, at the New character and New pose gates · 26, 29

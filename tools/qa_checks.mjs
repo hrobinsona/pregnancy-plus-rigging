@@ -1,6 +1,6 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,limbs] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,alive,limbs] [--alive-win 2 --alive-min 1.5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
@@ -9,6 +9,10 @@
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
 //             hands come (< 15 px reads as merged unless they deliberately touch), and the wrist angle running ONE way
 //             through each move (a reversal > 4° reads as springy overshoot)
+//     alive   no hand freezes ON HER: within every --alive-win s (2) each visible hand's wrist, fingertip or outline
+//             moves ≥ --alive-min px (1.5) relative to her belly (Harry on mum3q v5: "creepy and lifeless" — a hand pixel-identical at 1, 4
+//             and 7 s while her head and breath moved; the whole-frame still check can't see it). A hand resting on her
+//             rides her breath and settles a finger now and then. A deliberate hold: spec.qa.still {near|far: [[t0, t1, why]]}
 //     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (exceptions: spec.qa.limbs) (a forearm pointing at the camera reads
 //             as an arm that shrinks)
 import fs from 'node:fs';
@@ -94,7 +98,8 @@ if (!skip.has('hands')) {
       const palm = ps.find((p) => /\.palm$/.test(p.id)); H[side] = hull(ps.flatMap((p) => p.geom.P.map((v) => sc(ap(p.M, v)))));
       const fv = side === 'far' && pose.handView?.far === 'back' ? 'hand.farB' : `hand.${side}`;
       const w = sc(st[`hand.${side}`].pos), tip = sc(rig.carry(st, `${fv}.f2c`, `${fv}.f2t`));
-      S[side].push({ palm: palm ? area(palm.geom.P.map((v) => sc(ap(palm.M, v)))) : 0, ang: Math.atan2(tip[1] - w[1], tip[0] - w[0]) * 180 / Math.PI, w });
+      const xs = H[side].map((v) => v[0]), ys = H[side].map((v) => v[1]), box = xs.length ? [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] : [0, 0, 0, 0];
+      S[side].push({ palm: palm ? area(palm.geom.P.map((v) => sc(ap(palm.M, v)))) : 0, ang: Math.atan2(tip[1] - w[1], tip[0] - w[0]) * 180 / Math.PI, w, tip, box, seen: ps.length > 0, body: sc(st[C.qa?.aliveAnchor || (st.belly ? 'belly' : 'chest')].pos) });
     }
     gap.push(gapOf(H.near, H.far));
   }
@@ -120,6 +125,25 @@ if (!skip.has('hands')) {
       if (worst > 4) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
     }
     gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
+  }
+  if (!skip.has('alive')) {
+    // a frozen hand: every point we track (wrist, middle fingertip, the hand's outline box) moves < min px in a window
+    const win = Math.round(+arg('alive-win', 2) * spec.fps), min = +arg('alive-min', 1.5), EXS = spec.qa?.still || {};
+    for (const side of sides) {
+      // measured relative to her body (the belly), so a hand pinned to her and carried by her breath still counts as
+      // frozen if it never moves ON her: that is what reads as a stuck-on, lifeless hand
+      const rel = (q, s) => [q[0] - s.body[0], q[1] - s.body[1]];
+      const pts = (s) => [rel(s.w, s), rel(s.tip, s), rel([s.box[0], s.box[1]], s), rel([s.box[2], s.box[3]], s)], frozen = new Array(S[side].length).fill(false);
+      const held = (i) => (EXS[side] || []).some(([t0, t1]) => i / spec.fps >= t0 && i / spec.fps <= t1);
+      for (let i0 = 0; i0 + win < S[side].length; i0 += 3) {
+        if (!S[side][i0].seen) continue;
+        const P0 = pts(S[side][i0]); let mv = 0;
+        for (let i = i0 + 1; i <= i0 + win; i++) pts(S[side][i]).forEach((q, k) => { mv = Math.max(mv, Math.hypot(q[0] - P0[k][0], q[1] - P0[k][1])); });
+        if (mv < min) for (let i = i0; i <= i0 + win; i++) if (!held(i)) frozen[i] = true;
+      }
+      const fr = runs(frozen).map(([a, b]) => `${tt(a)}–${tt(b)} s`);
+      gate(!fr.length, `${side} hand alive (moves ≥ ${min} px on her in every ${(win / spec.fps).toFixed(1)} s): ${fr.length ? 'FROZEN ' + fr.join(', ') + ' — a hand only carried by her body reads stuck on: add a finger settle (fidget) or a small press; a deliberate hold goes in spec.qa.still' : 'yes'}`);
+    }
   }
   if (sides.length < 2) console.log(`  · ${['near', 'far'].filter((s) => !sides.includes(s)).join(', ')} hand hidden by design (C.fit.hidden): size and gap not checked`);
   else {

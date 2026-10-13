@@ -14,6 +14,32 @@ You are working in a repo where characters are parametric SVG rigs. Shots are ti
 - `docs/PIPELINE.md` "0. The big lessons", "From the reels rig" (performance, hands, face, review: merged from the old traced rig) and "1. Reference generation".
 - `docs/REF_PROMPTS.md` before making any reference image.
 - `tools/README.md` for the full tool index (★ = current loop).
+- `docs/HARRY_EYE.md`, **every time, before you build anything**: Harry's notes as a checklist. Each new pose, move or
+  shot must avoid all of them first time (see "Learning from corrections").
+
+## Learning from corrections (Harry: "the workflow should avoid most of these, otherwise there's so much back and forth")
+
+The goal is that a new pose needs no correction round for a mistake Harry has already pointed out once. Three rules:
+
+1. **Pre-flight before building.** Before writing a prompt, a key or a reach, read `docs/HARRY_EYE.md` and write
+   `spec.preflight` in the shot: for each item that applies, one line on how this plan avoids it (e.g. "6: both hands
+   rest on the bump, none hangs"; "7: the top hand's still asks for the palm on the dome, fingers together, curved toward
+   us"; "10: the resting hands get a finger settle at 3.1 s and ride the breath"). A reviewer checks the render against
+   that list.
+2. **Gate before Harry.** Nothing goes to Harry until `qa_checks.mjs` passes (or each failure is explained) AND the
+   natural lens (`critic_F.py --lens natural`, part of `--lens all`) returns "NATURAL: RIGHT", or each "YES" it lists is
+   fixed or explained in the message to him. The natural lens puts each key next to the reference stills it was built
+   from (`tools/ref_match.py`) and asks every HARRY_EYE item. The still is the standard for shape, not just position: a
+   render can meet the fit's points and still draw a different hand (mum3q v5).
+3. **Every note from Harry changes the workflow, not only the shot.** In the same round as the fix:
+   - add or sharpen an item in `docs/HARRY_EYE.md` with his words (what he saw, which render);
+   - if it can be measured, add a gate (`qa_checks.mjs`, `tip_check.mjs`, …) and check that it FAILS on the render he
+     flagged and passes on the fix. A gate that passes the bad render catches nothing (the whole-frame still check passed
+     v5's frozen hands; the per-hand `alive` gate fails it);
+   - if a reviewer passed what he flagged, sharpen the lens prompt so a fresh reviewer flags it on that render;
+   - log the lesson in `docs/PIPELINE.md` and fix the recipe step that let it through (the prompt rules in
+     `REF_PROMPTS.md`, the New move steps below).
+   A correction that ends as prose only will be made again.
 
 ## Non-negotiables
 
@@ -32,7 +58,7 @@ The repo's job is that each of these is routine. Run the gate; don't hand a resu
 |---|---|---|---|
 | **New pose** | one sentence + the character | prompt in `docs/prompts/<name>.txt` (elbow and hand by body landmarks: the prompt IS the pose) → push `requests/refgen/<name>.json` (the Mac worker draws 3 and pushes them; or `new_pose.py gen` on the Mac) → `git pull` → `python3 tools/new_pose.py fit <char> <name>` | rms ≤ 0.06 H, no bone on a limit (script), contacts right in `out/new_pose_<name>.png` (look) |
 | **New move** | two poses | 2 in-between stills (New pose ×2) → `uv_check --poses` first: a still the path already passes adds nothing, and one that drifted onto the target is no in-between (lesson 30) → a reach via AND an arm-only key (`only` arm bones, `bone.hand.<side>.*` for the fingers) at its time (lesson 20). From or to a HANGING arm, the via is a joint-space breakdown (`pose_blend rest key 0.35`, lesson 31), and the rest pose's elbow is bent ~10°. An elbow swivel offset (`dphi`) goes on EVERY stop of that arm's path, vias and rest stops included (lesson 34). A hand that rests ON her gets `lie: '<proxy>'` and `surface: '<proxy>'` on its contact stops (the palm lies in the surface's tangent plane and keeps its drawn length, lesson 37; the wrist sits ON the surface, not at the still's estimated depth, lesson 39). Pick the swivel (`dphi`) by scanning each segment's drawn length (`st[bone].a3.len`): every arm segment ≥ 0.9, else the arm reads as shrinking (lesson 39). Keep the hand where its still has it and make the fingers end along the outline (graded curl, thumb out, a little fan), never lift the hand to keep the tips inside (lesson 40). Landing settle and finger ripple come from the engine defaults | `--tracks-only` (no pop > 2× neighbours), `node tools/qa_checks.mjs`, `node tools/tip_check.mjs` for a hand that lands on her (every tip ≥ 4 px inside her outline, lesson 33), a frame strip |
-| **New shot** | brief + intensity | beats in `spec.story`/`spec.intensity` → New pose per key → New move per hand move → breath/face/fidgets → render | `qa_checks` PASS (or each fail explained), `critic_F.py --lens all` (three fresh reviewers), `blind_ab.py` against the previous version for each change; Harry's eye last |
+| **New shot** | brief + intensity | beats in `spec.story`/`spec.intensity` → `spec.preflight` from `docs/HARRY_EYE.md` (every hand has a job: none left hanging) → New pose per key → New move per hand move → breath/face/fidgets (resting hands too) → render | `qa_checks` PASS (or each fail explained), `critic_F.py --lens all` (four fresh reviewers: feel, Lasseter, hands, natural; natural must say RIGHT), `blind_ab.py` against the previous version for each change; Harry's eye last |
 | **New character** | a design brief | the checklist at the end: master designed for the rig → `new_char.py` (template mum3) → `master_measure.py` → params and parts from the measurements → hidden limbs, hands → key stills | `char_check`, `char_compare.py <id> rest` IoU ≥ 0.95, `hand_fit.py`, stress poses |
 | **New view** of a character | the client's pick from a turnaround (push `requests/refgen/<char>_view<v>.json`, refs = the master twice) | a sibling character `<char><v>` (`new_char.py`, then import the palette and copy the skeleton from the original: same bone names, so face and hand poses carry over) → ONE H for every view (`Hpx` = the original's: bones keep their lengths) → `master_measure.py` (body) + `face_measure.py <id>` (a ¾ or front face has its features INSIDE it) → params as NAMED points (face edge at the eye/mouth rows, hairline temple/mid/peak/far; never a sampled contour) → `forwardX = cos(yaw)` from the shoulder span, depth proxies moved to the view → stress poses `x-*` (the original's derived keys plus reach, wave, look up) | `char_check`, `char_compare.py <id> rest` IoU ≥ 0.95 and row-by-row edges within ~0.02 H, `hand_fit.py`, `char_pose_sheet.py` on the `x-*` poses (no lumps, slivers or gaps); then every fitted key of the view gets `head_pose.py <id> --fit <name>` after `fit_pose` (the fitter mistakes a nod for a roll, lesson 45) |
 | **New outfit / hand view** | stills of the view | New pose for each view → a fitted replacement drawing in `parts/` or the hand library | `detail_audit.py`, `corner_audit.py`, `qa_closeups.mjs` at the stress times |
@@ -62,8 +88,8 @@ These won no blind A/B on their own in the nausea shot (the far hand lands half 
    - `tracks.face`, `fidget` (out-and-back life: fingers, `fx.slide.near.*` strokes, swallows), `breath`, `swaps` (hand views), `pins` (planted near hand), `plantFeet: "ik"`.
 6. **Render and measure** (see Commands). Check the per-frame speeds for pops before any review. Use `pose_probe` to A/B a DOF on one frame before keying it, and `uv_check` to see where the wrist and elbow actually go in the torso frame. For a fitted in-between, use its position (`uv_check --poses`) and a path `bias`, not its fitted twist (PIPELINE lesson 21).
 7. **QA, then review.**
-   - `node tools/qa_checks.mjs --char <c> --anim <a> --box …`: frames out of order match, no state leaks, no pixel jumps, no still stretch > 1 s, hands (palm pops, wrist angle one way per move, hands ≥ 15 px apart), limbs (each 3D arm segment drawn at ≥ 0.85 of its length, lesson 39). `node tools/qa_closeups.mjs --t …` for joints at size. `node tools/tip_check.mjs --char <c> --anim <a> --from … --to …` while a hand rests on her: how far inside her outline each fingertip ends, and its clearance sideways (reviewers say "tips past the edge" or "a tangent" every round; measure it, lesson 33).
-   - Run `python3 tools/critic_F.py <char> <shot> --lens all > out/critic_prompt.md` (feel, Lasseter's principles, hands). Give each `out/critic_prompt_<lens>.md` to its own fresh subagent: *"Read … and follow it exactly; open every image it lists; return the review."*
+   - `node tools/qa_checks.mjs --char <c> --anim <a> --box …`: frames out of order match, no state leaks, no pixel jumps, no still stretch > 1 s, hands (palm pops, wrist angle one way per move, hands ≥ 15 px apart), alive (each hand moves ≥ 1.5 px ON her in every 2 s: a hand carried only by her body reads stuck on and lifeless; deliberate holds in `spec.qa.still`), limbs (each 3D arm segment drawn at ≥ 0.85 of its length, lesson 39). `node tools/qa_closeups.mjs --t …` for joints at size. `node tools/tip_check.mjs --char <c> --anim <a> --from … --to …` while a hand rests on her: how far inside her outline each fingertip ends, and its clearance sideways (reviewers say "tips past the edge" or "a tangent" every round; measure it, lesson 33).
+   - Run `python3 tools/critic_F.py <char> <shot> --lens all > out/critic_prompt.md` (feel, Lasseter's principles, hands, natural: the render next to its stills and every `docs/HARRY_EYE.md` item). Give each `out/critic_prompt_<lens>.md` to its own fresh subagent: *"Read … and follow it exactly; open every image it lists; return the review."*
    - For a change: `python3 tools/blind_ab.py <old.mp4> <new.mp4> --anim <c>/<a>`, a fresh subagent on `out/blind_ab/prompt.md`, then `--reveal`. Keep a change that is meant to be visible only if it wins.
    - Log the round and "What was done" in `characters/<char>/feel_log_<shot>.md`.
    - Run `tools/anim_audit.py` for bleed (clothing showing through limbs and vice versa) and `tools/detail_audit.py` for single poses.
@@ -90,7 +116,8 @@ python3 tools/frame_strip.py out/frames/mum2_nausea-to-belly out/strip.png 200 2
 node tools/pose_probe.mjs --anim nausea-to-belly --t 7.37 --vary hand.far=-40,0,40 --crop 450,250,1000,950
 node tools/uv_check.mjs mum2 nausea-to-belly 7.0 8.1              # wrist/elbow in the torso frame, frame by frame
 node tools/uv_check.mjs mum2 nausea-to-belly --poses fit-bf1,fit-bf2   # where fitted stills put them: compare, then bias the path
-python3 tools/critic_F.py mum2 nausea-to-belly --lens all > out/critic_prompt.md   # feel + Lasseter + hands
+python3 tools/critic_F.py mum2 nausea-to-belly --lens all > out/critic_prompt.md   # feel + Lasseter + hands + natural
+python3 tools/ref_match.py mum3q look-up                             # each key next to the stills it was built from (LOOK)
 python3 tools/blind_ab.py renders/<old>.mp4 out/mum2_nausea-to-belly.mp4 --anim mum2/nausea-to-belly   # blind A/B pack
 node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly --box 380,150,1000,1050   # the QA gate
 node tools/qa_closeups.mjs --char mum2 --anim nausea-to-belly --t 2.8,7.5,9.0     # joints at size
