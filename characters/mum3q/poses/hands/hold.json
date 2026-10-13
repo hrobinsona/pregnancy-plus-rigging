@@ -1,12 +1,36 @@
 {
  "name": "hold",
- "_note": "a hand resting on the top of the bump the way a mother holds it (Harry's photo, stills q_k3_*): fingers TOGETHER and gently curved round the dome, graded (index least, little finger most), the thumb tucked along the far side; nothing spread, nothing hanging off the outline (v4's 'atop' hung its fingers off the bump's edge: 'no one's hand naturally lies like this')",
- "f1": [12, 15, 11],
- "f2": [14, 17, 12],
- "f3": [16, 19, 14],
- "f4": [18, 22, 16],
- "s": [-1, 0, 1, 2],
- "t": [25, 20],
+ "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers, together but fanned a few degrees so the tips step down in a diagonal, the curl mostly in the middle and end joints (~65-85° tip to knuckle, graded index least) so the fingertips bend down over the dome; the thumb tucked along the far side. Works with the hand placed palm DOWN onto the dome (hand_place --palm-down 0.55): with its palm normal pointing away from us a 3D curl only shortened the fingers (v6 first try at 70-85°: 'a mitten'; at 45-65°: 'straight planks'). Picked side by side with the still (tools/hand_shapes.py, lesson 51)",
+ "f1": [
+  10,
+  28,
+  24
+ ],
+ "f2": [
+  12,
+  31,
+  27
+ ],
+ "f3": [
+  14,
+  34,
+  29
+ ],
+ "f4": [
+  16,
+  37,
+  31
+ ],
+ "s": [
+  -5,
+  -2,
+  2,
+  5
+ ],
+ "t": [
+  25,
+  20
+ ],
  "to": 30,
  "ts": -10
 }

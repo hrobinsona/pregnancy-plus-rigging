@@ -390,6 +390,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // difference between the warp now and the warp in the contact's own pose
     if (C.warps?.[on] && P_) { const j = J[BONE[on].joint], v = [loc[0] + j[0], loc[1] + j[1]], a = C.warps[on](P_)(v), b = C.warps[on](lib[e.pose])(v); loc = [loc[0] + a[0] - b[0], loc[1] + a[1] - b[1]]; }
     const c = { p: apM(st[on].M, loc), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    if (e.keyedArm) c.keyedArm = true;   // see reachArm: the arm stays the keys', only the damped solve moves the wrist
     if (is3(side)) {
       // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
       // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
@@ -483,7 +484,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
     const lA = E[kh].lie ? 1 : 0, lB = E[Math.min(E.length - 1, kh + 1)].lie ? 1 : 0, lie = E.find((e) => e.lie)?.lie;
     const len = A.len !== undefined && B.len !== undefined ? A.len + sH * (B.len - A.len) : undefined;
-    return { len, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+    return { len, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u), keyedArm: !!(a.keyedArm && b.keyedArm) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
   }
   // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
   // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —
@@ -714,7 +715,11 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (T.behindW !== undefined) pose.fx['behind.' + side] = T.behindW;
     if (T.twist !== undefined) pose.bones['foreRot.' + side] = T.twist;
     const at = (b, d) => { const p = { ...pose, bones: { ...pose.bones, [b]: (pose.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
-    if (is3(side) && T.z !== undefined && T.phi !== undefined) {
+    // stop.keyedArm (both ends of a move, or a hold): no 3D IK — the arm stays the keys' own (every key carries the same
+    // fitted arm) and only the damped solve below carries the wrist onto the target. For a HELD hand whose drawn arm the
+    // 3D model reproduces badly: mum3q's far arm coming down past her bust and round the bump (abducted 122°) — the 3D
+    // pass missed its own key by 26 px, and its aim correction wandered the elbow 40 px between branches frame to frame
+    if (is3(side) && T.z !== undefined && T.phi !== undefined && !T.keyedArm) {
       // 3D: the wrist target (screen + depth) in the arm's frame → 2-bone IK at the interpolated swivel → the rig's angles
       // (the representation nearest the keyed values); the 2D steps below then only correct the small rest-tilt residue
       const S_ = side === 'near' ? 'Near' : 'Far', Lb = (a, b) => Math.hypot(J[b][0] - J[a][0], J[b][1] - J[a][1]);
@@ -737,11 +742,20 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         phiU += T.elbowWt * wrapPi(bp - phiU);
         pose._reach[side].elbowP = T.elbowP; pose._reach[side].phiE = bp;
       }
+      const keyedF = pose.bones[fa] || 0;
       for (let it = 0; it < 3; it++) {
         const sol = ik2(fr.fromScreen(aim, T.z), L1, L2, phiU), lim = (b) => [BONE[b].min ?? -180, BONE[b].max ?? 180];
         const g = armAngles(sol.el, sol.wr, L1, L2, keyed, { e: lim(ua), al: lim(ab) });
         pose.bones[ua] = g.e; pose.bones[ab] = g.al; pose.bones[ar] = g.tau; pose.bones[fa] = g.c;
         const w = solve(pose)[ha].pos; aim = [aim[0] + T.p[0] - w[0], aim[1] + T.p[1] - w[1]];
+      }
+      // never the MIRROR branch: where the drawn arm differs a lot from the 3D model (mum3q's far arm coming down past her
+      // bust and round the bump, abducted 122°: the first pass missed by 26 px), the aim correction can carry the solve
+      // across to the other elevation sign — a different drawn arm, the elbow 40 px off, flipping frame to frame (v6
+      // draft: the far forearm vanished behind her at 0–2.5 s, showed at 1.6 s). Keep the keyed arm then; the damped
+      // solve below finishes the wrist from it.
+      if (Math.abs(keyed.e) > 20 && Math.abs(pose.bones[ua]) > 20 && Math.sign(pose.bones[ua]) !== Math.sign(keyed.e)) {
+        pose.bones[ua] = keyed.e; pose.bones[ab] = keyed.al; pose.bones[ar] = keyed.tau; pose.bones[fa] = keyedF;
       }
     }
     // DAMPED least squares toward the KEYED angles: with a 3D arm a 2D wrist target has two arm solutions (elbow forward

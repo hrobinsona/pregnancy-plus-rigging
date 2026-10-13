@@ -359,6 +359,45 @@ or composited.
    them ("a little mitten with no wrist", "fingers straight and spread like a comb", "only her head moves when she looks
    up"). Measuring finger curl from the bone points does NOT work (every finger reads straight, even on hands Harry
    liked): curl and shape are for the natural lens on the stills, not a number.
+51. **Every hand on her is fitted to its still in three steps: the SHAPE side by side with the still's hand, then the
+   PLACE solved with that shape, then LIFE big enough to see on a phone.** mum3q look-up v6 (Harry on v5: "still looks
+   creepy and lifeless. Rather than being a little curled over the top of the bump"; he picked "far hand on top" from new
+   stills q_k4_down). Each step failed once on the way:
+   - *Shape.* The first `hold` curled its fingers 70–85°. mum3q's fingers are 3D (`flexFx: {from: 'hand.<side>'}`: a
+     finger turns in the plane of its hand's camera direction and normal), so a hand seen from its back curls INTO the
+     camera: short stacked stubs ending in a blunt column, "a mitten" to the natural reviewer twice. The `cradle`'s 75–90°
+     hooked into "a rake". Rendering ~8 shapes of the key next to the still's hand at the same crop took minutes and
+     showed it plainly: the still's top hand has long fingers, fanned a few degrees so the tips step down in a diagonal,
+     each curved only 45–65° tip to knuckle; the lower hand's lie together and nearly straight along the curve. A hand
+     must also be drawn at the length the still draws it: at a3.len 0.68 (the solver's free choice) the top hand read as a
+     stub; `hand_place.py --hand-len 0.85` keeps an illustration's resting hand nearly unforeshortened. And the curl only
+     SHOWS when the hand faces the surface it lies on: placed "back of the hand to us", its palm normal pointed away from
+     the camera (ncam (−0.41, 0.39, 0.82)) and any curl, 30° or 85°, only shortened the fingers ("straight planks", round 3).
+     `hand_place.py --palm-down 0.55` turns a hand on top of the dome palm down onto it (ncam y 0.39 → 0.55); then a curl
+     in the middle and end joints (~65–85° tip to knuckle) bends the fingertips down over the dome on screen. Eyes are shape
+     too: lid open 0.6 + half + smile squashed a look-down to "closed slits" where the stills draw open eyes looking down.
+   - *Place.* The shape is chosen first because the placement is solved WITH it (`hand_place.py --hand <shape>`); the arm
+     the still shows is drawn (`--hide none`, `--fore x,y` a point on the forearm, `--elbow x,y` where the still shows
+     it). Two engine fixes came out of holding that arm: a 3D arm at 122° abduction missed its own key by 26 px and hopped
+     between IK branches frame to frame (elbow 40–70 px), so the reach now restores the keyed arm when the solve lands on
+     the mirror branch, a stop can say `keyedArm: true` (the arm stays the key's, only the damped solve moves the wrist),
+     and `qa_checks` fails an elbow that moves > 6 px in a frame while its wrist barely moves. A hand bent 50° at the wrist
+     drew a "pointed wrist corner": `params.arm<Side>.wristRound` adds a heel-of-the-hand pad.
+   - *Life.* The alive gate passed at 1.5 px with 2–4 px finger settles and both fresh reviewers still wrote "the hands
+     look identical in every frame… held props". A reach's `dp` is in H (mum3q: 1 H ≈ 225 px), so the "lift" of 0.02 H
+     was 4.5 px. Life a viewer sees is a 10–20 px caress or stroke, timed to the face (a caress while she looks down, a
+     squeeze as she smiles, a stroke through the smile, a settle as her eyes come back). The gate is now 5 px in every
+     2 s. Slide the WRIST little: a 14–18 px slide pulled the far forearm in behind her bust (the strip past its edge lost
+     35% of its area, the shrinking arm of lesson 39); the hand turning about its wrist (a `hand.<side>` fidget, applied
+     after the reach so the arm stays put) sweeps the fingertips as far while the arm holds. A forearm twist (`foreRot`)
+     swept them too but moved the forearm's drawn edges off the underbust: a white gap up to 73 px opened between bust,
+     arm and hand (the far forearm's back edge is now fuller toward the wrist, `P.armFar.w`; ≤ 13 px).
+   - *Timing.* The "half way up" breakdown still (q_k_mid_2) is 85% up, so the look up did most of its travel in 0.3 s;
+     a breakdown is half way in what moves, whatever its still shows (`derive_lookup.sh` holds its head back).
+   An arrangement choice (which hand on top) goes to the client on a decision card with the stills, never decided alone.
+   Rounds: blind A/B against v5 6.5 vs 5.5 (draft), 6.5 vs 5 (after shape, life, eyes, timing). The natural lens said NOT
+   YET three times, each time on fewer and smaller things (mitten → planks → head bow); its round-4 verdict is in the
+   feel log.
 
 ## From the reels rig (merged 2026-10-12)
 

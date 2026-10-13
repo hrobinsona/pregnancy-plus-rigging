@@ -1,38 +1,38 @@
 {
  "name": "n-down",
- "note": "looking down at her bump (still q_k_down_0), hand resting on its lower front, the upper back rounded a little",
- "_recipe": "n-down n-base --hands near=drape --add chest=1.5,spineUpper=0.8 --note looking down at her bump (still q_k_down_0), hand resting on its lower front, the upper back rounded a little",
+ "note": "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little",
+ "_recipe": "n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8 --note looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little",
  "hands": {
-  "near": "drape",
+  "near": "cradle",
   "far": "hold"
  },
  "zBias": {
   "arm.far.hand": 40.0
  },
  "fx": {
-  "headPitch": 24.4
+  "headPitch": 28.0
  },
  "root": [
   -0.0225,
   -0.0175
  ],
  "bones": {
-  "armAbd.far": -17.7,
-  "armAbd.near": 0.0,
-  "armRot.far": 3.8,
-  "armRot.near": 7.3,
+  "armAbd.far": 121.7,
+  "armAbd.near": 37.5,
+  "armRot.far": 43.8,
+  "armRot.near": 51.4,
   "belly": 0.0,
   "chest": 3.3,
-  "clavicle.far": -2.9,
+  "clavicle.far": -5.7,
   "clavicle.near": 2.0,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": 15,
-  "foreRot.near": -0.1,
-  "forearm.far": 112.6,
-  "forearm.near": 51.3,
-  "hand.far": 3.5,
-  "hand.near": 10.9,
+  "foreRot.far": 23.9,
+  "foreRot.near": -56.6,
+  "forearm.far": 128.1,
+  "forearm.near": 43.7,
+  "hand.far": 33.8,
+  "hand.near": 30.2,
   "head": -24.3,
   "hipAbd.far": 0.0,
   "hipAbd.near": 0.0,
@@ -40,18 +40,20 @@
   "pelvis": 0.0,
   "shin.far": 1.5,
   "shin.near": -1.2,
-  "shoulderAbd.far": 3.4,
-  "shoulderAbd.near": -2.2,
+  "shoulderAbd.far": 0,
+  "shoulderAbd.near": -3.4,
   "spineLower": 1.2,
   "spineUpper": 1.2,
   "thigh.far": 0.0,
   "thigh.near": 1.4,
-  "upperArm.far": -19.6,
-  "upperArm.near": 0.3,
-  "wristFlex.far": -66.6
+  "upperArm.far": 56.6,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -40.3,
+  "wristFlex.near": 17.1
  },
  "_orig": {},
  "_edits": [
+  "--fx headPitch=28",
   "--zbias arm.far.hand=40"
  ]
 }

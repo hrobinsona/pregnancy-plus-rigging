@@ -24,12 +24,21 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 2. **Does each key match its reference still in SHAPE, not only in where its joints land?** Hand silhouette, finger
    direction and curl, wrist bend, how a hand sits on what it touches, posture. mum3q v5: the top hand was a boxy block
    with the fingers pointing back at her chest, fitted to q_k3_down, whose hand curls forward over the dome ("still looks
-   creepy and lifeless"). · eye on `ref_match.py` sheets (natural lens) · 50
+   creepy and lifeless"). v6's first try: fitted to the right still (q_k4_down) but with fingers curled 70–85°, which the
+   3D fingers turn into the camera: short stacked stubs ending in a blunt column, "a mitten" twice; the lower hand's
+   75–90° curl hooked into "a rake". Pick a hand shape SIDE BY SIDE with the still's hand (finger length, curl, how the
+   tips step) before placing it (`hand_shapes.py`), then place it with that shape (`hand_place.py`; a hand on top of the
+   bump palm down onto it, `--palm-down`, or its curl never shows: "straight planks"). Eyes too: open 0.6 + half-lid +
+   smile squashed a look-down to "closed slits", open 0.8 read "wide-eyed, glancing sideways"; the stills draw open eyes
+   under heavy half-lowered lids. · eye on `ref_match.py` sheets
+   (natural lens) · 50, 51
 3. **Does any limb shrink, stretch or change thickness as it moves?** mum3 v3: "when the arm moves it sort of shrinks…
    it makes her arm look deformed". · gate `qa_checks` limbs (each arm segment ≥ 0.85–0.9 of its length; a designed
    foreshortening must hold its size) · 39
 4. **Are the joints clean shapes a body has?** No knob, pinch, step or round cap at an ankle, elbow or wrist. mum3 v4:
-   "ankles are a super weird shape" (a round tube end at the ankle). · eye + `qa_closeups.mjs` at the stress times · 41
+   "ankles are a super weird shape" (a round tube end at the ankle). mum3q v6: a sharp "pointed wrist corner" where a hand
+   bent 50° meets its forearm (cured by a heel-of-the-hand pad, `params.arm*.wristRound`). · eye + `qa_closeups.mjs` at the
+   stress times · 41, 51
 5. **Does anything bleed?** Clothing through limbs, limbs through clothing or the body, outlines running over skin.
    mum2: "the real bleeding through clothes and body parts, which looked super weird as they move". · `anim_audit.py` +
    eye · 17
@@ -43,16 +52,22 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 7. **Does a resting hand lie the way a hand really does?** The palm on the surface, fingers together and gently curved
    along it, the wrist bent so the forearm comes in from the side; a lower hand cups from beneath. Never a flat hand
    perched on an edge with straight, parted fingers pointing off it. mum3q v4: "no one's hand naturally lies like this"
-   (with a photo); v5: "rather than being a little curled over the top of the bump". · eye + `ref_match.py` · 40, 49
+   (with a photo); v5: "rather than being a little curled over the top of the bump". mum3q v6: a lower hand drawn as "a
+   horizontal paddle" and then "a rake" (fingers fanned with gaps, hooking down) where the still lays them together along
+   the curve, the thumb above. · eye + `ref_match.py` · 40, 49, 51
 8. **Do the fingertips follow the bump?** They end along its outline, curving with it, not past the edge and not
    bunched. mum3 v3: "fingers almost there but slightly too all together or not feeling like it follows the protruding
    bump". · gate `tip_check.mjs` (tips ≥ 4 px inside) + eye · 33, 40
 9. **Is every visible hand joined to its arm?** No hand without a wrist leading into it, unless the arm is hidden by
    design and the hand still reads as hers (heel of the hand tucked behind the bump's edge, as in its still). mum3q v5's
-   top hand read as stuck on. · eye · 48
-10. **Are the hands alive?** A hand resting on her rides her breath, presses a little, settles a finger now and then.
-    Never pixel-frozen on her while the rest of her moves. mum3q v5: "creepy and lifeless". · gate `qa_checks` alive
-    (each hand moves ≥ 1.5 px on her in every 2 s; a deliberate hold goes in `spec.qa.still`) · 50
+   top hand read as stuck on; v6 shows the arm the still shows (`hand_place.py --hide none`), and the blind reviewer
+   picked it for that: "clearly attached". · eye · 48, 51
+10. **Are the hands alive, visibly, at phone size?** A hand resting on her rides her breath, caresses, presses a little,
+    settles a finger now and then, and answers what her face does (a squeeze as she smiles). Never frozen on her while
+    the rest of her moves. mum3q v5: "creepy and lifeless". mum3q v6 passed a 1.5 px floor with 2–4 px finger settles and
+    both fresh reviewers still saw "the hands look identical in every frame… held props": life a viewer sees is a 10–20 px
+    caress or stroke. · gate `qa_checks` alive (each hand moves ≥ 5 px on her in every 2 s; a deliberate hold goes in
+    `spec.qa.still`) + eye on the phone-size film · 50, 51
 11. **Does a hand ever flip, pop or point at the camera?** A palm flipping in a few frames, a hand seen end-on, the
     wrist springing back. mum2: the palm flip at 7.5 s; "the wrist angle looked wrong". · gate `qa_checks` hands (palm
     pops, wrist one way per move) + eye · 24, 25
@@ -62,11 +77,15 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 
 ## Motion and acting
 
-13. **Is the motion the size and speed the brief asks for?** mum2 client: "far too extreme and fast moving". · eye
-    against `spec.intensity` · 16
+13. **Is the motion the size and speed the brief asks for?** mum2 client: "far too extreme and fast moving". mum3q v6:
+    the look up did most of its travel in 0.3 s because its "half way" breakdown still was already 85% up: a breakdown
+    key is half way in what moves, whatever its still shows. · eye against `spec.intensity` · 16, 51
 14. **Do arms move along paths a body takes?** No swinging at the elbow like a clock hand, no hand travelling on a
     circle round the shoulder. mum2 client: "swinging at the elbow". · eye + `uv_check` · 2, 18
-15. **Is it smooth?** No pops or ticks at holds, no linear moves. · gate `qa_checks` frames + `--tracks-only` · 38
+15. **Is it smooth?** No pops or ticks at holds, no linear moves, no limb hopping between two shapes. mum3q v6 draft: the
+    far arm's elbow jumped 40–70 px between frames while its hand held still (the 3D arm solve flipping between two
+    branches). · gate `qa_checks` frames + limbs (an elbow that moves > 6 px in a frame while its wrist barely moves
+    fails) + `--tracks-only` · 38, 51
 
 ## Drawing quality
 

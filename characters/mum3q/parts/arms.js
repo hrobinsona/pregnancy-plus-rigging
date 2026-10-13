@@ -5,7 +5,7 @@
 // Near arm in front of the body; far arm behind it, one step darker (it is hidden in the master's pose).
 import { tube } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { add, sub, mulS, norm, perpL, lerp } from '../../../engine/geom.js';
+import { add, sub, mulS, norm, perpL, lerp, ellipse } from '../../../engine/geom.js';
 
 export const ANCHORS = { 'arm.near': 16, 'arm.far': 16 };
 
@@ -45,6 +45,19 @@ export function build(ctx) {
     const ke = Math.min(1, Math.max(0, (elev - 20) / 60)), kA = cap0 + (Math.min(cap0, 0.5) - cap0) * ke * ke * (3 - 2 * ke);
     const g = tube(axis, widths, { capK: [kA, 0.3] });
     out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
+    // the HEEL of a sharply bent wrist (P.arm/armFar.wristRound): a round pad over the outer corner where the forearm's
+    // end meets the hand, as the stills draw it (q_k4_down_0: the far hand curled over the top of the bump, its heel a
+    // round bulge over the bump's edge). Without it the tube's end and the palm's narrower heel left a pointed corner
+    // sticking out of her silhouette (v6 draft, blind A/B: "a pointed wrist corner"). Grows in from a 25° bend.
+    const wr = (side === 'far' && X.armFar ? X.armFar : X.arm).wristRound, Kp = st[`hand.${side}.f2a`]?.pos;
+    if (wr && Kp) {
+      const hd = norm(sub(Kp, Wp)), bw = Math.acos(Math.max(-1, Math.min(1, u2[0] * hd[0] + u2[1] * hd[1]))) * 180 / Math.PI;
+      const k = Math.max(0, Math.min(1, (bw - 25) / 35));
+      if (k > 0.01) {
+        const W_ = { r: 1, out: 0.3, along: 0, ...(typeof wr === 'object' ? wr : {}) }, r = Math.max(w[4].front, w[4].back) * W_.r * (0.8 + 0.2 * k), out_ = norm(sub(u2, hd));
+        out.push({ id: `arm.${side}.heel`, bone: `hand.${side}`, z: zb + 0.45 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true, geom: ellipse(add(add(Wp, mulS(out_, W_.out * r * k)), mulS(hd, W_.along * r)), r, r) });
+      }
+    }
     // hand (engine/hand.js) just above its arm: the palm's wrist end covers the tube's end. pose.zBias['arm.<side>.hand']
     // brings ONLY the hand forward: the far hand resting on the top of the bump lies on the dress while its forearm runs
     // behind her body (stills q_k2_*: the wrist comes out from behind the under-bust, the fingers curve over the bump)

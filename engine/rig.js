@@ -119,12 +119,27 @@ export function createRig(C) {
       } else if (b.plane) {
         // the bone rotates in a plane yawed to the picture: 'sagittal' uses C.design.forwardX; any other plane name
         // uses C.design.planes[name] (e.g. finger flexion seen from the back of the hand ≈ out of plane: small fx)
-        const r0 = b.restAnat ?? 0, f = planeFx(b);
+        const r0 = b.restAnat ?? 0, pl = C.design.planes?.[b.plane];
         const parentSame = ps && BONE[b.parent].plane === b.plane;
         anat = parentSame ? ps.anat + (r0 - (BONE[b.parent].restAnat ?? 0)) + d : r0 + d;
         const base = parentSame ? ps.baseRot : (ps ? ps.rot : 0);
-        rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
-        along = projLen(anat, f) / projLen(r0, f);
+        const H3 = pl && typeof pl === 'object' && st[pl.from]?.a3;
+        if (H3?.ncam) {
+          // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
+          // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
+          // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
+          // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
+          // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
+          // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
+          const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
+          const dA = dir(anat), d0 = dir(r0), ang = (q) => Math.atan2(q[1], q[0]) / DEG;
+          rot = base + wrap(ang(dA) - ang(d0));
+          along = Math.max(0.05, Math.hypot(dA[0], dA[1]));
+        } else {
+          const f = planeFx(b);
+          rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
+          along = projLen(anat, f) / projLen(r0, f);
+        }
         st[b.id] = { baseRot: base };
       } else {
         rot = (ps ? ps.rot : 0) + d;

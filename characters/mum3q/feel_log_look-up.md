@@ -130,3 +130,43 @@ are short, thick and parallel ("a bit like a comb or mitten") and its outline bl
 hand on its own was the better drawing. Open in both: the hands barely move through the look up and back; the far
 hand's top edge is a flat line at the underbust with no wrist; the smile shows its teeth in one frame (2.9 → 3.0 s).
 Kept v5. Render: `renders/mum3q_look-up_v5.mp4`.
+
+## v6 — both hands holding the bump, the top one curled over it (Harry on v5)
+Harry (2026-10-13 11:07–11:12) on v5: "Still looks creepy and lifeless. Rather than being a little a curled over the top of
+the bump"; "We won't always have a photo so it should be the reference image. Does it feel natural, does the positioning
+look like an illustration of a human and how they would hold themselves"; "please make sure the skill is really learning
+from these corrections". New stills q_k4_down (both hands holding the bump) disagreed on which hand is on top; Harry
+picked "keep far on top" on a decision card (11:28). What was done (lesson 51):
+1. **Both arms placed on still q_k4_down_0 with the arm it shows** (`hand_place.py --hide none`, `--fore` for the far arm
+   coming down past her bust, `--elbow` for the near one): the far hand curled over the top of the bump, the near hand
+   holding its underside, the thumb above. Engine: a reach restores the keyed arm when the 3D solve lands on the mirror
+   branch, and `keyedArm: true` stops keep the fitted arm (the far elbow had hopped 40–70 px between frames); `qa_checks`
+   now fails an elbow that jumps while its wrist holds.
+2. **Shapes picked side by side with the still** (new `tools/hand_shapes.py`). The first `hold` (70–85° curl) drew "a
+   mitten", the first `cradle` (75–90°) "a rake". Now the top hand's fingers are long and step down in a diagonal, curled
+   in the middle and end joints, and the hand lies palm DOWN onto the dome (`--palm-down 0.55`) so the curl bends them
+   down over it on screen (facing away from us, any curl only shortened them: "straight planks"). The lower hand's
+   fingers lie together, nearly straight along the curve. A heel pad rounds the far wrist (it had a pointed corner).
+3. **Life a viewer sees.** Two fresh reviewers saw "the hands look identical in every frame" with 2–4 px settles. Now: a
+   caress while she looks down (the top hand turns about its wrist and slides down the dome, the lower one strokes along
+   the underside, half a beat behind), the cradle lifts the bump as she breathes in to look up, a squeeze as she smiles, a
+   long stroke through the smile, a settle as her eyes come back. The alive gate is 5 px on her in every 2 s (was 1.5).
+   The wrist slides only ~6 px: a 14–18 px slide pulled the far forearm in behind her bust (its strip lost 35% of its
+   area); a forearm twist opened a white gap under her bust (73 px; now ≤ 13 with a fuller forearm edge).
+4. **Face and timing.** Looking down, the eyes are open under heavy half-lowered lids (first "closed slits", then "wide-
+   eyed") and the head bows a little deeper. The look up's breakdown is half way in the head (its still, q_k_mid_2, is
+   85% up: the lift had happened in 0.3 s).
+
+Checks on the final render: QA PASS (alive 5 px, limbs, elbow gate), tip_check PASS both hands, char_check ok, the far
+arm's visible strip ±17% over the shot (it narrows slowly as her chest opens), mum3 and mum2 unchanged (pose diff 0).
+mum3 breathe-stroke declares its deep breath (3.0–5.7 s) a deliberate hold for the new 5 px floor.
+
+Reviews (fresh each round):
+- Blind A/B v6 draft vs v5: **v6 6.5, v5 5.5** ("Y's far hand clearly belongs to an arm"); both hands frozen at phone size.
+- Natural lens round 2: NOT YET (top hand a mitten, lower fingers a rake, hands invisible-alive, eyes closed, lift brisk).
+- Blind A/B round 3 vs v5: **v6 6.5, v5 5, ~75%** (the far arm doing something, the eyes-first unhurried look up, the
+  eyes visibly on the bump); against v6: the far hand mitten-like with a wrist lump, a white notch at 1.2–1.4 and
+  5.1–5.5 s, the body hardly joins the look up.
+- Natural lens round 3: NOT YET (top fingers straight planks, not curving down the dome; a knob at the far wrist, "a hand
+  out of an elbow"; the look-down head too upright and wide-eyed). Answered by palm-down, the lids, the head bow, the
+  fuller forearm.

@@ -1,6 +1,6 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,alive,limbs] [--alive-win 2 --alive-min 1.5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
@@ -10,11 +10,13 @@
 //             hands come (< 15 px reads as merged unless they deliberately touch), and the wrist angle running ONE way
 //             through each move (a reversal > 4° reads as springy overshoot)
 //     alive   no hand freezes ON HER: within every --alive-win s (2) each visible hand's wrist, fingertip or outline
-//             moves ≥ --alive-min px (1.5) relative to her belly (Harry on mum3q v5: "creepy and lifeless" — a hand pixel-identical at 1, 4
-//             and 7 s while her head and breath moved; the whole-frame still check can't see it). A hand resting on her
-//             rides her breath and settles a finger now and then. A deliberate hold: spec.qa.still {near|far: [[t0, t1, why]]}
+//             moves ≥ --alive-min px (5, at 1080 wide) relative to her belly (Harry on mum3q v5: "creepy and lifeless" — a hand
+//             pixel-identical at 1, 4 and 7 s while her head and breath moved; the whole-frame still check can't see it). 5 px,
+//             not 1.5: mum3q v6's hands passed at 1.5 with 2–4 px finger settles and both fresh reviewers still saw "the hands
+//             look identical in every frame" at phone size (lesson 51). A hand resting on her caresses, presses or strokes in
+//             moves of 10–20 px; a deliberate hold: spec.qa.still {near|far: [[t0, t1, why]]}
 //     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (exceptions: spec.qa.limbs) (a forearm pointing at the camera reads
-//             as an arm that shrinks)
+//             as an arm that shrinks); and no elbow jumps > 6 px in a frame while its wrist stays (the arm solve changing branch)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -128,7 +130,7 @@ if (!skip.has('hands')) {
   }
   if (!skip.has('alive')) {
     // a frozen hand: every point we track (wrist, middle fingertip, the hand's outline box) moves < min px in a window
-    const win = Math.round(+arg('alive-win', 2) * spec.fps), min = +arg('alive-min', 1.5), EXS = spec.qa?.still || {};
+    const win = Math.round(+arg('alive-win', 2) * spec.fps), min = +arg('alive-min', 5), EXS = spec.qa?.still || {};
     for (const side of sides) {
       // measured relative to her body (the belly), so a hand pinned to her and carried by her breath still counts as
       // frozen if it never moves ON her: that is what reads as a stuck-on, lifeless hand
@@ -161,7 +163,18 @@ if (!skip.has('limbs')) {
   if (segs.length) {
     console.log(`limbs: drawn length of each 3D arm segment (want ≥ ${lim} of its length all shot)`);
     const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]])), hi = Object.fromEntries(segs.map((b) => [b, 0]));
-    for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) { if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; hi[b] = Math.max(hi[b], st[b].a3.len); } }
+    const sc = (p) => rig.toScreen(p, { frame: 'still' }), sides = [...new Set(segs.map((b) => b.split('.')[1]))], EW = Object.fromEntries(sides.map((s_) => [s_, []]));
+    for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) { if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; hi[b] = Math.max(hi[b], st[b].a3.len); }
+      for (const s_ of sides) EW[s_].push([sc(st[`forearm.${s_}`].pos), sc(st[`hand.${s_}`].pos)]); }
+    // ELBOW POPS: the elbow jumps while its wrist stays put — the arm solve hopped to another arm that puts the hand in the
+    // same place (mum3q look-up v6 draft: the far elbow 40–70 px between frames under a hand pinned to the bump; the frame
+    // check missed it, the arm being half behind her bust). A real arm moves its elbow with its hand.
+    for (const s_ of sides) {
+      const pops = []; const E = EW[s_], n_ = E.length;
+      for (let i = 0; i < n_ - (spec.loop ? 0 : 1); i++) { const [e0, w0] = E[i], [e1, w1] = E[(i + 1) % n_], de = Math.hypot(e1[0] - e0[0], e1[1] - e0[1]), dw = Math.hypot(w1[0] - w0[0], w1[1] - w0[1]);
+        if (de > 6 && de > 3 * dw + 2) pops.push(`${(i / spec.fps).toFixed(2)} s (elbow ${de.toFixed(0)} px, wrist ${dw.toFixed(1)})`); }
+      gate(!pops.length, `${s_} elbow moves with its hand (no jump > 6 px in a frame while the wrist stays): ${pops.length ? 'POPS at ' + pops.slice(0, 6).join(', ') + (pops.length > 6 ? ` … ${pops.length} in all` : '') + ' — the arm solve changed branch: keep the keyed arm (reach stop keyedArm: true)' : 'yes'}`);
+    }
     // spec.qa.limbs[segment]: a shot's stated exception — {hidden: why} (drawn behind her body, inside her outline: its
     // length can't be seen) or {min, note} (foreshortened BY DESIGN, as in the stills: the far hand lying over the top of
     // the bump, edge-on). A designed foreshortening must still HOLD its size: the gate then wants max/min ≤ 1.1 (an arm

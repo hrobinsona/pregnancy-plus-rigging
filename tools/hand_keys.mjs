@@ -2,18 +2,27 @@
 // Called by tools/hand_place.py --keys (which marks nothing itself: the points are measured by eye on the still and
 // recorded in refs/fit_keys.sh; the body silhouette comes from renders).
 //   node tools/hand_keys.mjs <char> <pose> --side far --keys wx,wy[,kx,ky],tx,ty --sil out/_sil.json [--hand <shape>]
-//        [--bones upperArm,forearm,hand,armAbd,armRot,foreRot] [--seed a,b,...]... [--restarts N] [--natural]
-//        [--fore fx,fy] [--hide arm|upper] [--margin ua,fa]
+//        [--bones upperArm,forearm,hand,armAbd,armRot,foreRot] [--seed a,b,...]... [--restarts N] [--natural [--palm-down D]]
+//        [--fore fx,fy] [--elbow ex,ey] [--hide arm|upper|none] [--margin ua,fa] [--hang 0.55] [--hand-len 0.25]
 // keys (still px): W the wrist (where the hand comes out from behind her), K the middle knuckle (optional), T the centroid
 // of the four fingertips. cost = rms px over the keys + a penalty for each sample of the upper arm and forearm that comes
 // closer than its drawn half-width to the body's outline or leaves it (the last 20% of the forearm may: the wrist
 // emerges there; so may the upper arm's top fifth, the shoulder's cap is part of the drawing) + a weak pull to the seed (an arm has many ways to put a hand somewhere; keep the one nearest the fitted arm).
 // --fore: a point on a forearm the still SHOWS — its distance to the drawn forearm joins the rms, and --hide upper then
-// keeps only the upper arm hidden.
+// keeps only the upper arm hidden. --elbow: the still's elbow, a key too. --hide none: a VISIBLE arm (the near hand
+// curled over the top of the bump, q_k4_down: the estimator's wrist is right, but the drawn forearm is shorter than the
+// illustration's, so a joint fit leaves the hand 50 px low; W, K, T and the elbow put the hand where the still has it).
 // --natural: the arm must also be one a body can make, judged in 3D (rig.js arm3's frame: F forward, D down, L out to the
-// side): the upper arm hangs (D ≥ 0.55) with the elbow out at her side (L ≥ 0.1, not through her chest), and the BACK
+// side): the upper arm hangs (D ≥ --hang, default 0.55; lower it for an elbow lifted out to the side) with the elbow out at her side (L ≥ 0.1, not through her chest), and the BACK
 // of the hand faces us (the drawn hand is always its back view). Without it the best rms on q_k3 put the elbow inside
 // her bust with the upper arm reaching across her chest toward the camera (PIPELINE lesson 49).
+// --hand-len L (with --natural): the hand's drawn length (a3.len) ≥ L. An illustration draws a hand resting on her nearly
+// unforeshortened, whatever the 3D says (q_k4_down_0's top hand); a hand solved pointing at the camera (0.68) read as a
+// stubby mitten in flat style (v6 draft, natural lens: "a block, three thick grooves"). 0.9 for a hand on the bump.
+// --palm-down D (with --natural): the palm normal's screen-down component (a3.ncam[1]) ≥ D. A hand lying on the TOP of the
+// dome, seen from the front, faces down onto it; then its curl bends the fingers down over the dome ON SCREEN. With the
+// palm normal pointing mostly away from us (q_k4_down's first solve: ncam (−0.41, 0.39, 0.82)) a 3D curl only
+// foreshortens the fingers: "straight planks", "a mitten" (natural lens, v6 rounds 1–3). ~0.6 for a hand on top of the bump.
 // --restarts N: N deterministic random seeds over the bones' ranges (with --natural there is no trustworthy fitted arm).
 // Leave K out when the still's palm is foreshortened more than its fingers (a hand curving over the dome toward us):
 // the drawn fingers never foreshorten, so W, K and T can't all be met (q_k3: 22 px rms with K, 3 px without).
@@ -32,8 +41,8 @@ if (arg('hand')) base.hands = { ...(base.hands || {}), [side]: arg('hand') };
 const BONE = Object.fromEntries(C.bones.map((b) => [b.id, b]));
 const names = arg('bones', 'upperArm,forearm,hand,armAbd,armRot,foreRot').split(',').map((b) => `${b}.${side}`);
 const K = arg('keys').split(',').map(Number), KW = [K[0], K[1]], KK = K.length === 6 ? [K[2], K[3]] : null, KT = K.slice(-2);
-const natural = argv.includes('--natural'), SL = +arg('slack', 8);
-const KF = arg('fore') ? arg('fore').split(',').map(Number) : null, hideFore = arg('hide', 'arm') === 'arm';
+const natural = argv.includes('--natural'), SL = +arg('slack', 8), HANG = +arg('hang', 0.55), HLEN = +arg('hand-len', 0.25), PDOWN = +arg('palm-down', -1);
+const KF = arg('fore') ? arg('fore').split(',').map(Number) : null, KE = arg('elbow') ? arg('elbow').split(',').map(Number) : null, hide = arg('hide', 'arm'), hideFore = hide === 'arm';
 const segD2 = (p, a, b) => { const d = [b[0] - a[0], b[1] - a[1]], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / ((d[0] ** 2 + d[1] ** 2) || 1))); return d2(p, [a[0] + t * d[0], a[1] + t * d[1]]); };
 const sil = JSON.parse(fs.readFileSync(arg('sil'))), y0 = sil.y0;          // sil.rows[y - y0] = [[x0, x1], ...] inside the body
 const G = C.ref.groundPx, Hpx = C.ref.Hpx, px = (p) => [G[0] + p[0] * Hpx, G[1] + p[1] * Hpx];
@@ -56,15 +65,15 @@ function measure(x) {
 }
 const d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
 function cost(x, seed) {
-  const m = measure(x), terms = [d2(m.W, KW), ...(KK ? [d2(m.K, KK)] : []), d2(m.T, KT), ...(KF ? [segD2(KF, m.E, m.W)] : [])], rms = Math.sqrt(terms.reduce((a, v) => a + v, 0) / terms.length);
+  const m = measure(x), terms = [d2(m.W, KW), ...(KK ? [d2(m.K, KK)] : []), d2(m.T, KT), ...(KF ? [segD2(KF, m.E, m.W)] : []), ...(KE ? [d2(m.E, KE)] : [])], rms = Math.sqrt(terms.reduce((a, v) => a + v, 0) / terms.length);
   let out = 0;
-  for (let u = 0.2; u <= 1.001; u += 0.1) { const q = [m.S[0] + u * (m.E[0] - m.S[0]), m.S[1] + u * (m.E[1] - m.S[1])]; out += Math.max(0, MU - margin(q)) ** 2; }
+  if (hide !== 'none') for (let u = 0.2; u <= 1.001; u += 0.1) { const q = [m.S[0] + u * (m.E[0] - m.S[0]), m.S[1] + u * (m.E[1] - m.S[1])]; out += Math.max(0, MU - margin(q)) ** 2; }
   if (hideFore) for (let u = 0; u <= 0.8; u += 0.1) { const q = [m.E[0] + u * (m.W[0] - m.E[0]), m.E[1] + u * (m.W[1] - m.E[1])]; out += Math.max(0, MF * (1 - 0.6 * u) - margin(q)) ** 2; }
   const reg = x.reduce((a, v, i) => a + (v - seed[i]) ** 2, 0) * (natural ? 0.0002 : 0.002);
   // a body's arm: hanging, elbow out at her side, the back of the hand to us (ha.ncam[2] = the palm normal's depth, + = away)
   // … and every joint 8° clear of its limit: the shot's reach (keepSize) and fidgets need room to move it (q_k3 at the
   // wrist's −60° flexion limit: keepSize couldn't hold the hand's size, 36–43%)
-  const nat = natural ? 30 * (Math.max(0, 0.55 - m.ua.v[1]) + Math.max(0, 0.1 - m.ua.v[2]) + Math.max(0, 0.3 - m.ha.ncam[2]) + Math.max(0, 0.25 - m.ha.len))
+  const nat = natural ? 30 * (Math.max(0, HANG - m.ua.v[1]) + Math.max(0, 0.1 - m.ua.v[2]) + Math.max(0, 0.3 - m.ha.ncam[2]) + Math.max(0, HLEN - m.ha.len) + Math.max(0, PDOWN - m.ha.ncam[1]))
     + 0.05 * x.reduce((a, v, i) => { const b = BONE[names[i]]; return a + Math.max(0, SL - (v - (b.min ?? -180))) ** 2 + Math.max(0, SL - ((b.max ?? 180) - v)) ** 2; }, 0) : 0;
   return { c: rms + 0.5 * Math.sqrt(out) + reg + nat, rms, out: Math.sqrt(out), nat };
 }
@@ -93,4 +102,4 @@ for (const sd of seeds) {
   if (!best || c.c < best.c) best = { x, ...c };
 }
 const { ua, ha, ...m } = measure(best.x);
-console.log(JSON.stringify({ names, x: best.x.map((v) => +v.toFixed(1)), cost: +best.c.toFixed(2), rms: +best.rms.toFixed(1), out: +best.out.toFixed(1), ...(natural ? { len: +ha.len.toFixed(2), back: +ha.ncam[2].toFixed(2), elbowOut: +ua.v[2].toFixed(2) } : {}), at: Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.map(Math.round)])) }));
+console.log(JSON.stringify({ names, x: best.x.map((v) => +v.toFixed(1)), cost: +best.c.toFixed(2), rms: +best.rms.toFixed(1), out: +best.out.toFixed(1), ...(natural ? { len: +ha.len.toFixed(2), back: +ha.ncam[2].toFixed(2), palmDown: +ha.ncam[1].toFixed(2), elbowOut: +ua.v[2].toFixed(2) } : {}), at: Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.map(Math.round)])) }));
