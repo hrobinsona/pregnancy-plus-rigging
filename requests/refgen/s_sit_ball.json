@@ -1,9 +1,0 @@
-{
-  "char": "mum3",
-  "name": "s_sit_ball",
-  "prompt_file": "docs/prompts/s_sit_ball.txt",
-  "refs": [
-    "characters/mum3/ref/master.png"
-  ],
-  "n": 3
-}
