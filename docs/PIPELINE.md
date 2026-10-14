@@ -558,6 +558,19 @@ or composited.
    Rules: when a reviewer names a shape, overlay that region on the still (`mask_overlay.py`) before tuning; the two
    numbers show each fix at once. Measure a curve's tangents, not only its rows; a tip's spacing and a thumb's length,
    not only the tips' centroid. Look down with a roll of the head before a deeper nod.
+57. **At phone size an eye reads by its dark mass, not its white: test a feature's redraw blind at film size before
+   keeping it.** mum3q look-up v14 → v16. The natural lens on v14 read the look-down eyes as "slits… looking forward and
+   to the side, sleepy or smug", against stills that show the white above and behind an iris resting on the lower lid.
+   The eye was one dark oval that the gaze slid whole, so it couldn't show a white. `parts/head.js` can now draw a white
+   opening the lids shape and an iris the gaze moves inside it (`P.eyeLook`: the opening rides the gaze ×`lidK`, the iris
+   ×`irisK`, shrinking to `irisR` off-centre; the white fades in with the offset, so at rest the eye is the master's dark
+   oval to the pixel). Zoomed beside the still it matched. Blind, at phone size, it lost twice to the dark oval:
+   - v15 (lids .75/.25, the iris well down): "wide open with white all round… a cartoon eyes-down, a side-glance";
+   - v16 (v14's heavy lids, a white wedge beside the iris): "a short dark slash… heavier, sleepier".
+   The white is light on light skin and vanishes at phone size; what's left is a smaller dark shape. The natural lens on
+   v15 said the eyes "landed", yet both A/Bs preferred v14. mum3q keeps `eyeLook` {1, 1, 1} (the old drawing).
+   Rules: judge a feature's redraw at the size the film is watched, blind against the version before, not only zoomed
+   beside the still. A light detail (a white, a highlight) only reads if the dark shape around it still does.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

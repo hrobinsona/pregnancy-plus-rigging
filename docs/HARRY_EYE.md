@@ -130,3 +130,6 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     "a stubby paw" (the top tips stacked: a square knuckle line), "a corner" (the bump's rows matched, its tangents
     didn't), "a stub thumb" (8 px short, the fingers fat), and a look-down "bowed too deep" (a nod where the stills tip
     the head). · `mask_overlay.py` (still only / render only, px) + eye · 56
+23. **Do the eyes read as looking where she looks, AT PHONE SIZE?** Judge the dark mass (iris and lash line) at film
+    size: mum3q's look-down eyes with a white, matched to the still zoomed, lost two blind A/Bs to a plain dark oval
+    ("white all round… a side-glance"; "a short dark slash"). · blind A/B at film size + eye · 57

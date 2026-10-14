@@ -17,7 +17,7 @@ const jt = (k) => at(L.joints[k]);
 const F = L.face, fa = (k) => at(F[k]);
 const W = (k, f) => { const s = L.widths[k].find((q) => Math.abs(q.f - f) < 0.01); return { front: s.l / Hpx, back: s.r / Hpx }; };   // measured half-widths across a limb (front = facing side)
 
-export const palette = { ...PAL3, eyeHi: '#fbe9dc', noseLine: '#f2a06f', teeth: '#fcf6f2' };   // mum3's colours; the ¾ eyes carry a catch-light
+export const palette = { ...PAL3, eyeHi: '#fbe9dc', noseLine: '#f2a06f', teeth: '#fcf6f2', eyeWhite: '#fbf8f5' };   // mum3's colours; the ¾ eyes carry a catch-light
 
 // forwardX = cos(yaw): the shoulders measure 0.82 H apart on screen = 2·midL·sin(yaw) with midL 0.6 → yaw ≈ 43°, cos ≈ 0.74
 export const design = { facing: 'right', forwardX: 0.74, ground: '#efe0d0', view: 'q' };
@@ -60,6 +60,11 @@ export const P = {
   face: { cheek: edgeAt(F.eyes[1].c[1]), cheekLow: edgeAt(F.mouth.p[2][1]), jawFront: edgeAt((F.mouth.p[2][1] + F.chinLM[1]) / 2), chin: fa('chinLM'),
           jaw: [-0.02, -6.21], earLow: [-0.11, -6.33], back: [-0.2, -6.55], top: [0.2, -6.95] },
   eyes: { near: eyeOf(F.eyes[0]), far: eyeOf(F.eyes[1]) },   // left of the picture = her near eye (bigger), then the far one, narrower
+  // the gaze can move the iris INSIDE the eye's white opening (parts/head.js): the opening rides it ×lidK, the iris ×irisK,
+  // shrinking to irisR of the opening off-centre. mum3q keeps lidK = irisK = 1 (the whole dark eye slides, no white): with
+  // a white the look-down lost two blind A/Bs to the dark oval, "wide open, white all round… a side-glance" (.3/1.6/.82)
+  // and "a short dark slash… sleepier" (heavy lids): at phone size the dark mass reads, the white doesn't (lesson 57)
+  eyeLook: { lidK: 1, irisK: 1, irisR: 1 },
   brows: { near: strokeOf(F.brows[0]), far: strokeOf(F.brows[1]) },
   mouth: strokeOf(F.mouth),
   nose: { tip: fa('noseTip'), bridge: fa('noseBridge') },

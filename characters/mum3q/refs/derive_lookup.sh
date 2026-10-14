@@ -24,10 +24,12 @@ $B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --not
 python3 tools/pose_set.py mum3q n-down --fx headPitch=14 >/dev/null
 # the breakdown is HALF way in the head (the still q_k_mid_2 is ~85% up: through it the lift happened in 0.3 s, "a little
 # brisk for unhurried", natural lens v6 round 2); the eyes are already on us
-$B n-mid n-base fit-q_k_mid 1 --keep $STILL --from B --hands near=cradle,far=hold --add head=-7,neck=7 --note "half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0"
+$B n-mid n-base fit-q_k_mid 1 --keep $STILL --from B --hands near=cradle,far=hold --add head=-7,neck=7,chest=-1.5 --note "half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0"
 python3 tools/pose_set.py mum3q n-mid --fx headPitch=8 >/dev/null   # half way from n-down's 14 to n-up's 1.6
 # eye contact: the chest opens and the shoulders lift with the breath in (the body joins the look up)
-$B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0"
+# the body joins the look up (v17): the chest lifts and opens 3° more than the still's fit, half of it by the half-way key;
+# with only the head moving, "a head turning on a static body" (both blind A/Bs and the natural lens on v14–v16)
+$B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest lifted and open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0"
 python3 tools/pose_set.py mum3q n-up --scale chest=1.02:1.01 >/dev/null
 # the lift's anticipation: before the head comes up it sinks a touch deeper into the nod (and the shoulders settle)
 $B n-dip n-down --hands near=cradle --add neck=1.5,clavicle.near=-1.5 --note "anticipation before the look up: a touch deeper into the nod"

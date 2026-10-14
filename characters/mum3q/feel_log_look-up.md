@@ -351,3 +351,31 @@ Natural lens on v14: **NOT YET**. Checked against the stills myself (face at 2×
 4. The bump's lower front "a straighter diagonal… a corner": the rows now follow the master; low confidence at that size.
 5. Small: the eyes go round and wide at 2.0 s from a still-bowed head ("peeking"); at 5.9–6.3 s lowered lids with the
    head up read as a sideways glance; the top hand's shadow harder than the still's.
+
+## v15–v16 — eyes with a white (natural lens on v14: "slits… sleepy or smug")
+
+`parts/head.js` gained an eye white (the opening the lids shape) and an iris the gaze moves inside it (`P.eyeLook`; at rest
+the master's dark oval to the pixel). Zoomed beside q_k_down_0 it matched: the white above and behind the iris, the iris
+toward the bump.
+- **v15** (lids .75/.25, gaze .012,.03, the iris ×1.6): blind A/B v15 vs v14: **v14 6.5, v15 6** ("wide open with white
+  all round… a cartoon eyes-down, a side-glance"). Its natural lens (NOT YET) said the eyes "landed" and the neck no
+  longer sunk; still open: the hands' life, the body not joining the look up, the lower fingertips 15–20 px short of the
+  bump's edge, hard contact shadows, the smile not reaching the eyes at 3.5 s, the eyes "peeking" at 2.0 s.
+- **v16** (v14's heavy lids .6/.4, a white wedge, gaze .012,.02): blind A/B v16 vs v14: **v14 6.5, v16 6** ("a short dark
+  slash… heavier, sleepier"; v14's "dark iris showing low… looking at her bump").
+At phone size the white vanishes into the skin and only the dark mass reads: mum3q keeps `eyeLook` {1, 1, 1}, v14's eyes
+(lesson 57).
+
+## v17 — the body joins the look up; the hands' moves larger; the lower tips reach the edge
+
+From the reviews of v14–v16 (all three named them):
+- **The lower fingertips** stopped ~24 px inside the bump's front edge on the film (tip_check; v13 23): the fitted hand on
+  n-down's trunk sits back from where the still has it. Every near reach stop moves 0.06 H forward: 12 px at 0 s, 9 at
+  the stroke's end (tip_check clear ≥ 9 PASS).
+- **The body joins the look up:** n-up's chest lifts and opens 3° more than its still's fit (`--add chest=-3,spineUpper=-1`),
+  n-mid half of it.
+- **The hands' life:** the top hand's two strokes (1.2 s, 4.7 s) slide 1.6× as far, the cradle's lift and strokes 1.6× as
+  high; the smile's squeeze presses half again as much on the top hand and gathers the cradling fingers. Fingertip moves
+  on the bump: near 20 → 26 px over the shot (up to 20 px in a second), far 24 → 26 (16 in a second). Finger-joint
+  fidgets alone barely move a pixel at phone size; whole-hand moves do.
+QA, tip_check both hands, finger angles (worst 2°), handedness PASS; mum2 and mum3 SVG unchanged.

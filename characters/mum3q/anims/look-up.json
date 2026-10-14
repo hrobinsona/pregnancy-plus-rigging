@@ -123,10 +123,10 @@
     "keepSize": true,
     "t": 0.0,
     "dp": [
-     0,
+     0.06,
      0
     ],
-    "note": "the near hand cradles the underside of the bump, palm up, the thumb on its lower front (still q_k4_down_0; Harry's pick 2026-10-13). Pinned to the belly so it rides her breath and the look up; keepSize holds its drawn size"
+    "note": "the near hand cradles the underside of the bump, palm up, the thumb on its lower front (still q_k4_down_0; Harry's pick 2026-10-13). Pinned to the belly so it rides her breath and the look up; keepSize holds its drawn size. Every stop sits 0.06 H further forward than the fitted hand (v17): on n-down's trunk the fitted hand's tips stopped ~24 px short of the bump's front edge, where the still's reach it (natural lens v15); now 12 px, 9 at the stroke's end (tip_check clear ≥ 9)"
    },
    {
     "pose": "n-down",
@@ -135,7 +135,7 @@
     "keepSize": true,
     "t": 0.45,
     "dp": [
-     0,
+     0.06,
      0
     ]
    },
@@ -146,8 +146,8 @@
     "keepSize": true,
     "t": 1.35,
     "dp": [
-     0.024,
-     -0.008
+     0.084,
+     -0.0128
     ],
     "slide": true,
     "handLag": 4,
@@ -160,7 +160,7 @@
     "keepSize": true,
     "t": 2.15,
     "dp": [
-     0,
+     0.06,
      0
     ],
     "slide": true,
@@ -173,8 +173,8 @@
     "keepSize": true,
     "t": 3.2,
     "dp": [
-     0.01,
-     -0.05
+     0.07,
+     -0.08
     ],
     "slide": true,
     "handLag": 4,
@@ -187,8 +187,8 @@
     "keepSize": true,
     "t": 4.4,
     "dp": [
-     0.01,
-     -0.05
+     0.07,
+     -0.08
     ],
     "slide": true
    },
@@ -199,8 +199,8 @@
     "keepSize": true,
     "t": 5.4,
     "dp": [
-     0.03,
-     -0.03
+     0.09,
+     -0.048
     ],
     "slide": true,
     "handLag": 4,
@@ -213,7 +213,7 @@
     "keepSize": true,
     "t": 6.6,
     "dp": [
-     0,
+     0.06,
      0
     ],
     "slide": true,
@@ -257,8 +257,8 @@
     "keyedArm": true,
     "t": 1.2,
     "dp": [
-     -0.005,
-     0.025
+     -0.008,
+     0.04
     ],
     "slide": true,
     "handLag": 4,
@@ -302,8 +302,8 @@
     "keyedArm": true,
     "t": 4.7,
     "dp": [
-     -0.006,
-     0.03
+     -0.0096,
+     0.048
     ],
     "slide": true,
     "handLag": 4,
@@ -714,23 +714,31 @@
    "t1": 4.2,
    "cycles": 1,
    "bones": {
-    "hand.far.f1a": 6,
-    "hand.far.f2a": 6,
-    "hand.far.f3a": 5,
-    "hand.far.f4a": 4,
-    "hand.far.wristFlex": -8
+    "hand.far.f1a": 10,
+    "hand.far.f2a": 10,
+    "hand.far.f3a": 9,
+    "hand.far.f4a": 7,
+    "hand.far.f1b": -4,
+    "hand.far.f2b": -4,
+    "hand.far.f3b": -4,
+    "hand.far.f4b": -4,
+    "hand.far.wristFlex": -14
    },
-   "note": "as the smile blooms the top hand gives the bump a small squeeze (the fingers press on over the dome, the wrist dips) and lets go: the hands answer her smile (natural lens: 'nothing answers the smile at 3.0–3.4 s'). A draped hand presses at its knuckles: v9's +11–14° into a 48° bend curled it to a block (lesson 54)"
+   "note": "as the smile blooms the top hand gives the bump a small squeeze (the fingers press on over the dome, the wrist dips) and lets go: the hands answer her smile (natural lens: 'nothing answers the smile at 3.0–3.4 s'). A draped hand presses at its knuckles: v9's +11–14° into a 48° bend curled it to a block (lesson 54). v17: half again as much (knuckles +7–10°, the finger joints straightening 4°, the wrist dipping 14°): at +4–6° neither blind reviewer saw it at phone size ('neither hand presses, shifts or settles' as she smiles)"
   },
   {
    "t0": 3.4,
    "t1": 4.3,
    "cycles": 1,
    "bones": {
-    "hand.near.t1": 8,
-    "hand.near.ts": -6
+    "hand.near.t1": 12,
+    "hand.near.ts": -10,
+    "hand.near.f1a": 6,
+    "hand.near.f2a": 6,
+    "hand.near.f3a": 5,
+    "hand.near.f4a": 4
    },
-   "note": "and the near thumb presses with it, 3 frames later"
+   "note": "and the near thumb presses with it, 3 frames later. v17: the cradling fingers gather with it (+4–6° at the knuckles) and the thumb presses further"
   },
   {
    "t0": 0.3,

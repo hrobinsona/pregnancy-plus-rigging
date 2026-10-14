@@ -17,7 +17,7 @@ const mouthLib = (m) => {
   return { smile: mk(1, 1, 1), warm: mk(1.08, 1.25, 1.1, 0.008), neutral: mk(0.9, 0.35, 0.42), soft: mk(0.62, 0.3, 1.05), beam: mk(1.12, 1.3, 0.5, 0.012) };
 };
 
-export const ANCHORS = { 'face': 11, 'ear': 4, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'eye.near.hi': 4, 'eye.far.hi': 4, 'brow.near': 12, 'brow.far': 12, 'nose': 12, 'mouth': 12, 'mouth.open': 8, 'mouth.teeth': 8, 'jaw.shade': 6, 'lash.near': 14, 'lash.far': 14 };
+export const ANCHORS = { 'face': 11, 'ear': 4, 'ear.inner': 4, 'eye.near': 4, 'eye.far': 4, 'eye.near.white': 4, 'eye.far.white': 4, 'eye.near.hi': 4, 'eye.far.hi': 4, 'brow.near': 12, 'brow.far': 12, 'nose': 12, 'mouth': 12, 'mouth.open': 8, 'mouth.teeth': 8, 'jaw.shade': 6, 'lash.near': 14, 'lash.far': 14 };
 
 export function build({ P: C, C: char, pose }) {
   const X = char.params.P, f = X.face, out = [];
@@ -43,11 +43,18 @@ export function build({ P: C, C: char, pose }) {
   const e = X.ear;
   out.push(part('ear', 47, C.skin, ellipse(e.c, e.rx, e.ry, e.rot)));
   out.push(part('ear.inner', 47.5, C.earIn, taper([[e.c[0] + 0.01, e.c[1] - 0.075], [e.c[0] + 0.035, e.c[1] - 0.005], [e.c[0] + 0.015, e.c[1] + 0.07]], [0.006, 0.02, 0.004])));
-  // eyes: dark ovals with a catch-light; the lid channels squash each toward its lower third (as mum3), gaze slides both
+  // eyes: the WHITE of each eye (its opening, which the lids shape: squashed toward its lower third, as mum3) and the dark
+  // iris the gaze moves inside it, with a catch-light. At rest the iris fills the opening, as the master draws it. With
+  // P.eyeLook {lidK, irisK, irisR} the opening rides the gaze ×lidK and the iris ×irisK, so looking away the white shows
+  // beside it; {1, 1, 1} slides the whole dark eye with no white (mum3q: the white lost two blind A/Bs at phone size,
+  // "a side-glance", "a dark slash"; lesson 57)
   const lw = pose.face?.lid, sm = wsum(lw, 'smile'), hf = wsum(lw, 'half'), open = lw ? wsum(lw, 'open') + 1.2 * wsum(lw, 'wide') + sm + hf : 1, g = pose.face?.gaze || [0, 0];
+  const EYE = X.eyeLook || { lidK: 0.3, irisK: 1.6, irisR: 0.82 }, gOff = Math.hypot(g[0], g[1]) * (EYE.irisK - EYE.lidK);
   for (const side of ['near', 'far']) {
-    const E = X.eyes[side], c = [E.c[0] + g[0], E.c[1] + g[1]], ry = Math.max(E.rx, E.ry) * Math.abs(Math.sin(E.rot * Math.PI / 180)) + Math.min(E.rx, E.ry) * Math.abs(Math.cos(E.rot * Math.PI / 180));
-    const fx = [];   // the lid channels as point maps, applied to the eye AND its lash line
+    const E = X.eyes[side], c = [E.c[0] + g[0] * EYE.lidK, E.c[1] + g[1] * EYE.lidK], ry = Math.max(E.rx, E.ry) * Math.abs(Math.sin(E.rot * Math.PI / 180)) + Math.min(E.rx, E.ry) * Math.abs(Math.cos(E.rot * Math.PI / 180));
+    // the iris: the opening's own oval at rest (no white shows), shrinking to irisR of it as it moves off-centre
+    const kI = Math.min(1, gOff / 0.02), rI = 1 - (1 - EYE.irisR) * kI, ci = [E.c[0] + g[0] * EYE.irisK, E.c[1] + g[1] * EYE.irisK];
+    const fx = [];   // the lid channels as point maps, applied to the opening AND its lash line
     if (open < 0.999) { const yc = c[1] + ry * 0.35, k = Math.max(0.08, open); fx.push((p) => [p[0], yc + (p[1] - c[1]) * k + (c[1] - yc) * open]); }
     else if (open > 1.001) fx.push((p) => [c[0] + (p[0] - c[0]) * (1 + (open - 1) * 0.4), c[1] + (p[1] - c[1]) * open]);
     if (sm > 0 || hf > 0) { const cy = c[1] + ry * 0.35 * (1 - Math.min(1, open)), fB = Math.max(-0.6, 1 - 2.2 * sm), fT = Math.max(0.06, 1 - 2.2 * hf);
@@ -57,7 +64,9 @@ export function build({ P: C, C: char, pose }) {
       fx.push((p) => [p[0], p[1] > cy ? Math.max(cy - 0.35 * ry * sm, cy + (p[1] - cy) * fB - arch(p[0])) : cy + (p[1] - cy) * fT]); }
     const lid = (p) => fx.reduce((q, f) => f(q), p);
     const ft = { warp: 'feature', warpAt: c };   // a nod moves the eye, its catch-light and lashes as one, without shearing them (engine/rig.js)
-    out.push(part(`eye.${side}`, 53, C.eye, mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid), ft));
+    // the white fades in as the iris leaves the centre (at rest it would only ring the iris's edge with a lighter pixel)
+    out.push(part(`eye.${side}.white`, 52.9, C.eyeWhite, mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid), { ...ft, opacity: Math.min(1, gOff / 0.006) }));
+    out.push(part(`eye.${side}`, 53, C.eye, kI > 0 ? ellipse(ci, E.rx * rI, E.ry * rI, E.rot) : mapGeom(ellipse(c, E.rx, E.ry, E.rot), lid), { ...ft, ...(kI > 0 ? { clip: `eye.${side}.white` } : {}) }));
     // the upper lid's lash line, as in the still: over the eye's top from the inner corner, thickening to the outer corner and
     // flicking out past it (the near eye's outer corner is on the left, toward the ear; the far eye's on the right)
     const ca = Math.cos(E.rot * Math.PI / 180), sa = Math.sin(E.rot * Math.PI / 180);
@@ -67,9 +76,10 @@ export function build({ P: C, C: char, pose }) {
     const lash = angs.map(onEye), o = lash[4];
     lash.push([o[0] + s * 0.03, o[1] - 0.012]);
     out.push(part(`lash.${side}`, 53.6, C.eye, taper(lash.map(lid), [0.005, 0.012, 0.016, 0.019, 0.017, 0.005], 'round'), ft));
-    // the catch-light shrinks away as the lid closes or the smile lifts the lower lid
-    const hk = Math.max(0, Math.min(1, open) - 0.6 * sm - 0.7 * hf) ** 1.5, hr = 0.014 * (side === 'near' ? 1 : 0.85) * hk;
-    out.push(part(`eye.${side}.hi`, 53.5, C.eyeHi, ellipse([E.hi[0] + g[0], E.hi[1] + g[1] - (1 - Math.min(1, open)) * 0.01], Math.max(1e-4, hr), Math.max(1e-4, hr)), ft));
+    // the catch-light shrinks away as the lid closes, the smile lifts the lower lid or the iris looks away (the stills'
+    // look-down eyes have none: off-centre it sat on the skin below the lid)
+    const hk = Math.max(0, Math.min(1, open) - 0.6 * sm - 0.7 * hf) ** 1.5 * (1 - kI), hr = 0.014 * (side === 'near' ? 1 : 0.85) * hk;
+    out.push(part(`eye.${side}.hi`, 53.5, C.eyeHi, ellipse([E.hi[0] + ci[0] - E.c[0], E.hi[1] + ci[1] - E.c[1] - (1 - Math.min(1, open)) * 0.01], Math.max(1e-4, hr), Math.max(1e-4, hr)), ft));
   }
   // brows: tapered arcs through the measured brows (measured thickness + the anti-aliased pixel on each edge that the
   // dark-run scan leaves out), lifting with wide eyes, dropping with closed ones; worry lifts the inner

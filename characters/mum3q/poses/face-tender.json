@@ -1,6 +1,6 @@
 {
  "name": "face-tender",
- "note": "looking down at her bump: the eyes OPEN under heavy, half-lowered upper lids, the irises low, the gaze down, as the stills draw it (q_k_down_0, q_k4_down_0); no smile crescent on the lower lid; the brows relaxed (brow.soft), a warm smile. v6's first lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 read 'wide-eyed, glancing sideways'. Picked side by side with the still (tools/hand_shapes.py --face)",
+ "note": "looking down at her bump: the eyes OPEN under heavy, half-lowered upper lids, the irises low, the gaze down, as the stills draw it (q_k_down_0, q_k4_down_0); no smile crescent on the lower lid; the brows relaxed (brow.soft), a warm smile. v6's first lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 read 'wide-eyed, glancing sideways'. Picked side by side with the still (tools/hand_shapes.py --face). v15\u2013v16 tried an eye with a white, the iris down toward the bump inside it (parts/head.js eyeLook): both lost blind to this dark oval at phone size ('white all round\u2026 a side-glance'; 'a short dark slash\u2026 sleepier'), so it stays (lesson 57)",
  "face": {
   "lid": {
    "open": 0.6,
