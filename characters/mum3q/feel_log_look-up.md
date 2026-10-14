@@ -447,3 +447,20 @@ Results on v18:
   top wrist's mass hangs ~10 px below the still's, with a notch in the hand's lower edge (overlay: 729 px). Also the
   lower fingers at 3.0–3.5 s "a rake". Its "no"s now include the neck, the shadows, both hands' handedness and angles,
   the top hand's shape, the timing.
+
+## v22 — the still's heavy look-down lid; the top wrist's mass raised to the still's
+
+- **Look-down lids** .75/.25 → .6/.4 (v14's heavy lid) WITH v18's white and forward iris, gaze (.022, .02): a flat lid
+  line over an iris low on the lower lid, as q_k_down_0 (side by side at film size: v18's .75/.25 arched clear of a high
+  iris, "looking off to her right", natural lens v20). The eyes go back down with the head at 6.4 s, the lips at 6.55.
+- **The top wrist's mass** (endOn shift [−0.02, −0.03]): overlaid at the film's 0 s its end hung ~10 px below the
+  still's; 729 → 582 px of mismatch.
+- **Blind v22 vs v21: v22 6.5, v21 6.** "Y's eyes read as cast down at her bump. X's round dark eye-dots read as open
+  and looking off to the right… a real downward gaze brings the upper lid down with the eye"; the lids lift at 1.9–2.1 s
+  "just before the head starts up… the eyes lead the head"; the mass "tucked tighter and rounder… less like a soft blob".
+  Risk named: at 7.8–7.9 s the flat lid over a forward iris comes close to "side-eye". In both: the top wrist's mass
+  still past the bump's silhouette, "a mitten-like lump"; the lower fingers "a rake" at 3–4 s, the lower hand moving as
+  one block at 2–3 s; the top hand not visibly alive at phone size.
+- So the heavy lid that read "sleepy, smug" on v14–v17 reads "cast down at her bump" once the eye has the still's white
+  and forward iris: the lid and the iris are one shape (lesson 57).
+- QA PASS; mum2 and mum3 SVG unchanged (no engine change).

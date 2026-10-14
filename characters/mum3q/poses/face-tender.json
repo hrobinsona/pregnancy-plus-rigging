@@ -1,14 +1,14 @@
 {
  "name": "face-tender",
- "note": "looking down at her bump as the stills draw it (q_k_down_0, q_k4_down_0): the eyes OPEN under heavy upper lids, a big dark iris pushed forward toward the bump with a sliver of white behind it (params eyeLook), the brows relaxed (brow.soft), a closed warm smile, a touch slimmer than the look-up's. History: v6's lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 with no white read 'wide-eyed, glancing sideways'; v15–v16's whites with the gaze mostly down showed white all round ('a side-glance') and lost blind; v17's dark oval (open 0.6 + half 0.4, no white) read 'sleepy, or smug' with the full warm mouth ('a wide crescent'). v18: the still's eye measured side by side at film size (lesson 57)",
+ "note": "looking down at her bump as the stills draw it (q_k_down_0, q_k4_down_0): the eyes OPEN under heavy upper lids, a big dark iris pushed forward toward the bump with a sliver of white behind it (params eyeLook), the brows relaxed (brow.soft), a closed warm smile, a touch slimmer than the look-up's. History: v6's lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 with no white read 'wide-eyed, glancing sideways'; v15–v16's whites with the gaze mostly down showed white all round ('a side-glance') and lost blind; v17's dark oval (open 0.6 + half 0.4, no white) read 'sleepy, or smug' with the full warm mouth ('a wide crescent'). v18: the still's eye measured side by side at film size (lesson 57); v22: its heavy lid too (open .6 + half .4: a flat lid line over an iris low on the lower lid; v18's .75/.25 arched over a high iris and read 'looking off to her right', natural lens v20)",
  "face": {
   "lid": {
-   "open": 0.75,
-   "half": 0.25
+   "open": 0.6,
+   "half": 0.4
   },
   "gaze": [
    0.022,
-   0.014
+   0.02
   ],
   "mouth": {
    "warm": 0.6,

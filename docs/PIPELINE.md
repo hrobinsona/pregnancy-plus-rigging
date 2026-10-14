@@ -578,6 +578,9 @@ or composited.
    bump… X's read half-shut or drowsy". The white works when it sits where the still puts it and the dark mass stays big;
    v15's mostly-DOWN gaze put white above and around the iris. An eye pose belongs to its head pose: the forward-down
    look-down iris under a still-raised head read "side-eye" (natural lens v18: the eyes went down 0.6 s before the head).
+   v22 then lowered the lid to v14's heavy .6/.4 over the measured white and iris and won again ("cast down at her
+   bump… a real downward gaze brings the upper lid down with the eye"): the lid that read "sleepy, smug" over a dark oval
+   reads tender over the still's eye. The lid and the iris are one shape; measure them together.
 58. **Review what the viewer sees: draw the small moves at film size, and check the FILM against the still, not the key.**
    mum3q look-up v14–v17. QA measured both hands moving 20–26 px on her each second and the chest lifting on the look
    up, yet three reviewers in a row called the hands "frozen" and a blind A/B said "a real but small hand or eye change

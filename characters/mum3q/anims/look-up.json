@@ -411,10 +411,10 @@
      "ease": "inOut"
     },
     {
-     "t": 6.2,
+     "t": 6.4,
      "pose": "face-tender",
      "ease": "inOut",
-     "note": "the eyes go back to the bump a beat ahead of the head, not before it moves (the head leaves n-up at 5.5, n-ret at 6.4): at 5.8 s the forward gaze under a still-raised head read 'a sideways glance… side-eye' (natural lens v14, v18)"
+     "note": "the eyes go back to the bump a beat ahead of the head, not before it moves (the head leaves n-up at 5.5, reaches n-ret at 6.4; v20's 6.2 still read 'a side-glance', natural lens): at 5.8 s the forward gaze under a still-raised head read 'a sideways glance… side-eye' (natural lens v14, v18)"
     }
    ]
   },
@@ -462,7 +462,7 @@
      "ease": "inOut"
     },
     {
-     "t": 6.4,
+     "t": 6.55,
      "pose": "face-tender",
      "ease": "inOut",
      "note": "the lips close over 0.55 s, a beat behind the eyes"
