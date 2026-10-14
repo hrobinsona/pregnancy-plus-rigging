@@ -568,3 +568,19 @@ Results on v18:
   kneading grip rather than a calm cradle"); the top hand's outer knob past the bump's outline; at 6.1–6.3 s the lids
   drop and the eyes go down while the head still faces us ("a sidelong or coy glance").
 - Tools: `mask_overlay.py --edge`, `bone_signs.mjs` (lesson 61).
+
+## v29 — a resting cradle (FROZEN here: the ¾ shot pauses for the side-on library)
+
+- Both reviewers of v27 and v28 called the lower hand "a pulsing or kneading grip rather than a calm cradle": it
+  re-posed six times in 8 s (thumb strokes at 0.2, 4.6 and 7.0 s, the gather and thumb press with the look up, the
+  fingers' re-settle at 5.6 s), added when reviewers saw only sparse frames and called the hands "frozen" (v7). v29 keeps
+  two: the gather as she looks up and one slow thumb caress across the loop's seam (6.6 → 9.0 s, wrapping).
+- **Blind v29 vs v26: v29 6.5, v26 6** (about 65%): "a resting cradle that is still alive"; v26 "re-poses the hand while
+  nothing else in her moves, so it reads as fidgeting… the third lift-and-return of the shot… a pattern". QA: the
+  alive gate flagged the near hand 0.2–2.5 s (it drifts ~3 px there); recorded as a deliberate hold
+  (`spec.qa.still.near`, the far hand moves throughout). Then PASS. Render `renders/mum3q_look-up_v29.mp4`.
+- Still wrong in both: the top hand's outer edge "one rounded lobe with no knuckle shape… a lump", its fingers
+  "near-parallel stripes"; the lower hand slides ~15 px up the bump during the look up (2–3 s) with a big change of
+  shape; the breath close to invisible while she looks down (1–2 s).
+- Harry (2026-10-14 20:36) moved the rig to a side-on library first; ¾ comes back later with a 3D rig for front views.
+  Look-up stays at v29 until then.
