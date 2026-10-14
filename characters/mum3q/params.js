@@ -93,9 +93,14 @@ export const P = {
   //    pad": the hand read mirrored) are gone (lesson 53). Its mass (endOn) lies along the UPPER arm, a rounded end flowing
   //    out of the arm's outer edge round to the bump's edge, as the still draws it; an ellipse along the short forearm
   //    stood off the arm with a notch above it and a corner under the hand, "a knob", "a ball" (v9 reviews); a little
-  //    smaller than the still's (r 0.85), which bulged past the bump's outline, "a swollen wrist" (v10 blind A/B; lesson 54)
+  //    smaller than the still's (r 0.85), which bulged past the bump's outline, "a swollen wrist" (v10 blind A/B; lesson 54).
+  //    It lies IN FRONT of the hand's heel (front) but behind the bump (cut: shown only outside the dress), as the still
+  //    draws it: the wrist bulges toward us over the hand's heel, and the bump's outline cuts its lower side. Behind the
+  //    hand, the hand's outline ringed its end and the mass's own round end hung below the hand: "an oval… ringed by a
+  //    crease", "a lump" (v11 natural lens; lesson 55). Its only line is its top's arc where the back of the hand folds
+  //    into it (lines); an outline round its edge over the hand read as "a C-shaped crease… a puffy cuff" (v12; lesson 55)
   arm: { capA: 1.0, w: [{ front: 0.18, back: 0.155 }, { front: 0.18, back: 0.18 }, { front: 0.115, back: 0.16 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
-  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, 0] }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
+  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, 0], front: true, cut: 'dress', lines: [[235, 150]] }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
   // legs: the shin's half-widths at every measured station; above the knee, read off the still's rows (hem → knee): the near
   // thigh 0.28 in front / 0.19 behind at y −2.3, its knee 0.24 / 0.21; the far thigh 0.20 / 0.25, its knee 0.155 / 0.245
   legStations: LEG_ST,

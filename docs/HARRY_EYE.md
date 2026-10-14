@@ -119,3 +119,9 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     nearly horizontal, bunched"); v9's key matched but the breath flattened the fingers 5° on the film, its squeeze curled
     them into "a paw", and its end-on wrist read as "a ball". · `hand_place.py --tips` (warns over 5 px), reach
     `keepPalm`, finger angles measured on frames + eye beside the still · 54
+21. **Does each form lie over the one the still puts it over, with a line only where the still draws one?** Say, for a
+    joint the critics call a lump, which form is in front (the wrist over the hand's heel, the bump over the elbow) and
+    where each line runs, in the still and in the render. mum3q v11's end-on wrist matched the still's silhouette to the
+    pixel but lay behind the hand, the hand outlined round its end: "an oval ringed by a crease", "a knob"; v12 put it in
+    front with an outline round it: "a C-shaped crease… a puffy cuff". · eye on the overlaps beside the still
+    (`hand_shapes.py`, zoomed) · 55

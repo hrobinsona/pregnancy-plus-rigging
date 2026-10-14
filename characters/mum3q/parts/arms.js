@@ -5,7 +5,7 @@
 // Near arm in front of the body; far arm behind it, one step darker (it is hidden in the master's pose).
 import { tube, taper } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { add, sub, mulS, norm, perpL, lerp, ellipse } from '../../../engine/geom.js';
+import { add, sub, mulS, norm, perpL, lerp, ellipse, ap, R } from '../../../engine/geom.js';
 
 export const ANCHORS = { 'arm.near': 16, 'arm.far': 16 };
 
@@ -57,15 +57,27 @@ export function build(ctx) {
     out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
     if (eOn > 0.01) {
       // P.arm/armFar.endOn {r: × the forearm's mean half-width, at: along elbow → wrist, len: × its drawn length (the long
-      // axis), axis: 'upper' lays it along the upper arm, shift: [x, y] H on screen, front: over the hand instead of behind}.
+      // axis), axis: 'upper' lays it along the upper arm, shift: [x, y] H on screen, front: over the hand instead of behind
+      // it; cut: a part (the dress) it lies behind: shown only outside that part's outline, so a wrist over the hand's heel is still
+      // cut by the bump's edge it wraps round (q_k4_down_0; lesson 55)}.
       // mum3q's lies along the upper arm, flowing out of its outer edge round to the bump's edge as q_k4_down_0 draws it,
       // the hand's heel outlined over it (C.outlineGroups); along the short forearm it stood off the arm with a notch above
       // it and a corner under the hand: "a knob", "a ball… casting its own shadow" (look-up v9 reviews); drawn in front of
       // the hand, outlined, "an egg" (lesson 54)
       const EO = { r: 0.75, at: 0.7, len: 0.3, shift: [0, 0], front: false, ...((side === 'far' && X.armFar ? X.armFar : X.arm).endOn || {}) };
       const nF = perpL(u2), rA = ((w[3].front + w[3].back) / 2) * EO.r * eOn, c = add(add(lerp(Ep, Wp, EO.at), mulS(nF, (w[3].front - w[3].back) / 2)), EO.shift);
-      out.push({ id: `arm.${side}.end`, bone: `forearm.${side}`, z: zb + (EO.front ? 0.7 : 0.45) + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true,
-                 geom: ellipse(c, EO.len * L2 + rA, rA, Math.atan2((EO.axis === 'upper' ? u1 : u2)[1], (EO.axis === 'upper' ? u1 : u2)[0]) * 180 / Math.PI) });
+      const rX = EO.len * L2 + rA, rot = Math.atan2((EO.axis === 'upper' ? u1 : u2)[1], (EO.axis === 'upper' ? u1 : u2)[0]) * 180 / Math.PI;
+      const zE = zb + (EO.front ? 0.7 : 0.45) + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), cut = EO.cut ? { clipOut: { part: EO.cut, inset: 0 } } : {};
+      out.push({ id: `arm.${side}.end`, bone: `forearm.${side}`, z: zE, fill, world: true, ...cut, geom: ellipse(c, rX, rA, rot) });
+      // endOn.lines [[φ0, φ1], …]: the mass's edge drawn as a fine line only along these arcs (degrees round it: 0 its lower
+      // end, 90 toward the hand, 180 up the arm), endOn.lineW thick (H), tapering at both ends. q_k4_down_0 draws a short
+      // hook where the back of the hand folds into the wrist and nothing down the rest of that edge: an outline group drew
+      // the whole edge over the hand, "a C-shaped crease… a knob… a puffy cuff, or a thumb seen from behind" (v12; lesson 55)
+      (EO.lines || []).forEach(([a0, a1], k) => {
+        const pts = Array.from({ length: 7 }, (_, i) => { const a = (a0 + (a1 - a0) * i / 6) * Math.PI / 180; return add(c, ap(R(rot), [rX * Math.cos(a), rA * Math.sin(a)])); });
+        out.push({ id: `arm.${side}.end.line${k}`, bone: `forearm.${side}`, z: zE + 0.01, fill: C.skinLine, world: true, ...cut, opacity: Math.min(1, eOn * 1.5),
+                   geom: taper(pts, pts.map((_, i) => (EO.lineW ?? 0.008) * Math.sin(Math.PI * (0.12 + 0.76 * i / 6))), 'round') });
+      });
     }
     // the HEEL of a sharply bent wrist (P.arm/armFar.wristRound): a round pad over the outer corner where the forearm's
     // end meets the hand, as the stills draw it (q_k4_down_0: the far hand curled over the top of the bump, its heel a

@@ -264,9 +264,10 @@ export function createRig(C) {
       const zmin = Math.min(...inG.map((p) => p.z));
       const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && p.z >= (G.minZ ?? -Infinity) && !p.stroke && (!G.behind || G.behind.test(p.id))).map((p) => p.id);   // G.behind: only these count (a sleeve is not outlined against its own shoulder cap); G.minZ: only parts not themselves hidden behind the body (a clip region is the part's whole shape, visible or not)
       if (!behind.length) continue;
-      // G.fade = {bone, r: [r0, r1]}: the line is masked out within r0 (H) of that bone's joint and full beyond r1 — a sleeve
-      // over its own shoulder must not draw a seam that runs out tangentially through the silhouette
-      const fade = G.fade && { c: ap(F, st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
+      // G.fade = {bone, r: [r0, r1], at?}: the line is masked out within r0 (H) of that bone's joint (or of the point `at`, an
+      // offset in H in the bone's own frame, so it rides the bone) and full beyond r1 — a sleeve over its own shoulder must not
+      // draw a seam that runs out tangentially through the silhouette
+      const fade = G.fade && { c: ap(F, G.fade.at ? ap(st[G.fade.bone].M, G.fade.at) : st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
       // OCCLUDERS: parts drawn above the same-material parts but below the group (the neck over the cardigan's collar) hide
       // part of them — the line must not show there (it ran over the neck as a pink hairline: "clothing bleeding onto
       // limbs", client). They are painted black into the line's mask, in z order, over the white material parts.

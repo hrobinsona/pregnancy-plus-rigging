@@ -278,5 +278,40 @@ off its right end… a swelling or a puffy mitten, and you can't tell how the fo
 paddle", heavier than the near hand; v7's "forearm widens into a bent wrist… with a small crease", its fingertips curling
 down and settling. Four rounds (v8–v11) each lost to v7 by 0.5, every time on the wrist: fresh eyes read the still's strip
 past her bust as a FOREARM running into a bent wrist (the natural lens on v10 read the still that way too), and the still's
-round end-on mass, drawn flat, as a lump. That is a choice of drawing, not a fit: put to Harry (keep the still's round
-wrist, or draw the forearm into a bent wrist as v7 did, on the left hand).
+round end-on mass, drawn flat, as a lump. It looked like a choice of drawing for Harry (the still's round wrist, or a
+forearm into a bent wrist as v7's); it was the drawing order (v12–v13 below).
+
+Natural lens on v11: **NOT YET**. The top hand itself now matches the still (palm down, fingers together, tips stepping, the
+finger angle within 1° at 7.3 s, her left hand), but the wrist is "an oval about 35×42 px… ringed by a crease; its bottom
+hangs about 10 px below the hand's lower edge and outside the bump's outline". Also open: the hands lifeless at phone size
+(top tips move 2–3 px), the bump's lower front a corner, the sleepy look-down eyes, the half-lidded sideways glance at
+5.7–6.4 s, a nub in the top hand's lower outline.
+
+## v12–v13 — the wrist over the hand's heel, behind the bump (natural lens on v11)
+
+The wrist wasn't put to Harry after all: measured on the still at 4× first. v11's silhouette already met the still's wrist
+to the pixel (right edge 655 vs 655 px, bottom 592 vs 592); what differed was the ORDER. In q_k4_down_0 the forearm's round
+end lies OVER the heel of the hand (the back of the hand runs into it, one short arc where it folds in) and BEHIND the bump
+(the bump's outline cuts its lower side). v11 drew it behind the hand, the hand outlined round its end (lesson 55).
+
+**v12.** `endOn.front` (over the hand) and `endOn.cut: 'dress'` (shown only outside the dress: `clipOut`), the mass
+outlined over the hand and arm, the line faded mid-edge (`fade.at`, new in `rig.js`). Blind A/B v12 vs v11: **v11 6, v12
+5.5** ("a curved line arcing across the back of the hand… a puffy cuff or mitten, or a thumb seen from behind"); v12 vs
+v7: **v7 6.5, v12 6**. Natural lens: NOT YET ("a narrow upright capsule, cut off from the back of the hand by a C-shaped
+crease").
+
+**v13.** No outline round the mass: `endOn.lines` draws only the arc the still draws at its top, where the back of the hand
+folds into it (an outline group drew over the hand anyway: its occluders are only parts of another colour). QA PASS,
+tip_check PASS both hands, finger angles PASS (worst 2° at 0, 2.75, 7.3 s), handedness PASS, mum2 and mum3 SVG identical.
+Blind A/B v13 vs v11: **v13 6.5, v11 6** ("forearm, bent wrist and hand read as one continuous limb"; v11's "a separate
+lump or mitten heel"). Blind A/B v13 vs v7: **v13 6.5, v7 6**, the first top hand to beat v7 ("reads as a hand curled over
+the top of the bump, cradling it as the brief asks"; v7's "a pointed, hinge-like wrist… like an elbow knob"). Its one
+complaint: "a faint straight seam across the forearm where it meets the hand, like a cuff".
+Natural lens on v13: **NOT YET**. The wrist is down to "YES (mild)": "a rounded lobe… a short crease separates it from the
+back of the hand" (the still's crease "long, the mass flowing into the hand's heel"). Its list, in Harry's likely order:
+1. "a stubby paw": the top fingertips blunt and bunched in a steep column (~50°) where the still's are slim, tapered, with
+   gaps, stepping along ~30°;
+2. the look-down head bowed past both stills (eye-to-chin ~25% short, the chin on the neckline, the lids nearly shut);
+3. the bump's lower front a chamfer into a corner;
+4. the hands' life invisible at phone size (top hand ≤ 4.6 px all shot, the head 38 px); the lower thumb a stub, its tips a
+   blunt column; the top hand's shadow harder than the still's.

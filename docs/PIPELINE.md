@@ -510,6 +510,27 @@ or composited.
    the angles) and fit to those points; an rms on a centroid can be 1 px on the wrong hand. If the tips can't be met, the
    shape is wrong, not the arm. A hand resting on a curved body bends at the knuckles, and presses there. Then measure the
    same angles on the FILM's frames: what the shot adds (breath, reach, fidgets) can undo the key.
+55. **An end-on wrist is one form with the hand: read the still's OVERLAPS (what lies over what, which edge is a line)
+   before its outline.** mum3q look-up v11 → v13. On the still's pixels (a 10 px grid at 4×) v11's silhouette already met
+   the still's wrist: right edge 655 vs 655 px, bottom 592 vs 592. Fresh eyes still read "an oval ringed by a crease…
+   hanging below the hand" (natural lens), "a round knob hanging off its right end" (blind A/B, lost to v7 again), because
+   the drawing ORDER was wrong, not the shape:
+   - *The wrist lies over the hand's heel, and behind the bump.* The still's forearm comes toward us over the dome's edge,
+     so its round end covers the heel of the hand (the back of the hand runs into it), while the bump's outline cuts its
+     lower side (the elbow is behind the bump). v11 drew the mass behind the hand and outlined the hand over it (a C round
+     the hand's end), and the mass's own round end hung below the hand. `endOn.front` puts it over the hand; `endOn.cut:
+     'dress'` (the renderer's `clipOut`) shows it only outside the dress's outline, so the bump's edge bounds it as in the
+     still. The far hand's outline group no longer counts the mass as behind it.
+   - *Only the lines the still draws.* An outline group round the mass over the hand (v12, even faded mid-edge with
+     `fade.at`) drew "a C-shaped crease… a puffy cuff, or a thumb seen from behind" and lost to v11 (5.5 vs 6). The still
+     has ONE short arc where the back of the hand folds into the wrist's top: `endOn.lines` draws arcs of the mass's own
+     edge (degrees round it), tapered, and nothing else. An outline group's line also shows over a same-colour part in
+     FRONT of its `behind` parts (the hand over the arm's tube): occluders are only parts of another colour.
+   v13 (front, cut, one arc) beat v11 (6.5 vs 6, "forearm, bent wrist and hand read as one continuous limb") and, the first
+   top hand to, v7 (6.5 vs 6), after v8–v12 each lost to v7 by 0.5 on the wrist.
+   Rules: before reshaping a part the critics call a lump, mark on the still which form lies over which and where each line
+   runs, and match that order; a silhouette can match to the pixel and still read wrong. Draw a line only where the still
+   draws one.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
