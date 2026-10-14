@@ -1,31 +1,31 @@
 {
  "name": "hold",
- "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers lying TOGETHER along the dome, the spread closed a few degrees toward the middle finger and the curl graded mildly (index ~30° tip to knuckle, little finger ~60°) so the tips step without the gaps opening; the thumb tucked along the hand's top edge. Works with her LEFT hand drawn from the back (thumbSide −1, lesson 53) placed palm DOWN onto the dome (hand_place --palm-down 0.55): on a palm-down hand a 3D curl swings the more curled fingers sideways, so a steep grade fans them apart. Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts (on the mirrored hand): together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw'). Picked side by side with the still, zoomed and at film size (tools/hand_shapes.py, lessons 51-53)",
+ "_note": "the top hand DRAPED over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): the back of the hand lies on the dome's top and the straight fingers bend down over its curve AT THE KNUCKLES (MCP 50-54°, PIP 8-10°), fanned like the still's fingers (38/35/30/28° from index to little; tools/finger_angles.mjs: 36/33/30/27 on the film), the tips stepping down a diagonal. Placed by the still's four fingertips (hand_place --tips) with her LEFT hand drawn from the back (thumbSide −1, lesson 53), palm down (--palm-down 0.55); the far spec's knuckle arc and finger lengths step the tips, lineMcpK keeps the lines whole (lesson 54). Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts (on the mirrored hand): together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw'); v8 (mild curl 6-14° placed by the tips' centroid): 'short, nearly horizontal… tips bunched'; MCP 55-62°: lines cut to stubs, a mitten; v10 (spread reversed, little finger 44°): parallel fingers 7° flatter than the still's index, the lower two 'hooked into stubs'. Picked side by side with the still, zoomed and at film size (tools/hand_shapes.py, lessons 51-54)",
  "f1": [
-  6,
-  15,
-  11
+  50,
+  8,
+  4
  ],
  "f2": [
-  9,
-  18,
-  14
+  50,
+  10,
+  5
  ],
  "f3": [
-  12,
-  22,
-  17
+  52,
+  10,
+  5
  ],
  "f4": [
-  14,
-  27,
-  21
+  54,
+  10,
+  5
  ],
  "s": [
-  5,
-  2,
-  -2,
-  -5
+  1,
+  0,
+  0,
+  1
  ],
  "t": [
   25,

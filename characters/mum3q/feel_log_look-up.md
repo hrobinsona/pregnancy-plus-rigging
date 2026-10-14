@@ -237,3 +237,46 @@ bump's lower front a straight diagonal into a corner.
 Next: the far wrist as the still draws it (the forearm narrowing into a wrist that bends over the dome's edge, not a
 pad over a tube's end); the top fingers' lines kept whole through a curl; gestures large enough to read beside the
 head's move, measured in the frames; the bump's lower front; the look-down lids.
+
+## v8–v11 — the top hand is her LEFT hand, measured on the still (Harry on v7)
+Harry on v7's top hand (2026-10-14): "This hand is still a total mess. It looks like it's the wrong way round. How does it
+compare to the reference image?"
+
+**v8: the cause.** It was the wrong hand. `params.js` built the far hand as a copy of the near (right) one, so v1–v7 laid a
+RIGHT hand on her left arm: thumb and index along its lower edge, the little finger on top, where q_k4_down_0 has the index
+on top. Mirrored (`thumbSide` −1, `thumbFx` flipped, the shot's raw finger spreads flipped), with a gate: `tools/handed.mjs`
+in `char_check` and `qa_checks handed` (fails v7 on all 240 frames). Read the same way, the strip past her bust is the
+hanging UPPER arm, the elbow at her side on the bump's edge and the forearm pointing at us (the still's round mass): re-placed
+with `--elbow`, the forearm drawn end-on (lesson 53). Blind A/B v8 vs v7: **v8 5.5, v7 6** ("a pale round knob" of a wrist,
+"fingers short, nearly horizontal… tips bunched"). Natural lens: NOT YET (a paw on the end of a tube).
+
+**v9: measured, not tuned.** On the still's pixels (a 10 px grid, the lines between the fingers found by colour) the
+fingers lie at 38/35/30/28° from index to little, the tips step down a diagonal, the knuckles square to the fingers. v8 had
+met its keys to 1 px with the fingers at 28–17° and the tips in one column: the tips' centroid let the hand roll, and the
+knuckle key was 12 px low. `hand_place.py --tips` (each fingertip a key); the shape couldn't meet them until the hand DRAPED,
+bent at its knuckles over the dome (MCP 48–56°, PIP 8–14°), its spec stepping the knuckle arc and shortening the outer
+fingers, and `lineMcpK` keeping the lines whole (lesson 54). 4.5 px. Blind A/B v9 vs v7: **v9 6, v7 6.5** (the wrist "a
+round ball that hangs past the bump's outline and casts its own shadow", "a straight seam… like a cuff"). Natural lens:
+NOT YET, and two things the key never showed: the breath turned the end-on forearm and laid the fingers 5° flatter on the
+film than on the key (26° at 0 s), and the squeeze curled the drape into "a paw".
+
+**v10.** `keepPalm` on the reach (the hand keeps its palm's facing as the breath moves the shoulder; the fingers back to
+32°); the squeeze presses at the knuckles (+4–6°, the finger joints straightening; the fingers steepen to 40° at full
+length); the end-on mass along the upper arm, flowing out of its outer edge round the bump's edge (`endOn.axis 'upper'`,
+picked beside the still from 15 variants), casting no shadow (`noCast`). Blind A/B v10 vs v7: **v10 5.5, v7 6** ("a large
+smooth dome… a swollen wrist… bulges past the bump's front outline"; "a thin strip of arm ends on a hard horizontal line…
+like a cuff"). Natural lens: NOT YET (the wrist "a ball… the hand growing out of an elbow knob"; the lower two top fingers
+"hooked into stubs"; and the open points below).
+
+**v11.** The hand's heel outlined over the wrist's mass as the still draws it (the wrist bending back toward us), the mass a
+little smaller (r 0.85, bulging less past the bump); the fingers fanned like the still's and the lower two straighter
+(`tools/finger_angles.mjs` on the film: 36/33/30/27° against the still's 38/35/30/28 at 0, 2.75 and 7.3 s; v10 32/33/33/27).
+QA PASS, tip_check PASS both hands, handedness PASS, mum2 and mum3 SVG identical to before (33 sampled frames each).
+Comparison: `/mnt/project-files/rigging/mum3/mum3q_top_hand_still_v7_v11.png`.
+Blind A/B v11 vs v7: **v11 5.5, v7 6** (65%): the only differences are the far wrist and hand; v11's "round knob hanging
+off its right end… a swelling or a puffy mitten, and you can't tell how the forearm joins the hand", the hand "a flat
+paddle", heavier than the near hand; v7's "forearm widens into a bent wrist… with a small crease", its fingertips curling
+down and settling. Four rounds (v8–v11) each lost to v7 by 0.5, every time on the wrist: fresh eyes read the still's strip
+past her bust as a FOREARM running into a bent wrist (the natural lens on v10 read the still that way too), and the still's
+round end-on mass, drawn flat, as a lump. That is a choice of drawing, not a fit: put to Harry (keep the still's round
+wrist, or draw the forearm into a bent wrist as v7 did, on the left hand).

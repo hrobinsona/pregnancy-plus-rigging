@@ -344,7 +344,10 @@ export function createRig(C) {
           .flatMap((p) => (p.clip ? (Array.isArray(p.clip) ? p.clip : [p.clip]).map((id) => byId[id]).filter(Boolean) : [p])))];   // a clipped surface (a rim shade) counts only as its clip region
         // g.gate: an fx channel (0–1) that fades the shadow in, e.g. a hand that is ON her only after it lands
         const gk = g.gate ? Math.max(0, Math.min(1, pose.fx?.[g.gate] ?? 0)) : 1;
-        if (on.length && gk > 0.002) shadows.push({ zh, hp, on, k: gk, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
+        // g.noCast: parts that set where the group's shadow sits in depth but cast none themselves (mum3q's end-on forearm, a
+        // round mass standing off the bump's edge in the air: its own shadow read as "a ball casting its shadow", lesson 54)
+        const cast = g.noCast ? hp.filter((p) => !new RegExp(g.noCast).test(p.id)) : hp;
+        if (on.length && cast.length && gk > 0.002) shadows.push({ zh, hp: cast, on, k: gk, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
       }
       shadows.sort((a, b) => a.zh - b.zh);
       var emitShadow = (S) => {

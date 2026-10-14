@@ -113,3 +113,9 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     critics called it "a paw", "a claw", "a thumb pad"; Harry on v7: "a total mess. It looks like it's the wrong way
     round". · gate `char_check` and `qa_checks` handed (the thumb on the side the 3D arm puts it, every pose and frame;
     `tools/handed.mjs`) + eye · 53
+20. **Do the fingers lie at the still's angle, their tips stepping like the still's, on the FILM, and does the wrist flow
+    out of the arm?** Measure the still's hand in its own pixels (each tip, the lines between the fingers) and the same on
+    the rendered frames. mum3q v8 met its keys to 1 px with the fingers 10° flatter and the tips in one column ("short,
+    nearly horizontal, bunched"); v9's key matched but the breath flattened the fingers 5° on the film, its squeeze curled
+    them into "a paw", and its end-on wrist read as "a ball". · `hand_place.py --tips` (warns over 5 px), reach
+    `keepPalm`, finger angles measured on frames + eye beside the still · 54

@@ -86,16 +86,19 @@ export default {
   // lying across her front casts one too, onto the dress only (on chest.skin it drew a stripe inside the upper arm), at 16 %,
   // (5, 9) px as still q_k4_down_0 reads (lesson 52). A group holds every part of the hand INCLUDING the wrist pad: the shadow is
   // drawn just below the group's lowest part, so a pad left out got the hand's shadow painted over it ("a darker wedge on the heel")
-  contactShadow: { opacity: 0.16, offset: [5, 9], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$|arm\\.far\\.end$)', gate: 'contact.far' }],   // pose.fx['contact.near']: the hanging hand casts none
+  contactShadow: { opacity: 0.16, offset: [5, 9], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$|arm\\.far\\.end$)', gate: 'contact.far', noCast: '^arm\\.far\\.end$' }],   // pose.fx['contact.near']: the hanging hand casts none
     on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
 
-    // the far hand lying over its own upper arm (it comes down past her bust behind the hand): the still draws the hand's top
-    // edge there as a fine line, so the back of the hand reads apart from the arm (q_k4_down_0; without it hand and arm were
-    // one skin mass, lesson 53)
-    { match: /^hand\.far\./, behind: /^arm\.far$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.007 },
+    // the far hand lying over its own upper arm (it comes down past her bust behind the hand) and over its wrist's end-on
+    // mass: the still draws the hand's top edge there as a fine line, and its heel where the wrist bends back toward us, so
+    // the back of the hand reads apart from the arm (q_k4_down_0; without it hand and arm were one skin mass, lesson 53;
+    // without the heel's line the wrist read as "a large smooth dome… a swollen wrist", v10 blind A/B, lesson 54). The fade
+    // only rounds the line off at the wrist's joint (v8 draft: wider, it was a C round the heel that read as a fist, when the
+    // forearm was a tube)
+    { match: /^hand\.far\./, behind: /^arm\.far(\.end)?$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.007, fade: { bone: 'hand.far', r: [0.02, 0.06] } },
   ],
   // handedness (tools/handed.mjs, lesson 53): the far hand is her LEFT hand drawn from the BACK, as it lies on the bump in
   // every shot; hanging, the 3D shows its palm (a sliver beside the skirt) and this drawing is its mirror there. Before a

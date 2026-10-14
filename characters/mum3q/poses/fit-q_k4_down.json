@@ -1,6 +1,6 @@
 {
  "name": "fit-q_k4_down",
- "note": "fitted to characters/mum3q/refs/pose/q_k4_down_0.json (MediaPipe landmarks, base rest); near arm (upperArm.near 9.4, forearm.near 43.7, hand.near 30.2, armAbd.near 37.6, armRot.near 50.9, foreRot.near -57.7, wristFlex.near 15.9) on the still's hand points by tools/hand_place.py (rms 9.3 px, the arm visible, elbow on the still's, a natural arm); far arm (upperArm.far 24.7, forearm.far 115.4, hand.far 15, armAbd.far 93.7, armRot.far 38.2, foreRot.far 12.9, wristFlex.far -52.2) on the still's hand points by tools/hand_place.py (rms 0.1 px, the arm visible, elbow on the still's, a natural arm)",
+ "note": "fitted to characters/mum3q/refs/pose/q_k4_down_0.json (MediaPipe landmarks, base rest); near arm (upperArm.near 9.4, forearm.near 43.7, hand.near 30.2, armAbd.near 37.6, armRot.near 50.9, foreRot.near -57.7, wristFlex.near 15.9) on the still's hand points by tools/hand_place.py (rms 9.3 px, the arm visible, elbow on the still's, a natural arm); far arm (upperArm.far 24.4, forearm.far 115.9, hand.far 17.7, armAbd.far 92.7, armRot.far 37.4, foreRot.far 3.5, wristFlex.far -63.2) on the still's hand points by tools/hand_place.py (rms 4.7 px, the arm visible, elbow on the still's, a natural arm)",
  "hands": {
   "near": "cradle",
   "far": "hold"
@@ -34,17 +34,17 @@
   "hipAbd.near": 0,
   "clavicle.far": -5.7,
   "shoulderAbd.far": 0,
-  "upperArm.far": 24.7,
-  "armAbd.far": 93.7,
-  "armRot.far": 38.2,
-  "forearm.far": 115.4,
-  "foreRot.far": 12.9,
-  "hand.far": 15,
+  "upperArm.far": 24.4,
+  "armAbd.far": 92.7,
+  "armRot.far": 37.4,
+  "forearm.far": 115.9,
+  "foreRot.far": 3.5,
+  "hand.far": 17.7,
   "thigh.far": 0,
   "shin.far": 1.8,
   "foot.far": -2,
   "hipAbd.far": 0,
-  "wristFlex.far": -52.2,
+  "wristFlex.far": -63.2,
   "wristFlex.near": 15.9
  },
  "_fit": {

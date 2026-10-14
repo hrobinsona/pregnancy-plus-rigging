@@ -473,6 +473,43 @@ or composited.
      with that point "explained". A point about something the still draws differently is fixed before he sees it.
    Rules: when tuning a hand doesn't converge, ask which hand it is and which face we see before anything else; never
    copy one hand's spec to the other without mirroring it; say what each visible segment of an arm IS before placing it.
+54. **Measure the still's hand in its own pixels and place the hand by EACH fingertip; a hand draped over a dome bends at
+   its knuckles, not its finger joints.** mum3q look-up v8 → v9. v8, the right hand at last, lost its blind A/B to v7 (5.5 vs
+   6): "a pale round knob" of a wrist, "fingers short and nearly horizontal… tips bunched into a lumpy, scalloped edge".
+   Measured on q_k4_down_0 (a 10 px grid; the lines between the fingers found by colour): the fingers lie at 38/35/30/28°
+   below the horizontal from index to little, their tips step down a diagonal (each 0–16 px behind the index's along the
+   fingers: a normal hand's lengths), and the knuckles sit on a line square to the fingers. v8 met its keys to 1 px and
+   still drew a different hand: its fingers at 28–17°, its tips stacked down one column. Two causes:
+   - *A centroid lets the hand roll.* W, K and T (the tips' centroid) leave the hand free to turn about T, and K had been
+     marked by eye 12 px low (on the hand's middle, not where the lines between the fingers start), which flattened every
+     finger. `hand_place.py --tips` takes each fingertip as a key (index → little); K is re-marked on the measured lines.
+   - *The shape couldn't meet them* (6.6–8 px rms whatever the arm did), because the still's hand DRAPES: the back of the
+     hand lies on the dome's top and the straight fingers bend down its curve at the knuckles (MCP 44–50°, PIP 8–14°). v8's
+     mild curl (6–14°) kept them flat; earlier, deeper curls in the finger joints made "a mitten" and "a paw". Its
+     little-finger side wraps down and away, so the far hand's own spec steps the knuckle arc back and shortens the outer
+     fingers on screen (`knuckleArc` [1, 1, .95, .85], `fingerLen` [1, 1, .9, .74]): 4.5 px rms. `hand.js` faded a
+     back-view finger line by the knuckle's and the PIP's curl summed, which cut the lines to stubs at 55°: `lineMcpK`
+     (0.25 here, default 1, so mum2 and mum3 draw the same) weighs the knuckle's share; only a PIP folds a finger over its
+     own line.
+   - *What the shot did to it (v9).* The fitted key matched the still; the film didn't. v9 lost its blind A/B to v7 (6 vs
+     6.5) and the natural lens said NOT YET, on three things the key never showed:
+     - *The breath flattened the fingers.* The breath lifts her shoulder ~10 px while the wrist stays pinned on the bump;
+       over a forearm seen end-on the damped solve turned it 10° in 3D, and keepSize held the hand's length and screen angle
+       with a different palm facing, so the fingers lay at 26° on the film against 31° on the key. `keepPalm: true` on the
+       reach stops keeps the palm's facing too (a3.ncam; keepSize then searches the forearm's pronation with the wrist): 32°.
+     - *The squeeze curled the drape into a paw.* Its fidgets added 12–16° into the finger joints of a hand already bent
+       48° at the knuckles (68–70° + 24–26°: "a short bunched block, knobbly tips stacked in a column"). A draped hand
+       presses at its knuckles: +4–6° there, the finger joints straightening; the fingers then steepen 32° → 40° at full
+       length.
+     - *The wrist was a ball.* The end-on mass, an ellipse along the short forearm, stood off the arm's outer edge with a
+       notch above it and a corner under the hand, and cast its own shadow: "a pale round knob… a lump", "a ball… casting
+       its own shadow". The still's wrist flows out of the upper arm's outer edge round to the bump's edge: `P.armFar.endOn`
+       lays the mass along the UPPER arm (`axis: 'upper'`, picked beside the still from 15 variants), and the shadow group's
+       `noCast` keeps it in the hand's shadow depth without casting (it stands in the air beside the bump).
+   Rules: before tuning a hand's numbers, measure the still's hand (each tip, each line between fingers, the knuckle line,
+   the angles) and fit to those points; an rms on a centroid can be 1 px on the wrong hand. If the tips can't be met, the
+   shape is wrong, not the arm. A hand resting on a curved body bends at the knuckles, and presses there. Then measure the
+   same angles on the FILM's frames: what the shot adds (breath, reach, fidgets) can undo the key.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

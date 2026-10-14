@@ -52,13 +52,20 @@ export function build(ctx) {
     // edge. A 0.15 H forearm as a tube was a hairpin under the upper arm, notched and hooked (look-up v8 draft); the still
     // draws one smooth ball whose top flows out of the upper arm (q_k4_down_0; lesson 53)
     const sE = Math.min(1, Math.max(0, (lenF - 0.3) / 0.2)), eOn = 1 - sE * sE * (3 - 2 * sE);
-    if (eOn > 0) widths.forEach((v, i) => { if (i >= 4) { const f = 1 - 0.6 * eOn * (i - 3) / 3; v.r *= f; v.l *= f; } });
+    if (eOn > 0) widths.forEach((v, i) => { if (i >= 3) { const f = 1 - 0.85 * eOn * Math.min(1, (i - 2) / 3); v.r *= f; v.l *= f; } });
     const g = tube(axis, widths, { capK: [kA, kW] });
     out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
     if (eOn > 0.01) {
-      const nF = perpL(u2), rA = ((w[3].front + w[3].back) / 2) * 0.85 * eOn, c = add(lerp(Ep, Wp, 0.5), mulS(nF, (w[3].front - w[3].back) / 2));
-      out.push({ id: `arm.${side}.end`, bone: `forearm.${side}`, z: zb + 0.45 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true,
-                 geom: ellipse(c, 0.4 * L2 + rA, rA, Math.atan2(u2[1], u2[0]) * 180 / Math.PI) });
+      // P.arm/armFar.endOn {r: × the forearm's mean half-width, at: along elbow → wrist, len: × its drawn length (the long
+      // axis), axis: 'upper' lays it along the upper arm, shift: [x, y] H on screen, front: over the hand instead of behind}.
+      // mum3q's lies along the upper arm, flowing out of its outer edge round to the bump's edge as q_k4_down_0 draws it,
+      // the hand's heel outlined over it (C.outlineGroups); along the short forearm it stood off the arm with a notch above
+      // it and a corner under the hand: "a knob", "a ball… casting its own shadow" (look-up v9 reviews); drawn in front of
+      // the hand, outlined, "an egg" (lesson 54)
+      const EO = { r: 0.75, at: 0.7, len: 0.3, shift: [0, 0], front: false, ...((side === 'far' && X.armFar ? X.armFar : X.arm).endOn || {}) };
+      const nF = perpL(u2), rA = ((w[3].front + w[3].back) / 2) * EO.r * eOn, c = add(add(lerp(Ep, Wp, EO.at), mulS(nF, (w[3].front - w[3].back) / 2)), EO.shift);
+      out.push({ id: `arm.${side}.end`, bone: `forearm.${side}`, z: zb + (EO.front ? 0.7 : 0.45) + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true,
+                 geom: ellipse(c, EO.len * L2 + rA, rA, Math.atan2((EO.axis === 'upper' ? u1 : u2)[1], (EO.axis === 'upper' ? u1 : u2)[0]) * 180 / Math.PI) });
     }
     // the HEEL of a sharply bent wrist (P.arm/armFar.wristRound): a round pad over the outer corner where the forearm's
     // end meets the hand, as the stills draw it (q_k4_down_0: the far hand curled over the top of the bump, its heel a

@@ -193,7 +193,10 @@ export function makeHand(spec0) {
       // shows only where this finger overlaps them (no outline against the background, no hooks round the tips)
       // hard-curled fingers (grip/fist) read by their knuckle silhouette and lines there only fragment: the line SHORTENS
       // continuously from its tip end as the finger curls past ~55° (no pop between frames), and is dropped below 0.03 H
-      const curlOf = (j) => (ctx.pose?.bones?.[`${id}.f${j + 1}a`] ?? 0) + (ctx.pose?.bones?.[`${id}.f${j + 1}b`] ?? 0), bkI = order[Math.max(0, rank - 1)];
+      // S.lineMcpK weighs the knuckle's (MCP) bend: a hand DRAPED over a dome bends its straight fingers at the knuckles, on
+      // screen, and the lines between them stay whole as the still draws them (q_k4_down_0); only the PIP folds a finger over
+      // its own line (mum3q's top hand, 0.25: at 1 its 50° drape cut the lines to stubs, lesson 54)
+      const curlOf = (j) => (S.lineMcpK ?? 1) * (ctx.pose?.bones?.[`${id}.f${j + 1}a`] ?? 0) + (ctx.pose?.bones?.[`${id}.f${j + 1}b`] ?? 0), bkI = order[Math.max(0, rank - 1)];
       const [cf0, cf1] = S.view === 'palm' ? [65, 30] : [55, 35], keepF = Math.max(0, Math.min(1, 1 - (Math.max(curlOf(i), curlOf(bkI)) - cf0) / cf1));   // palm view: curling fingers come forward over their own lines — the comb goes early (no fragments)   // fades if this finger OR the one behind curls (a curled hand reads by its knuckle row)
       if (behind.length && keepF > 0) {
         const bk = F[order[rank - 1]], d = norm(sub(f.t, f.k)), pl = perpL(d), side = Math.sign((bk.k[0] - f.k[0]) * pl[0] + (bk.k[1] - f.k[1]) * pl[1]) || 1;   // toward the finger behind

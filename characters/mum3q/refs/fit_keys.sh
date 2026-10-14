@@ -52,7 +52,10 @@ node tools/fit_pose.mjs mum3q $R/pose/q_k4_down_0.json fit-q_k4_down
 # (--elbow, under the still's round mass, --hang 0.8), the forearm pointing at us over the top of the bump (drawn end-on:
 # the still's round mass) and the hand curled over the top, palm DOWN onto the dome (--palm-down), so its curl bends the
 # fingers down over it on screen (lesson 51). v7's arm (a point on the strip taken as the forearm, --fore 600,495) lifted
-# the elbow back to her bust, 'a chicken wing', and drew the forearm's end as a ball over the bump (lesson 53)
-python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side far --keys 632,552,580,552,535,578 --elbow 630,580 --hang 0.8 --hide none --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 60 --hand-len 0.85 --palm-down 0.55
+# the elbow back to her bust, 'a chicken wing', and drew the forearm's end as a ball over the bump (lesson 53). K is the
+# middle knuckle where the lines between the fingers start, and --tips are the four fingertips (index → little) measured on
+# the still: with T's centroid alone the hand met it to 1 px with its tips stacked down one column, fingers 10° flatter than
+# the still's 35° (v8, lesson 54)
+python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side far --keys 632,552,572,543,531,578 --tips 516,563,520,577,534,584,552,586 --elbow 630,580 --hang 0.8 --hide none --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 60 --hand-len 0.85 --palm-down 0.55
 # the near arm across her front, the hand cradling the underside with the thumb on its lower front
 python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side near --keys 528,738,568,764,618,768 --elbow 366,621 --hide none --hand cradle --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 40

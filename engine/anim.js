@@ -411,6 +411,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (e.dphi !== undefined && c.phi !== undefined) c.phi += e.dphi * Math.PI / 180;
     if (e.lie && c.z !== undefined) { c.lie = e.lie; c.lieW = 1; }
     if (e.keepSize) c.len = ref[ha].a3?.len;   // see keepSize
+    if (e.keepPalm && ref[ha].a3?.ncam) c.palm = ref[ha].a3.ncam.slice();   // see keepSize
     return c;
   }
   // A MOVE runs from one stop entry to the next; entries marked via:true in between shape the path without stopping (one
@@ -484,7 +485,8 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
     const lA = E[kh].lie ? 1 : 0, lB = E[Math.min(E.length - 1, kh + 1)].lie ? 1 : 0, lie = E.find((e) => e.lie)?.lie;
     const len = A.len !== undefined && B.len !== undefined ? A.len + sH * (B.len - A.len) : undefined;
-    return { len, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u), keyedArm: !!(a.keyedArm && b.keyedArm) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+    const palm = A.palm && B.palm ? (() => { const q = A.palm.map((x, c) => x + sH * (B.palm[c] - x)), n_ = Math.hypot(...q) || 1; return q.map((x) => x / n_); })() : undefined;
+    return { len, palm, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u), keyedArm: !!(a.keyedArm && b.keyedArm) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
   }
   // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
   // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —
@@ -691,19 +693,28 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   // The wrist's flexion (hand bone `flex`) and deviation are searched TOGETHER for the key's length at the screen angle
   // the reach settled on, by a local pattern search from the keyed flexion (two flexions give the same length, one on
   // each side of edge-on: a global scan flipped the hand between them, 166 px in a frame).
+  // KEEP PALM (stop.keepPalm: true, with keepSize): the hand also keeps the way its palm FACES (a3.ncam), the forearm's
+  // pronation searched with the wrist. A hand pinned on her over a forearm seen END-ON (mum3q's top hand, the arm hanging
+  // at her side): the breath lifts the shoulder ~10 px, the wrist stays on the bump, and the damped solve turns the
+  // short-drawn forearm 10° in 3D; keepSize then held the hand's length and screen angle with a different palm facing, and
+  // the fingers, bent over the dome toward the palm, lay 5–8° flatter than the key's (26° against the still's 35°; lesson 54)
   function keepSize(pose, side, T, lo, hi) {
     const ha = 'hand.' + side, fl = BONE[ha].flex, f0 = pose.bones[fl] || 0, d0 = pose.bones[ha] || 0, rot0 = solve(pose)[ha].rot, fmin = BONE[fl].min ?? -60, fmax = BONE[fl].max ?? 70;
-    const E = (f, d) => { const h = solve({ ...pose, bones: { ...pose.bones, [fl]: f, [ha]: d } })[ha]; return 100 * Math.abs(h.a3.len - T.len) + Math.abs(((rot0 - h.rot + 540) % 360) - 180) + 0.05 * Math.abs(f - f0) + 0.02 * Math.abs(d - d0); };
-    let f = f0, d = d0, e = E(f, d);
+    const pr = T.palm ? 'foreRot.' + side : null, r0 = pr ? pose.bones[pr] || 0 : 0, rmin = pr ? BONE[pr]?.min ?? -90 : 0, rmax = pr ? BONE[pr]?.max ?? 90 : 0;
+    const E = (f, d, r) => { const h = solve({ ...pose, bones: { ...pose.bones, [fl]: f, [ha]: d, ...(pr ? { [pr]: r } : {}) } })[ha];
+      return 100 * Math.abs(h.a3.len - T.len) + Math.abs(((rot0 - h.rot + 540) % 360) - 180) + 0.05 * Math.abs(f - f0) + 0.02 * Math.abs(d - d0)
+        + (pr ? 60 * Math.hypot(...h.a3.ncam.map((x, c) => x - T.palm[c])) + 0.05 * Math.abs(r - r0) : 0); };
+    let f = f0, d = d0, r = r0, e = E(f, d, r);
+    const dirs = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [1, 1, 0], [-1, -1, 0], [1, -1, 0], [-1, 1, 0], ...(pr ? [[0, 0, 1], [0, 0, -1], [1, 0, 1], [-1, 0, -1], [0, 1, 1], [0, -1, -1]] : [])];
     for (const st of [4, 2, 1, 0.5, 0.25, 0.12]) for (let moved = true, k = 0; moved && k < 12; k++) {
       moved = false;
-      for (const [df, dd] of [[st, 0], [-st, 0], [0, st], [0, -st], [st, st], [-st, -st], [st, -st], [-st, st]]) {
-        const fn_ = Math.max(fmin, Math.min(fmax, f + df)), dn_ = Math.max(lo, Math.min(hi, d + dd)), en = E(fn_, dn_);
-        if (en < e - 1e-9) { e = en; f = fn_; d = dn_; moved = true; }
+      for (const [df, dd, dr] of dirs) {
+        const fn_ = Math.max(fmin, Math.min(fmax, f + st * df)), dn_ = Math.max(lo, Math.min(hi, d + st * dd)), rn_ = Math.max(rmin, Math.min(rmax, r + st * dr)), en = E(fn_, dn_, rn_);
+        if (en < e - 1e-9) { e = en; f = fn_; d = dn_; r = rn_; moved = true; }
       }
     }
-    pose.bones[fl] = f; pose.bones[ha] = d;
-    pose._reach[side].keepSize = { want: T.len, got: solve(pose)[ha].a3.len, flex: f };
+    pose.bones[fl] = f; pose.bones[ha] = d; if (pr) pose.bones[pr] = r;
+    pose._reach[side].keepSize = { want: T.len, got: solve(pose)[ha].a3.len, flex: f, ...(pr ? { pron: r } : {}) };
   }
   function reachArm(pose, tt, side) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;

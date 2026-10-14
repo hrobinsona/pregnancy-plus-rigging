@@ -1,7 +1,7 @@
 // hand_keys.mjs — solve an arm so its HAND lands on points marked on a still, with the arm kept hidden behind the body.
 // Called by tools/hand_place.py --keys (which marks nothing itself: the points are measured by eye on the still and
 // recorded in refs/fit_keys.sh; the body silhouette comes from renders).
-//   node tools/hand_keys.mjs <char> <pose> --side far --keys wx,wy[,kx,ky],tx,ty --sil out/_sil.json [--hand <shape>]
+//   node tools/hand_keys.mjs <char> <pose> --side far --keys wx,wy[,kx,ky],tx,ty [--tips x1,y1,…,x4,y4] --sil out/_sil.json [--hand <shape>]
 //        [--bones upperArm,forearm,hand,armAbd,armRot,foreRot] [--seed a,b,...]... [--restarts N] [--natural [--palm-down D]]
 //        [--fore fx,fy] [--elbow ex,ey] [--hide arm|upper|none] [--margin ua,fa] [--hang 0.55] [--hand-len 0.25]
 // keys (still px): W the wrist (where the hand comes out from behind her), K the middle knuckle (optional), T the centroid
@@ -24,6 +24,9 @@
 // palm normal pointing mostly away from us (q_k4_down's first solve: ncam (−0.41, 0.39, 0.82)) a 3D curl only
 // foreshortens the fingers: "straight planks", "a mitten" (natural lens, v6 rounds 1–3). ~0.6 for a hand on top of the bump.
 // --restarts N: N deterministic random seeds over the bones' ranges (with --natural there is no trustworthy fitted arm).
+// --tips x1,y1,…,x4,y4: each fingertip (index → little) on the still, in place of T's centroid. The centroid leaves the hand
+// free to roll about it: v8 met T to 1 px with its tips stacked straight down (knuckle line 12° off vertical) where the still
+// steps them along a diagonal (34°), "fingers too flat, bunched" (natural lens; lesson 54).
 // Leave K out when the still's palm is foreshortened more than its fingers (a hand curving over the dome toward us):
 // the drawn fingers never foreshorten, so W, K and T can't all be met (q_k3: 22 px rms with K, 3 px without).
 // Prints {"x": [...], "cost": c, "rms": px, "out": px outside} (best over the seeds) on stdout.
@@ -42,6 +45,7 @@ const BONE = Object.fromEntries(C.bones.map((b) => [b.id, b]));
 const names = arg('bones', 'upperArm,forearm,hand,armAbd,armRot,foreRot').split(',').map((b) => `${b}.${side}`);
 const K = arg('keys').split(',').map(Number), KW = [K[0], K[1]], KK = K.length === 6 ? [K[2], K[3]] : null, KT = K.slice(-2);
 const natural = argv.includes('--natural'), SL = +arg('slack', 8), HANG = +arg('hang', 0.55), HLEN = +arg('hand-len', 0.25), PDOWN = +arg('palm-down', -1);
+const KT4 = arg('tips') ? arg('tips').split(',').map(Number) : null;
 const KF = arg('fore') ? arg('fore').split(',').map(Number) : null, KE = arg('elbow') ? arg('elbow').split(',').map(Number) : null, hide = arg('hide', 'arm'), hideFore = hide === 'arm';
 const segD2 = (p, a, b) => { const d = [b[0] - a[0], b[1] - a[1]], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / ((d[0] ** 2 + d[1] ** 2) || 1))); return d2(p, [a[0] + t * d[0], a[1] + t * d[1]]); };
 const sil = JSON.parse(fs.readFileSync(arg('sil'))), y0 = sil.y0;          // sil.rows[y - y0] = [[x0, x1], ...] inside the body
@@ -60,12 +64,12 @@ function measure(x) {
   const p = { ...base, bones: { ...base.bones } }; names.forEach((n, i) => { p.bones[n] = x[i]; });
   const st = rig.solve(expandHands(p, lib, C.handSides));
   const S = px(st[`upperArm.${side}`].pos), E = px(st[`forearm.${side}`].pos), W = px(st[`hand.${side}`].pos), Kn = px(st[`hand.${side}.f2a`].pos);
-  const T = tips.map(([b, j]) => px(rig.carry(st, b, j))).reduce((a, q) => [a[0] + q[0] / 4, a[1] + q[1] / 4], [0, 0]);
-  return { S, E, W, K: Kn, T, ua: st[`upperArm.${side}`].a3, ha: st[`hand.${side}`].a3 };
+  const T4 = tips.map(([b, j]) => px(rig.carry(st, b, j))), T = T4.reduce((a, q) => [a[0] + q[0] / 4, a[1] + q[1] / 4], [0, 0]);
+  return { S, E, W, K: Kn, T, T4, ua: st[`upperArm.${side}`].a3, ha: st[`hand.${side}`].a3 };
 }
 const d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
 function cost(x, seed) {
-  const m = measure(x), terms = [d2(m.W, KW), ...(KK ? [d2(m.K, KK)] : []), d2(m.T, KT), ...(KF ? [segD2(KF, m.E, m.W)] : []), ...(KE ? [d2(m.E, KE)] : [])], rms = Math.sqrt(terms.reduce((a, v) => a + v, 0) / terms.length);
+  const m = measure(x), terms = [d2(m.W, KW), ...(KK ? [d2(m.K, KK)] : []), ...(KT4 ? m.T4.map((q, i) => d2(q, [KT4[2 * i], KT4[2 * i + 1]])) : [d2(m.T, KT)]), ...(KF ? [segD2(KF, m.E, m.W)] : []), ...(KE ? [d2(m.E, KE)] : [])], rms = Math.sqrt(terms.reduce((a, v) => a + v, 0) / terms.length);
   let out = 0;
   if (hide !== 'none') for (let u = 0.2; u <= 1.001; u += 0.1) { const q = [m.S[0] + u * (m.E[0] - m.S[0]), m.S[1] + u * (m.E[1] - m.S[1])]; out += Math.max(0, MU - margin(q)) ** 2; }
   if (hideFore) for (let u = 0; u <= 0.8; u += 0.1) { const q = [m.E[0] + u * (m.W[0] - m.E[0]), m.E[1] + u * (m.W[1] - m.E[1])]; out += Math.max(0, MF * (1 - 0.6 * u) - margin(q)) ** 2; }
@@ -101,5 +105,5 @@ for (const sd of seeds) {
   const c = cost(x, sd); if (seeds.length <= 8) process.stderr.write(`  from ${sd.map((v) => v.toFixed(0)).join(',')}: ${x.map((v) => v.toFixed(1)).join(',')} → rms ${c.rms.toFixed(1)} px, arm outside ${c.out.toFixed(1)}\n`);
   if (!best || c.c < best.c) best = { x, ...c };
 }
-const { ua, ha, ...m } = measure(best.x);
+const { ua, ha, T4, ...m } = measure(best.x);
 console.log(JSON.stringify({ names, x: best.x.map((v) => +v.toFixed(1)), cost: +best.c.toFixed(2), rms: +best.rms.toFixed(1), out: +best.out.toFixed(1), ...(natural ? { len: +ha.len.toFixed(2), back: +ha.ncam[2].toFixed(2), palmDown: +ha.ncam[1].toFixed(2), elbowOut: +ua.v[2].toFixed(2) } : {}), at: Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v.map(Math.round)])) }));

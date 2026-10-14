@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""hand_place.py <char> --fit <name> --side far --keys wx,wy[,kx,ky],tx,ty [--hand <shape>] [--zbias part=dz,...] [--seed a,b,... ...] [--restarts N] [--natural [--slack deg] [--hang d] [--hand-len l] [--palm-down d]] [--bones ...] [--fore fx,fy --hide upper] [--elbow ex,ey --hide none] [--sample k] [--dry]
+"""hand_place.py <char> --fit <name> --side far --keys wx,wy[,kx,ky],tx,ty [--tips x1,y1,…,x4,y4] [--hand <shape>] [--zbias part=dz,...] [--seed a,b,... ...] [--restarts N] [--natural [--slack deg] [--hang d] [--hand-len l] [--palm-down d]] [--bones ...] [--fore fx,fy --hide upper] [--elbow ex,ey --hide none] [--sample k] [--dry]
 Place a hand whose WRIST the pose estimator can't see: a far hand resting on the top of the bump, its forearm hidden
 behind her body. Three points are measured by eye on the still (refs/images/<fit>_<sample>.png, still px) and recorded
 with the command in refs/fit_keys.sh: W where the wrist comes out from behind her, K the middle knuckle, T the centroid
@@ -25,6 +25,7 @@ ap.add_argument('--keys', required=True); ap.add_argument('--sample', type=int);
 ap.add_argument('--bones', default='upperArm,forearm,hand,armAbd,armRot,foreRot'); ap.add_argument('--seed', action='append', default=[])
 ap.add_argument('--restarts', type=int, default=0); ap.add_argument('--natural', action='store_true'); ap.add_argument('--slack', type=float, help='--natural: degrees each joint keeps clear of its limits (default 8)'); ap.add_argument('--hand-len', type=float, help='--natural: the hand\'s least drawn length (a3.len; 0.9 for a hand resting on her: illustrations draw it unforeshortened)'); ap.add_argument('--hang', type=float, help='--natural: the upper arm\'s least downward component (default 0.55; ~0.35 for an elbow lifted out to the side)'); ap.add_argument('--palm-down', type=float, help='--natural: the palm normal\'s least screen-down component (~0.6 for a hand lying on top of the bump: its curl then bends the fingers down over the dome on screen)')
 ap.add_argument('--fore', help='a point on a forearm the still shows (still px)'); ap.add_argument('--hide', default='arm', choices=['arm', 'upper', 'none']); ap.add_argument('--elbow', help='the still\'s elbow (still px), a key too')
+ap.add_argument('--tips', help='each fingertip on the still, index → little (x1,y1,…,x4,y4): fits the hand\'s roll, which T\'s centroid leaves free (lesson 54)')
 ap.add_argument('--dry', action='store_true', help='print the result, write nothing to the pose')
 a = ap.parse_args()
 D = f'characters/{a.char}'; L = json.load(open(f'{D}/ref/landmarks.json'))
@@ -57,7 +58,7 @@ for r in body:
 json.dump({'y0': 0, 'rows': rows}, open(f'{tmp}_sil.json', 'w'))
 pn = f'_hpl{os.getpid()}'; pj = f'{D}/poses/{pn}.json'; json.dump({**base, 'name': pn}, open(pj, 'w'))
 try:
-    cmd = ['node', 'tools/hand_keys.mjs', a.char, pn, '--side', a.side, '--keys', a.keys, '--sil', f'{tmp}_sil.json', '--bones', a.bones, '--hide', a.hide] + (['--fore', a.fore] if a.fore else []) + (['--elbow', a.elbow] if a.elbow else []) + [f'--seed={s}' for s in a.seed] + (['--restarts', str(a.restarts)] if a.restarts else []) + (['--natural'] if a.natural else []) + (['--slack', str(a.slack)] if a.slack is not None else []) + (['--hang', str(a.hang)] if a.hang is not None else []) + (['--hand-len', str(a.hand_len)] if a.hand_len is not None else []) + (['--palm-down', str(a.palm_down)] if a.palm_down is not None else [])
+    cmd = ['node', 'tools/hand_keys.mjs', a.char, pn, '--side', a.side, '--keys', a.keys, '--sil', f'{tmp}_sil.json', '--bones', a.bones, '--hide', a.hide] + (['--fore', a.fore] if a.fore else []) + (['--elbow', a.elbow] if a.elbow else []) + (['--tips', a.tips] if a.tips else []) + [f'--seed={s}' for s in a.seed] + (['--restarts', str(a.restarts)] if a.restarts else []) + (['--natural'] if a.natural else []) + (['--slack', str(a.slack)] if a.slack is not None else []) + (['--hang', str(a.hang)] if a.hang is not None else []) + (['--hand-len', str(a.hand_len)] if a.hand_len is not None else []) + (['--palm-down', str(a.palm_down)] if a.palm_down is not None else [])
     r = subprocess.run(cmd, capture_output=True, text=True); print(r.stderr, end='')
     if r.returncode: raise SystemExit(r.stderr)
     res = json.loads(r.stdout.strip().splitlines()[-1])
@@ -65,11 +66,14 @@ finally:
     os.remove(pj); os.remove(f'{tmp}_sil.json')
 for n, v in zip(res['names'], res['x']): base['bones'][n] = v
 render(json.loads(json.dumps(base)), f'{tmp}.png'); srv.stdin.close(); srv.wait()
-k = [int(v) for v in a.keys.split(',') + (a.elbow.split(',') if a.elbow else [])]; x0, y0 = max(0, min(k[0::2]) - 90), max(0, min(k[1::2]) - 90); x1, y1 = max(k[0::2]) + 90, max(k[1::2]) + 90
+k = [int(v) for v in a.keys.split(',') + (a.elbow.split(',') if a.elbow else []) + (a.tips.split(',') if a.tips else [])]; x0, y0 = max(0, min(k[0::2]) - 90), max(0, min(k[1::2]) - 90); x1, y1 = max(k[0::2]) + 90, max(k[1::2]) + 90
 st = Image.open(f'{D}/refs/images/{a.fit}_{a.sample}.png').convert('RGB').crop((x0, y0, x1, y1)); rd = Image.open(f'{tmp}.png').convert('RGB').crop((x0, y0, x1, y1)); os.remove(f'{tmp}.png')
 o = Image.new('RGB', (st.width * 2 + 6, st.height), 'white'); o.paste(st, (0, 0)); o.paste(rd, (st.width + 6, 0)); o.resize((o.width * 2, o.height * 2)).save(f'out/hand_place_{a.fit}.png')
 summary = f'{a.side} arm ({", ".join(f"{n} {v}" for n, v in zip(res["names"], res["x"]))}) on the still\'s hand points by tools/hand_place.py (rms {res["rms"]} px, ' + {'arm': 'arm inside her outline', 'upper': 'upper arm inside her outline, forearm through the still\'s', 'none': 'the arm visible' + (', elbow on the still\'s' if a.elbow else '')}[a.hide] + (', a natural arm' if a.natural else '') + ')'
 print(f'fit-{a.fit}: {summary}; drawn at {res["at"]} → out/hand_place_{a.fit}.png')
+# keys met within ~5 px or the SHAPE is wrong, not the arm: mum3q's top hand with a curl in its finger joints could not
+# meet the still's four tips (6.6–8 px) whatever the arm did; draped at the knuckles it met them to 4.5 (lesson 54)
+if res['rms'] > 5: print(f'  ! rms {res["rms"]} px: the hand shape ({a.hand or "the pose"}) does not fit the still; re-pick it beside the still (hand_shapes.py) before placing again (lesson 54)')
 if a.dry: raise SystemExit(0)
 base['note'] = '; '.join([q for q in base.get('note', '').split('; ') if q and not q.startswith(f'{a.side} arm (')] + [summary])   # one summary per side
 json.dump(base, open(pf, 'w'), indent=1)
