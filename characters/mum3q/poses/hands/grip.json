@@ -1,0 +1,36 @@
+{
+ "name": "grip",
+ "f1": [
+  55,
+  60,
+  40
+ ],
+ "f2": [
+  58,
+  62,
+  42
+ ],
+ "f3": [
+  60,
+  64,
+  44
+ ],
+ "f4": [
+  62,
+  66,
+  46
+ ],
+ "s": [
+  0,
+  -2,
+  -4,
+  -8
+ ],
+ "t": [
+  25,
+  30
+ ],
+ "to": 30,
+ "ts": -5,
+ "_note": "holding something cylindrical; curled fingers converge toward the thumb side of the wrist (scaphoid)"
+}

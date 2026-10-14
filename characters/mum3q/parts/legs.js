@@ -1,0 +1,50 @@
+// legs.js — mum3's bare legs (one skin tube hip → knee → ankle each, skinned across the knee; the thighs disappear
+// under the skirt), the foot's top above the shoe, and ballet flats (skinned foot → toe at the ball). Far leg behind the
+// near one, one step darker, as in the master.
+import { tube, loop } from '../../../engine/shapes.js';
+import { ensureCW } from '../../../engine/hand.js';
+import { add, sub, lerp, norm, mulS } from '../../../engine/geom.js';
+
+export const ANCHORS = { 'leg.near': 28, 'leg.far': 28, 'foot.near': 9, 'foot.far': 9, 'shoe.near': 8, 'shoe.far': 8 };
+
+export function build({ P: C, C: char }) {
+  const J = char.joints, X = char.params.P, out = [];
+  for (const side of ['far', 'near']) {
+    const S = side === 'near' ? 'Near' : 'Far', z = side === 'near' ? 20 : 16, fill = side === 'near' ? C.skin : C.skinFar, w = X.leg[side];
+    const hip = J['hip' + S], knee = J['knee' + S], ank = J['ankle' + S];
+    // axis down the leg: r = the tube's +normal (screen right on a downward axis) = the leg's FRONT; l = its back (calf)
+    // the tube runs on PAST the ankle into the shoe at the ankle's width, so its round end is hidden in the shoe: the back
+    // of the ankle is one straight line into the heel (v4 ended it in a cap at the ankle: a pinch in front, a knob behind)
+    const dn = norm(sub(ank, knee)), fr = [dn[1], -dn[0]];   // down the shin; its front normal
+    // ¾: the shin is drawn through EVERY measured station (0.1 … 0.9 down the shin), so the calf peaks where the still's does
+    // (a third of the way down) instead of being averaged away; the thigh's widths above the knee are read off the still's
+    // rows between the hem and the knee (the near thigh's front swells toward the far one, its back is lean)
+    const sf = X.legStations, axis = [add(hip, [0, -0.15]), lerp(hip, knee, 0.5), lerp(hip, knee, 0.85), knee, ...sf.map((f) => lerp(knee, ank, f)), ank, add(ank, mulS(dn, 0.24))];
+    const ankW = { front: w.ankle.front, back: w.ankle.back * 0.95 };
+    const ws = [w.thigh, w.thigh, w.thighLow, w.knee, ...w.shin, ankW, { front: ankW.front, back: ankW.back * 1.04 }]
+      .map((v) => ({ r: v.front, l: v.back }));
+    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill, geom: ensureCW(tube(axis, ws, { capK: 0.6 })),
+      skin: { parent: `thigh.${side}`, child: `shin.${side}`, zone: 0.25 } });
+    // the foot's top, visible above the low-cut shoe: its front edge LEAVES the shin's front line tangentially above the
+    // ankle and bends into the instep in one curve (measured, P.instep), on to the toes; the rest hides in the shoe and leg
+    const sh = X.shoe[side], h = sh.heel, t = sh.toe, onShin = add(add(ank, mulS(dn, -0.1)), mulS(fr, ankW.front)), dA = Math.atan2(dn[1], dn[0]) * 180 / Math.PI;
+    out.push({ id: `foot.${side}`, bone: `toe.${side}`, z: z + 0.3, fill, geom: ensureCW(loop([
+      [onShin[0], onShin[1], { a: dA }], ...X.instep[side].map(([dx, dy]) => [ank[0] + dx, ank[1] + dy]), [h[0] + 0.75 * (t[0] - h[0]) + 0.01, sh.top + 0.177, { a: 30 }],   // into the shoe just under the opening's front end (0.75 L, top + 0.165), still sloping like the instep
+      [t[0] - 0.14, sh.sole - 0.06], [h[0] + 0.2, sh.sole - 0.1], [h[0] + 0.08, h[1] - 0.04], add(add(ank, mulS(dn, -0.1)), mulS(fr, -0.4 * ankW.back))])),
+      skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
+    // ballet flat: heel counter → the low opening (steep at the heel, flattening to the vamp) → toe box → tip → a sole
+    // that rises toward the heel (the master's flats rock up at the back) → round heel
+    const L = t[0] - h[0];
+    out.push({ id: `shoe.${side}`, bone: `toe.${side}`, z: z + 0.6, fill: C.shoe, geom: ensureCW(loop([
+      [h[0] + 0.035, sh.top, { c: true, ai: 250, ao: 40, ti: 0.5, to: 0.7 }],
+      [h[0] + 0.4 * L, sh.top + 0.125, { a: 14 }],
+      [h[0] + 0.75 * L, sh.top + 0.165, { c: true, ai: 190, ao: 5, ti: 0.7, to: 0.6 }],   // the opening's front end meets the toe box
+      [(h[0] + 0.75 * L + t[0]) / 2, (sh.top + 0.165 + t[1]) / 2 - 0.03, { a: 22 }],   // the toe box's top: below the line vamp → tip (no hump)
+      [t[0], t[1], { a: 90, t: 0.9 }],
+      [t[0] - 0.16, sh.sole, { a: 180 }],
+      [h[0] + 0.2, sh.sole - 0.045, { a: 190 }],
+      [h[0] + 0.02, h[1] + 0.1, { a: 245 }]])),
+      skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
+  }
+  return out;
+}

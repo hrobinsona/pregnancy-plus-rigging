@@ -1,0 +1,20 @@
+{
+ "name": "face-heavy",
+ "face": {
+  "lid": {
+   "open": 0.3,
+   "half": 0.7
+  },
+  "gaze": [
+   0.006,
+   0.03
+  ],
+  "mouth": {
+   "smile": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ },
+ "note": "the eyes opening heavily after the sigh, the gaze already down at her bump (sigh-look v2)"
+}

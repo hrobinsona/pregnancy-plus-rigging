@@ -1,0 +1,22 @@
+{
+ "name": "face-bag",
+ "note": "looking up from her bump to the bag by the door, on the floor ahead, a small warm smile ('not tonight, but not long now'; ease-sway)",
+ "face": {
+  "lid": {
+   "open": 0.7,
+   "half": 0.18,
+   "smile": 0.12
+  },
+  "gaze": [
+   0.012,
+   0.026
+  ],
+  "mouth": {
+   "warm": 0.6,
+   "smile": 0.4
+  },
+  "brow": {
+   "soft": 1
+  }
+ }
+}

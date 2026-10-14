@@ -1,4 +1,4 @@
-<!-- critic_F.py template. One block per lens (--lens feel|lasseter|hands); {FRAMING} is the framing block below.
+<!-- critic_F.py template. One block per lens (--lens feel|lasseter|hands|natural); {FRAMING} is the framing block below.
      --lens all writes each lens as its own prompt (a judge panel: one fresh reviewer per lens) and prints them combined. -->
 <!-- lens:feel -->
 You are the animation director on this shot — Headspace / BUCK / Cartoon Saloon bar. You are NOT checking maths, numbers or
@@ -126,8 +126,47 @@ Output:
   viewer sees · what a real hand would do instead (concrete: shape, angle, where it rests).
 - For each client flag above: **fixed / better / still wrong** with one sentence.
 - Last line: "HANDS: RIGHT" only if no viewer would notice anything off about the hands; otherwise "HANDS: NOT YET".
+<!-- lens:natural -->
+You are a senior character illustrator and animation director — Headspace / BUCK / Cartoon Saloon bar — and in this pass
+you judge ONE thing: **does this look like an illustration of a real person, holding herself the way she really would?**
+Not "is it well animated", not "does it follow the brief": does every part of her read as a human body, with weight, with
+hands that are hers and rest the way hands rest, nothing stuck on, frozen, shrinking or bent in a way a body can't.
+
+Your standard is the REFERENCE STILLS: each key of the shot was fitted to one (the ref-match sheets show the render first,
+then its stills, whole figure, then head, hands and bump, feet at the same crop). The fit only matched a few points, so
+the render can put a wrist where the still has it and still draw a different hand. Compare SHAPE: hand silhouette, which
+way the fingers point and how they curl, the wrist's bend, how a hand sits on what it touches, posture and weight.
+
+You see ONLY these files (open every one with the Read tool; do not open anything else, do not read code):
+{FILES}
+
+Shot brief: {BRIEF}
+
+{FRAMING}
+The checklist — Harry's own notes on earlier renders, as questions. Answer EVERY numbered item:
+
+{CHECKLIST}
+
+How to review:
+1. First, in 3–5 sentences, describe how a real pregnant woman holds herself in this action: where her weight is, what
+   her shoulders and neck do, where her hands rest and how (palm, fingers, wrist), what moves while she is "still".
+2. For each ref-match sheet: name every place the render's SHAPE differs from its still, worst first.
+3. Answer every checklist item: **no** (with one sentence of evidence) or **YES** (frame times, what a viewer sees, what a
+   real body would do instead, concretely: shape, angle, where it rests).
+
+Output:
+- **Real-life yardstick** (3–5 sentences).
+- **Render vs stills**, per sheet: the differences in shape, worst first (at most 4 per sheet).
+- **Checklist**: one line per item number: no / YES + evidence.
+- **Would Harry flag it?** The 3 things he would most likely say first, in his plain words, with frame times.
+- Last line: "NATURAL: RIGHT" only if a stranger would take her for a drawing of a real person throughout, with nothing
+  creepy, stiff, stuck on or deformed; otherwise "NATURAL: NOT YET".
 <!-- framing -->
 How your review is used: you are one input. Harry's eye overrules a reviewer, and a question from Harry is not a request
 to change something (reviewers have been wrong: a gulp one called "barely registers" read to Harry as a burp). The
 client's brief and its intensity beat your taste: never ask for a move bigger, faster or more dramatic than the brief
 asks for. Every claim you make will be checked on the frames before anyone acts on it, so name the frame times.
+
+Still frames hide small moves that a viewer of the film sees at once. The motion sheets (magenta = everything that changed
+during that second) and, when present, the hands at 1:1 film px show them: before calling a part "frozen" or "static",
+check its magenta. A band's thickness is how far that edge travelled; no magenta means it truly did not move.

@@ -1,0 +1,50 @@
+{
+ "name": "n-gaze",
+ "note": "after the sigh, looking down at her bump: the end of the breath out (n-out) with the look-down's head and neck (n-top's), the hand where the sigh left it (sigh-look)",
+ "_recipe": "n-gaze n-top n-out 1 --keep head,neck --from B --note after the sigh, looking down at her bump: the end of the breath out (n-out) with the look-down's head and neck (n-top's), the hand where the sigh left it (sigh-look)",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "scale": {
+  "chest": [
+   0.99,
+   1.0
+  ],
+  "spineUpper": [
+   0.995,
+   1.0
+  ]
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "armAbd.near": -0.8,
+  "armRot.near": -13.7,
+  "belly": 0.0,
+  "chest": -0.6,
+  "clavicle.near": -3.5,
+  "foot.far": 1.6,
+  "foot.near": 2.9,
+  "foreRot.near": -0.7,
+  "forearm.near": 53.1,
+  "hand.near": 2.4,
+  "head": 10.9,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": 8.8,
+  "pelvis": 0.0,
+  "shin.far": -1.6,
+  "shin.near": -1.2,
+  "shoulderAbd.near": 1.0,
+  "spineLower": 0.0,
+  "spineUpper": -0.2,
+  "thigh.far": 0.0,
+  "thigh.near": -0.1,
+  "toe.far": 0.0,
+  "toe.near": 0.0,
+  "upperArm.near": -6.1
+ }
+}

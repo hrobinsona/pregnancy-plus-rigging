@@ -1,0 +1,31 @@
+{
+ "name": "x-tender",
+ "note": "STRESS pose for the \u00be drawing (tools/char_pose_sheet.py gate), not a shot key: face-tender on a 12\u00b0 nod",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": 12
+ },
+ "bones": {
+  "neck": 4
+ },
+ "face": {
+  "lid": {
+   "open": 0.47,
+   "half": 0.33,
+   "smile": 0.2
+  },
+  "gaze": [
+   0.006,
+   0.03
+  ],
+  "mouth": {
+   "warm": 1
+  },
+  "brow": {
+   "soft": 1
+  }
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "name": "x-wave",
+ "note": "STRESS pose for the \u00be drawing (tools/char_pose_sheet.py gate), not a shot key",
+ "hands": {
+  "near": "open",
+  "far": "hang"
+ },
+ "bones": {
+  "upperArm.near": 30,
+  "armAbd.near": 60,
+  "forearm.near": 110,
+  "head": -4
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "name": "face-gaze",
+ "note": "looking down at her bump, calm: face-tender's lowered lids and downward gaze without the smile's lift of the lower lid, face-calm's resting mouth and brows (sigh-look, for the Braxton Hicks story: a calm look after the sigh, not the stroke's warm smile)",
+ "face": {
+  "lid": {
+   "open": 0.55,
+   "half": 0.45
+  },
+  "gaze": [
+   0.006,
+   0.03
+  ],
+  "mouth": {
+   "smile": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

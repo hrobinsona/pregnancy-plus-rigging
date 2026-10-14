@@ -1,0 +1,58 @@
+{
+ "name": "n-base",
+ "note": "the look-down key (q_k_down_0) holding the bump with both hands: the far hand curled over its top, the near one cradling it (q_k4_down_0)",
+ "_recipe": "n-base fit-q_k4_down fit-q_k_down 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot.near,hand.near,wristFlex.near --from B --hands near=cradle,far=hold --note the look-down key (q_k_down_0) holding the bump with both hands: the far hand curled over its top, the near one cradling it (q_k4_down_0)",
+ "hands": {
+  "near": "cradle",
+  "far": "hold"
+ },
+ "fx": {
+  "headPitch": 24.4
+ },
+ "root": [
+  -0.0225,
+  -0.0175
+ ],
+ "bones": {
+  "armAbd.far": 91.5,
+  "armAbd.near": 37.3,
+  "armRot.far": 38.2,
+  "armRot.near": 50.6,
+  "belly": 0.0,
+  "chest": 1.8,
+  "clavicle.far": -5.7,
+  "clavicle.near": 2.0,
+  "foot.far": -0.7,
+  "foot.near": -1.2,
+  "foreRot.far": 3.2,
+  "foreRot.near": -41.8,
+  "forearm.far": 115.3,
+  "forearm.near": 43.5,
+  "hand.far": 17.7,
+  "hand.near": 30.4,
+  "head": -24.3,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": 20.5,
+  "pelvis": 0.0,
+  "shin.far": 1.5,
+  "shin.near": -1.2,
+  "shoulderAbd.far": 0,
+  "shoulderAbd.near": -3.4,
+  "spineLower": 1.2,
+  "spineUpper": 0.4,
+  "thigh.far": 0.0,
+  "thigh.near": 1.4,
+  "upperArm.far": 23.5,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
+ },
+ "_orig": {},
+ "zBias": {
+  "arm.far.hand": 40.0
+ },
+ "_edits": [
+  "--zbias arm.far.hand=40"
+ ]
+}

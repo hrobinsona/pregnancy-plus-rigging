@@ -3,10 +3,11 @@
 <style>html,body{margin:0;padding:0;background:#fff;overflow:hidden}#stage svg{display:block}</style></head>
 <body><div id="stage"></div>
 <script type="module">
-// Generic viewer: ?char=<name>&pose=<pose json name>&frame=still|ref&sil=1&bg=#hex&ground=#hex&bones={json}
+// Generic viewer: ?char=<name>&pose=<pose json name>&frame=still|ref&sil=1&bg=#hex&ground=#hex&bones={json}&handStyle={json}
 // window.renderPose(pose) is pure: same pose -> same SVG.
 import { createRig } from './rig.js';
 const q = new URLSearchParams(location.search);
+if (q.get('handStyle')) globalThis.HAND_STYLE_TRY = JSON.parse(q.get('handStyle'));   // a hand drawing style to try (tools/hand_shapes.py)
 const C = (await import(`../characters/${q.get('char') || 'mum2'}/character.js`)).default;
 const rig = createRig(C);
 let pose = {};

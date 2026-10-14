@@ -185,3 +185,9 @@ stack a little comb-like at the stroke top (9.0 s); v4's tucked arm is softer, i
 forearm meets the heel of the hand, the stroking hand as one rigid piece, a breath that shows only in the head. Caveat:
 partway through, after the forearm measurement, the reviewer saw a CLAUDE.md notice describing v5, so the verdict is
 not fully blind.
+
+## Engine fix (2026-10-13, found on mum3q look-up v7): the hand's contact shadow now draws
+The shot keys `fx.contact.near` (off while the hand hangs, on from 2.05 s once it lands), but `engine/anim.js` stored a
+keyed `fx.contact.near` as `fx.contact`, so the shadow designed for this shot never drew in v1–v5. Fixed (lesson 52);
+from the landing on, the hand casts its faint shadow (12 %, 4,6 px) on the bump. No pose changed (bone diff 0); QA PASS,
+including the new `channels` gate, which fails on the old engine. The next render of this shot carries it.

@@ -1,0 +1,27 @@
+{
+ "name": "x-closed",
+ "note": "STRESS pose for the \u00be drawing, not a shot key: face-in (eyes shut, chin up)",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": -6
+ },
+ "face": {
+  "lid": {
+   "open": 0.12,
+   "closed": 0.88
+  },
+  "gaze": [
+   0,
+   -0.005
+  ],
+  "mouth": {
+   "neutral": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "name": "relaxed",
+ "f1": [
+  8,
+  12
+ ],
+ "f2": [
+  10,
+  14
+ ],
+ "f3": [
+  12,
+  16
+ ],
+ "f4": [
+  15,
+  18
+ ],
+ "s": [
+  -1,
+  0,
+  1,
+  2.5
+ ],
+ "t": [
+  0,
+  6
+ ],
+ "to": 0,
+ "ts": 0,
+ "_note": "hanging relaxed: gentle curl cascade index \u2192 pinky; slight fan so the tips separate"
+}

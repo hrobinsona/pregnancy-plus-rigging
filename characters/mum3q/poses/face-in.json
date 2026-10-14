@@ -1,0 +1,20 @@
+{
+ "name": "face-in",
+ "note": "the deep breath in: eyes closing, chin up, lips closed",
+ "face": {
+  "lid": {
+   "open": 0.12,
+   "closed": 0.88
+  },
+  "gaze": [
+   0,
+   -0.005
+  ],
+  "mouth": {
+   "neutral": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

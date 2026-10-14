@@ -1,0 +1,60 @@
+{
+ "name": "fit-q_k2_mid",
+ "note": "fitted to characters/mum3q/refs/pose/q_k2_mid_0.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": 8.4
+ },
+ "root": [
+  -0.019,
+  -0.0058
+ ],
+ "bones": {
+  "pelvis": 0.1,
+  "spineLower": 1.7,
+  "spineUpper": 0.3,
+  "chest": -1.6,
+  "neck": -0.9,
+  "head": -4.9,
+  "belly": 0,
+  "clavicle.near": -0.6,
+  "shoulderAbd.near": 0.6,
+  "upperArm.near": -8.6,
+  "armAbd.near": -0.2,
+  "armRot.near": 0.3,
+  "forearm.near": 56.1,
+  "foreRot.near": 2.9,
+  "hand.near": 7.4,
+  "thigh.near": 1.6,
+  "shin.near": -3.3,
+  "foot.near": -1.6,
+  "hipAbd.near": -0.8,
+  "clavicle.far": 4.3,
+  "shoulderAbd.far": -1.2,
+  "upperArm.far": 3.8,
+  "armAbd.far": -1.2,
+  "armRot.far": 33.8,
+  "forearm.far": 80.1,
+  "foreRot.far": -17.9,
+  "hand.far": -11.6,
+  "thigh.far": 0.4,
+  "shin.far": 1.3,
+  "foot.far": -0.2,
+  "hipAbd.far": 0.3
+ },
+ "_fit": {
+  "ref": "characters/mum3q/refs/pose/q_k2_mid_0.json",
+  "scale": 0.9913,
+  "rms": 0.035,
+  "worst": [
+   "thumbL 0.098",
+   "pinkyL 0.081",
+   "indexL 0.065",
+   "hipL 0.057",
+   "shoulderL 0.053"
+  ]
+ }
+}

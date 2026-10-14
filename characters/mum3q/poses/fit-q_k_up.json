@@ -1,0 +1,60 @@
+{
+ "name": "fit-q_k_up",
+ "note": "fitted to characters/mum3q/refs/pose/q_k_up_1.json (MediaPipe landmarks, base rest); head (nod 1.6, neck -8.1, head 4) set from the still's face by tools/head_pose.py (off by 0.8)",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": 1.6
+ },
+ "root": [
+  -0.006,
+  0
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": 0.1,
+  "spineUpper": 0.8,
+  "chest": 0.6,
+  "neck": -8.1,
+  "head": 4.0,
+  "belly": 0,
+  "clavicle.near": -0.1,
+  "shoulderAbd.near": -1.8,
+  "upperArm.near": -9.6,
+  "armAbd.near": 2,
+  "armRot.near": 2,
+  "forearm.near": 57.6,
+  "foreRot.near": 1.8,
+  "hand.near": 4.3,
+  "thigh.near": 1.3,
+  "shin.near": -3.9,
+  "foot.near": 0.4,
+  "hipAbd.near": -0.6,
+  "clavicle.far": 2.3,
+  "shoulderAbd.far": -2.1,
+  "upperArm.far": 1.3,
+  "armAbd.far": -0.2,
+  "armRot.far": 0,
+  "forearm.far": 3.1,
+  "foreRot.far": -0.2,
+  "hand.far": -2.9,
+  "thigh.far": 0.4,
+  "shin.far": 2.8,
+  "foot.far": -0.6,
+  "hipAbd.far": 1.1
+ },
+ "_fit": {
+  "ref": "characters/mum3q/refs/pose/q_k_up_1.json",
+  "scale": 0.9887,
+  "rms": 0.0247,
+  "worst": [
+   "mouthR 0.050",
+   "thumbL 0.044",
+   "earR 0.042",
+   "hipL 0.036",
+   "earL 0.034"
+  ]
+ }
+}

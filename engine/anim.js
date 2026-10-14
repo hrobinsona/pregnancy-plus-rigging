@@ -301,7 +301,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       if (kind === 'bone') pose.bones[ch.slice(5)] = val;
       else if (kind === 'scale') { const id = ch.slice(6, -2), ix = +ch.slice(-1); (pose.scale[id] ||= [1, 1])[ix] = val; }
       else if (kind === 'face') (pose.face[a] ||= {})[b] = val;
-      else if (kind === 'fx') pose.fx[a] = val;
+      else if (kind === 'fx') pose.fx[ch.slice(3)] = val;   // the whole name after 'fx.' (fx.contact.near was stored as fx.contact: no contact shadow ever drew from a keyed channel)
       else if (kind === 'root') (pose.root ||= [0, 0])[+a] = val;
     }
     const add = (b, v) => { pose.bones[b] = (pose.bones[b] || 0) + v; };
@@ -390,6 +390,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // difference between the warp now and the warp in the contact's own pose
     if (C.warps?.[on] && P_) { const j = J[BONE[on].joint], v = [loc[0] + j[0], loc[1] + j[1]], a = C.warps[on](P_)(v), b = C.warps[on](lib[e.pose])(v); loc = [loc[0] + a[0] - b[0], loc[1] + a[1] - b[1]]; }
     const c = { p: apM(st[on].M, loc), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    if (e.keyedArm) c.keyedArm = true;   // see reachArm: the arm stays the keys', only the damped solve moves the wrist
     if (is3(side)) {
       // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
       // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
@@ -409,6 +410,8 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     if (e.dphi !== undefined && c.phi !== undefined) c.phi += e.dphi * Math.PI / 180;
     if (e.lie && c.z !== undefined) { c.lie = e.lie; c.lieW = 1; }
+    if (e.keepSize) c.len = ref[ha].a3?.len;   // see keepSize
+    if (e.keepPalm && ref[ha].a3?.ncam) c.palm = ref[ha].a3.ncam.slice();   // see keepSize
     return c;
   }
   // A MOVE runs from one stop entry to the next; entries marked via:true in between shape the path without stopping (one
@@ -422,7 +425,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const holdBend = (side, e) => (is3(side) ? { local: lib[e.pose].bones?.['hand.' + side] ?? 0, reg: e.reg ?? RC.holdReg ?? 0.3 } : {});
   // the wrist scan's pull toward the planned bend, CONTINUOUS across a move's ends: a hold pulls hard (holdBend), a move
   // only weakly mid-flight — switching at the stop stepped the hand 1–2° in one frame as each hold began or ended (mum3 v3)
-  const moveReg = (side, a, b, u) => { if (!is3(side)) return undefined; const hr = (e) => e.reg ?? RC.holdReg ?? 0.3, h = hr(a) + u * (hr(b) - hr(a)), m = Math.min(1, 6 * u * (1 - u)); return 0.02 + (h - 0.02) * (1 - m); };
+  // stop.slide (on a move's end stop): the hand SLIDES on what it touches (a stroke on the bump): it keeps its contact angle
+  // and the hold's pull all the way, no in-flight blend toward the key's bend. mum3q v5's far hand lies nearly end-on to
+  // us (palm 29% of its length), so its screen angle hardly depends on the bend: the blend swung the fingertips 10 px/frame
+  // as the stroke began
+  const flight = (b, u) => (b.slide ? 0 : Math.min(1, 6 * u * (1 - u)));
+  const moveReg = (side, a, b, u) => { if (!is3(side)) return undefined; const hr = (e) => e.reg ?? RC.holdReg ?? 0.3, h = hr(a) + u * (hr(b) - hr(a)), m = flight(b, u); return 0.02 + (h - 0.02) * (1 - m); };
   function reachTarget(side, tt, st, P_) {
     const L = RC[side], n = L.length, stops = L.map((e, k) => (e.via ? -1 : k)).filter((k) => k >= 0);
     let i = -1; for (const k of stops) if (L[k].t <= tt + 1e-9) i = k;
@@ -476,7 +484,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // front flag along the path (vias included), interpolated like the hand's local angle
     const fA = E[kh].front ? 1 : 0, fB = E[Math.min(E.length - 1, kh + 1)].front ? 1 : 0;
     const lA = E[kh].lie ? 1 : 0, lB = E[Math.min(E.length - 1, kh + 1)].lie ? 1 : 0, lie = E.find((e) => e.lie)?.lie;
-    return { lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: Math.min(1, 6 * u * (1 - u)), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
+    const len = A.len !== undefined && B.len !== undefined ? A.len + sH * (B.len - A.len) : undefined;
+    const palm = A.palm && B.palm ? (() => { const q = A.palm.map((x, c) => x + sH * (B.palm[c] - x)), n_ = Math.hypot(...q) || 1; return q.map((x) => x / n_); })() : undefined;
+    return { len, palm, lie, lieW: lie ? lA + vh * (lB - lA) : 0, limp: b.limp ?? 0, limpBend: b.limpBend, frontW: fA + vh * (fB - fA), P: P.map((c) => c.p), u, sP, p: p.slice(0, 2), z: p[2], phi, rot: A.rot + sH * (((B.rot - A.rot + 540) % 360) - 180), local, roll, m: flight(b, u), reg: b.reg ?? a.reg ?? moveReg(side, a, b, u), keyedArm: !!(a.keyedArm && b.keyedArm) };   // stop.reg: pull the wrist scan toward the planned bend (an edge-on hand flipped 40° on the first frame of the peel)
   }
   // A VIDEO PATH move (stop.path, written by tools/vtrack_apply.mjs from a style-matched reference video fitted frame by
   // frame): the wrist follows the measured path — position in the frame of bone path.on, depth, elbow swivel, hand angle —
@@ -676,6 +686,36 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     pose.bones[ha] = best;
     pose._reach[side].lie = { flex, len: solve(pose)[ha].a3.len, N: Nc };
   }
+  // KEEP SIZE (stop.keepSize: true): a HELD hand keeps the drawn length its contact pose gives it. Pinned to her while
+  // her body moves under it (the far hand on the top of the bump as she looks up and opens her chest), the arm's 3D
+  // solve turns the hand a little toward or away from the camera, and the flat-shaded hand GROWS and shrinks (mum3q v4:
+  // the palm drawn at 48% → 61% → 50% of its length in a hold; Harry on mum3 v3: an arm that shrinks reads as deformed).
+  // The wrist's flexion (hand bone `flex`) and deviation are searched TOGETHER for the key's length at the screen angle
+  // the reach settled on, by a local pattern search from the keyed flexion (two flexions give the same length, one on
+  // each side of edge-on: a global scan flipped the hand between them, 166 px in a frame).
+  // KEEP PALM (stop.keepPalm: true, with keepSize): the hand also keeps the way its palm FACES (a3.ncam), the forearm's
+  // pronation searched with the wrist. A hand pinned on her over a forearm seen END-ON (mum3q's top hand, the arm hanging
+  // at her side): the breath lifts the shoulder ~10 px, the wrist stays on the bump, and the damped solve turns the
+  // short-drawn forearm 10° in 3D; keepSize then held the hand's length and screen angle with a different palm facing, and
+  // the fingers, bent over the dome toward the palm, lay 5–8° flatter than the key's (26° against the still's 35°; lesson 54)
+  function keepSize(pose, side, T, lo, hi) {
+    const ha = 'hand.' + side, fl = BONE[ha].flex, f0 = pose.bones[fl] || 0, d0 = pose.bones[ha] || 0, rot0 = solve(pose)[ha].rot, fmin = BONE[fl].min ?? -60, fmax = BONE[fl].max ?? 70;
+    const pr = T.palm ? 'foreRot.' + side : null, r0 = pr ? pose.bones[pr] || 0 : 0, rmin = pr ? BONE[pr]?.min ?? -90 : 0, rmax = pr ? BONE[pr]?.max ?? 90 : 0;
+    const E = (f, d, r) => { const h = solve({ ...pose, bones: { ...pose.bones, [fl]: f, [ha]: d, ...(pr ? { [pr]: r } : {}) } })[ha];
+      return 100 * Math.abs(h.a3.len - T.len) + Math.abs(((rot0 - h.rot + 540) % 360) - 180) + 0.05 * Math.abs(f - f0) + 0.02 * Math.abs(d - d0)
+        + (pr ? 60 * Math.hypot(...h.a3.ncam.map((x, c) => x - T.palm[c])) + 0.05 * Math.abs(r - r0) : 0); };
+    let f = f0, d = d0, r = r0, e = E(f, d, r);
+    const dirs = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [1, 1, 0], [-1, -1, 0], [1, -1, 0], [-1, 1, 0], ...(pr ? [[0, 0, 1], [0, 0, -1], [1, 0, 1], [-1, 0, -1], [0, 1, 1], [0, -1, -1]] : [])];
+    for (const st of [4, 2, 1, 0.5, 0.25, 0.12]) for (let moved = true, k = 0; moved && k < 12; k++) {
+      moved = false;
+      for (const [df, dd, dr] of dirs) {
+        const fn_ = Math.max(fmin, Math.min(fmax, f + st * df)), dn_ = Math.max(lo, Math.min(hi, d + st * dd)), rn_ = Math.max(rmin, Math.min(rmax, r + st * dr)), en = E(fn_, dn_, rn_);
+        if (en < e - 1e-9) { e = en; f = fn_; d = dn_; r = rn_; moved = true; }
+      }
+    }
+    pose.bones[fl] = f; pose.bones[ha] = d; if (pr) pose.bones[pr] = r;
+    pose._reach[side].keepSize = { want: T.len, got: solve(pose)[ha].a3.len, flex: f, ...(pr ? { pron: r } : {}) };
+  }
   function reachArm(pose, tt, side) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side;
     const st0 = solve(pose), T = reachTarget(side, tt, st0, pose), h = 0.5;
@@ -686,7 +726,11 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (T.behindW !== undefined) pose.fx['behind.' + side] = T.behindW;
     if (T.twist !== undefined) pose.bones['foreRot.' + side] = T.twist;
     const at = (b, d) => { const p = { ...pose, bones: { ...pose.bones, [b]: (pose.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
-    if (is3(side) && T.z !== undefined && T.phi !== undefined) {
+    // stop.keyedArm (both ends of a move, or a hold): no 3D IK — the arm stays the keys' own (every key carries the same
+    // fitted arm) and only the damped solve below carries the wrist onto the target. For a HELD hand whose drawn arm the
+    // 3D model reproduces badly: mum3q's far arm coming down past her bust and round the bump (abducted 122°) — the 3D
+    // pass missed its own key by 26 px, and its aim correction wandered the elbow 40 px between branches frame to frame
+    if (is3(side) && T.z !== undefined && T.phi !== undefined && !T.keyedArm) {
       // 3D: the wrist target (screen + depth) in the arm's frame → 2-bone IK at the interpolated swivel → the rig's angles
       // (the representation nearest the keyed values); the 2D steps below then only correct the small rest-tilt residue
       const S_ = side === 'near' ? 'Near' : 'Far', Lb = (a, b) => Math.hypot(J[b][0] - J[a][0], J[b][1] - J[a][1]);
@@ -709,11 +753,20 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         phiU += T.elbowWt * wrapPi(bp - phiU);
         pose._reach[side].elbowP = T.elbowP; pose._reach[side].phiE = bp;
       }
+      const keyedF = pose.bones[fa] || 0;
       for (let it = 0; it < 3; it++) {
         const sol = ik2(fr.fromScreen(aim, T.z), L1, L2, phiU), lim = (b) => [BONE[b].min ?? -180, BONE[b].max ?? 180];
         const g = armAngles(sol.el, sol.wr, L1, L2, keyed, { e: lim(ua), al: lim(ab) });
         pose.bones[ua] = g.e; pose.bones[ab] = g.al; pose.bones[ar] = g.tau; pose.bones[fa] = g.c;
         const w = solve(pose)[ha].pos; aim = [aim[0] + T.p[0] - w[0], aim[1] + T.p[1] - w[1]];
+      }
+      // never the MIRROR branch: where the drawn arm differs a lot from the 3D model (mum3q's far arm coming down past her
+      // bust and round the bump, abducted 122°: the first pass missed by 26 px), the aim correction can carry the solve
+      // across to the other elevation sign — a different drawn arm, the elbow 40 px off, flipping frame to frame (v6
+      // draft: the far forearm vanished behind her at 0–2.5 s, showed at 1.6 s). Keep the keyed arm then; the damped
+      // solve below finishes the wrist from it.
+      if (Math.abs(keyed.e) > 20 && Math.abs(pose.bones[ua]) > 20 && Math.sign(pose.bones[ua]) !== Math.sign(keyed.e)) {
+        pose.bones[ua] = keyed.e; pose.bones[ab] = keyed.al; pose.bones[ar] = keyed.tau; pose.bones[fa] = keyedF;
       }
     }
     // DAMPED least squares toward the KEYED angles: with a 3D arm a 2D wrist target has two arm solutions (elbow forward
@@ -760,6 +813,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         for (let dt = -30; dt <= 30; dt += 10) { const tw = Math.max(tl[0], Math.min(tl[1], t0_ + dt)); for (let v = lo; v <= hi + 1e-9; v += 6) { const e = dn(v, tw) + 0.4 * Math.abs(dt) + rgL(v); if (e < bd) { bd = e; bv = v; bt = tw; } } }
         pose.bones[ha] += T.limp * mw * (bv - pose.bones[ha]); pose.bones[fr_] = t0_ + T.limp * mw * (bt - t0_);
       }
+      if (T.len !== undefined && BONE[ha].flex) keepSize(pose, side, T, lo, hi);
       if (T.lie && T.lieW > 1e-4 && BONE[ha].flex) lieFlat(pose, side, T, lo, hi);
       if (T.roll !== undefined && Math.abs(T.roll - 1) > 1e-4) { const sc = (pose.scale[ha] ||= [1, 1]); sc[1] *= T.roll; }
       pose._reach[side].hand = pose.bones[ha];   // the bend the solve settled on (a path move warps onto it)
@@ -993,6 +1047,14 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
             const c1 = solve({ ...pose, bones: { ...pose.bones, [L_.foot]: (pose.bones[L_.foot] || 0) + h } })[L_.foot].rot, sl = (((c1 - c0) + 540) % 360 - 180) / h;
             if (Math.abs(sl) > 1e-6) pose.bones[L_.foot] = (pose.bones[L_.foot] || 0) + Math.max(-20, Math.min(20, e0 / sl));
           }
+        }
+        // spec.plantFeetSink: a weight shift tilts both legs from the ankles; a straight leg can't stretch (nor a straight
+        // knee fold back), so the IK leaves both feet a few px off or into the floor (mum3 ease-sway: 3 px off at the front
+        // sway, 2.5 px into it at the back one). The hips move instead, by what the foot nearest the floor still lacks, so
+        // no foot goes through it (ease-sway: ankles within 0.6 px all shot). Opt-in: earlier shots keep their frames.
+        if (spec.plantFeetSink) {
+          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return rig.carry(s0, L_.shin, L_.ankle)[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
+          pose.root = [pose.root[0], pose.root[1] + lift];
         }
       }
     }

@@ -1,0 +1,416 @@
+{
+ "name": "ease-sway",
+ "fps": 30,
+ "duration": 6,
+ "loop": false,
+ "story": "Standing in profile, her hand on her bump as a tightening eases. She sways her weight slowly from her back foot to her front foot, the bump settling after her hips, and breathes out. Then her eyes lift from her bump to her packed bag on the floor by the door ahead of her, and she smiles. Ends on a held pose (Braxton Hicks story, direction A).",
+ "intensity": "very gentle and calm: a slow sway, small soft moves, nothing fast",
+ "handsBox": [
+  520,
+  760,
+  790,
+  990
+ ],
+ "handsBoxNote": "film px holding the hand on her bump all shot: blind_ab.py and critic_F.py draw it at 1:1 and its motion per second (lesson 58)",
+ "note": "For the Braxton Hicks story (every direction): weight back, weight front, settled, then the look with the smile. Keys derived from n-bump (refs/derive_breathe.sh): the legs tilt from the ankles, plantFeet ik keeps the feet planted.",
+ "beats": [
+  {
+   "name": "weight back",
+   "from": 0,
+   "to": 12
+  },
+  {
+   "name": "sway onto the front foot",
+   "from": 12,
+   "to": 78
+  },
+  {
+   "name": "settle, the bump after the hips",
+   "from": 78,
+   "to": 105
+  },
+  {
+   "name": "eyes lift to the bag, smile",
+   "from": 105,
+   "to": 138
+  },
+  {
+   "name": "hold",
+   "from": 138,
+   "to": 180
+  }
+ ],
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "n-sway-back",
+   "ease": "inOut",
+   "note": "weight on the back foot, head bowed to her bump"
+  },
+  {
+   "t": 0.4,
+   "pose": "n-sway-back",
+   "ease": [
+    0.45,
+    0,
+    0.35,
+    1
+   ],
+   "shift": {
+    "head": 4,
+    "neck": 4,
+    "chest": 2
+   },
+   "note": "the sway: a slow ease in and a long ease out; the trunk and head follow the hips a few frames behind (overlap)"
+  },
+  {
+   "t": 2.6,
+   "pose": "n-sway-front",
+   "ease": [
+    0.4,
+    0,
+    0.3,
+    1
+   ],
+   "shift": {
+    "head": 4,
+    "neck": 4,
+    "chest": 2
+   },
+   "note": "weight on the front foot"
+  },
+  {
+   "t": 3.5,
+   "pose": "n-sway-settle",
+   "ease": "inOut",
+   "note": "eases back a touch and settles"
+  },
+  {
+   "t": 4.4,
+   "pose": "n-sway-bag",
+   "ease": [
+    0.3,
+    0,
+    0.2,
+    1
+   ],
+   "shift": {
+    "head": -3,
+    "neck": -3
+   },
+   "note": "the head lifts after the eyes (eyes 3.6, head from ~3.7) to look at the bag by the door"
+  },
+  {
+   "t": 6.0,
+   "pose": "n-sway-bag",
+   "ease": "inOut",
+   "note": "held: the story cuts on this pose"
+  }
+ ],
+ "reach": {
+  "near": [
+   {
+    "t": 0.0,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04,
+    "note": "the hand rests on the lower front of her bump all shot (breathe-stroke's n-bump contact), riding the sway"
+   },
+   {
+    "t": 0.5,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 1.9,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0026,
+     -0.0942
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04,
+    "land": false,
+    "handLag": 4,
+    "note": "as the tightening eases she rubs her bump: a slow stroke ~7 px up its front with the sway, and back (a hand only carried by her body reads stuck on: QA alive, lesson 51)"
+   },
+   {
+    "t": 3.3,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04,
+    "land": false,
+    "handLag": 4
+   },
+   {
+    "t": 6.0,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   }
+  ]
+ },
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.brow"
+   ],
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": "face-ease",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.2,
+     "pose": "face-ease",
+     "ease": "inOut"
+    },
+    {
+     "t": 3.0,
+     "pose": "face-gaze",
+     "ease": "inOut",
+     "note": "the tightening has passed: the mouth closes, calm"
+    },
+    {
+     "t": 3.55,
+     "pose": "face-gaze",
+     "ease": "inOut"
+    },
+    {
+     "t": 3.95,
+     "pose": "face-bag",
+     "ease": "inOut",
+     "note": "the eyes lift to the bag FIRST, through a blink (3.6 s), the head follows"
+    },
+    {
+     "t": 4.6,
+     "pose": "face-bag-smile",
+     "ease": "inOut",
+     "note": "the smile blooms and reaches her eyes"
+    },
+    {
+     "t": 6.0,
+     "pose": "face-bag-smile",
+     "ease": "inOut"
+    }
+   ]
+  },
+  "contact": {
+   "channels": [
+    "fx.contact.near"
+   ],
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": "c-on",
+     "ease": "inOut"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 4,
+  "phase0": 0.2,
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.032,
+   "chestAcross": 0.03,
+   "chestDeg": -1,
+   "shoulderDeg": 2.2,
+   "headDeg": -1.2,
+   "belly": 0.012
+  },
+  "amp": [
+   {
+    "t": 0,
+    "amp": 1
+   }
+  ]
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 3.6,
+   "note": "a blink carries the eyes up to the bag"
+  }
+ ],
+ "drift": {
+  "amp": 1,
+  "seed": 3,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.4,
+   "clavicle.near": 0.25,
+   "hand.near": 0.4
+  }
+ },
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 2,
+  "chest": 3,
+  "neck": 4,
+  "head": 5,
+  "clavicle.near": 2,
+  "upperArm.near": 0,
+  "forearm.near": 2,
+  "hand.near": 4,
+  "face": 0,
+  "fx": 0
+ },
+ "plantFeet": "ik",
+ "plantFeetRef": "n-bump",
+ "plantFeetSink": true,
+ "wrapEase": "inOut",
+ "fidget": [
+  {
+   "t0": 2.35,
+   "t1": 3.25,
+   "cycles": 1,
+   "bones": {
+    "belly": 1.2
+   },
+   "note": "the bump settles after the hips: it carries on forward as they stop (2.6 s) and comes back"
+  },
+  {
+   "t0": 3.05,
+   "t1": 3.75,
+   "cycles": 1,
+   "bones": {
+    "belly": -0.5
+   },
+   "note": "and settles"
+  },
+  {
+   "t0": 2.5,
+   "t1": 3.6,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1b": 3,
+    "hand.near.f2b": 2,
+    "hand.near.f3b": 2
+   },
+   "note": "the fingers ease onto the bump as the tightening passes (breathe-stroke 7.35–8.05 s)"
+  },
+  {
+   "t0": 4.2,
+   "t1": 5.6,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1s": -2.5,
+    "hand.near.f3s": 2,
+    "hand.near.f4s": 4,
+    "hand.near.f1a": -3,
+    "hand.near.f2a": -2
+   },
+   "note": "as she smiles, a small open of the fingers on the bump (breathe-stroke 7.95–9.15 s)"
+  },
+  {
+   "t0": 3.3,
+   "t1": 4.9,
+   "cycles": 1,
+   "bones": {
+    "hand.near": 4,
+    "hand.near.f1b": 3,
+    "hand.near.f2b": 3,
+    "hand.near.f3b": 2
+   },
+   "note": "as her eyes go to the bag the hand gives the bump a small press (turns ~4° and back, the fingers curling a little): the hand answers the smile"
+  }
+ ],
+ "qa": {
+  "still": {
+   "near": [
+    [
+     3.6,
+     6.0,
+     "the last beat is her face: her eyes go to the bag and she smiles, the hand resting on her bump (a small press at 3.3–4.9 s, ~4 px); then the held end pose the story cuts on"
+    ]
+   ]
+  }
+ }
+}

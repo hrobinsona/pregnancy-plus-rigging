@@ -1,0 +1,14 @@
+{
+ "name": "x-nod12",
+ "note": "STRESS pose for the \u00be drawing, not a shot key: a nod on the head warp (fx.headPitch)",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "fx": {
+  "headPitch": 12
+ },
+ "bones": {
+  "neck": 4
+ }
+}

@@ -3,6 +3,7 @@
 // 2) builds EVERY pose in characters/<char>/poses/*.json (+ rest) through the rig
 // 3) checks the anchor-count contract (each part's documented anchor count = built count, identical in every pose —
 //    fixed topology is what lets parts animate/morph); --fix-anchors prints the corrected ANCHORS entries
+// 4) every hand drawn the right way round (handedness, tools/handed.mjs); 5) lint
 import fs from 'node:fs';
 import { createRig } from '../engine/rig.js';
 import { expandHands } from '../engine/handlib.js';
@@ -24,7 +25,16 @@ for (const name of ['(rest)', ...poses]) {
     if (doc[p.id] !== undefined && doc[p.id] !== n) problems.push(`${p.id}: built ${n}, documented ${doc[p.id]}`);
   }
 }
-// 4) LINT: a '//' comment followed on the same line by more `key: value,` code means an edit dropped a comment MID-LINE and
+// 4) HANDEDNESS (tools/handed.mjs, lesson 53): in every pose each hand's thumb is drawn on the side its 3D arm puts it — a
+//    spec copied from the other hand draws its mirror image (mum3q v1–v7: a right hand on her left arm, on the bump)
+{
+  const { handednessOfPoses, explain } = await import('./handed.mjs');
+  const all = [['(rest)', {}], ...poses.map((n) => [n, JSON.parse(fs.readFileSync(`characters/${char}/poses/${n}.json`))])];
+  const bad = handednessOfPoses(C, rig, all, lib), exc = bad.filter((b) => b.excused);
+  for (const b of bad.filter((x) => !x.excused)) problems.push(`${b.name}: ${explain(b)}`);
+  if (exc.length) console.log(`handedness: ${exc.length} pose(s) excused by C.qa.handed (${[...new Set(exc.map((b) => `${b.side}: ${b.excused.why}`))].join('; ')}): ${exc.map((b) => b.name).slice(0, 6).join(', ')}${exc.length > 6 ? ' …' : ''}`);
+}
+// 5) LINT: a '//' comment followed on the same line by more `key: value,` code means an edit dropped a comment MID-LINE and
 //    silently commented out the rest of an object literal (it builds fine — the keys just fall back to defaults). Bit us 5×.
 for (const f of [`characters/${char}/params.js`, ...fs.readdirSync(`characters/${char}/parts`).map((x) => `characters/${char}/parts/${x}`), ...fs.readdirSync('engine').filter((x) => x.endsWith('.js')).map((x) => `engine/${x}`)]) {
   fs.readFileSync(f, 'utf8').split('\n').forEach((ln, i) => {

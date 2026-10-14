@@ -1,0 +1,19 @@
+{
+ "name": "face-calm",
+ "note": "calm, looking ahead, soft smile",
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "gaze": [
+   0,
+   0
+  ],
+  "mouth": {
+   "smile": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

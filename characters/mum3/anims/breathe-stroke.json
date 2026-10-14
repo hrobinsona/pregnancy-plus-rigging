@@ -674,5 +674,16 @@
    },
    "note": "stroking up: the fingers part a little and the pads drag (MCP eased back) while the hand travels, then come together over the dome at the top"
   }
- ]
+ ],
+ "qa": {
+  "still": {
+   "near": [
+    [
+     3.0,
+     5.7,
+     "the deep breath in, its hold and the start of the sigh: her eyes shut, the hand rides the bump as it rises and falls; the breath is the action (Harry on v5: 'way better, pretty much there'). It passed the old 1.5 px floor; at 5 px (lesson 51) it is the one window where the resting hand moves under 5 px on her"
+    ]
+   ]
+  }
+ }
 }

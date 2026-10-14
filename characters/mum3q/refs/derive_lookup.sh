@@ -1,0 +1,49 @@
+#!/bin/sh
+# Derived keys for the look-up shot (¾ view), all from FITTED keys (refs/fit_keys.sh). Re-run after any re-fit.
+set -e
+B="python3 tools/pose_blend.py mum3q"
+# both arms and the legs stay the look-down key's in every key: nothing in the brief moves them, and each still's own fit
+# (forearm 10° → −3° → 3°) swung the far hand in and out behind her skirt by half its width (v1 hands + Lasseter critics)
+STILL=clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far
+# BOTH hands on the bump, as an expectant mother holds it (still q_k4_down_0, picked by Harry 2026-10-13: "keep far on
+# top"): the FAR hand curled a little over the top of the bump, its arm coming down past her bust and round the bump's
+# side (Harry on v5's hand lying flat across the top with its arm hidden: "still looks creepy and lifeless. Rather than
+# being a little curled over the top of the bump"); the NEAR hand cradling its underside, the thumb on its lower front.
+# Both arms placed on the still by tools/hand_place.py --natural (refs/fit_keys.sh), on the look-down key's trunk; the far
+# hand drawn on the dress
+FAR=clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far
+NEAR=shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot.near,hand.near,wristFlex.near
+STILL=$STILL,$NEAR
+$B n-base fit-q_k4_down fit-q_k_down 1 --keep $FAR,$NEAR --from B --hands near=cradle,far=hold --note "the look-down key (q_k_down_0) holding the bump with both hands: the far hand curled over its top, the near one cradling it (q_k4_down_0)"
+python3 tools/pose_set.py mum3q n-base --zbias arm.far.hand=40 >/dev/null
+# the cradling hand keeps the still's finger ANGLE on this trunk: the reach pins it to the belly at n-down's own angle, and
+# n-down's trunk (the q_k_down fit + the rounded back) turned it 5° steeper than its fitted key (18/13/7/-2° → 23/18/11/2°,
+# tools/finger_angles.mjs): "straight, parallel fingers, a comb" (natural lens v17). hand.near 30.4 → 35.4 lays them back
+# (QA 'fingers' gate, spec.qa.fingers; lesson 58)
+$B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --set hand.near=35.4 --note "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump"
+# the stills look down with the head TIPPED toward the bump (their eye line slopes ~20° down toward it, the chin down and
+# forward) on a long neck, the face hardly foreshortened, the eyes doing the looking. A deep nod instead (v6's 'too upright'
+# answered with headPitch 28) squashed the face under the hair: 'chin on the neckline, eye-to-chin 25% short, the lids
+# nearly shut' (natural lens v13; lesson 56). So: the head tipped 8° and a lighter nod, picked beside q_k_down_0
+python3 tools/pose_set.py mum3q n-down --fx headPitch=14 >/dev/null
+# the breakdown is HALF way in the head (the still q_k_mid_2 is ~85% up: through it the lift happened in 0.3 s, "a little
+# brisk for unhurried", natural lens v6 round 2); the eyes are already on us
+$B n-mid n-base fit-q_k_mid 1 --keep $STILL --from B --hands near=cradle,far=hold --add head=-7,neck=7,chest=-1.5 --note "half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0"
+python3 tools/pose_set.py mum3q n-mid --fx headPitch=8 >/dev/null   # half way from n-down's 14 to n-up's 1.6
+# eye contact: the chest opens and the shoulders lift with the breath in (the body joins the look up)
+# the body joins the look up (v17): the chest lifts and opens 3° more than the still's fit, half of it by the half-way key;
+# with only the head moving, "a head turning on a static body" (both blind A/Bs and the natural lens on v14–v16)
+$B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest lifted and open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0"
+python3 tools/pose_set.py mum3q n-up --scale chest=1.02:1.01 >/dev/null
+# the lift's anticipation: before the head comes up it sinks a touch deeper into the nod (and the shoulders settle)
+$B n-dip n-down --hands near=cradle --add neck=1.5,clavicle.near=-1.5 --note "anticipation before the look up: a touch deeper into the nod"
+python3 tools/pose_set.py mum3q n-dip --fx headPitch=17 >/dev/null
+# a moving hold while she looks at us: the head tips a little (a warm tilt), never a dead hold
+$B n-tilt n-up --hands near=cradle --add head=2.5,neck=1 --note "eye contact, the head tipped a little: a warm tilt in the hold"
+python3 tools/pose_set.py mum3q n-tilt --scale chest=1.02:1.01 >/dev/null
+# the way back down is its own softer path, not the look up in reverse: half way, the head a touch forward and tipped
+# toward the bump (Lasseter v1: beats 3 and 5 traced the same sweep)
+$B n-ret n-up n-down 0.45 --hands near=cradle --add head=3,neck=-1 --note "breakdown on the way back down: forward and tipped toward the bump"
+python3 tools/pose_set.py mum3q n-ret --fx headPitch=9 >/dev/null
+# every key draws the far hand on her dress (n-mid and n-up take their discrete fields from their own stills' fits)
+for n in n-down n-mid n-up n-dip n-tilt n-ret; do python3 tools/pose_set.py mum3q $n --zbias arm.far.hand=40 >/dev/null; done

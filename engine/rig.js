@@ -10,11 +10,23 @@
 // plane (θ from straight down, + toward the facing direction). The plane is yawed to the picture plane, so the rig
 // projects: screen dir = (sinθ·forwardX, cosθ), length factor L(θ) = √((forwardX·sinθ)² + cos²θ). A leg swinging
 // toward the camera therefore foreshortens instead of sweeping sideways.
+
 import { mul, T, R, S, I, pathD, ap, sub, add, mapGeom } from './geom.js';
 
 const DEG = Math.PI / 180;
 const wrap = (a) => ((a + 540) % 360) - 180;
 const smooth = (e0, e1, x) => { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+
+// a part through a 2.5D warp: point by point, or (mode 'feature') moved by its centre and scaled by the warp's local
+// stretch along x and y at that centre (no shear, no rotation: a feature keeps its drawn shape and tilt); part.warpAt
+// gives parts that belong together (an eye, its catch-light, its lashes) one shared centre
+function warpGeom(g, w, mode, at) {
+  if (mode !== 'feature') return mapGeom(g, w);
+  const xs = g.P.map((q) => q[0]), ys = g.P.map((q) => q[1]), c = at || [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  const h = 0.01, c2 = w(c), ex = w([c[0] + h, c[1]]), ey = w([c[0], c[1] + h]);
+  const sx = Math.hypot(ex[0] - c2[0], ex[1] - c2[1]) / h, sy = Math.hypot(ey[0] - c2[0], ey[1] - c2[1]) / h;
+  return mapGeom(g, (q) => [c2[0] + (q[0] - c[0]) * sx, c2[1] + (q[1] - c[1]) * sy]);
+}
 
 export function createRig(C) {
   const J = C.joints, BONES = C.bones, BONE = Object.fromEntries(BONES.map((b) => [b.id, b]));
@@ -86,7 +98,9 @@ export function createRig(C) {
       if (b.flex) { const f = param(b.flex, bonesIn); v = rotAbout(v, g, f); n = cross(v, g); }
     }
     const cam = toCam(v, side);
-    return { v, g, n, side, cam, ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };
+    // g is the RADIAL direction once the hand is reached (rest: forward, the thumb's side; pronation and the wrist's bends
+    // carry it): gcam says on which side of the drawn hand the thumb must be (qa_checks 'handed', lesson 53)
+    return { v, g, n, side, cam, gcam: toCam(g, side), ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };
   }
   function solve(pose = {}) {
     const st = {}, bonesIn = driven(pose);
@@ -107,12 +121,27 @@ export function createRig(C) {
       } else if (b.plane) {
         // the bone rotates in a plane yawed to the picture: 'sagittal' uses C.design.forwardX; any other plane name
         // uses C.design.planes[name] (e.g. finger flexion seen from the back of the hand ≈ out of plane: small fx)
-        const r0 = b.restAnat ?? 0, f = planeFx(b);
+        const r0 = b.restAnat ?? 0, pl = C.design.planes?.[b.plane];
         const parentSame = ps && BONE[b.parent].plane === b.plane;
         anat = parentSame ? ps.anat + (r0 - (BONE[b.parent].restAnat ?? 0)) + d : r0 + d;
         const base = parentSame ? ps.baseRot : (ps ? ps.rot : 0);
-        rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
-        along = projLen(anat, f) / projLen(r0, f);
+        const H3 = pl && typeof pl === 'object' && st[pl.from]?.a3;
+        if (H3?.ncam) {
+          // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
+          // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
+          // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
+          // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
+          // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
+          // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
+          const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
+          const dA = dir(anat), d0 = dir(r0), ang = (q) => Math.atan2(q[1], q[0]) / DEG;
+          rot = base + wrap(ang(dA) - ang(d0));
+          along = Math.max(0.05, Math.hypot(dA[0], dA[1]));
+        } else {
+          const f = planeFx(b);
+          rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
+          along = projLen(anat, f) / projLen(r0, f);
+        }
         st[b.id] = { baseRot: base };
       } else {
         rot = (ps ? ps.rot : 0) + d;
@@ -197,11 +226,13 @@ export function createRig(C) {
     const ctx = { P: C.palette, C, J, pose, st, rig: api };
     const parts = [];
     // 2.5D WARPS (C.warps = {bone: (pose) => (q) => q'}): every rigid part drawn on that bone is lifted through it before
-    // the bone's matrix (engine/warp.js: a ¾ head that nods instead of rolling)
+    // the bone's matrix (engine/warp.js: a ¾ head that nods instead of rolling). A small FEATURE (part.warp = 'feature':
+    // an eye, its catch-light, its lashes) rides the warp by its centre and takes only the warp's local scale there, not its
+    // shear: point by point, the far eye near the skull's silhouette slanted and smeared as the head nodded (mum3q x-nod24)
     const warps = Object.fromEntries(Object.entries(C.warps || {}).map(([b, w]) => [b, w(pose)]));
     for (const [name, mod] of Object.entries(C.modules)) {
       for (const p0 of mod.build(ctx)) {
-        const p = warps[p0.bone] && !p0.world && !p0.skin ? { ...p0, geom: mapGeom(p0.geom, warps[p0.bone]) } : p0;
+        const p = warps[p0.bone] && !p0.world && !p0.skin ? { ...p0, geom: warpGeom(p0.geom, warps[p0.bone], p0.warp, p0.warpAt) } : p0;
         const want = mod.ANCHORS?.[p.id];
         if (want !== undefined && want !== p.geom.P.length) throw new Error(`${p.id}: ${p.geom.P.length} anchors, documented ${want}`);
         if (!st[p.bone]) throw new Error(`${p.id}: unknown bone ${p.bone}`);
@@ -233,9 +264,10 @@ export function createRig(C) {
       const zmin = Math.min(...inG.map((p) => p.z));
       const behind = parts.filter((p) => !G.match.test(p.id) && p.fill === G.material && p.z < zmin && p.z >= (G.minZ ?? -Infinity) && !p.stroke && (!G.behind || G.behind.test(p.id))).map((p) => p.id);   // G.behind: only these count (a sleeve is not outlined against its own shoulder cap); G.minZ: only parts not themselves hidden behind the body (a clip region is the part's whole shape, visible or not)
       if (!behind.length) continue;
-      // G.fade = {bone, r: [r0, r1]}: the line is masked out within r0 (H) of that bone's joint and full beyond r1 — a sleeve
-      // over its own shoulder must not draw a seam that runs out tangentially through the silhouette
-      const fade = G.fade && { c: ap(F, st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
+      // G.fade = {bone, r: [r0, r1], at?}: the line is masked out within r0 (H) of that bone's joint (or of the point `at`, an
+      // offset in H in the bone's own frame, so it rides the bone) and full beyond r1 — a sleeve over its own shoulder must not
+      // draw a seam that runs out tangentially through the silhouette
+      const fade = G.fade && { c: ap(F, G.fade.at ? ap(st[G.fade.bone].M, G.fade.at) : st[G.fade.bone].pos), r0: G.fade.r[0], r1: G.fade.r[1] };
       // OCCLUDERS: parts drawn above the same-material parts but below the group (the neck over the cardigan's collar) hide
       // part of them — the line must not show there (it ran over the neck as a pink hairline: "clothing bleeding onto
       // limbs", client). They are painted black into the line's mask, in z order, over the white material parts.
@@ -313,11 +345,16 @@ export function createRig(C) {
           .flatMap((p) => (p.clip ? (Array.isArray(p.clip) ? p.clip : [p.clip]).map((id) => byId[id]).filter(Boolean) : [p])))];   // a clipped surface (a rim shade) counts only as its clip region
         // g.gate: an fx channel (0–1) that fades the shadow in, e.g. a hand that is ON her only after it lands
         const gk = g.gate ? Math.max(0, Math.min(1, pose.fx?.[g.gate] ?? 0)) : 1;
-        if (on.length && gk > 0.002) shadows.push({ zh, hp, on, k: gk, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
+        // g.noCast: parts that set where the group's shadow sits in depth but cast none themselves (mum3q's end-on forearm, a
+        // round mass standing off the bump's edge in the air: its own shadow read as "a ball casting its shadow", lesson 54)
+        const cast = g.noCast ? hp.filter((p) => !new RegExp(g.noCast).test(p.id)) : hp;
+        // g.k, g.offset: this group's own strength and offset (mum3q's top hand lies ON the dome: the still shows almost no
+        // shade under its fingers, where the cradling hand under the bump casts a clear one)
+        if (on.length && cast.length && gk > 0.002) shadows.push({ zh, hp: cast, on, k: gk * (g.k ?? 1), off: g.offset, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
       }
       shadows.sort((a, b) => a.zh - b.zh);
       var emitShadow = (S) => {
-        const [dx, dy] = (CS.offset || [4, 6]).map((v) => v / k);
+        const [dx, dy] = (S.off || CS.offset || [4, 6]).map((v) => v / k);
         out += `<clipPath id="${S.id}">${S.on.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`
           + `<g clip-path="url(#${S.id})"><g opacity="${f2((CS.opacity ?? 0.12) * (S.k ?? 1))}"><g transform="translate(${f2(dx)} ${f2(dy)})">`
           + S.hp.map((c) => `<path d="${pathD(c.geom, Hpx)}" fill="${CS.color || '#000'}" transform="${tfOf(c.M)}"/>`).join('') + '</g></g></g>';

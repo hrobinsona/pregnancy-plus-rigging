@@ -1,0 +1,63 @@
+{
+ "name": "fit-q_k2_down",
+ "note": "fitted to characters/mum3q/refs/pose/q_k2_down_2.json (MediaPipe landmarks, base rest); far arm (upperArm.far -13, forearm.far 124.1, hand.far -47.5, armAbd.far -0.8, armRot.far 6, foreRot.far -28.6) on the still's hand points by tools/hand_place.py (rms 7.9 px, arm inside her outline)",
+ "hands": {
+  "near": "hang",
+  "far": "atop"
+ },
+ "fx": {
+  "headPitch": -3.4
+ },
+ "root": [
+  -0.0235,
+  -0.0048
+ ],
+ "bones": {
+  "pelvis": -0.1,
+  "spineLower": 0.1,
+  "spineUpper": 0.5,
+  "chest": 3.4,
+  "neck": 16.1,
+  "head": -0.7,
+  "belly": 0,
+  "clavicle.near": -1.6,
+  "shoulderAbd.near": -0.2,
+  "upperArm.near": 0.3,
+  "armAbd.near": 0,
+  "armRot.near": 8.9,
+  "forearm.near": 50.7,
+  "foreRot.near": 0.8,
+  "hand.near": 8.8,
+  "thigh.near": 1.3,
+  "shin.near": -1.1,
+  "foot.near": -1.6,
+  "hipAbd.near": -0.1,
+  "clavicle.far": -1.5,
+  "shoulderAbd.far": 7.3,
+  "upperArm.far": -13,
+  "armAbd.far": -0.8,
+  "armRot.far": 6,
+  "forearm.far": 124.1,
+  "foreRot.far": -28.6,
+  "hand.far": -47.5,
+  "thigh.far": 0.5,
+  "shin.far": -0.4,
+  "foot.far": 1,
+  "hipAbd.far": 0
+ },
+ "_fit": {
+  "ref": "characters/mum3q/refs/pose/q_k2_down_2.json",
+  "scale": 0.9965,
+  "rms": 0.0384,
+  "worst": [
+   "shoulderL 0.113",
+   "thumbL 0.066",
+   "pinkyL 0.061",
+   "earR 0.058",
+   "eyeOuterR 0.058"
+  ]
+ },
+ "zBias": {
+  "arm.far.hand": 40.0
+ }
+}

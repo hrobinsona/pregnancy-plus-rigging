@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""critic_F.py <char> <anim> [--lens feel|lasseter|hands|all]   |   critic_F.py <char> --poses p1,p2,...
+"""critic_F.py <char> <anim> [--lens feel|lasseter|hands|natural|all]   |   critic_F.py <char> --poses p1,p2,...
 The FEEL critic pack: look-and-feel only, deliberately NO metrics (the maths critic C scored proxies — px/f, lag offsets,
 path loops — for six rounds while the client saw a stiff, detached, dead-handed arm; numbers bias a reviewer away from
 "does this look like a real body?").
@@ -8,35 +8,51 @@ Anim mode (run after tools/char_anim.mjs) writes:
   out/<c>_<a>_feel_beat_<n>.png per beat: onion skin (ghost outlines, early = blue → late = red, over the middle frame)
                                 + the beat's frames side by side, zoomed on what moves
   out/<c>_<a>_feel_keys.png     the key moments, upper body, large
+  out/<c>_<a>_feel_motion_*.png what changed each second (magenta), upper body; with spec.handsBox also the hands at 1:1
+                                (+ _feel_hands_1to1_*.png every 0.5 s): small moves drawn, lesson 58
 Pose mode writes out/<c>_feel_poses.png (each pose large, upper body + full figure).
 Prints the filled prompt (tools/critic_prompt_F.md) with history from characters/<c>/feel_log_<a or poses>.md.
 --lens (anim mode; default feel): lasseter = the 12 principles, a score and a timed fix each; hands = the hands at size,
   adding out/<c>_<a>_feel_hands_*.png (zoomed tiles from out/<c>_<a>_tracks.json, one scale for both hands) and a hand
   angle/size trace; all = a judge panel: each lens also written to out/critic_prompt_<lens>.md (one fresh reviewer each),
-  all three printed together. From the reels rig, where these lenses found what the overall rubric missed."""
+  all three printed together. From the reels rig, where these lenses found what the overall rubric missed.
+--lens natural: "does this look like an illustration of a real person, holding herself as she really would?" judged
+  against the reference STILLS (tools/ref_match.py: each key next to the stills it was built from) and every item of
+  docs/HARRY_EYE.md (Harry's notes as questions). In --lens all as the fourth reviewer."""
 import sys, os, re, glob, json, subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 args = sys.argv[1:]; lens = 'feel'
 if '--lens' in args: i = args.index('--lens'); lens = args[i + 1]; del args[i:i + 2]
-if lens not in ('feel', 'lasseter', 'hands', 'all'): sys.exit('--lens feel|lasseter|hands|all')
+LENSES = ['feel', 'lasseter', 'hands', 'natural']
+if lens not in LENSES + ['all']: sys.exit('--lens ' + '|'.join(LENSES + ['all']))
 c = args[0]; root = os.getcwd()
-F = lambda s: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', s)
+_FONT = next((f for f in ('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', '/System/Library/Fonts/Supplemental/Arial Bold.ttf') if os.path.exists(f)), None)
+F = lambda s: ImageFont.truetype(_FONT, s) if _FONT else ImageFont.load_default()
+
+def refmatch_files():
+    """(path, description) for each key next to its reference stills (tools/ref_match.py), [] if none name a still"""
+    r = subprocess.run([sys.executable, 'tools/ref_match.py', c, args[1]], capture_output=True, text=True)
+    return [tuple(l.split(' — ', 1)) for l in r.stdout.splitlines() if ' — ' in l]
 
 def fill(files, brief, logname, hand_files=()):
     parts = re.split(r'^<!-- (lens:\w+|framing) -->\n', open('tools/critic_prompt_F.md').read(), flags=re.M); B = dict(zip(parts[1::2], parts[2::2]))
     log = f'characters/{c}/{logname}'
     hist = ('\n\nHISTORY (earlier feel reviews — check whether their asks landed):\n' + open(log).read()) if os.path.exists(log) else ''
     out = []
-    for L in (['feel', 'lasseter', 'hands'] if lens == 'all' else [lens]):
-        fl = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in (list(hand_files) + files if L == 'hands' else files))
-        out.append(B['lens:' + L].replace('{FILES}', fl).replace('{BRIEF}', brief).replace('{FRAMING}', B['framing']))
+    eye = open('docs/HARRY_EYE.md').read() if os.path.exists('docs/HARRY_EYE.md') else ''
+    rm = refmatch_files() if lens in ('natural', 'all') and len(args) > 1 and args[1] != '--poses' else []
+    for L in (LENSES if lens == 'all' else [lens]):
+        fs_ = list(hand_files) + files if L == 'hands' else rm + files if L == 'natural' else files
+        fl = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in fs_)
+        out.append(B['lens:' + L].replace('{FILES}', fl).replace('{BRIEF}', brief).replace('{FRAMING}', B['framing']).replace('{CHECKLIST}', eye))
         if lens == 'all': open(f'out/critic_prompt_{L}.md', 'w').write(out[-1] + hist)
     if lens != 'all': print(out[0] + hist); return
-    print('A judge panel in one pass: three lenses on the same shot (feel, Lasseter principles, hands). Do them in order, each\n'
-          'as its own review with its own output, as if three different reviewers wrote them; open each file once and reuse it.\n'
-          '(The same lenses are in out/critic_prompt_feel.md, _lasseter.md and _hands.md, to give each to its own fresh reviewer.)\n\n'
-          + '\n\n---\n\n'.join(f'# Lens {i}: {L}\n\n{t}' for i, (L, t) in enumerate(zip(['feel', 'lasseter', 'hands'], out), 1)) + hist)
+    print('A judge panel in one pass: four lenses on the same shot (feel, Lasseter principles, hands, natural). Do them in\n'
+          'order, each as its own review with its own output, as if four different reviewers wrote them; open each file once.\n'
+          '(The same lenses are in out/critic_prompt_feel.md, _lasseter.md, _hands.md and _natural.md, to give each to its own\n'
+          'fresh reviewer.)\n\n'
+          + '\n\n---\n\n'.join(f'# Lens {i}: {L}\n\n{t}' for i, (L, t) in enumerate(zip(LENSES, out), 1)) + hist)
 
 def fig_mask(im):
     a = np.asarray(im.convert('L')); return a < 245
@@ -122,6 +138,17 @@ for z in spec.get('feelZoom', []):
     for k, i in enumerate(idx):
         x, y = (k % cols) * tw, (k // cols) * (th + 16); zs.paste(fr(i).crop(tuple(bz)).resize((tw, th), Image.LANCZOS), (x, y + 16)); d.text((x + 2, y), f'{i / fps:.2f}s', fill='#c00', font=F(11))
     zp = f'out/{name}_feel_zoom_{z["name"].replace(" ", "_")}.png'; zs.save(zp); files.append((zp, f"every frame of '{z['name']}', close up"))
+# 2c. small moves drawn (tools/motion_sheet.py, lesson 58): what changed each second, the upper body larger than the film;
+#     with spec.handsBox (film px) the hands at 1:1 every 0.5 s and their motion. Still strips at phone size hid 20 px hand moves
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import motion_sheet as MS
+get = lambda L, i: fr(i); nw = max(1, round(N / fps))
+ub = (bx[0], bx[1], bx[2], int(bx[1] + 0.55 * (bx[3] - bx[1])))
+sc = min(1.0, (MS.MAX - 60) / (ub[3] - ub[1]), ((MS.MAX - 34) / min(8, nw) - 8) / (ub[2] - ub[0]))
+MS.motion(get, ('',), N, fps, 0, ub, sc, f'out/{name}_feel_motion_body_%02d.png', 'upper body', files=files)
+if spec.get('handsBox'):
+    hb = tuple(spec['handsBox'])
+    MS.at_scale(get, ('',), list(range(0, N, max(1, round(0.5 * fps)))), hb, lambda i: i / fps, f'out/{name}_feel_hands_1to1_%02d.png', 'the hands every 0.5 s', files=files)
+    MS.motion(get, ('',), N, fps, 0, hb, 1.0, f'out/{name}_feel_motion_hands_%02d.png', 'the hands at 1:1', files=files)
 # 3. key moments, upper body, large
 kt = sorted(set([round(k['t'] * fps) for k in spec['keys']] + [b['from'] for b in beats]))
 kt = [k for k in kt if k < N][:16]; ub = (bx[0], bx[1], bx[2], int(bx[1] + (bx[3] - bx[1]) * 0.6)); tw = 300; th = int(tw * (ub[3] - ub[1]) / (ub[2] - ub[0]))

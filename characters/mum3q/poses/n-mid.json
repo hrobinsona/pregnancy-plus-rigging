@@ -1,0 +1,61 @@
+{
+ "name": "n-mid",
+ "note": "half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0",
+ "_recipe": "n-mid n-base fit-q_k_mid 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far,shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot.near,hand.near,wristFlex.near --from B --hands near=cradle,far=hold --add head=-7,neck=7,chest=-1.5 --note half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0",
+ "hands": {
+  "near": "cradle",
+  "far": "hold"
+ },
+ "fx": {
+  "headPitch": 8.0
+ },
+ "root": [
+  -0.0135,
+  -0.013
+ ],
+ "bones": {
+  "armAbd.far": 91.5,
+  "armAbd.near": 37.3,
+  "armRot.far": 38.2,
+  "armRot.near": 50.6,
+  "belly": 0.0,
+  "chest": -1.6,
+  "clavicle.far": -5.7,
+  "clavicle.near": 1.8,
+  "foot.far": -0.7,
+  "foot.near": -1.2,
+  "foreRot.far": 3.2,
+  "foreRot.near": -41.8,
+  "forearm.far": 115.3,
+  "forearm.near": 43.5,
+  "hand.far": 17.7,
+  "hand.near": 30.4,
+  "head": -12.4,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": 6.8,
+  "pelvis": 0.0,
+  "shin.far": 1.5,
+  "shin.near": -1.2,
+  "shoulderAbd.far": 0,
+  "shoulderAbd.near": -3.4,
+  "spineLower": 0.8,
+  "spineUpper": 0.6,
+  "thigh.far": 0.0,
+  "thigh.near": 1.4,
+  "toe.far": 0,
+  "toe.near": 0,
+  "upperArm.far": 23.5,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
+ },
+ "_orig": {},
+ "_edits": [
+  "--fx headPitch=8",
+  "--zbias arm.far.hand=40"
+ ],
+ "zBias": {
+  "arm.far.hand": 40.0
+ }
+}

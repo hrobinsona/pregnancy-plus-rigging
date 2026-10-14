@@ -1,0 +1,19 @@
+{
+ "name": "face-neutral",
+ "face": {
+  "lid": {
+   "open": 1
+  },
+  "gaze": [
+   0,
+   0
+  ],
+  "mouth": {
+   "neutral": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ },
+ "note": "face-calm with a neutral mouth: calm, no resting smile (breathe-open-neutral, the story's hook under 'Is this labour?')"
+}

@@ -100,7 +100,10 @@ export default {
   ],
   // QA (tools/qa_checks.mjs): her ¾ shot brings the far hand to her mouth, which points that forearm at the camera; the
   // limb-length gate would only restate the paused shot's known fault (PIPELINE lesson 24), so it is off for mum2
-  qa: { limbMin: 0 },
+  // handedness (tools/handed.mjs): mum2 turns its far hand by drawing swaps (farBack) more than with its 3D arm, so the check
+  // flags 20 poses where the two disagree — the paused shot's known far-hand faults (the palm flip, lesson 24), not a hand
+  // copied from the other side (its near hand passes everywhere)
+  qa: { limbMin: 0, handed: [{ side: 'far', why: 'paused: the far hand turns by drawing swaps (farBack), its palm flip a known fault (lesson 24)' }] },
   frame: params.frame,
   ref: params.ref,
   roles: {

@@ -1,0 +1,23 @@
+{
+ "name": "x-beam",
+ "note": "STRESS pose for the \u00be drawing, not a shot key: a big warm smile (lid smile, mouth warm)",
+ "hands": {
+  "near": "hang",
+  "far": "hang"
+ },
+ "face": {
+  "lid": {
+   "smile": 1
+  },
+  "gaze": [
+   0,
+   0
+  ],
+  "mouth": {
+   "warm": 1
+  },
+  "brow": {
+   "soft": 0.5
+  }
+ }
+}

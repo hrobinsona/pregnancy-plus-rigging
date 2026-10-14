@@ -1,0 +1,65 @@
+{
+ "name": "fit-q_k4_down",
+ "note": "fitted to characters/mum3q/refs/pose/q_k4_down_0.json (MediaPipe landmarks, base rest); far arm (upperArm.far 23.5, forearm.far 115.3, hand.far 17.7, armAbd.far 91.5, armRot.far 38.2, foreRot.far 3.2, wristFlex.far -62.5) on the still's hand points by tools/hand_place.py (rms 3 px, the arm visible, elbow on the still's, a natural arm); near arm (upperArm.near 9.5, forearm.near 43.5, hand.near 30.4, armAbd.near 37.3, armRot.near 50.6, foreRot.near -41.8, wristFlex.near 28.9) on the still's hand points by tools/hand_place.py (rms 7.9 px, the arm visible, elbow on the still's, a natural arm)",
+ "hands": {
+  "near": "cradle",
+  "far": "hold"
+ },
+ "fx": {
+  "headPitch": -3.7
+ },
+ "root": [
+  -0.0218,
+  -0.0062
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 1.1,
+  "chest": 3.9,
+  "neck": 8.9,
+  "head": 3.9,
+  "belly": 0,
+  "clavicle.near": -1.6,
+  "shoulderAbd.near": -3.4,
+  "upperArm.near": 9.5,
+  "armAbd.near": 37.3,
+  "armRot.near": 50.6,
+  "forearm.near": 43.5,
+  "foreRot.near": -41.8,
+  "hand.near": 30.4,
+  "thigh.near": 1.5,
+  "shin.near": -1.5,
+  "foot.near": -1.6,
+  "hipAbd.near": 0,
+  "clavicle.far": -5.7,
+  "shoulderAbd.far": 0,
+  "upperArm.far": 23.5,
+  "armAbd.far": 91.5,
+  "armRot.far": 38.2,
+  "forearm.far": 115.3,
+  "foreRot.far": 3.2,
+  "hand.far": 17.7,
+  "thigh.far": 0,
+  "shin.far": 1.8,
+  "foot.far": -2,
+  "hipAbd.far": 0,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
+ },
+ "_fit": {
+  "ref": "characters/mum3q/refs/pose/q_k4_down_0.json",
+  "scale": 1.0019,
+  "rms": 0.0217,
+  "worst": [
+   "shoulderL 0.043",
+   "eyeOuterR 0.033",
+   "footL 0.031",
+   "earR 0.031",
+   "shoulderR 0.031"
+  ]
+ },
+ "zBias": {
+  "arm.far.hand": 40.0
+ }
+}

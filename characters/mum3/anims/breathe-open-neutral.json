@@ -1,0 +1,584 @@
+{
+ "name": "breathe-open-neutral",
+ "fps": 30,
+ "duration": 3.35,
+ "loop": false,
+ "story": "The opening of breathe-stroke (0–3.35 s) with a neutral mouth, for the Braxton Hicks story's hook: she stands calm, arm at her side, brings her hand to the lower front of her bump, lets a little air out and starts a deep breath in, eyes drifting shut. Her face stays neutral (no resting smile) under the question 'Is this labour?'.",
+ "intensity": "very gentle and calm, an unhurried mindful moment. Small, soft moves; nothing fast, nothing big.",
+ "beats": [
+  {
+   "name": "calm",
+   "from": 0,
+   "to": 32
+  },
+  {
+   "name": "hand to the bump",
+   "from": 32,
+   "to": 84
+  },
+  {
+   "name": "deep breath in",
+   "from": 84,
+   "to": 100
+  }
+ ],
+ "keys": [
+  {
+   "t": 0.0,
+   "pose": "n-rest",
+   "ease": "inOut",
+   "note": "the master's pose: arm at her side, the hand loosely curled"
+  },
+  {
+   "t": 1.05,
+   "pose": "n-rest",
+   "ease": "inOut"
+  },
+  {
+   "t": 1.65,
+   "pose": "n-lift",
+   "ease": "inOut",
+   "only": [
+    "bone.clavicle.near",
+    "bone.shoulderAbd.near",
+    "bone.upperArm.near",
+    "bone.armAbd.near",
+    "bone.armRot.near",
+    "bone.forearm.near",
+    "bone.foreRot.near",
+    "bone.hand.near.*"
+   ],
+   "note": "arm-only key at the via's time (seeds the elbow, lesson 20); the fingers curl a little in flight and open onto the bump as it lands"
+  },
+  {
+   "t": 2.3,
+   "pose": "n-bump",
+   "ease": "inOut",
+   "note": "hand rests on the lower front of the bump (still m3_k_bump_1), fingers curved onto it"
+  },
+  {
+   "t": 2.8,
+   "pose": "n-prep",
+   "ease": "inOut",
+   "note": "a little air out first: the shoulders settle 2–3 px, the chin dips (v3's half-strength prep didn't read at phone size)"
+  },
+  {
+   "t": 4.5,
+   "pose": "n-breath",
+   "ease": "breath",
+   "note": "top of the deep breath in (1.7 s): the ribcage lifts, shoulders up, chin up, the bump swells under the hand"
+  },
+  {
+   "t": 4.85,
+   "pose": "n-breath",
+   "ease": "inOut",
+   "note": "a short suspended hold at the top"
+  },
+  {
+   "t": 7.4,
+   "pose": "n-out",
+   "ease": [
+    0.22,
+    0.4,
+    0.3,
+    1
+   ],
+   "note": "the breath out is a SIGH, longer than the in (2.55 s vs 1.7): it leaves the hold at speed (two thirds of the drop by ~5.75 s), then a long slow sink a touch lower than the start (v3's out was barely longer than the in and slid at an even rate)"
+  },
+  {
+   "t": 7.85,
+   "pose": "n-out",
+   "ease": "inOut",
+   "shift": {
+    "head": -6,
+    "neck": -6
+   },
+   "note": "the settled, smiling pose holds; the eyes open onto the bump in it, the head starts down 6 frames before the hand"
+  },
+  {
+   "t": 9.0,
+   "pose": "n-top",
+   "ease": [
+    0.35,
+    0.05,
+    0.2,
+    1
+   ],
+   "shift": {
+    "head": -8,
+    "neck": -8
+   },
+   "note": "strokes up the bump's front, the finger pads curving over the dome (crest); the head sinks over ~1.1 s on a long ease-out and is still settling as the hand travels (v3's went down in 0.4 s: a nod)"
+  },
+  {
+   "t": 9.3,
+   "pose": "n-top",
+   "ease": "inOut",
+   "only": [
+    "bone.hand.near.*"
+   ],
+   "note": "the pause at the top in the same hand shape"
+  },
+  {
+   "t": 9.9,
+   "pose": "n-flat",
+   "ease": "inOut",
+   "only": [
+    "bone.hand.near.*"
+   ],
+   "note": "on the way down the fingers open gradually and lie flatter, trailing as the heel leads (v3's opened in 6–8 frames at the top: a flick)"
+  },
+  {
+   "t": 10.3,
+   "pose": "n-top",
+   "ease": "inOut",
+   "only": [
+    "bone.head",
+    "bone.neck"
+   ],
+   "note": "the head starts up as the hand lands"
+  },
+  {
+   "t": 10.35,
+   "pose": "n-bump",
+   "ease": "inOut",
+   "except": [
+    "head",
+    "neck",
+    "bone.hand.near.*"
+   ],
+   "note": "strokes back down; she keeps looking"
+  },
+  {
+   "t": 10.45,
+   "pose": "n-bump",
+   "ease": "inOut",
+   "only": [
+    "bone.hand.near.*"
+   ],
+   "note": "the fingers settle back onto the curve as the hand comes to rest"
+  },
+  {
+   "t": 10.75,
+   "pose": "n-look",
+   "kind": "breakdown",
+   "only": [
+    "bone.head",
+    "bone.neck"
+   ],
+   "note": "the head's breakdown a third of the way up (soft lids and smile still on): one unhurried rise"
+  },
+  {
+   "t": 11.3,
+   "pose": "n-lift",
+   "ease": "inOut",
+   "only": [
+    "bone.clavicle.near",
+    "bone.shoulderAbd.near",
+    "bone.upperArm.near",
+    "bone.armAbd.near",
+    "bone.armRot.near",
+    "bone.forearm.near",
+    "bone.foreRot.near",
+    "bone.hand.near.*"
+   ],
+   "note": "arm breakdown at the via (lesson 20); the fingers relax as it falls"
+  },
+  {
+   "t": 11.4,
+   "pose": "n-rest",
+   "ease": "inOut",
+   "only": [
+    "bone.head",
+    "bone.neck"
+   ],
+   "note": "the head is up (1.1 s, through the breakdown) as the hand drifts down"
+  },
+  {
+   "t": 11.95,
+   "pose": "n-rest",
+   "ease": "inOut",
+   "note": "back at her side, the fingers in the hanging curl"
+  }
+ ],
+ "reach": {
+  "near": [
+   {
+    "t": 1.05,
+    "pose": "n-rest",
+    "on": "pelvis",
+    "dphi": -25,
+    "note": "every stop carries a swivel offset (dphi): a hold takes its own pose's swivel, so a rest stop without it snapped the elbow 5 px as the drop arrived. v5: -25 on the bump (the arm full length, the elbow just behind her back as in the bump still); v4's -35 put the elbow under her shoulder and the forearm pointing at us, drawn at 58-65% of its length (Harry: 'the arm sort of shrinks when it moves')"
+   },
+   {
+    "t": 1.65,
+    "pose": "n-lift",
+    "on": "pelvis",
+    "via": true,
+    "note": "the joint-space breakdown: the elbow bends progressively, the forearm swings forward",
+    "dphi": -25
+   },
+   {
+    "t": 2.3,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "skew": 0.1,
+    "lie": "bump",
+    "note": "hand on the lower front of the bump where the bump still has it (v4 lifted it 45 px to keep the tips inside, which bent the arm until the forearm foreshortened; v5 lifts it 13 px and lets the fingers end along the outline instead). The wrist lies ON the bump's near surface (surface): the fitted depth floated it 0.33 H in front of the bump, toward us. The palm lies on the bump (lie); a long soft arrival",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 2.8,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 4.5,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0066,
+     -0.0732
+    ],
+    "lie": "bump",
+    "note": "the hand rides the breath as one piece: up and out with the bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 4.85,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0066,
+     -0.0732
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 7.4,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0141,
+     -0.0603
+    ],
+    "lie": "bump",
+    "note": "and sinks with it on the sigh, a touch lower than it started",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 7.85,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0141,
+     -0.0603
+    ],
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 9.0,
+    "pose": "n-top",
+    "on": "belly",
+    "dphi": 20,
+    "dp": [
+     -0.04,
+     -0.16
+    ],
+    "surface": "bump",
+    "gap": 0.04,
+    "land": false,
+    "lie": "bump",
+    "note": "the top of the stroke, 53 px up the bump's front; the swivel turns (dphi 20) so the arm stays full length, the elbow easing back as the hand rises; not a landing: the hand never left the bump; the hand's angle trails the wrist by 6 frames on the way up",
+    "handLag": 6
+   },
+   {
+    "t": 9.2,
+    "pose": "n-top",
+    "on": "belly",
+    "dphi": 20,
+    "dp": [
+     -0.04,
+     -0.16
+    ],
+    "surface": "bump",
+    "gap": 0.04,
+    "land": false,
+    "lie": "bump",
+    "note": "a short pause at the top (the linger) before the way down"
+   },
+   {
+    "t": 10.35,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "land": false,
+    "handLag": 5,
+    "lie": "bump",
+    "note": "stroking down the hand trails the forearm by 5 frames (the forearm reverses first); the path bows IN toward the bump's middle (the default outward bow ran the flat fingers along its outline: a tangent)",
+    "curve": -0.06,
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 10.5,
+    "pose": "n-bump",
+    "on": "belly",
+    "dphi": -25,
+    "dp": [
+     -0.0126,
+     -0.0642
+    ],
+    "land": false,
+    "lie": "bump",
+    "surface": "bump",
+    "gap": 0.04
+   },
+   {
+    "t": 11.3,
+    "pose": "n-lift",
+    "on": "pelvis",
+    "via": true,
+    "note": "on the way down the elbow straightens progressively (joint-space breakdown) instead of snapping straight on arrival",
+    "dphi": -25
+   },
+   {
+    "t": 11.95,
+    "pose": "n-rest",
+    "on": "pelvis",
+    "skew": 0.1,
+    "note": "peels off at 10.5 and drifts down under its own weight over 1.45 s (v3 dropped in ~0.5 s: the fastest move in the film)",
+    "dphi": -25
+   }
+  ]
+ },
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.brow"
+   ],
+   "keys": [
+    {
+     "t": 0.3,
+     "pose": "face-neutral",
+     "ease": "inOut",
+     "note": "(cut: face-neutral)"
+    },
+    {
+     "t": 2.75,
+     "pose": "face-neutral",
+     "ease": "inOut",
+     "note": "(cut: face-neutral)"
+    },
+    {
+     "t": 3.35,
+     "pose": "face-in",
+     "ease": "inOut",
+     "note": "the eyes drift shut WITH the breath in (from 2.75, over 18 frames; v3's shut in 8 frames mid-breath)"
+    }
+   ]
+  },
+  "contact": {
+   "channels": [
+    "fx.contact.near"
+   ],
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": "c-off",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.05,
+     "pose": "c-off",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.35,
+     "pose": "c-on",
+     "ease": "inOut",
+     "note": "the shadow arrives with the hand"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 4,
+  "phase0": 0.2,
+  "amp": [
+   {
+    "t": 0,
+    "amp": 1
+   },
+   {
+    "t": 2.45,
+    "amp": 1
+   },
+   {
+    "t": 2.8,
+    "amp": 0.2
+   },
+   {
+    "t": 7.0,
+    "amp": 0.2
+   },
+   {
+    "t": 7.7,
+    "amp": 1
+   }
+  ],
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.032,
+   "chestAcross": 0.03,
+   "chestDeg": -1,
+   "shoulderDeg": 2.2,
+   "headDeg": -1.2,
+   "belly": 0.012
+  }
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 0.7
+  }
+ ],
+ "drift": {
+  "amp": 1,
+  "seed": 3,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.4,
+   "clavicle.near": 0.25,
+   "hand.near": 0.4
+  },
+  "freqs": [
+   0.08333333333333333,
+   0.16666666666666666,
+   0.25
+  ],
+  "note": "the 12 s loop's harmonics, so the cut's drift is breathe-stroke's"
+ },
+ "lags": {
+  "pelvis": 0,
+  "spineLower": 0,
+  "spineUpper": 2,
+  "chest": 3,
+  "neck": 4,
+  "head": 5,
+  "clavicle.near": 2,
+  "upperArm.near": 0,
+  "forearm.near": 2,
+  "hand.near": 4,
+  "face": 0,
+  "fx": 0
+ },
+ "plantFeet": "ik",
+ "plantFeetRef": "rest",
+ "wrapEase": "inOut",
+ "fidget": [
+  {
+   "t0": 3.0,
+   "t1": 5.0,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1s": -3,
+    "hand.near.f3s": 1.5,
+    "hand.near.f4s": 4,
+    "hand.near.t0": 4
+   },
+   "note": "the breath in: the fingers fan a little and the thumb eases out (gaps open sideways; the hand keeps its length)"
+  }
+ ],
+ "qa": {
+  "still": {
+   "near": [
+    [
+     3.0,
+     3.35,
+     "breathe-stroke's breath-in window (its qa.still from 3.0 s): the hand rides the bump as it rises"
+    ]
+   ]
+  }
+ },
+ "note": "A cut, not a new performance: every body frame equals breathe-stroke's at the same t (drift.freqs pinned to the 12 s loop's harmonics; checked frame by frame). Only the face differs: face-neutral (face-calm with a neutral mouth) where breathe-stroke has face-calm."
+}

@@ -1,0 +1,20 @@
+{
+ "name": "face-letgo",
+ "face": {
+  "lid": {
+   "open": 0.1,
+   "closed": 0.9
+  },
+  "gaze": [
+   0,
+   0.01
+  ],
+  "mouth": {
+   "soft": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ },
+ "note": "the sigh with the eyes shut: lips parted (face-out's mouth), the lids as shut as face-in's (sigh-look v2)"
+}

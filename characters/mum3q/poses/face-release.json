@@ -1,0 +1,1 @@
+{"name": "face-release", "note": "the end of the long breath out: eyes still softly closed, the mouth settles into a small smile (the breath's payoff)", "face": {"lid": {"open": 0.15, "closed": 0.85}, "gaze": [0, 0.01], "mouth": {"smile": 0.7, "soft": 0.3}, "brow": {"neutral": 1}}}

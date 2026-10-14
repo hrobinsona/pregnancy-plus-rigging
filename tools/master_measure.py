@@ -122,7 +122,7 @@ rowsI = np.arange(Hh)[:, None]
 skinM = M('skin') | M('skinShade')
 hairM = M('hair') | M('hairShade')
 garM = M('garment') | M('garmentShade')
-shoeM = (M('shoe') | M('shoeShade')) & (rowsI > (pt(pick('knee')[0])[1] + pt(pick('ankle')[0])[1]) / 2)
+shoeM = ((M('shoe') | M('shoeShade')) if 'shoe' in mat else hairM) & (rowsI > (pt(pick('knee')[0])[1] + pt(pick('ankle')[0])[1]) / 2)
 
 # ---- landmarks --------------------------------------------------------------------------------------------------
 pts = {}
@@ -168,12 +168,17 @@ for y in range(yE - int(0.3 * dHead), yE): fx.setdefault(y, front(y))
 if hf is not None:
     for y in range(hf, yE - int(0.3 * dHead)): fx[y] = front(y)
     pts['hairFront'] = [fx[hf], hf]
-yF = fmax(hf if hf is not None else yE - 0.3 * dHead, eye[1]);         pts['forehead'] = [fx[yF], yF]
-yB = fmin(eye[1] - 0.1 * dHead, noseY);                                 pts['noseBridge'] = [fx[yB], yB]
-yS = fmin(noseY, mouth[1]);                                              pts['subnasal'] = [fx[yS], yS]
-yU = fmax(yS, mouth[1] + 2);                                             pts['lipUpper'] = [fx[yU], yU]
-yC = fmax(mouth[1] + 0.12 * dHead, chinY);                               pts['chinFront'] = [fx[yC], yC]
-yK = fmin(mouth[1] + 2, yC);                                             pts['chinCrease'] = [fx[yK], yK]
+# (a ¾ master has no profile on its front edge: a band can come out empty, and that point is then left out)
+def setp(k, y):
+    if y is not None: pts[k] = [fx[y], y]
+    return y
+yF = setp('forehead', fmax(hf if hf is not None else yE - 0.3 * dHead, eye[1]))
+yB = setp('noseBridge', fmin(eye[1] - 0.1 * dHead, noseY))
+yS = setp('subnasal', fmin(noseY, mouth[1]))
+yU = setp('lipUpper', fmax(yS if yS is not None else noseY, mouth[1] + 2))
+yC = setp('chinFront', fmax(mouth[1] + 0.12 * dHead, chinY))
+setp('chinCrease', fmin(mouth[1] + 2, yC if yC is not None else chinY))
+# (a ¾ or front face: tools/face_measure.py measures its features)
 # EAR: rows between brow and jaw where the skin's BACK edge bulges backward (the ear in front of the hair): its extremes
 def back_(y, m=skinM):
     r = np.nonzero(m[y, int(ear[0] - 1.0 * dHead):int(nose[0])])[0]
@@ -266,9 +271,12 @@ yT = int(hem + 0.15 * (chinY - pts['skullTop'][1]))
 W_[f'thighNear@{yT}'] = xspan(legN, yT)
 W_[f'thighFar@{yT}'] = xspan(legF, yT)
 # hands (MediaPipe hand landmarks: wrist 0, middle tip 12) and shoes (each shoe blob: heel = back, toe = front)
-if R['hands']:
-    h = R['hands'][0]['pts']; pts['handWrist'] = [int(h[0][0]), int(h[0][1])]; pts['handTip'] = [int(h[12][0]), int(h[12][1])]
+if R['hands']:   # the near hand is the one at the near wrist; a ¾ master shows the far one too
+    hs_ = sorted(R['hands'], key=lambda q: np.hypot(q['pts'][0][0] - J['wristNear'][0], q['pts'][0][1] - J['wristNear'][1]))
+    h = hs_[0]['pts']; pts['handWrist'] = [int(h[0][0]), int(h[0][1])]; pts['handTip'] = [int(h[12][0]), int(h[12][1])]
     pts['handPts'] = [[int(x), int(y)] for x, y in h]
+    if len(hs_) > 1:
+        h = hs_[1]['pts']; pts['handFarWrist'] = [int(h[0][0]), int(h[0][1])]; pts['handFarTip'] = [int(h[12][0]), int(h[12][1])]
 if shoeM.any():
     lab_s, ns = ndi.label(shoeM); comps = sorted(range(1, ns + 1), key=lambda k: -(lab_s == k).sum())[:2]
     shoes = []

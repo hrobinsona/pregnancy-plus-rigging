@@ -267,7 +267,367 @@ or composited.
    shape"). Now the tube runs on into the shoe at the ankle's width (the back of the ankle is one line into the heel), and
    the foot's front edge leaves the shin's front line tangentially and bends into the instep along points measured row by
    row on the master (`P.instep`). Same fill, so the overlap is invisible; only the union's outline is seen.
+42. **A new view is a sibling character on the same skeleton, at ONE scale.** mum3q (¾) copies mum3's bone list and
+   imports its palette; only `params.js` and `parts/` are redrawn. Its `Hpx` is the profile's (210 px): both stills
+   measure 1499 px skull top to sole, so every bone keeps its length and a pose or hand shape means the same thing in
+   either view (the ¾ head itself measures 220 px: the chin drops as the face turns toward us). Yaw comes from the
+   drawing: the shoulders span 0.82 H on screen = 2·0.6·sin(yaw) → 43°, `forwardX = cos(yaw)` 0.74; a depth proxy's
+   centre sits √((a·fx)² + (c·sin yaw)²) inside its silhouette edge (the bump's 0.47 H inside its apex).
+43. **A turned face has its features inside it: measure them as named points, then draw.** The profile measurer reads
+   the face off its front edge; a ¾ face has no such edge, so `face_measure.py` finds each feature with MediaPipe's face
+   landmarker and takes its shape from the drawing's own blobs (eye ellipses, brow and mouth stations, ear, the far
+   cheek's edge row by row, the hairline in columns). The parts use NAMED points from those (edge at the eye row, the
+   mouth row, half way to the chin; hairline temple, mid, peak, far), never a sampled contour (shapes.js rule). Two
+   corrections the numbers needed: a dark-run scan misses each edge's anti-aliased pixel (brows +0.008 H), and the
+   rows showed what the eye missed (a straight jaw where the still's is a bowl; a calf peaking a third of the way down,
+   averaged away by too few stations).
+44. **The rest pose can pass at 97% and still break when she moves: gate a view on stress poses too.** mum3q's rest
+   matched (IoU 0.969, edges within 0.02 H), then `char_pose_sheet` on `x-*` poses found two faults the still can't
+   show: the taller shoulder cap the still needs pushed a lump out BEHIND the shoulder when the arm rose forward (the
+   round end now flattens with elevation), and the armpit fill drawn to close a gap at rest became a skin sliver down
+   her back with the arm raised (the arm's own front now meets the dress, as the still's deltoid does; the fill stops
+   where the armpit's crease ends).
+45. **On a turned face the body fitter cannot tell a nod from a roll: set the head from the face's own 3D pose.** Both move
+   the eye, ear and mouth landmarks down the picture. On mum3q's look-down still `fit_pose` chose the head tilted
+   sideways with the chin UP (pitch −9.7, neck +12.9); holding the nod and refitting the body made the trunk roll
+   instead (rms 0.05–0.07). `head_pose.py` reads MediaPipe's facial transformation matrix on a 3× crop, relative to the
+   master, keeps the body fit and searches only (nod, neck, head) on renders until the render's head pitch and roll and
+   its face centre match the still's (within 1° on all three keys). Nelder–Mead from two seeds (the fit's head, and a
+   bow: nod 2.5× the still's pitch, neck forward, head counter-rolled): the valley is diagonal (more nod, less roll),
+   single-axis steps stopped at a 15° roll. Measure at the rig's scale (`C.ref.Hpx`), not the view's own head size.
+46. **A hand seen from the back shows its life in the FAN, not the curl; and in ¾ a resting palm keeps the still's
+   angle, not the proxy's.** mum3q's hand on the bump: the reviewers called v1 and v2 "frozen" and "a decal" although
+   the fingers flexed 4–6° (v2 even 6–12°): for a hand seen from the back flexion is in DEPTH and shortens a finger by
+   1 − cos θ (~1%). What reads is in the picture plane: the spread (fingers fan open with a caress, ±5°), the thumb's
+   sweep (`ts`), the whole hand sliding on the bump (reach stops with `dp`, `surface`), and a curl big enough to shorten
+   the fingers ~8% (8–14° per joint: a "gather"). The profile's `lie` (the palm laid in the bump proxy's tangent plane)
+   foreshortened the ¾ hand to 79% (`qa_checks` limbs): the ¾ bump's front faces us, the still's palm lies flat at full
+   length, so the fitted hand angle is kept (`hands/drape`: flat, graded, fanned) and only the wrist sits on the surface.
+47. **Fitted keys carry their own idle limbs: a limb the brief doesn't move takes ONE key's values, and a hanging arm
+   counter-rotates the trunk.** Each still's fit gave the far arm its own angles (forearm 10° → −3° → 3°), so in the
+   shot the far hand swung in and out behind her skirt by half its width: the biggest motion in every hold (all three
+   reviewers). `pose_blend --keep <far arm, legs>` holds them from the look-down key; then the far upper arm takes the
+   trunk's change with the opposite sign (the far side's angles run opposite) so it stays plumb when the chest opens
+   (far fingertip ≤ 1.7 px/frame, from 5.8 with the wrong sign).
+48. **A hand whose wrist the camera can't see is placed from three points marked on the still, with "the arm stays
+   hidden" as the constraint; and a hand pinned to her keeps its drawn SIZE as her body moves under it.** Harry on
+   mum3q look-up v3: the far arm "just hanging lifeless", the hand "at a very odd angle while the other one's on the
+   bump". New stills put the far hand on the top of the bump, its forearm hidden behind her, the wrist just showing
+   under the bust. MediaPipe put that hidden wrist at the fingertips (70 px off), and fitting the hand's skin blob
+   (centre, axis, area, then mask overlap) converged on a blocky hand inside the outline with the upper arm poking out
+   of the notch under the bust: the drawn hand never has the still's shape, so area terms pull anywhere. Three points
+   by eye (wrist, middle knuckle, fingertip centroid) plus a penalty for any arm sample within its half-width of the
+   body's outline (`tools/hand_place.py --keys`, solved in node by `tools/hand_keys.mjs` in 0.3 s) gave the still's
+   placement at 7.9 px rms with the elbow tucked back at her side. Then, pinned to the bump by a reach while she looked
+   up, the arm's 3D solve turned the hand toward the camera and the flat-shaded palm grew from 48% to 61% of its length
+   and back: the shrinking arm of lesson 39 in a hold. Reach stops with `keepSize: true` search the wrist's flexion and
+   deviation together (locally: two flexions give the same length, a global scan flipped the hand 166 px) for the
+   contact pose's own length at the angle the reach settled on; 47% ± 1% all shot. `lie` was no cure here: on the far
+   top of the bump it laid the hand flat to us at 99%, long and past the outline. A segment hidden behind her, or
+   foreshortened by design as in the stills, is declared in the shot (`spec.qa.limbs`) and the QA gate then checks it
+   holds its size (≤ 1.1) instead of a minimum. The hand shape `atop`: fingers draped with a light curl (crest's ~90°
+   read as a paw from the back), a small fan, the thumb tucked under on the far side (crest's stuck out into the air).
+49. **A hand resting on her must rest the way a hand does: judge the arm in 3D, not only by where its points land, and
+   ask the stills for the pose, not for a drape.** Harry on mum3q look-up v4's far hand: "no one's hand naturally lies
+   like this", with a photo of a pregnant woman holding her bump (the top hand's palm on the dome, fingers together and
+   gently curved, wrapping toward the camera; the lower hand cupping beneath). v4's stills (q_k2) had been asked for
+   fingers "draping over the far edge" and got them hanging off it; new stills (q_k3) asked for the photo's hand. Fitting
+   them, lesson 48's solver met its points at 1.6 px rms with the elbow inside her bust and the upper arm reaching across
+   her chest toward the camera: every 2D cost met by a body no one has. `hand_place.py --natural` adds the 3D judgement
+   (rig.js arm3's frame): the upper arm hangs (down ≥ 0.55) with the elbow out at her side (lateral ≥ 0.1), the back of
+   the hand faces us (the drawn hand is always its back), and every joint keeps `--slack` degrees from its limits (at the
+   wrist's limit the reach's keepSize couldn't hold the hand's size: 36–45%, a 12× flip at 15° → 8° slack on another
+   key). From `--restarts 60` seeds it found an arm hanging at her side, the forearm forward behind the bump and the hand
+   across its top, 0.4 px rms. Leave the knuckle key out when the still's palm curves toward us: the drawn fingers never
+   foreshorten, so wrist, knuckle and fingertips can't all be met (22 px rms with it). "Hidden" means the arm's EDGES (its
+   drawn half-widths): with a flat 9 px the upper arm's front edge showed in the notch under her bust. A hand pointing
+   nearly at the camera (palm 44% of its length) is ill-conditioned: its screen angle hardly depends on the wrist bend, so
+   a move's in-flight blend toward the key's bend swung the fingertips 10 px/frame as a 4 px stroke began; a stroke on the
+   surface the hand rests on marks its stops `slide: true` (the contact angle and the hold's pull all the way). The shape
+   `hold`: fingers together and gently curved, graded index → little, the thumb tucked; its fidgets ease, never fan.
+   mum3q's wrist flexion reaches 80°, a real wrist's (mum3 keeps 60°).
 
+50. **A correction that ends as prose is made again: turn each of Harry's notes into a checklist item and a gate that
+   FAILS on the render he flagged.** By mum3q look-up v5, 49 lessons existed and Harry still had to say "creepy and
+   lifeless". v5 passed every gate: the whole-frame still check saw her head and breath move, and the fit met the top
+   hand's three points while drawing a boxy block with its fingers pointing back at her chest, where its still
+   (q_k3_down_1) has the hand curling forward over the dome. Two blind A/B reviewers preferred it. Now: `docs/HARRY_EYE.md`
+   lists his notes as questions; `spec.preflight` says how a plan avoids each one before anything is built; the
+   `qa_checks` `alive` gate measures each hand's movement ON her (relative to the belly), and fails v5's far hand at
+   0–3.2 s; `tools/ref_match.py` puts each key next to its stills; `critic_F.py --lens natural` asks a fresh reviewer every
+   checklist item against those sheets. Run blind on v5, that reviewer named all three of Harry's points before seeing
+   them ("a little mitten with no wrist", "fingers straight and spread like a comb", "only her head moves when she looks
+   up"). Measuring finger curl from the bone points does NOT work (every finger reads straight, even on hands Harry
+   liked): curl and shape are for the natural lens on the stills, not a number.
+51. **Every hand on her is fitted to its still in three steps: the SHAPE side by side with the still's hand, then the
+   PLACE solved with that shape, then LIFE big enough to see on a phone.** mum3q look-up v6 (Harry on v5: "still looks
+   creepy and lifeless. Rather than being a little curled over the top of the bump"; he picked "far hand on top" from new
+   stills q_k4_down). Each step failed once on the way:
+   - *Shape.* The first `hold` curled its fingers 70–85°. mum3q's fingers are 3D (`flexFx: {from: 'hand.<side>'}`: a
+     finger turns in the plane of its hand's camera direction and normal), so a hand seen from its back curls INTO the
+     camera: short stacked stubs ending in a blunt column, "a mitten" to the natural reviewer twice. The `cradle`'s 75–90°
+     hooked into "a rake". Rendering ~8 shapes of the key next to the still's hand at the same crop took minutes and
+     showed it plainly: the still's top hand has long fingers, fanned a few degrees so the tips step down in a diagonal,
+     each curved only 45–65° tip to knuckle; the lower hand's lie together and nearly straight along the curve. A hand
+     must also be drawn at the length the still draws it: at a3.len 0.68 (the solver's free choice) the top hand read as a
+     stub; `hand_place.py --hand-len 0.85` keeps an illustration's resting hand nearly unforeshortened. And the curl only
+     SHOWS when the hand faces the surface it lies on: placed "back of the hand to us", its palm normal pointed away from
+     the camera (ncam (−0.41, 0.39, 0.82)) and any curl, 30° or 85°, only shortened the fingers ("straight planks", round 3).
+     `hand_place.py --palm-down 0.55` turns a hand on top of the dome palm down onto it (ncam y 0.39 → 0.55); then a curl
+     in the middle and end joints (~65–85° tip to knuckle) bends the fingertips down over the dome on screen. Eyes are shape
+     too: lid open 0.6 + half + smile squashed a look-down to "closed slits" where the stills draw open eyes looking down.
+   - *Place.* The shape is chosen first because the placement is solved WITH it (`hand_place.py --hand <shape>`); the arm
+     the still shows is drawn (`--hide none`, `--fore x,y` a point on the forearm, `--elbow x,y` where the still shows
+     it). Two engine fixes came out of holding that arm: a 3D arm at 122° abduction missed its own key by 26 px and hopped
+     between IK branches frame to frame (elbow 40–70 px), so the reach now restores the keyed arm when the solve lands on
+     the mirror branch, a stop can say `keyedArm: true` (the arm stays the key's, only the damped solve moves the wrist),
+     and `qa_checks` fails an elbow that moves > 6 px in a frame while its wrist barely moves. A hand bent 50° at the wrist
+     drew a "pointed wrist corner": `params.arm<Side>.wristRound` adds a heel-of-the-hand pad.
+   - *Life.* The alive gate passed at 1.5 px with 2–4 px finger settles and both fresh reviewers still wrote "the hands
+     look identical in every frame… held props". A reach's `dp` is in H (mum3q: 1 H ≈ 225 px), so the "lift" of 0.02 H
+     was 4.5 px. Life a viewer sees is a 10–20 px caress or stroke, timed to the face (a caress while she looks down, a
+     squeeze as she smiles, a stroke through the smile, a settle as her eyes come back). The gate is now 5 px in every
+     2 s. Slide the WRIST little: a 14–18 px slide pulled the far forearm in behind her bust (the strip past its edge lost
+     35% of its area, the shrinking arm of lesson 39); the hand turning about its wrist (a `hand.<side>` fidget, applied
+     after the reach so the arm stays put) sweeps the fingertips as far while the arm holds. A forearm twist (`foreRot`)
+     swept them too but moved the forearm's drawn edges off the underbust: a white gap up to 73 px opened between bust,
+     arm and hand (the far forearm's back edge is now fuller toward the wrist, `P.armFar.w`; ≤ 13 px).
+   - *Timing.* The "half way up" breakdown still (q_k_mid_2) is 85% up, so the look up did most of its travel in 0.3 s;
+     a breakdown is half way in what moves, whatever its still shows (`derive_lookup.sh` holds its head back).
+   An arrangement choice (which hand on top) goes to the client on a decision card with the stills, never decided alone.
+   Rounds: blind A/B against v5 6.5 vs 5.5 (draft), 6.5 vs 5, 6.5 vs 5.5 (final). The natural lens said NOT YET four
+   times; the top hand's curl swung "mitten" → "planks" → "paw". When a shape ping-pongs like that the fault is the
+   DRAWING, not the pose (lesson 15: change the method): a back-view hand drawn as one silhouette with crease lines reads
+   as a mitten or a comb at any curl; the stills draw each finger as its own tapered shape (the next step, feel log).
+52. **Match the DRAWING to the still, not only the pose: line weight, finger taper and tips, the gaps between fingers, the
+   wrist crease, and the shadow a resting hand casts. And every channel a shot keys must reach the drawing.** mum3q
+   look-up v7. Correction to 51: `hand.js` already draws each finger as its own tapered tube; what read as "a mitten",
+   "a comb" and "four even parallel stripes" was the drawing's settings and how the fingers sat together. Side by side
+   with still q_k4_down_0 at the same crop (`hand_shapes.py --try '[{"style": {...}}]'`): our lines between the fingers
+   were thick, dark and ran each finger's whole length (`rim` 0.02 H ≈ 4.5 px); the still's are thin and faint.
+   - *Both ways wrong.* The first redraw went all the way to the still's look at zoom (`rim` 0.009, strong taper, pointed
+     tips `tipK` 0.82, a steep graded curl) and LOST its blind A/B to v6 (6 vs 6.5): at phone size the fingers fused into
+     one tapering shape, "a flat paddle", "a flipper", "a fused mitten with lines drawn on". Thin lines alone don't
+     separate fingers; at phone size a finger reads by its own ROUND tip and a small gap beside it. The second redraw:
+     `rim` 0.012, `taper` [1, 0.92, 0.84, 0.76], `tipK` 1.0 (round tips), the fingers fanned a few degrees so small gaps
+     open toward the tips (lower hand up to 6°), the curl graded so the tips step (index straightest), the lower thumb's
+     end joints bent toward the bump (straight, "a stiff bar"). It won its blind A/B, narrowly (6 vs 5.5). Too far the
+     other way on the top hand: fanned ±10° with ~90° on the little finger it read as "a claw", its lines broken into
+     dashes (`hand.js` fades a line where the finger beside it curls hard); it now lies together (±6°, 30° → 70°) with
+     long lines. Judge a hand drawing at the size the film is seen (`--scale 1`), not only zoomed: the zoomed sheet
+     favoured the version that lost.
+   - *The wrist.* The round pad over the far wrist read "a big rounded lump… a swollen joint", "a teardrop swelling into a
+     ball" that hid the back of the hand. Its radius was taken from the forearm's back edge at the wrist, which v6 had
+     widened to fill the underbust notch, so the pad was WIDER than the forearm: a joint must never be wider than the limb
+     it ends. Now 0.65 × (`P.armFar.wristRound.r`), with a short fine crease where the back of the hand bends off it
+     (`.crease`); a long full arc cut the pad off into "a ball, a fist".
+   - *The shadow.* The still shows each resting hand and the near forearm casting a soft shadow on the dress. mum3q had a
+     contact shadow configured since its first shot and it had NEVER drawn: `anim.js` stored a keyed track channel
+     `fx.contact.near` as `fx.contact` (it kept only the first word after `fx.`), so the shadow's gate stayed 0, in mum3's
+     breathe-stroke as well, through every version and every review. Fixed, with a `qa_checks` gate (`channels`: every
+     keyed channel reaches the pose under its whole name; a contact shadow gated on a keyed channel draws while it is on).
+     The near group now includes its forearm (`arm.near`, on the dress only: on `chest.skin` it drew a stripe inside the
+     upper arm), 16 %, (5, 9) px as the still reads. A shadow group must hold every part of its hand including the wrist
+     pad: the shadow is drawn just below the group's lowest part, so a pad left out got the hand's shadow painted on it.
+   - *Life, again.* The natural lens measured the hands' moves at 3–4 px on a 600 px figure against the head's 15, and
+     both hands dead still over the loop's seam (7.4 → 0.4 s). Raising the top hand's turn about its wrist from 15° to
+     24° moved its fingertips ~6 px: the hand lies palm down on the dome, so a turn in its own plane is seen nearly
+     edge-on. Measure a gesture in the rendered frames before trusting its degrees. Its life is now in the fingers (their
+     curl shows on screen once the hand is palm down): they lift and settle, gather into a squeeze as she smiles, 2–3×
+     the old angles; the lower thumb strokes 26°, the lower fingers gather as she lifts her eyes, and a small thumb stroke
+     crosses the seam.
+   Rules: pick a character's hand DRAWING beside its stills at the New character gate, at film size, as you pick a hand
+   shape at the New pose gate; when a configured effect never shows, check that its channel arrives before tuning it.
+53. **A hand drawing is chiral: the far hand is the OTHER hand, and a spec copied from the near one draws its mirror
+   image. Read the still's hand by its anatomy (which edge the thumb and index are on, where the little finger is, which
+   face we see, where the arm comes from) before its shape or its style.** mum3q look-up v1–v7. Harry on v7's top hand: "a
+   total mess. It looks like it's the wrong way round. How does it compare to the reference image?" It was: `params.js`
+   built the far hand as `{ ...handSpecs.near, … }`, keeping the near (right) hand's `thumbSide`, so a RIGHT hand lay on
+   her left arm, thumb and index along its lower edge and the little finger on top, where the still has the index on top
+   and the little finger lowest. A right hand seen from the back is a left hand seen from the palm, so the copy was right
+   while the far hand hung palm in (a sliver beside the skirt) and wrong from the first key that laid it on the bump.
+   Four rounds (curl, wrist pad, crease, line weight, finger fan) tuned a mirrored hand; the critics named symptoms ("a
+   paw", "a claw", "the wrist a ball", the pad's crease read as "a thumb pad"), never the cause, and every gate passed.
+   - *The fix:* the far spec takes `thumbSide` −1 and its `thumbFx` flipped (mum2's back-view far hand already did). Spreads
+     keyed raw in the shot (`hand.far.f*s` fidgets) flip with it; library shapes go through `spreadSign` and flip alone.
+   - *The arm, read the same way.* Beside the still at the same crop, the strip coming down past her bust is the UPPER arm,
+     hanging; the elbow is at her side on the bump's edge and the forearm points at us over the top of the bump: that is
+     the still's round mass. v7's placement had taken the strip for the forearm (`--fore` on it): the solve lifted the
+     elbow back to her bust (the upper arm drawn at 57%, abducted 122°, "a chicken wing") and the forearm's end became a
+     ball with a crease. Re-placed with `--elbow` under the mass and `--hang 0.8`. A forearm drawn at under half its
+     length is now drawn END-ON (`parts/arms.js`: its tube thins inside a round mass, the cross-section seen along it): as
+     a tube, a 0.15 H forearm was a hairpin under the upper arm, "a box", then a hook. The wrist pad and crease went.
+   - *Then the drawing came close in a few tries,* each picked beside the still (`hand_shapes.py`, zoomed and at film
+     size): the fingers together (the spread closed toward the middle finger, the curl graded mildly: on a palm-down
+     hand a 3D curl swings the more curled fingers sideways, which had opened the gaps); the thumb-side edge flat
+     (`thenarEdge` 0.9) as the still's top edge runs straight to the wrist; the hand's edge over its own upper arm drawn
+     as a fine line (an outline group), so the back of the hand reads apart from the arm, as the still draws it. With
+     the arm hanging, the caress's 24° turn grew the drawn hand 12% (the limbs gate): 14–17° keeps it within 10%.
+   - *Gates.* `tools/handed.mjs`: per hand, the side the 3D arm puts the thumb (arm3's radial direction, now `a3.gcam`)
+     against the side the drawing puts the index knuckle, with the remedy (flip the spec, or swap in a drawing of the
+     other face). `char_check` runs it on every pose, `qa_checks handed` on every frame; it fails v7 on all 240 frames.
+     Exceptions carry a reason in `C.qa.handed`: mum3q's hanging far hand (drawn from the back for the bump; it needs a
+     palm drawing before a shot shows it hanging), mum2's far hand (turned by drawing swaps, not its 3D arm). HARRY_EYE 19;
+     `new_char.py` and the skill's step zero say it.
+   - *The sign-off.* The natural lens said NOT YET on v7's top hand ("a paw… the wrist a ball") and v7 still went to Harry
+     with that point "explained". A point about something the still draws differently is fixed before he sees it.
+   Rules: when tuning a hand doesn't converge, ask which hand it is and which face we see before anything else; never
+   copy one hand's spec to the other without mirroring it; say what each visible segment of an arm IS before placing it.
+54. **Measure the still's hand in its own pixels and place the hand by EACH fingertip; a hand draped over a dome bends at
+   its knuckles, not its finger joints.** mum3q look-up v8 → v9. v8, the right hand at last, lost its blind A/B to v7 (5.5 vs
+   6): "a pale round knob" of a wrist, "fingers short and nearly horizontal… tips bunched into a lumpy, scalloped edge".
+   Measured on q_k4_down_0 (a 10 px grid; the lines between the fingers found by colour): the fingers lie at 38/35/30/28°
+   below the horizontal from index to little, their tips step down a diagonal (each 0–16 px behind the index's along the
+   fingers: a normal hand's lengths), and the knuckles sit on a line square to the fingers. v8 met its keys to 1 px and
+   still drew a different hand: its fingers at 28–17°, its tips stacked down one column. Two causes:
+   - *A centroid lets the hand roll.* W, K and T (the tips' centroid) leave the hand free to turn about T, and K had been
+     marked by eye 12 px low (on the hand's middle, not where the lines between the fingers start), which flattened every
+     finger. `hand_place.py --tips` takes each fingertip as a key (index → little); K is re-marked on the measured lines.
+   - *The shape couldn't meet them* (6.6–8 px rms whatever the arm did), because the still's hand DRAPES: the back of the
+     hand lies on the dome's top and the straight fingers bend down its curve at the knuckles (MCP 44–50°, PIP 8–14°). v8's
+     mild curl (6–14°) kept them flat; earlier, deeper curls in the finger joints made "a mitten" and "a paw". Its
+     little-finger side wraps down and away, so the far hand's own spec steps the knuckle arc back and shortens the outer
+     fingers on screen (`knuckleArc` [1, 1, .95, .85], `fingerLen` [1, 1, .9, .74]): 4.5 px rms. `hand.js` faded a
+     back-view finger line by the knuckle's and the PIP's curl summed, which cut the lines to stubs at 55°: `lineMcpK`
+     (0.25 here, default 1, so mum2 and mum3 draw the same) weighs the knuckle's share; only a PIP folds a finger over its
+     own line.
+   - *What the shot did to it (v9).* The fitted key matched the still; the film didn't. v9 lost its blind A/B to v7 (6 vs
+     6.5) and the natural lens said NOT YET, on three things the key never showed:
+     - *The breath flattened the fingers.* The breath lifts her shoulder ~10 px while the wrist stays pinned on the bump;
+       over a forearm seen end-on the damped solve turned it 10° in 3D, and keepSize held the hand's length and screen angle
+       with a different palm facing, so the fingers lay at 26° on the film against 31° on the key. `keepPalm: true` on the
+       reach stops keeps the palm's facing too (a3.ncam; keepSize then searches the forearm's pronation with the wrist): 32°.
+     - *The squeeze curled the drape into a paw.* Its fidgets added 12–16° into the finger joints of a hand already bent
+       48° at the knuckles (68–70° + 24–26°: "a short bunched block, knobbly tips stacked in a column"). A draped hand
+       presses at its knuckles: +4–6° there, the finger joints straightening; the fingers then steepen 32° → 40° at full
+       length.
+     - *The wrist was a ball.* The end-on mass, an ellipse along the short forearm, stood off the arm's outer edge with a
+       notch above it and a corner under the hand, and cast its own shadow: "a pale round knob… a lump", "a ball… casting
+       its own shadow". The still's wrist flows out of the upper arm's outer edge round to the bump's edge: `P.armFar.endOn`
+       lays the mass along the UPPER arm (`axis: 'upper'`, picked beside the still from 15 variants), and the shadow group's
+       `noCast` keeps it in the hand's shadow depth without casting (it stands in the air beside the bump).
+   Rules: before tuning a hand's numbers, measure the still's hand (each tip, each line between fingers, the knuckle line,
+   the angles) and fit to those points; an rms on a centroid can be 1 px on the wrong hand. If the tips can't be met, the
+   shape is wrong, not the arm. A hand resting on a curved body bends at the knuckles, and presses there. Then measure the
+   same angles on the FILM's frames: what the shot adds (breath, reach, fidgets) can undo the key.
+55. **An end-on wrist is one form with the hand: read the still's OVERLAPS (what lies over what, which edge is a line)
+   before its outline.** mum3q look-up v11 → v13. On the still's pixels (a 10 px grid at 4×) v11's silhouette already met
+   the still's wrist: right edge 655 vs 655 px, bottom 592 vs 592. Fresh eyes still read "an oval ringed by a crease…
+   hanging below the hand" (natural lens), "a round knob hanging off its right end" (blind A/B, lost to v7 again), because
+   the drawing ORDER was wrong, not the shape:
+   - *The wrist lies over the hand's heel, and behind the bump.* The still's forearm comes toward us over the dome's edge,
+     so its round end covers the heel of the hand (the back of the hand runs into it), while the bump's outline cuts its
+     lower side (the elbow is behind the bump). v11 drew the mass behind the hand and outlined the hand over it (a C round
+     the hand's end), and the mass's own round end hung below the hand. `endOn.front` puts it over the hand; `endOn.cut:
+     'dress'` (the renderer's `clipOut`) shows it only outside the dress's outline, so the bump's edge bounds it as in the
+     still. The far hand's outline group no longer counts the mass as behind it.
+   - *Only the lines the still draws.* An outline group round the mass over the hand (v12, even faded mid-edge with
+     `fade.at`) drew "a C-shaped crease… a puffy cuff, or a thumb seen from behind" and lost to v11 (5.5 vs 6). The still
+     has ONE short arc where the back of the hand folds into the wrist's top: `endOn.lines` draws arcs of the mass's own
+     edge (degrees round it), tapered, and nothing else. An outline group's line also shows over a same-colour part in
+     FRONT of its `behind` parts (the hand over the arm's tube): occluders are only parts of another colour.
+   v13 (front, cut, one arc) beat v11 (6.5 vs 6, "forearm, bent wrist and hand read as one continuous limb") and, the first
+   top hand to, v7 (6.5 vs 6), after v8–v12 each lost to v7 by 0.5 on the wrist.
+   Rules: before reshaping a part the critics call a lump, mark on the still which form lies over which and where each line
+   runs, and match that order; a silhouette can match to the pixel and still read wrong. Draw a line only where the still
+   draws one.
+56. **Points can match while the form between them doesn't: measure the curve, the spacing and the length the reviewer
+   names, and overlay the still before tuning.** mum3q look-up v13 → v14. The natural lens on v13 (NOT YET) named four
+   drawings that the still draws differently; each had been fitted to the right points with the wrong form between them:
+   - *The top fingertips, "a stubby paw".* The fit met the four tips to 4.7 px rms, but with a square knuckle line the
+     index and middle tips stacked in one column. The still's knuckle line slants down toward the little finger (where its
+     lines start: 564,538 → 573,551 → 583,561 px) and its little finger is short: `knuckleArc` [1, .97, .9, .8] and
+     `fingerLen` [1.05, 1, .86, .68] step the tips 516 → 520 → 534 → 552 px across (2.8 px rms; the little finger bent 62°
+     at its knuckle to keep the still's 25–28°). The lines between the fingers now run into the notches between the tips
+     (`lineTipGap` .3, `lineEnd` .95).
+   - *The look-down head, "bowed too deep".* `fx.headPitch` is a nod warp: at 28 it squashed the face toward the bump.
+     The stills look down with the head TIPPED ~20° toward the bump and the face still readable, so n-down rolls the head
+     8° (`--add head=8`) with half the nod (headPitch 14; n-dip 17, n-mid 8, n-ret 9).
+   - *The bump's lower front, "a rounded box… a corner".* Its named rows were within 5 px of the master's, but the
+     designed tangents (55°, 90°, 125°) turned down too early: a flat front, then a straight chamfer into the skirt. The
+     tangents measured on the master at each row (61°, 85°, 110°, and 121° at a new point `low`, 85% of the way to the
+     bottom) make one convex curve into the skirt, as the master and the stills draw it.
+   - *The lower hand, "a stub thumb, tips stacked in a column".* Side by side the two hands looked alike. Overlaid on the
+     still's skin (`tools/mask_overlay.py`: red only in the still, blue only in the render), the thumb was ~8 px short and
+     the fingers fat and fanned past the bump's edge: 1682 px of mismatch. A longer, slimmer thumb (`prox` .43, `dist`
+     .37), slimmer tapered fingers (`fingerK` .9, `taper` to .66), the index the longest (`fingerLen` [1, .95, .86, .72]),
+     the fan tightened (cradle `s` −3…3) and the hand refitted to the still's four tips: 1166 px, the tips meeting the
+     bump's edge in one diagonal. Fitting the tips turned the hand 8% further from us (76% of its length, still all shot:
+     `spec.qa.limbs`); held near full length (`--hand-len 0.85`) it matched worse (1431 px, the little finger hidden).
+   v14 beat v13 blind (6.5 vs 6; "a relaxed hand resting on the bump… the tips follow the bump's lower curve").
+   Rules: when a reviewer names a shape, overlay that region on the still (`mask_overlay.py`) before tuning; the two
+   numbers show each fix at once. Measure a curve's tangents, not only its rows; a tip's spacing and a thumb's length,
+   not only the tips' centroid. Look down with a roll of the head before a deeper nod.
+57. **At phone size an eye reads by its dark mass, not its white: test a feature's redraw blind at film size before
+   keeping it.** mum3q look-up v14 → v16. The natural lens on v14 read the look-down eyes as "slits… looking forward and
+   to the side, sleepy or smug", against stills that show the white above and behind an iris resting on the lower lid.
+   The eye was one dark oval that the gaze slid whole, so it couldn't show a white. `parts/head.js` can now draw a white
+   opening the lids shape and an iris the gaze moves inside it (`P.eyeLook`: the opening rides the gaze ×`lidK`, the iris
+   ×`irisK`, shrinking to `irisR` off-centre; the white fades in with the offset, so at rest the eye is the master's dark
+   oval to the pixel). Zoomed beside the still it matched. Blind, at phone size, it lost twice to the dark oval:
+   - v15 (lids .75/.25, the iris well down): "wide open with white all round… a cartoon eyes-down, a side-glance";
+   - v16 (v14's heavy lids, a white wedge beside the iris): "a short dark slash… heavier, sleepier".
+   The white is light on light skin and vanishes at phone size; what's left is a smaller dark shape. The natural lens on
+   v15 said the eyes "landed", yet both A/Bs preferred v14. mum3q keeps `eyeLook` {1, 1, 1} (the old drawing).
+   Rules: judge a feature's redraw at the size the film is watched, blind against the version before, not only zoomed
+   beside the still. A light detail (a white, a highlight) only reads if the dark shape around it still does.
+   **Then measured, it won (v18).** v15–v16 had guessed the eye; v18 read q_k_down_0's at film size: a big dark iris
+   pushed FORWARD toward the bump under a heavy lash line, the white a sliver on its back side only, the lids open
+   (.75/.25). So the opening stays put (`lidK` 0), the iris slides with a mostly-forward gaze (.022, .014) at .92 of the
+   opening. Blind v18 vs v14: v18 6.5, v14 6, the eyes the most visible difference: "open, plainly looking down at the
+   bump… X's read half-shut or drowsy". The white works when it sits where the still puts it and the dark mass stays big;
+   v15's mostly-DOWN gaze put white above and around the iris. An eye pose belongs to its head pose: the forward-down
+   look-down iris under a still-raised head read "side-eye" (natural lens v18: the eyes went down 0.6 s before the head).
+   v22 then lowered the lid to v14's heavy .6/.4 over the measured white and iris and won again ("cast down at her
+   bump… a real downward gaze brings the upper lid down with the eye"): the lid that read "sleepy, smug" over a dark oval
+   reads tender over the still's eye. The lid and the iris are one shape; measure them together.
+58. **Review what the viewer sees: draw the small moves at film size, and check the FILM against the still, not the key.**
+   mum3q look-up v14–v17. QA measured both hands moving 20–26 px on her each second and the chest lifting on the look
+   up, yet three reviewers in a row called the hands "frozen" and a blind A/B said "a real but small hand or eye change
+   could be there without me seeing it". The packs showed the figure at a third of film size as still tiles: a 20 px move
+   was ~7 px between two tiles a row apart. `tools/motion_sheet.py` now puts into both packs the hands at 1:1 every
+   0.5 s (`spec.handsBox`) and, per second, the first frame faded with every changed pixel in magenta. With them the
+   next reviewers sized the moves ("the thumb rises 10–12 px… settles back by 1.5 s") and judged them: one A/B read the
+   thumb's swing alone as "a tic… a straight stalk", another preferred it to a curl too small to see (v19 lost 6 vs 6.5).
+   The same sheets showed the cradling hand wrong ON THE FILM while its key matched the still (`mask_overlay` 939 px):
+   the reach pins the hand to the belly at the look-down key's place and angle, and that key's trunk (another still's
+   fit) had put it 26 px behind the still's and 6° steeper ("a comb… the tips well inside the edge"). v18 set the key's
+   hand bone to the still's finger angles (18/13/7/−2°); v20 moved the reach stops by the measured 26 px and won blind
+   ("the bump looks as if it rests in the hand"; v21 kept its stroke inside the edge and won again).
+   Rules: give every shot a `handsBox`; before acting on "frozen" or "static", read the motion sheet. When a derived key
+   or a reach acts on a fitted hand, measure the film against the still: `finger_angles.mjs --anim` (gated by QA
+   `fingers`, `spec.qa.fingers`) and `mask_overlay.py <char> <anim>@<t>` (the shot's pose at t over the still).
+59. **Gate a fitted hand all shot, not at its keys; bend fingers where the view keeps their shape; judge signs and eyes on
+   the film.** mum3q look-up v22–v24. QA `fingers` passed at the look-down keys while reviewers called the cradling
+   fingers "a rake" at 3–4 s. Measured every 0.5 s, the fan there sat 6° flatter and 9% longer: a fidget bent the
+   fingers at the KNUCKLES (+10–13°), and on a hand seen palm-on a knuckle bend turns the fingers toward the camera, so on
+   the film they flatten toward the palm's line and lengthen, straight and parallel. Bent at the end joints, with the
+   whole hand turned 4° to cup the bump, the fan kept its shape ("compact, slightly converging… a hand holding the
+   bump"; v24, a blind tie leaning to it). Two "fixes" in the same round lost (v23): the top hand's fidget spreads
+   turned round because raw `f*s` values skip `spreadSign` on a mirrored hand (true in code; on the film v22's opening
+   gaps read alive, v23's "bunched"), and the eyes dropped first with the iris centred (in ¾ a centred iris is a look at
+   the camera: "looking at us from under heavy lids… coy").
+   Rules: QA `fingers` takes `every: {step, tol}` (the angles every step) and `fan: {every, tol}` (each finger minus the
+   four's mean: a whole-hand turn passes, a shape change fails; `finger_angles.mjs --fan`); gate the hand the reviewer
+   names, not a moving fan that reads alive. On a palm-on hand, put a gather in the end joints and the hand's turn, not
+   the knuckles. Check a sign "bug" on the film before flipping it. An eye's direction in ¾ is the iris's place in the
+   eye: centred means at us.
+60. **A weight shift tilts the legs from the ankles: let the hips move, not the feet.** mum3 ease-sway (2026-10-14). Both
+   thighs tilted together (plantFeet `ik`) carry the hips 46 px from the back sway to the front one, the feet planted in x, but
+   a straight leg can neither stretch nor fold back, so the IK left both feet 3 px off the floor at the forward sway and
+   2.5 px into it at the back one. `spec.plantFeetSink: true`
+   moves the hips by what the foot nearest the floor still lacks: the ankles hold within 0.6 px all shot. Opt-in, so
+   earlier shots keep their frames. Probe the feet on any shot that moves the hips: `node tools/feet_probe.mjs <char> <anim>`.
+   A feel reviewer then called v1 "a cut-out on a pivot… two legs as parallel poles" and asked for the hips to lead, the
+   trunk to trail, the back knee to soften, a lidded look and a squinting smile; v2 did all of it and LOST blind (5.5 vs
+   6.5): leaning the trunk back as the hips went forward moved the HEAD back in space before it swung forward ("the head
+   bobs… tips like a plank"), opening mid-drift made a back-forward-back rock with "a rebound", and the squint (lid smile
+   .45) read at phone size as "a closed dash… the look is lost". v1's head already moved less than its hips (0.13 H to
+   0.21 H). Rules: in a weight shift keep the head steady IN SPACE (measure it with `anim_dump`), never trail it back; one
+   sway, its settle much smaller and slower than the move; at phone size an eye with a smile squint reads closed, so a
+   look at something needs the iris showing. A knee BENDS with a NEGATIVE shin angle (mum3's `shin` limits: min −150,
+   max 5; v1's `shin.near=+3` "soft knee" is a clamped hyperextension): read a bone's limits before choosing a sign.
+   A reviewer's prescriptions are hypotheses: each one goes through its own A/B.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

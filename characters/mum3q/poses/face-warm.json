@@ -1,0 +1,1 @@
+{"name": "face-warm", "note": "eye contact, the smile settled a little after its peak but still open, the teeth still showing (v2 settled to 0.4 of the beam: the teeth vanished under the lip line and the hold read as a closed-mouth stare)", "face": {"lid": {"open": 0.88, "smile": 0.12}, "gaze": [0, 0], "mouth": {"beam": 0.65, "warm": 0.35}, "brow": {"soft": 0.4, "neutral": 0.6}}}

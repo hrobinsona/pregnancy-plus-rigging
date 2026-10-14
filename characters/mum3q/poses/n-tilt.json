@@ -1,0 +1,67 @@
+{
+ "name": "n-tilt",
+ "note": "eye contact, the head tipped a little: a warm tilt in the hold",
+ "_recipe": "n-tilt n-up --hands near=cradle --add head=2.5,neck=1 --note eye contact, the head tipped a little: a warm tilt in the hold",
+ "hands": {
+  "near": "cradle",
+  "far": "hold"
+ },
+ "fx": {
+  "headPitch": 1.6
+ },
+ "scale": {
+  "chest": [
+   1.02,
+   1.01
+  ]
+ },
+ "root": [
+  -0.006,
+  0.0
+ ],
+ "bones": {
+  "armAbd.far": 91.5,
+  "armAbd.near": 37.3,
+  "armRot.far": 38.2,
+  "armRot.near": 50.6,
+  "belly": 0.0,
+  "chest": -2.4,
+  "clavicle.far": -3.7,
+  "clavicle.near": 4.5,
+  "foot.far": -0.7,
+  "foot.near": -1.2,
+  "foreRot.far": 3.2,
+  "foreRot.near": -41.8,
+  "forearm.far": 115.3,
+  "forearm.near": 43.5,
+  "hand.far": 17.7,
+  "hand.near": 30.4,
+  "head": 6.5,
+  "hipAbd.far": 0.0,
+  "hipAbd.near": 0.0,
+  "neck": -7.1,
+  "pelvis": 0.0,
+  "shin.far": 1.5,
+  "shin.near": -1.2,
+  "shoulderAbd.far": 0,
+  "shoulderAbd.near": -3.4,
+  "spineLower": 0.1,
+  "spineUpper": -0.2,
+  "thigh.far": 0.0,
+  "thigh.near": 1.4,
+  "toe.far": 0,
+  "toe.near": 0,
+  "upperArm.far": 23.5,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
+ },
+ "_orig": {},
+ "_edits": [
+  "--scale chest=1.02:1.01",
+  "--zbias arm.far.hand=40"
+ ],
+ "zBias": {
+  "arm.far.hand": 40.0
+ }
+}
