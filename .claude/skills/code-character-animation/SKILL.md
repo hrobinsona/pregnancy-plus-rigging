@@ -26,7 +26,10 @@ The goal is that a new pose needs no correction round for a mistake Harry has al
    rest on the bump, none hangs"; "7: the top hand's still asks for the palm on the dome, fingers together, curved toward
    us"; "10: the resting hands get a finger settle at 3.1 s and ride the breath"). A reviewer checks the render against
    that list.
-2. **Gate before Harry.** Nothing goes to Harry until `qa_checks.mjs` passes (or each failure is explained) AND the
+2. **Gate before Harry.** Harry (2026-10-14): "Don't do the pose sheet to me, just iterate with the critic… show me
+   once you feel everything is at 8/10." So no intermediate sheets, proofs or renders go to him: the hand-off bar is
+   every critic lens at 8/10 or more (fresh reviewers each round), NATURAL: RIGHT and `qa_checks.mjs` PASS. Below the
+   bar, iterate with the critics yourself. Nothing goes to Harry until `qa_checks.mjs` passes (or each failure is explained) AND the
    natural lens (`critic_F.py --lens natural`, part of `--lens all`) returns "NATURAL: RIGHT", or each "YES" it lists is
    fixed or explained in the message to him. A "YES" about something the STILL draws differently (a hand, a wrist, a
    pose) is fixed, not explained: "explained" is for points outside the shot's scope. mum3q v7 went to him with "a paw…

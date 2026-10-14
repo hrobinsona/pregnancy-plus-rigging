@@ -1,0 +1,67 @@
+{
+ "name": "side/fit/sit-ball",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "props": {
+  "items": [
+   {
+    "type": "ball"
+   }
+  ]
+ },
+ "root": [
+  -0.8158,
+  1.4694
+ ],
+ "bones": {
+  "pelvis": 10,
+  "spineLower": -2.1,
+  "spineUpper": -0.5,
+  "chest": -1.3,
+  "neck": -1.8,
+  "head": 0.1,
+  "belly": 0,
+  "clavicle.near": -21.6,
+  "shoulderAbd.near": 4.4,
+  "upperArm.near": -2.7,
+  "armAbd.near": 0,
+  "armRot.near": 4.4,
+  "forearm.near": 36.5,
+  "foreRot.near": 0.2,
+  "hand.near": 7.1,
+  "thigh.near": 94.5,
+  "shin.near": -87.1,
+  "foot.near": 9.8,
+  "hipAbd.near": -4,
+  "clavicle.far": -9.7,
+  "shoulderAbd.far": 0,
+  "upperArm.far": -2.2,
+  "armAbd.far": 0,
+  "armRot.far": 0,
+  "forearm.far": 33.2,
+  "foreRot.far": 0,
+  "hand.far": 6.4,
+  "thigh.far": 89.5,
+  "shin.far": -93.6,
+  "foot.far": 9.1,
+  "hipAbd.far": -11.5
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_sit_ball_0.json",
+  "scale": 1.0082,
+  "rms": 0.0463,
+  "worst": [
+   "hipL 0.118",
+   "kneeR 0.095",
+   "kneeL 0.093",
+   "shoulderL 0.065",
+   "wristR 0.061"
+  ]
+ }
+}

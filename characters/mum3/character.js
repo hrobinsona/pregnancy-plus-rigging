@@ -9,6 +9,8 @@ import * as hair from './parts/hair.js';
 import * as body from './parts/body.js';
 import * as arms from './parts/arms.js';
 import * as legs from './parts/legs.js';
+import { skirtPart } from './parts/skirt.js';
+import { propsFor } from './parts/props.js';
 
 const J = { ...params.joints };
 const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far) };
@@ -19,17 +21,19 @@ J.handFarTip = J['hand.far.f2t'];
 // angle limits: screen-plane bones in degrees relative to rest; sagittal bones are ANATOMICAL (+ = forward/flexion)
 const bones = [
   { id: 'root', parent: null, joint: 'root', aim: 'pelvis', min: 0, max: 0 },
-  { id: 'pelvis', parent: 'root', joint: 'pelvis', aim: 'spineLower', min: -12, max: 12 },
+  // the pelvis carries the whole body (spine, bump, legs): its range is her whole-body pitch for side-on poses off her feet
+  // (all fours ≈ +80, bending to the floor, reclining ≈ −30), not the pelvic tilt of a standing woman (±12 there)
+  { id: 'pelvis', parent: 'root', joint: 'pelvis', aim: 'spineLower', min: -45, max: 110 },
   { id: 'spineLower', parent: 'pelvis', joint: 'spineLower', aim: 'spineUpper', min: -12, max: 12 },
   { id: 'spineUpper', parent: 'spineLower', joint: 'spineUpper', aim: 'chest', min: -12, max: 12 },
   { id: 'chest', parent: 'spineUpper', joint: 'chest', aim: 'neck', min: -12, max: 12 },
-  { id: 'neck', parent: 'chest', joint: 'neck', aim: 'head', min: -25, max: 25, cap: 0.14 },
+  { id: 'neck', parent: 'chest', joint: 'neck', aim: 'head', min: -50, max: 30, cap: 0.14 },   // − = extension: on all fours she looks ahead with the neck bent back ≈ 45° off the trunk
   { id: 'head', parent: 'neck', joint: 'head', aim: 'headTip', min: -40, max: 40, cap: 0.14 },
   { id: 'belly', parent: 'pelvis', joint: 'bellyBase', aim: 'bellyApex', min: -6, max: 6 },
   ...['near', 'far'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
-      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -22, max: 22 },
+      { id: `clavicle.${s}`, parent: 'chest', joint: `clavicle${S}`, aim: `shoulder${S}`, min: -22, max: 22, ...(s === 'far' ? { depthFrom: 'clavicleNear' } : {}) },
       { id: `shoulderAbd.${s}`, parent: `clavicle.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, min: -30, max: 30 },
       // 3D ARM (engine/rig.js arm3): upperArm = elevation (+ forward), armAbd = plane of elevation, armRot = humeral
       // rotation, forearm = elbow flexion, foreRot = pronation, hand = wrist deviation, wristFlex = wrist flexion/extension.
@@ -37,7 +41,7 @@ const bones = [
       { id: `armAbd.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, param: true, min: -100, max: 130 },
       { id: `armRot.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, param: true, min: -60, max: 95 },
       { id: `foreRot.${s}`, parent: `shoulderAbd.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, param: true, min: -90, max: 90 },
-      { id: `wristFlex.${s}`, parent: `shoulderAbd.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, param: true, min: -60, max: 70 },   // + = extension (engine/rig.js arm3)
+      { id: `wristFlex.${s}`, parent: `shoulderAbd.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, param: true, min: -60, max: 90 },   // + = extension (engine/rig.js arm3); 90: a palm flat on the floor under a straight arm (all fours) bears weight on an extended wrist
       { id: `upperArm.${s}`, parent: `shoulderAbd.${s}`, joint: `shoulder${S}`, aim: `elbow${S}`, plane: 'arm3', side: s, abd: `armAbd.${s}`, twist: `armRot.${s}`, min: -60, max: 170, cap: 0.2 },
       { id: `forearm.${s}`, parent: `upperArm.${s}`, joint: `elbow${S}`, aim: `wrist${S}`, plane: 'arm3', pron: `foreRot.${s}`, min: -5, max: 150, cap: 0.18 },
       { id: `hand.${s}`, parent: `forearm.${s}`, joint: `wrist${S}`, aim: `hand${S}Tip`, plane: 'arm3', flex: `wristFlex.${s}`, min: -50, max: 40, cap: 0.08 },
@@ -47,10 +51,10 @@ const bones = [
   ...['far', 'near'].flatMap((s) => {
     const S = s === 'near' ? 'Near' : 'Far';
     return [
-      { id: `hipAbd.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, min: -20, max: 20 },
-      { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 115, cap: 0.3 },
+      { id: `hipAbd.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, min: -20, max: 20, ...(s === 'far' ? { depthFrom: 'hipNear' } : {}) },   // (engine/rig.js depthFrom: the far hip's offset is depth, not turned by the pelvis)
+      { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 135, cap: 0.3 },   // a deep squat flexes the hip ≈ 130°
       { id: `shin.${s}`, parent: `thigh.${s}`, joint: `knee${S}`, aim: `ankle${S}`, plane: 'sagittal', restAnat: 0, min: -150, max: 5, cap: 0.26 },
-      { id: `foot.${s}`, parent: `shin.${s}`, joint: `ankle${S}`, aim: `ball${S}`, plane: 'sagittal', restAnat: 90, min: -45, max: 40, cap: 0.12 },
+      { id: `foot.${s}`, parent: `shin.${s}`, joint: `ankle${S}`, aim: `ball${S}`, plane: 'sagittal', restAnat: 90, min: -90, max: 40, cap: 0.12 },   // − = plantarflexion: kneeling lays the foot's top on the floor, in line with the shin
       { id: `toe.${s}`, parent: `foot.${s}`, joint: `ball${S}`, aim: `toe${S}`, plane: 'sagittal', restAnat: 90, min: -20, max: 60 },
     ];
   }),
@@ -81,6 +85,8 @@ export default {
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
+  // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
+  postBuild(parts, ctx) { body.sag(parts, ctx); const pr = propsFor(parts, ctx); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

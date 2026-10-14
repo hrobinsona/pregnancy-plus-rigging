@@ -1,0 +1,63 @@
+{
+ "name": "side/fit/kneel",
+ "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); floor_pose: leg.near:4, leg.near:7, leg.far:4, leg.far:7, shoe.near:2, shoe.near:4, shoe.far:2, shoe.far:4 on the floor",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "root": [
+  0.0987,
+  1.9863
+ ],
+ "bones": {
+  "pelvis": -0.7,
+  "spineLower": 0.3,
+  "spineUpper": 0.1,
+  "chest": 0.4,
+  "neck": -1.2,
+  "head": -3.9,
+  "belly": 0,
+  "clavicle.near": 3.5,
+  "shoulderAbd.near": 0.3,
+  "upperArm.near": 0.1,
+  "armAbd.near": 0,
+  "armRot.near": 4.6,
+  "forearm.near": 43.1,
+  "foreRot.near": -0.1,
+  "hand.near": 1.6,
+  "thigh.near": 11.7,
+  "shin.near": -97.5,
+  "foot.near": -51.2,
+  "hipAbd.near": -1.4,
+  "clavicle.far": 8.6,
+  "shoulderAbd.far": 0,
+  "upperArm.far": 0.1,
+  "armAbd.far": 0,
+  "armRot.far": 0,
+  "forearm.far": 39.2,
+  "foreRot.far": 0,
+  "hand.far": 1.5,
+  "thigh.far": 10.6,
+  "shin.far": -98.9,
+  "foot.far": -44.6,
+  "hipAbd.far": 0,
+  "toe.near": -13.6,
+  "toe.far": -20
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_kneel_up_1.json",
+  "scale": 0.9169,
+  "rms": 0.0465,
+  "worst": [
+   "kneeR 0.125",
+   "hipR 0.089",
+   "heelR 0.084",
+   "hipL 0.062",
+   "shoulderL 0.054"
+  ]
+ },
+ "fitFrom": "side/fit/kneel"
+}

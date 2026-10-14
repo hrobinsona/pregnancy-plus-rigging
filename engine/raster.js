@@ -7,6 +7,8 @@ import { pathD } from './geom.js';
 export const CLASS_OF_PALETTE = {
   skin: 1, skinShade: 1, skinLine: 1, cheek: 1, nail: 1, mouth: 1, sick: 1, hair: 2, hairShade: 2, top: 3, topShade: 3,
   bottoms: 4, bottomsShade: 4, cardigan: 5, cardiganShade: 5, sock: 6, sockShade: 6, eye: 7,
+  // mum3: a dress (the 'top' class); her flats are the hair's colour, so they share its class (a still can't tell them apart)
+  skinFar: 1, earIn: 1, dress: 3, dressShade: 3, shoe: 2, shoeShade: 2, brow: 2,
 };
 const code = (c) => [c * 30, 255 - c * 30, (c * 70) % 256];   // a code no anti-aliased blend of two codes can imitate exactly
 
@@ -23,7 +25,7 @@ export function makeRaster(rig, C, { box, res }) {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = 'rgb(0,255,0)'; ctx.fillRect(0, 0, w, h);
     for (const p of parts) {
       if (p.stroke || !p.fill || p.fill === 'none' || (p.opacity !== undefined && p.opacity < 0.5)) continue;
-      const c = cls[p.fill.toLowerCase()]; if (c === undefined) continue;
+      const c = p.id.startsWith('prop.') ? 7 : cls[p.fill.toLowerCase()]; if (c === undefined) continue;   // a prop (a chair, a counter): drawn as 'ignore', it hides her where the still's does
       const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
       ctx.save();
       if (clips.length) {

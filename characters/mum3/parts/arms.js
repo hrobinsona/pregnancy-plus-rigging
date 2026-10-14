@@ -18,7 +18,8 @@ export function build(ctx) {
   for (const side of ['near', 'far']) {
     // an arm hidden by design (C.fit.hidden) is not drawn: kept behind her, it still slid out past her back as she leaned
     // (v1, 8.2 s: a skin sliver down the back of the dress)
-    if (char.fit?.hidden?.includes(`${side}.arm`)) continue;
+    // (a pose that shows it, e.g. on all fours, sets fx['show.far.arm'] = 1: drawn behind her body, a darker step)
+    if (char.fit?.hidden?.includes(`${side}.arm`) && !((ctx.pose?.fx?.[`show.${side}.arm`] ?? 0) > 0.5)) continue;
     const zb = (side === 'near' ? 55 : 8) + (ctx.pose?.zBias?.[`arm.${side}`] ?? 0);
     const fill = side === 'near' ? C.skin : C.skinFar;
     const Sp = st[`upperArm.${side}`].pos, Ep = st[`forearm.${side}`].pos, Wp = st[`hand.${side}`].pos;

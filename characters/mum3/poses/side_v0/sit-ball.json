@@ -1,0 +1,70 @@
+{
+ "name": "side/fit/sit-ball",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:low, shoe.far:low on the floor",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "props": {
+  "items": [
+   {
+    "type": "ball"
+   }
+  ]
+ },
+ "root": [
+  -0.7944,
+  1.5328
+ ],
+ "bones": {
+  "pelvis": 9.4,
+  "spineLower": -0.8,
+  "spineUpper": -0.8,
+  "chest": -2.3,
+  "neck": -3.3,
+  "head": -0.2,
+  "belly": 0,
+  "clavicle.near": -13.5,
+  "shoulderAbd.near": 12,
+  "upperArm.near": 14.1,
+  "armAbd.near": -1.4,
+  "armRot.near": 10.4,
+  "forearm.near": 32.5,
+  "foreRot.near": -0.6,
+  "hand.near": 8.1,
+  "thigh.near": 96.6,
+  "shin.near": -89,
+  "foot.near": 3.4,
+  "hipAbd.near": -2.6,
+  "clavicle.far": -10.6,
+  "shoulderAbd.far": 0,
+  "upperArm.far": 11.5,
+  "armAbd.far": -0.8,
+  "armRot.far": 0,
+  "forearm.far": 29.5,
+  "foreRot.far": 0,
+  "hand.far": 7.3,
+  "thigh.far": 96.8,
+  "shin.far": -95.3,
+  "foot.far": -12.9,
+  "hipAbd.far": -4.5,
+  "toe.near": -1.5,
+  "toe.far": -11.5
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_sit_ball_0.json",
+  "scale": 1.0082,
+  "rms": 0.0449,
+  "worst": [
+   "hipL 0.140",
+   "kneeL 0.116",
+   "kneeR 0.069",
+   "elbowR 0.050",
+   "hipR 0.048"
+  ]
+ },
+ "fitFrom": "side/fit/sit-ball"
+}

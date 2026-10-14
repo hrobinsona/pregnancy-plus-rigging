@@ -111,7 +111,14 @@ export function createRig(C) {
       const ps = b.parent ? st[b.parent] : null;
       if (b.param) { st[b.id] = { ...ps, param: d }; continue; }   // a parameter (3D arm DOF), not a drawn transform
       if (!ps) { const r0 = pose.root || [0, 0]; pos = [J[b.joint][0] + r0[0], J[b.joint][1] + r0[1]]; }
-      else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
+      else if (b.depthFrom) {
+        // a FAR-SIDE root joint (the far hip, the far clavicle) of a near-profile figure: its offset from the near one is
+        // the body's DEPTH seen a little from the front (the master is turned ~20° to us), a picture-space offset that
+        // does not turn with the trunk. Carried rigidly, pitching her onto all fours stood the near hip 0.3 H above the far
+        // one (her near knee floated off the floor). So the near joint is carried and the offset added unrotated.
+        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint]));
+        pos = [q[0] + J[b.joint][0] - J[b.depthFrom][0], q[1] + J[b.joint][1] - J[b.depthFrom][1]];
+      } else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
       if (b.plane === 'arm3') {
         const a3 = arm3(b, d, ps, bonesIn), parentSame = BONE[b.parent].plane === 'arm3';
         const base = parentSame ? ps.baseRot : ps.rot;

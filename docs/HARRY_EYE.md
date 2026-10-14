@@ -144,3 +144,30 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     them breaks the shape for a second or two while every key matches: mum3q's cradling fingers, bent at the knuckles
     seen palm-on, read "a rake" at 3–4 s (6° flatter, 9% longer). · QA `fingers` `every`/`fan` (`finger_angles.mjs
     --every 0.5 --fan`) + eye · 59
+
+## Side-on poses (the pose library: kneeling, all fours, sitting, squatting, leaning, bending, walking)
+
+Harry, 2026-10-14, on the side-on library: "Every side on view should be incredibly high quality and look natural - the
+same way a person would actually do it… in addition to the bump and dress often the legs look unnatural too - wrong
+posture, overlapping so they look like their on hinges rather than a real rig… these should look completely natural,
+like a real woman, just illustrated in 2D". The critic lenses for poses are in `tools/critic_prompt_side.md`
+(`critic_F.py mum3 --side`); each pose is judged next to the still it was fitted to, at film size.
+
+26. **Do the legs look like a real woman's legs in this pose?** A thigh that is thick at the hip and tapers to the knee,
+    a knee that is a joint (kneecap in front, the crease behind, the calf pressed under the thigh when it folds), a calf
+    with its swell, a slim ankle into the foot. Never two tubes pinned at a pivot ("on hinges"), never one leg's outline
+    running through the other ("overlapping"), never a posture no one takes (a squat with the knees together over a bump,
+    a kneel with the shins off the floor). · side_match (skin and silhouette against the still) + eye · 62
+27. **Does the dress behave like cloth on her body?** It hangs by gravity from the bump and the back, lies over the lap
+    and the thighs, hugs the buttocks when she bends or squats (a loop round her thighs, not a cape), rests on a seat or
+    a ball. Never a rigid box, a plank, a tube with no lap, a flag behind her. The review thread: "the skirt stays a tube,
+    no lap", "a rigid box", "the dress is a stiff plank". · side_match dress IoU + eye · 62
+28. **Does the bump have weight?** It hangs toward the floor on all fours, sits on the thighs as she bends or squats,
+    keeps its size and roundness, and the dress follows it. · eye · 62
+29. **Does she touch what she touches?** Knees, shins and the tops of her feet on the floor when kneeling; palms flat,
+    fingers forward, under the shoulders on all fours; buttocks on the seat or the ball; forearms on the counter; the hand
+    at the toy. Nothing floats above or sinks through. · `floor_pose.mjs` report (px above, below the floor) + eye · 62
+30. **Is it the pose a pregnant woman really takes, with her bump?** Knees apart to make room for it in a squat and a
+    deep bend, the back long, the hips back when she leans, the head carried in line with the spine, a hand where she
+    would put it for balance. · eye against the still · 62
+

@@ -1,0 +1,78 @@
+{
+ "name": "side/fit/bend-pick",
+ "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "grip",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "scale": {
+  "thigh.near": [
+   0.789,
+   1
+  ],
+  "thigh.far": [
+   0.888,
+   1
+  ]
+ },
+ "props": {
+  "items": [
+   {
+    "type": "toy",
+    "held": 1
+   }
+  ]
+ },
+ "root": [
+  -1.0305,
+  1.9796
+ ],
+ "bones": {
+  "spineLower": 0,
+  "spineUpper": 0,
+  "chest": 0,
+  "pelvis": 28.1,
+  "neck": -15.1,
+  "head": -12.6,
+  "belly": 0,
+  "clavicle.near": -22,
+  "shoulderAbd.near": -0.7,
+  "upperArm.near": -0.6,
+  "armAbd.near": 0.1,
+  "armRot.near": 5.3,
+  "forearm.near": 23,
+  "foreRot.near": 0,
+  "hand.near": -8.1,
+  "thigh.near": 110.8,
+  "shin.near": -120.1,
+  "foot.near": 36.4,
+  "hipAbd.near": -12.2,
+  "clavicle.far": -22,
+  "shoulderAbd.far": -4.3,
+  "upperArm.far": 11.3,
+  "armAbd.far": 1.7,
+  "armRot.far": -0.4,
+  "forearm.far": 1.5,
+  "foreRot.far": -0.6,
+  "hand.far": -10.7,
+  "thigh.far": 104.7,
+  "shin.far": -131.3,
+  "foot.far": 39.9,
+  "hipAbd.far": -17.4
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_bend_pick_1.json",
+  "scale": 1.0371,
+  "rms": 0.3046,
+  "worst": [
+   "indexR 0.876",
+   "pinkyR 0.834",
+   "thumbR 0.782",
+   "wristR 0.771",
+   "elbowR 0.406"
+  ]
+ }
+}

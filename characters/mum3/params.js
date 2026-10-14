@@ -46,6 +46,8 @@ const frontAt = (y) => front.reduce((a, q) => (Math.abs(q[1] - y) < Math.abs(a[1
 const bump = { under: lm('underBust'), apex: lm('bumpApex'), bottom: lm('bumpBottom') };
 bump.upper = frontAt(bump.under[1] + 0.55 * (bump.apex[1] - bump.under[1]));   // on the bump's upper slope
 bump.lower = frontAt(bump.apex[1] + 0.6 * (bump.bottom[1] - bump.apex[1]));    // on its lower curve
+// its weight (parts/body.js sag): at 90° of forward pitch the apex moves [toward the head, toward the floor] (H); the bust less
+bump.sag = { bump: [0.15, 0.4], bust: [0.03, 0.07] };
 // ---------------------------------------------------------------- shape parameters
 export const P = {
   // FACE (head bone), profile: named points on the front edge (master_measure.py), the rest designed
@@ -71,6 +73,23 @@ export const P = {
   // LEGS: measured shin widths; thighs disappear under the skirt
   leg: { near: { knee: W('shinNear', 0.1), calf: W('shinNear', 0.23), low: W('shinNear', 0.77), ankle: W('shinNear', 0.9) },
          far: { knee: W('shinFar', 0.1), calf: W('shinFar', 0.37), low: W('shinFar', 0.77), ankle: W('shinFar', 0.9) } },
+  // LEG PROFILES for the posed-space legs (engine/leg.js): [f, front, back] half-widths (H) off the bone's axis, f 0..1
+  // from the hip to the knee and the knee to the ankle. SHIN: measured (W('shin…')), the knee and ankle ends as the old
+  // tube had them. THIGH: designed (the master hides it under the skirt), the old tube's below the hem (front 0.21 → 0.115 from mid-thigh
+  // to the knee: the patella stands proud) and fuller up the thigh as a woman's is (the kneeling stills: ≈ 0.6 H deep).
+  // The far leg's measured FRONT stands ≈ 0.06 H further forward of its joints (its landmarks are guessed, vis 0.34):
+  // its profile keeps that front and the near leg's depth.
+  legProfile: (() => {
+    const sw = (side) => [0.1, 0.23, 0.37, 0.5, 0.63, 0.77, 0.9].map((f) => { const q = W(side === 'near' ? 'shinNear' : 'shinFar', f); return [f, q.front, q.back]; });
+    const near = { thigh: [[0, 0.3, 0.4], [0.25, 0.25, 0.3], [0.5, 0.21, 0.24], [1, 0.115, 0.26]],
+                   shin: [[0, 0.115, 0.26], ...sw('near'), [1, 0.062, 0.172]] };
+    const dN = (f) => { const P = near.shin, i = P.findIndex((q) => q[0] >= f); return P[i][1] + P[i][2]; };
+    const farS = sw('far').map(([f, fr]) => [f, fr, dN(f) - fr]), off = farS[0][1] - near.shin[1][1];
+    const far = { thigh: near.thigh.map(([f, fr, bk]) => [f, fr + off * f, bk - off * f]), shin: [[0, 0.115 + off, 0.26 - off], ...farS, [1, 0.138, 0.096]] };
+    const mk = (pr) => ({ P: pr, at: (f) => { let i = pr.findIndex((q) => q[0] >= f); if (i <= 0) i = Math.max(1, i < 0 ? pr.length - 1 : 1); const a = pr[i - 1], b = pr[i], t = Math.max(0, Math.min(1, (f - a[0]) / (b[0] - a[0]))); return { front: a[1] + t * (b[1] - a[1]), back: a[2] + t * (b[2] - a[2]) }; } });
+    return { near: { thigh: mk(near.thigh), shin: mk(near.shin) }, far: { thigh: mk(far.thigh), shin: mk(far.shin) } };
+  })(),
+  knee: { round: 0.12 },   // extra fillet radius at a 90° bend: a broad knee (the kneeling stills), not a pin
   // the INSTEP: the front edge of the foot from where it leaves the shin to the shoe's opening, as offsets from the ankle
   // joint (H), measured on the master row by row (the shin's front line bends into the instep in one long curve; v4 ended
   // the shin tube in a round cap at the ankle and started the foot below it: a pinch in front, a knob behind — Harry:

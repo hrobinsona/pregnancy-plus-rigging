@@ -1,19 +1,50 @@
 // body.js — mum3's neck, chest skin and dress (side view).
 //  · neck: a column skinned chest → neck (throat straight under the jaw, nape curved), its top hidden under the face/hair
 //  · chest skin: the décolletage and shoulder top above the dress, on the chest
-//  · dress: ONE outline — strap → neckline → bust → under-bust notch → bump → skirt → hem → back — chain-skinned up the
-//    spine, its bump region carried by the belly bone (breath, bump nudges), so the silhouette never seams
+//  · dress: the BODICE — strap → neckline → bust → under-bust notch → bump → (inside her) → back — chain-skinned up the
+//    spine, its bump region carried by the belly bone (breath, bump nudges); the skirt hangs from it in posed space
+//    (character.js postBuild, engine/drape.js): same colour, overlapping inside her, so the silhouette never seams
 //  · the strap over the near shoulder is drawn in arms.js, on the arm's own contour
+//  · the bump and the bust have WEIGHT (sag(), from postBuild): as she leans forward they hang toward the floor
 import { loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { lerp } from '../../../engine/geom.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
-export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };   // the strap is in arms.js: it is built on the arm's contour
+export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };
+// the bodice's path inside her below the bump (rest H): within ≈ 0.3 H of the hip joint, so the skirt covers it in any pose
+export const SKIRT_IN = [[0.5, -3.55], [0.3, -3.47], [0.1, -3.44], [-0.08, -3.47], [-0.2, -3.56], [-0.25, -3.75], [-0.24, -4.0], [-0.23, -4.25], [-0.26, -4.42]];
+export const DRESS_AT = { bot: 8, waist: 18 };
+// the bodice's anchors that carry weight: the bump (under-bust notch → bottom) and the bust, with how much each moves
+const SAG_W = { 2: ['bust', 0.4], 3: ['bust', 1], 4: ['bump', 0], 5: ['bump', 0.75], 6: ['bump', 1], 7: ['bump', 0.75], 8: ['bump', 0.25] };
+const rest0 = new WeakMap();
+/** The bump and the bust HANG (Harry 2026-10-14: the bump must look like a real woman's): the master draws them standing,
+ *  their weight pulling down along her body. Pitched forward (all fours, leaning on a counter, bending over), the weight
+ *  pulls toward the floor instead: relative to the trunk the mass moves floorward (the bump hangs deep under her, as every
+ *  all-fours still draws it) and a little toward her chest (it no longer sags toward her hips). In posed space, by the
+ *  trunk's pitch θ from standing: d = [toward the head · sin θ, toward the floor · (1 − cos θ)], weighted per anchor (the
+ *  apex most, the notch and the bottom where it meets her body least); nothing below ~5° (standing poses are untouched).
+ *  (θ signed: leaning back, sin θ < 0, it settles back toward her.) */
+export function sag(parts, ctx) {
+  const { C: char, st, rig } = ctx, S = char.params.P.bump.sag, dress = parts.find((p) => p.id === 'dress');
+  if (!rest0.has(char)) rest0.set(char, rig.solve({}).spineLower.rot);
+  const th = (st.spineLower.rot - rest0.get(char)) * Math.PI / 180, k = Math.abs(th) < 0.08 ? 0 : Math.min(1, (Math.abs(th) - 0.08) / 0.3);
+  if (!k || !dress) return;
+  const g = dress.geom;
+  for (const [i, [what, w]] of Object.entries(SAG_W)) {
+    // gravity in the trunk's frame, relative to standing: belly-ward (the trunk's forward normal, (cos θ, sin θ)) by
+    // sin θ, and toward the head (along the trunk, (sin θ, −cos θ)) by 1 − cos θ. On all fours (θ = 90°) that is fy down
+    // and hx forward; leaning 30° (a bend, a squat) the bump swings out in front of her (fy · 0.43 forward), where the
+    // bend still draws it past her arm. (v1 moved it [hx sin θ, fy (1 − cos θ)]: at 30° a third of that, hidden behind the arm)
+    const [hx, fy] = S[what], sn = Math.sin(th), cs = Math.cos(th), a = k * w * fy * sn, b = k * w * hx * (1 - cs);
+    const d = [a * cs + b * sn, a * sn - b * cs];
+    for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]];
+  }
+}   // the bodice's anchors the skirt hangs from   // the strap is in arms.js: it is built on the arm's contour
 
 export function build({ P: C, C: char }) {
   const X = char.params.P, J = char.joints, out = [];
-  const N = X.neck, b = X.bump, bk = X.back, hm = X.hem, st = X.strap, nl = X.neckline;
+  const N = X.neck, b = X.bump, bk = X.back, st = X.strap, nl = X.neckline;
   // ---- neck: nape top (under the hair) → throat top (under the jaw) → throat → base (inside the chest skin) → nape
   out.push(part('neck', 'neck', 26, C.skin, ensureCW(loop([
     [N.napeTop[0], N.napeTop[1], { c: true, t: 0.5 }], [N.throatTop[0] - 0.12, N.napeTop[1] + 0.05], [N.throatTop[0], N.throatTop[1], { a: 95 }],
@@ -35,13 +66,10 @@ export function build({ P: C, C: char }) {
     [b.upper[0], b.upper[1], { a: 55 }],
     [apex[0], apex[1], { a: 90 }],
     [b.lower[0], b.lower[1], { a: 125 }],
-    [bot[0], bot[1], { c: true, ai: -60, ao: 95, ti: 0.8, to: 0.6 }],                  // the bump meets the skirt: a soft inner corner
-    [bot[0] - 0.02, (bot[1] + hm.front[1]) / 2, { a: 93 }],
-    [hm.front[0], hm.front[1], { a: 100 }], [hm.front[0] - 0.04, hm.y - 0.01, { a: 160, t: 0.7 }],
-    [(hm.front[0] + hm.back[0]) / 2, hm.y + 0.005, { a: 180 }],                        // hem: a gentle smile under the skirt
-    [hm.back[0] + 0.04, hm.y - 0.03, { a: 200, t: 0.7 }], [hm.back[0], hm.back[1], { a: -95 }],
-    [hm.back[0] - 0.01, (hm.back[1] + bk.seat[1]) / 2, { a: -95 }],
-    [bk.seat[0], bk.seat[1], { a: -90 }], [bk.seat[0] + 0.05, bk.seat[1] - 0.4],
+    [bot[0], bot[1], { c: true, ai: -60, ti: 0.8, to: 0.5 }],                         // the bump meets the skirt: a soft inner corner
+    // below the bump the bodice turns INSIDE her (round the hip joint, up behind the seat to the back waist): the skirt
+    // (dress.skirt, character.js postBuild → engine/drape.js) draws the hips, buttocks and skirt in posed space, over this
+    ...SKIRT_IN.map((q) => [q[0], q[1]]),
     [bk.waist[0], bk.waist[1], { a: -90 }],
     [bk.blade[0], bk.blade[1], { a: -90 }], [bk.shoulder[0], bk.shoulder[1], { a: -80 }],
     [st.back[0] + 0.04, st.back[1] + 0.05, { a: -55 }],                                // round over the shoulder's back, inside the arm's cap

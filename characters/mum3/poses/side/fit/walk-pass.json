@@ -1,0 +1,60 @@
+{
+ "name": "side/fit/walk-pass",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_pass_1.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "root": [
+  -0.0543,
+  0.0226
+ ],
+ "bones": {
+  "pelvis": 0.4,
+  "spineLower": 2.7,
+  "spineUpper": 1,
+  "chest": 0.4,
+  "neck": -6,
+  "head": -8,
+  "belly": 0,
+  "clavicle.near": 9.3,
+  "shoulderAbd.near": -2.7,
+  "upperArm.near": 1.3,
+  "armAbd.near": 0,
+  "armRot.near": 0.3,
+  "forearm.near": 8.2,
+  "foreRot.near": 0.1,
+  "hand.near": -4.5,
+  "thigh.near": 13.2,
+  "shin.near": -5.8,
+  "foot.near": -0.7,
+  "hipAbd.near": -2.2,
+  "clavicle.far": -20.4,
+  "shoulderAbd.far": 0.4,
+  "upperArm.far": 2,
+  "armAbd.far": 0.1,
+  "armRot.far": -0.5,
+  "forearm.far": 8.8,
+  "foreRot.far": -0.2,
+  "hand.far": -5.6,
+  "thigh.far": -19.9,
+  "shin.far": -14.1,
+  "foot.far": -6,
+  "hipAbd.far": -0.8
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_walk_pass_1.json",
+  "scale": 1.0601,
+  "rms": 0.1149,
+  "worst": [
+   "kneeL 0.336",
+   "pinkyL 0.193",
+   "thumbL 0.187",
+   "wristL 0.186",
+   "kneeR 0.148"
+  ]
+ }
+}

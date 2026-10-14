@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """critic_F.py <char> <anim> [--lens feel|lasseter|hands|natural|all]   |   critic_F.py <char> --poses p1,p2,...
+   |   critic_F.py <char> --side [p1,p2,...]   (the side-on pose library: three lenses, natural, body, craft)
 The FEEL critic pack: look-and-feel only, deliberately NO metrics (the maths critic C scored proxies — px/f, lag offsets,
 path loops — for six rounds while the client saw a stiff, detached, dead-handed arm; numbers bias a reviewer away from
 "does this look like a real body?").
@@ -64,6 +65,37 @@ def skin_mask(im):
 def outline(mask):
     m = Image.fromarray((mask * 255).astype(np.uint8)); e = m.filter(ImageFilter.FIND_EDGES)
     return np.asarray(e.filter(ImageFilter.MaxFilter(3))) > 0
+
+if args[1] == '--side':
+    # SIDE-ON POSE LIBRARY (characters/<c>/poses/side/): each pose at film size beside its reference still mapped to the
+    # same scale (tools/side_match.py), and three lenses (tools/critic_prompt_side.md: natural, body, craft), each to its
+    # own fresh reviewer: out/critic_prompt_side_<lens>.md. The bar before Harry sees the library: every pose 8/10 or more
+    # on every lens (SKILL.md "Learning from corrections" 2). Lesson 62.
+    poses = args[2].split(',') if len(args) > 2 and not args[2].startswith('--') else sorted(os.path.splitext(f)[0] for f in os.listdir(f'characters/{c}/poses/side') if f.endswith('.json'))
+    td = 'out/side_critic'; os.makedirs(td, exist_ok=True)
+    for f in glob.glob(f'{td}/*.png'): os.remove(f)
+    subprocess.run([sys.executable, 'tools/side_match.py', c] + [f'side/{p}' for p in poses] + ['--pxh', '225', '--margin', '0.3', '--tiles', td, '--out', f'{td}/_match.png'], check=True, capture_output=True)
+    files = []
+    for p in poses:
+        a, b = Image.open(f'{td}/side_{p}_ours.png').convert('RGB'), Image.open(f'{td}/side_{p}_still.png').convert('RGB')
+        k = min(1.0, 1500 / (a.size[0] * 2 + 30), 1100 / a.size[1]); w, h = int(a.size[0] * k), int(a.size[1] * k)
+        t = Image.new('RGB', (2 * w + 30, h + 40), 'white'); t.paste(a.resize((w, h), Image.LANCZOS), (0, 40)); t.paste(b.resize((w, h), Image.LANCZOS), (w + 30, 40))
+        d = ImageDraw.Draw(t); d.text((6, 6), f'{p}: RENDER (film size{"" if k >= 0.999 else f" x{k:.2f}"})', fill='#c00', font=F(20)); d.text((w + 36, 6), 'REFERENCE STILL (same scale)', fill='#555', font=F(20))
+        t.save(f'{td}/{p}.png'); files.append((f'{td}/{p}.png', f'{p}: the render (left) beside its reference still (right)'))
+    T = open('tools/critic_prompt_side.md').read(); parts = re.split(r'^<!-- (lens:\w+|framing) -->\n', T, flags=re.M); B = dict(zip(parts[1::2], parts[2::2]))
+    eye = open('docs/HARRY_EYE.md').read(); eye = eye[eye.index('## The whole figure'):]
+    eye = re.sub(r'## Hands.*?(?=## Motion)', '', eye, flags=re.S); eye = re.sub(r'## Motion and acting.*?(?=## Drawing quality)', '', eye, flags=re.S)
+    brief = ('"Every side on view should be incredibly high quality and look natural - the same way a person would actually do it. '
+             'Keeping the feel... so it feels like a real 2d representation of a real pregnant woman. In addition to the bump and dress '
+             'often the legs look unnatural too - wrong posture, overlapping so they look like their on hinges rather than a real rig. '
+             'These should look completely natural, like a real woman, just illustrated in 2D." (Harry). These are still poses of the '
+             'side-on library; each will later be animated (breathing, blinks) and joined by moves.')
+    log = f'characters/{c}/feel_log_side.md'; hist = ('\n\nHISTORY (earlier rounds on these poses: check whether their asks landed):\n' + open(log).read()) if os.path.exists(log) else ''
+    fl = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in files)
+    for L in ['natural', 'body', 'craft']:
+        open(f'out/critic_prompt_side_{L}.md', 'w').write(B['lens:' + L].replace('{FILES}', fl).replace('{BRIEF}', brief).replace('{FRAMING}', B['framing']).replace('{CHECKLIST}', eye).replace('{POSES}', ', '.join(poses)) + hist)
+    print(f'{len(poses)} poses: {", ".join(poses)}\nsheets in {td}/; prompts: out/critic_prompt_side_natural.md, _body.md, _craft.md (one fresh reviewer each)')
+    sys.exit()
 
 if args[1] == '--poses':
     if lens != 'feel': sys.exit('--lens applies to anim mode only')
