@@ -110,7 +110,10 @@ export const P = {
   //    Overlaid on the still at the film's 0 s (mask_overlay look-up@0) its end hung ~10 px below the still's, "a lump on top
   //    of the bump" (natural lens v20): shifted up 0.03, 729 → 582 px of mismatch (v22)
   arm: { capA: 1.0, w: [{ front: 0.18, back: 0.155 }, { front: 0.18, back: 0.18 }, { front: 0.115, back: 0.16 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
-  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, -0.03], front: true, cut: 'dress', lines: [[235, 150]] }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
+  //    v25: its line only the short hook where the back of the hand folds into the wrist, [205, 150]: v24's [235, 150] ran
+  //    on over the mass's top as a second hump beside the hand's top edge, "a mitten… its top edge wavy" (blind A/B v24,
+  //    natural lens v22); the still draws one hook (q_k4_down_0, mask_overlay at 0 and 4.5 s)
+  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, -0.03], front: true, cut: 'dress', lines: [[205, 150]] }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
   // legs: the shin's half-widths at every measured station; above the knee, read off the still's rows (hem → knee): the near
   // thigh 0.28 in front / 0.19 behind at y −2.3, its knee 0.24 / 0.21; the far thigh 0.20 / 0.25, its knee 0.155 / 0.245
   legStations: LEG_ST,
