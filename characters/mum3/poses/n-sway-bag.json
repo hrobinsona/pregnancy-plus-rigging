@@ -27,12 +27,12 @@
   "neck": 1.3,
   "pelvis": 0,
   "shin.far": -1.6,
-  "shin.near": 0.3,
+  "shin.near": -3.2,
   "shoulderAbd.near": 1,
   "spineLower": -0.6,
   "spineUpper": -0.2,
-  "thigh.far": -1.5,
-  "thigh.near": -1.6,
+  "thigh.far": -0.9,
+  "thigh.near": -1.0,
   "upperArm.near": -6.1
  }
 }

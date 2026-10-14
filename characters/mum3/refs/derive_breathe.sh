@@ -45,8 +45,11 @@ $B n-gaze n-top n-out 1 --keep head,neck --from B --note "after the sigh, lookin
 # ease-sway (Braxton Hicks story): as a tightening eases she sways her weight from the back foot to the front one, her
 # hand on her bump, then lifts her eyes to the bag by the door and smiles. No stills: the legs tilt from the ankles (both
 # thighs together; plantFeet ik keeps the feet planted and carries the hips ~25 px back, ~30 px forward), the trunk
-# counters a little, the back knee softens under the forward weight
-$B n-sway-back n-bump --add thigh.near=2,thigh.far=2,spineLower=0.8,head=3,neck=3 --note "weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, her head bowed to her bump (ease-sway)"
-$B n-sway-front n-bump --add thigh.near=-2.5,thigh.far=-2.5,spineLower=-1,shin.near=3,head=3,neck=3 --note "weight onto the front foot, the hips ~30 px forward, the trunk a touch back, the back knee soft (ease-sway)"
-$B n-sway-settle n-bump --add thigh.near=-1.5,thigh.far=-1.5,spineLower=-0.6,shin.near=1.5,head=3,neck=3 --note "settled, the weight a little forward of centre (ease-sway)"
+# counters a little, the back knee softens under the forward weight. A knee BENDS with a NEGATIVE shin angle (the bone's
+# limits: min −150, max 5); v1's shin +3 straightened it past the rest pose, so its "soft knee" read as two straight poles
+$B n-sway-back n-bump --add thigh.near=1.5,thigh.far=1.5,spineLower=0.8,shin.far=-2,head=3,neck=3 --note "weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, the front knee eased, her head bowed to her bump (ease-sway)"
+$B n-sway-front n-bump --add thigh.near=-1.5,thigh.far=-1.5,spineLower=-1.4,shin.near=-5,clavicle.near=-2.5,head=3,neck=3 --note "weight onto the front foot, the hips ~30 px forward, the trunk a touch back, the back knee soft as the weight leaves it, the shoulders settled on the breath out (ease-sway v2: feel review v1, the legs two straight poles and the breath out unseen)"
+$B n-sway-settle n-bump --add thigh.near=-0.9,thigh.far=-0.9,spineLower=-0.6,shin.near=-2,head=3,neck=3 --note "settled, the weight a little forward of centre (ease-sway)"
+# v2 opens mid-drift back (feel review v1: "the opening weight back doesn't register", a standstill)
+$B n-sway-start n-sway-back n-sway-settle 0.5 --note "half way from settled to the back foot, drifting back: the shot opens in motion (ease-sway v2)"
 $B n-sway-bag n-sway-settle --add head=-2,neck=-1.5,chest=-0.5 --note "settled, her head up from the bump to look at the bag by the door, on the floor ahead (ease-sway)"

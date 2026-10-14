@@ -1,22 +1,22 @@
 {
  "name": "face-bag",
- "note": "looking up from her bump to the bag by the door, on the floor ahead, a small warm smile ('not tonight, but not long now'; ease-sway)",
  "face": {
   "lid": {
-   "open": 0.7,
-   "half": 0.18,
+   "open": 0.55,
+   "half": 0.33,
    "smile": 0.12
   },
   "gaze": [
-   0.012,
-   0.026
+   0.014,
+   0.03
   ],
   "mouth": {
    "warm": 0.6,
    "smile": 0.4
   },
   "brow": {
-   "soft": 1
+   "neutral": 1
   }
- }
+ },
+ "note": "her eyes lift to the bag on the floor ahead: the upper lid part way down (the bag is below her eye line), the iris forward and low (ease-sway; v2: v1's open .7 / half .18 read 'a plain round dot… alert, almost blank', feel review)"
 }

@@ -615,9 +615,15 @@ or composited.
 60. **A weight shift tilts the legs from the ankles: let the hips move, not the feet.** mum3 ease-sway (2026-10-14). Both
    thighs tilted together (plantFeet `ik`) carry the hips 46 px from the back sway to the front one, the feet planted in x, but
    a straight leg can neither stretch nor fold back, so the IK left both feet 3 px off the floor at the forward sway and
-   2.5 px into it at the back one (a softer back knee did not fix it: it's the leg's length). `spec.plantFeetSink: true`
+   2.5 px into it at the back one. `spec.plantFeetSink: true`
    moves the hips by what the foot nearest the floor still lacks: the ankles hold within 0.6 px all shot. Opt-in, so
    earlier shots keep their frames. Probe the feet on any shot that moves the hips: `node tools/feet_probe.mjs <char> <anim>`.
+   Then make it a weight shift, not a tilt (feel review on v1: "a cut-out on a pivot… two legs as parallel poles hinged
+   at the ankles"): the hips lead and the trunk trails them (a `spineLower`/`chest` fidget leaning back as the hips go
+   forward, then a smaller follow-through), and the knee the weight leaves softens. A knee BENDS with a NEGATIVE shin
+   angle (mum3's `shin` limits: min −150, max 5): v1's `shin.near=3` "soft knee" was a hyperextension clamped at 5°,
+   unseen. Read a bone's limits before choosing a sign; a bent knee lets the same thigh tilt carry the hips ~40% further,
+   so scale the tilt back to the brief's size.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
