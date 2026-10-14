@@ -23,7 +23,11 @@
 //             as an arm that shrinks); and no elbow jumps > 6 px in a frame while its wrist stays (the arm solve changing branch)
 //     fingers each spec.qa.fingers entry {side, t: [s…], want: [index…little °], tol}: the FILM's finger angles at those
 //             times within tol of the still's (tools/finger_angles.mjs). A key fitted to the still can leave it on the film:
-//             the derived trunk turned mum3q's pinned cradling hand 6° steeper, "a comb" (natural lens v17; lesson 58)
+//             the derived trunk turned mum3q's pinned cradling hand 6° steeper, "a comb" (natural lens v17; lesson 58).
+//             With every: {step: 0.5, tol: 5} the angles all shot (a looser tol for designed whole-hand turns); with
+//             fan: {every: 0.5, tol: 3} also the fan's SHAPE all shot (finger_angles --fan: a whole-hand turn passes,
+//             a change of shape doesn't): a fidget between the key frames bent the cradling fingers at the knuckles into "a
+//             rake", and the top hand's spreads, still the right hand's, closed its fan into "a paw" (lesson 59)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -242,6 +246,20 @@ if (!skip.has('fingers') && spec.qa?.fingers?.length) {
     try { out = execFileSync('node', ['tools/finger_angles.mjs', '--char', char, '--side', f.side, '--anim', name, '--t', f.t.join(','), '--want', f.want.join(','), '--tol', String(tol)], { encoding: 'utf8' }); }
     catch (e) { out = String(e.stdout || e.message); pass = false; }
     gate(pass, `${f.side} fingers at ${f.t.join(', ')} s within ${tol}° of the still's ${f.want.join('/')}°: ${out.trim().split('\n').pop()}${pass ? '' : " — the film turned the hand off its fitted key: set the hand bone of the reach stop's pose (refs/derive_*.sh) until finger_angles matches"}`);
+    if (f.every) {   // the angles all shot, a looser tol for the designed whole-hand turns (a thumb stroke turns the hand ~4°)
+      const et = f.every.tol ?? tol + 2; let o3, p3 = true;
+      try { o3 = execFileSync('node', ['tools/finger_angles.mjs', '--char', char, '--side', f.side, '--anim', name, '--every', String(f.every.step ?? 0.5), '--want', f.want.join(','), '--tol', String(et)], { encoding: 'utf8' }); }
+      catch (e) { o3 = String(e.stdout || e.message); p3 = false; }
+      const bad = o3.split('\n').filter((l) => /off (\d+)°/.test(l) && +l.match(/off (\d+)°/)[1] > et).map((l) => l.trim().split(' ')[0]);
+      gate(p3, `${f.side} fingers every ${f.every.step ?? 0.5} s within ${et}° of the still's: ${o3.trim().split('\n').pop()}${p3 ? '' : ` at ${bad.join(', ')} s — a fidget bends the fingers off the still's angle there (a knuckle bend on a hand seen palm-on flattens and lengthens them: "a rake")`}`);
+    }
+    if (f.fan) {
+      const ft = f.fan.tol ?? 3; let o2, p2 = true;
+      try { o2 = execFileSync('node', ['tools/finger_angles.mjs', '--char', char, '--side', f.side, '--anim', name, '--every', String(f.fan.every ?? 0.5), '--want', f.want.join(','), '--tol', String(ft), '--fan'], { encoding: 'utf8' }); }
+      catch (e) { o2 = String(e.stdout || e.message); p2 = false; }
+      const bad = o2.split('\n').filter((l) => /off (\d+)°/.test(l) && +l.match(/off (\d+)°/)[1] > ft).map((l) => l.trim().split(' ')[0]);
+      gate(p2, `${f.side} fingers' fan every ${f.fan.every ?? 0.5} s within ${ft}° of the still's: ${o2.trim().split('\n').pop()}${p2 ? '' : ` at ${bad.join(', ')} s — a fidget or a spread changes the hand's shape there: move the fingers together (the fan kept), check spread signs on a mirrored hand`}`);
+    }
   }
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

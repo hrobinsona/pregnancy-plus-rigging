@@ -1,0 +1,38 @@
+{
+ "name": "n-sway-bag",
+ "note": "settled, her head up from the bump to look at the bag by the door, on the floor ahead (ease-sway)",
+ "_recipe": "n-sway-bag n-sway-settle --add head=-2,neck=-1.5,chest=-0.5 --note settled, her head up from the bump to look at the bag by the door, on the floor ahead (ease-sway)",
+ "hands": {
+  "near": "lay",
+  "far": "relaxed"
+ },
+ "root": [
+  0.0225,
+  0.0142
+ ],
+ "bones": {
+  "armAbd.near": -0.8,
+  "armRot.near": -13.7,
+  "belly": 0,
+  "chest": -1.1,
+  "clavicle.near": -1.5,
+  "foot.far": 1.6,
+  "foot.near": 2.9,
+  "foreRot.near": -0.7,
+  "forearm.near": 53.1,
+  "hand.near": 2.4,
+  "head": 7.4,
+  "hipAbd.far": 0,
+  "hipAbd.near": 0,
+  "neck": 1.3,
+  "pelvis": 0,
+  "shin.far": -1.6,
+  "shin.near": 0.3,
+  "shoulderAbd.near": 1,
+  "spineLower": -0.6,
+  "spineUpper": -0.2,
+  "thigh.far": -1.5,
+  "thigh.near": -1.6,
+  "upperArm.near": -6.1
+ }
+}

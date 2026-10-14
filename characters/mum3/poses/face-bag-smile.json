@@ -1,0 +1,21 @@
+{
+ "name": "face-bag-smile",
+ "note": "the smile reaches her eyes, still on the bag (ease-sway)",
+ "face": {
+  "lid": {
+   "open": 0.62,
+   "half": 0.18,
+   "smile": 0.2
+  },
+  "gaze": [
+   0.012,
+   0.026
+  ],
+  "mouth": {
+   "warm": 1
+  },
+  "brow": {
+   "soft": 1
+  }
+ }
+}

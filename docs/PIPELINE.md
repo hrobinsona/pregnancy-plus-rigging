@@ -597,6 +597,27 @@ or composited.
    Rules: give every shot a `handsBox`; before acting on "frozen" or "static", read the motion sheet. When a derived key
    or a reach acts on a fitted hand, measure the film against the still: `finger_angles.mjs --anim` (gated by QA
    `fingers`, `spec.qa.fingers`) and `mask_overlay.py <char> <anim>@<t>` (the shot's pose at t over the still).
+59. **Gate a fitted hand all shot, not at its keys; bend fingers where the view keeps their shape; judge signs and eyes on
+   the film.** mum3q look-up v22–v24. QA `fingers` passed at the look-down keys while reviewers called the cradling
+   fingers "a rake" at 3–4 s. Measured every 0.5 s, the fan there sat 6° flatter and 9% longer: a fidget bent the
+   fingers at the KNUCKLES (+10–13°), and on a hand seen palm-on a knuckle bend turns the fingers toward the camera, so on
+   the film they flatten toward the palm's line and lengthen, straight and parallel. Bent at the end joints, with the
+   whole hand turned 4° to cup the bump, the fan kept its shape ("compact, slightly converging… a hand holding the
+   bump"; v24, a blind tie leaning to it). Two "fixes" in the same round lost (v23): the top hand's fidget spreads
+   turned round because raw `f*s` values skip `spreadSign` on a mirrored hand (true in code; on the film v22's opening
+   gaps read alive, v23's "bunched"), and the eyes dropped first with the iris centred (in ¾ a centred iris is a look at
+   the camera: "looking at us from under heavy lids… coy").
+   Rules: QA `fingers` takes `every: {step, tol}` (the angles every step) and `fan: {every, tol}` (each finger minus the
+   four's mean: a whole-hand turn passes, a shape change fails; `finger_angles.mjs --fan`); gate the hand the reviewer
+   names, not a moving fan that reads alive. On a palm-on hand, put a gather in the end joints and the hand's turn, not
+   the knuckles. Check a sign "bug" on the film before flipping it. An eye's direction in ¾ is the iris's place in the
+   eye: centred means at us.
+60. **A weight shift tilts the legs from the ankles: let the hips move, not the feet.** mum3 ease-sway (2026-10-14). Both
+   thighs tilted together (plantFeet `ik`) carry the hips 46 px from the back sway to the front one, the feet planted in x, but
+   a straight leg can neither stretch nor fold back, so the IK left both feet 3 px off the floor at the forward sway and
+   2.5 px into it at the back one (a softer back knee did not fix it: it's the leg's length). `spec.plantFeetSink: true`
+   moves the hips by what the foot nearest the floor still lacks: the ankles hold within 0.6 px all shot. Opt-in, so
+   earlier shots keep their frames. Probe the feet on any shot that moves the hips: `node tools/feet_probe.mjs <char> <anim>`.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

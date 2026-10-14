@@ -140,3 +140,7 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     well inside the edge") while its key matched. And before calling a hand "frozen", check the motion sheets (magenta):
     still tiles at phone size hide 20 px moves. · `finger_angles.mjs` (QA `fingers`), tips on the film vs the still's,
     `motion_sheet.py` + eye · 58
+25. **Do the hands keep the still's shape BETWEEN the keys?** A fidget that bends the fingers where the view flattens
+    them breaks the shape for a second or two while every key matches: mum3q's cradling fingers, bent at the knuckles
+    seen palm-on, read "a rake" at 3–4 s (6° flatter, 9% longer). · QA `fingers` `every`/`fan` (`finger_angles.mjs
+    --every 0.5 --fan`) + eye · 59

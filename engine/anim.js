@@ -1048,6 +1048,14 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
             if (Math.abs(sl) > 1e-6) pose.bones[L_.foot] = (pose.bones[L_.foot] || 0) + Math.max(-20, Math.min(20, e0 / sl));
           }
         }
+        // spec.plantFeetSink: a weight shift tilts both legs from the ankles; a straight leg can't stretch (nor a straight
+        // knee fold back), so the IK leaves both feet a few px off or into the floor (mum3 ease-sway: 3 px off at the front
+        // sway, 2.5 px into it at the back one). The hips move instead, by what the foot nearest the floor still lacks, so
+        // no foot goes through it (ease-sway: ankles within 0.6 px all shot). Opt-in: earlier shots keep their frames.
+        if (spec.plantFeetSink) {
+          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return rig.carry(s0, L_.shin, L_.ankle)[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
+          pose.root = [pose.root[0], pose.root[1] + lift];
+        }
       }
     }
     return pose;

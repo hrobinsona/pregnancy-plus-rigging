@@ -1,0 +1,20 @@
+{
+ "name": "face-ease",
+ "note": "breathing through the end of a tightening: the lids lowered, eyes down on her bump, the lips just parted (ease-sway)",
+ "face": {
+  "lid": {
+   "open": 0.45,
+   "half": 0.55
+  },
+  "gaze": [
+   0.006,
+   0.03
+  ],
+  "mouth": {
+   "soft": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}

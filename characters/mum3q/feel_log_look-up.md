@@ -464,3 +464,41 @@ Results on v18:
 - So the heavy lid that read "sleepy, smug" on v14–v17 reads "cast down at her bump" once the eye has the still's white
   and forward iris: the lid and the iris are one shape (lesson 57).
 - QA PASS; mum2 and mum3 SVG unchanged (no engine change).
+
+## v23 (lost) — the eyes drop first, the top fingers' fan, the wrist's mass at the wrist
+
+- Three changes for the open notes on v22: (1) on the way down the eyes drop first, iris LOW and CENTRED (`face-ret`,
+  6.2 s), then turn to the bump with the head; (2) the top hand's fidget spreads turned round (`f*s` signs flipped: the
+  raw spread values are not passed through `spreadSign`, so on the mirrored left hand they open the other way) so the
+  fan kept the still's convergence; (3) the end-on wrist's mass anchored at the wrist instead of along the forearm, so
+  it stops sliding off the hand's heel as the chest lifts the elbow ~15 px on n-up (the palm's corner pokes out at 4.5
+  and 6.5 s). Also the cradling fingers' gather moved from the knuckles to the end joints.
+- **Blind v23 vs v22: v22 6.5, v23 6.** (1) v23's eyes: "the lids lower… while the irises stay on the viewer… she looks
+  up at us from under heavy lids… sleepy or coy"; v22's "lids and irises drop together… the eyes lead the head". In ¾ a
+  centred iris IS a look at the camera, whatever the lids do. (2) v23's top fingers "stay bunched together"; v22's "lift
+  and fan, small gaps opening between them": the flipped signs were right in code and wrong on the film. (3) the wrist
+  1–2 px wider past the bump's outline, still "a mitten". (4) v23's lower fingers "almost frozen" 3–5 s (QA alive FAIL
+  first, the PIP-only gather too small): v22's "slowly lengthen and fan… a bit more 'rake'".
+- All dropped; params.js back to v22 (endOn shift [−0.02, −0.03]). The anchor change needs its own A/B.
+
+## v24 — the cradling hand cups up instead of raking
+
+- **Measured** the lower hand every 0.5 s (`finger_angles.mjs --anim --every 0.5`): QA `fingers` passed at its keys
+  (0, 7.3 s) while at 3–4 s the fan sat 6° flatter and the fingers 9% longer. Cause: the 2.3 s gather bent the fingers
+  at the KNUCKLES (f*a +10–13°). On a hand seen palm-on, a knuckle bend turns the fingers toward the camera: on the
+  film they flatten toward the palm's line and lengthen, straight and parallel, "a rake". A bend at the END joints
+  (f*b) or a turn of the whole hand keeps the fan's shape.
+- **v24:** the gather = the hand turning up 4° (cupping the bump) + the end joints graded 6/8/10/12° (index least) +
+  the thumb; the 3.4 s press the thumb only. QA `fingers` now checks the near hand every 0.5 s (angles within 5°) and
+  the fan's shape (each finger minus the four's mean, within 3°; `finger_angles.mjs --fan`). v22 fails the every check
+  (6°); v24 passes (worst 5°, fan 2°).
+- **Blind v24 vs v22: tie, 6 vs 6, leaning v24.** "Neither… at phone size I could not tell X and Y apart"; up close
+  v24's fingers "stay compact and slightly converging, which reads as a hand holding the bump", v22's "fan out, more
+  evenly spaced and parallel… more like a rake"; v24's "small curl reads as life in a resting hand". Kept (a tie that
+  removes a named fault).
+- Still wrong in both (the reviewer, "anything wrong in both"): the top wrist "a rounded, mitten-like bulb… past the
+  bump's silhouette"; the lower fingers straight and parallel at 6.5–7.5 s too. The top fingers' fan is NOT gated all
+  shot (v23 showed its moving fan reads alive).
+- QA PASS (fingers every/fan new); mum2 and mum3 SVG unchanged. Render `renders/mum3q_look-up_v24.mp4`.
+- Next: the top wrist's mass (the anchor alone, A/B); the lower fingers at 6.5–7.5 s; the natural lens before calling
+  it finished.

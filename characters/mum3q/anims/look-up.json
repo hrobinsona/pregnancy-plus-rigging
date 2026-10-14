@@ -611,15 +611,14 @@
    "t1": 4.4,
    "cycles": 1,
    "bones": {
-    "hand.near.f1a": 13,
-    "hand.near.f2a": 13,
-    "hand.near.f3a": 12,
-    "hand.near.f4a": 10,
-    "hand.near.f1b": 9,
-    "hand.near.f2b": 9,
-    "hand.near.t1": 8
+    "hand.near.f1b": 6,
+    "hand.near.f2b": 8,
+    "hand.near.f3b": 10,
+    "hand.near.f4b": 12,
+    "hand.near.t1": 8,
+    "hand.near": 4
    },
-   "note": "as she lifts her eyes to us the cradling fingers gather under the bump ('holding you', bringing the baby with her) and release (v7: starts with the look up, 1.5× larger: 'nothing happens with the hands when she looks up at us')"
+   "note": "as she lifts her eyes to us the cradling fingers gather under the bump ('holding you', bringing the baby with her) and release (v7: starts with the look up, 1.5× larger: 'nothing happens with the hands when she looks up at us') v24: the hand cups up (turns 4°, its fan kept) and the END joints gather, graded: bent at the knuckles (f*a +10–13) the cradling fingers, palm up toward us, flattened 6° and lengthened 9% on the film, straight and parallel, 'a rake' at 3–4 s (blind A/B v22, natural lens v22); with the knuckle bend simply dropped (v23) the hand froze 3–5 s (QA alive; 'almost frozen', blind A/B v23). QA fingers every 0.5 s (lesson 59)"
   },
   {
    "t0": 4.6,
@@ -741,13 +740,9 @@
    "cycles": 1,
    "bones": {
     "hand.near.t1": 12,
-    "hand.near.ts": -10,
-    "hand.near.f1a": 6,
-    "hand.near.f2a": 6,
-    "hand.near.f3a": 5,
-    "hand.near.f4a": 4
+    "hand.near.ts": -10
    },
-   "note": "and the near thumb presses with it, 3 frames later. v17: the cradling fingers gather with it (+4–6° at the knuckles) and the thumb presses further"
+   "note": "and the near thumb presses with it, 3 frames later. v17: the cradling fingers gather with it (+4–6° at the knuckles) and the thumb presses further v24: the thumb only (its knuckle bend flattened the fingers, see the 2.3 s gather)"
   },
   {
    "t0": 0.3,
@@ -839,7 +834,15 @@
      -2
     ],
     "tol": 3,
-    "note": "the cradling hand's fingers as the still q_k4_down_0 lays them (fit-q_k4_down, fitted to its four tips) at the look-down frames: v17's film had them 6° steeper than the key (n-down's trunk turned the hand with it), read as 'straight, parallel, a comb' (natural lens v17; lesson 58)"
+    "note": "the cradling hand's fingers as the still q_k4_down_0 lays them (fit-q_k4_down, fitted to its four tips) at the look-down frames: v17's film had them 6° steeper than the key (n-down's trunk turned the hand with it), read as 'straight, parallel, a comb' (natural lens v17; lesson 58) v24: and every 0.5 s, the angles within 5° (a thumb stroke or the cupping press turns the whole hand ~4°) and the fan's shape within 3°: v22's knuckle 'gather' made the cradling fingers 'a rake' at 3–4 s, between the key frames this gate sampled (lesson 59)",
+    "every": {
+     "step": 0.5,
+     "tol": 5
+    },
+    "fan": {
+     "every": 0.5,
+     "tol": 3
+    }
    },
    {
     "side": "far",
@@ -855,7 +858,7 @@
      28
     ],
     "tol": 4,
-    "note": "the top hand's fingers draped over the dome as the still q_k4_down_0 (lesson 54)"
+    "note": "the top hand's fingers draped over the dome as the still q_k4_down_0 (lesson 54) Its fan is NOT gated all shot: v23 gated it and turned the fidget spreads round so the fan kept the still's convergence while the fingers lift; the blind A/B saw the top fingers 'stay bunched together' where v22's 'lift and fan, small gaps opening between them' (lesson 59)"
    }
   ]
  },

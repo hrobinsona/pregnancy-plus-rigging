@@ -1,0 +1,20 @@
+{
+ "name": "face-settle",
+ "note": "the end of the long breath out, calm: eyes still softly closed (face-release's lids), face-calm's resting mouth instead of the release smile (sigh-look)",
+ "face": {
+  "lid": {
+   "open": 0.15,
+   "closed": 0.85
+  },
+  "gaze": [
+   0,
+   0.01
+  ],
+  "mouth": {
+   "smile": 1
+  },
+  "brow": {
+   "neutral": 1
+  }
+ }
+}
