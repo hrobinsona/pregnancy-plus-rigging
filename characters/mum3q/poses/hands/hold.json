@@ -1,6 +1,6 @@
 {
  "name": "hold",
- "_note": "the top hand DRAPED over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): the back of the hand lies on the dome's top and the straight fingers bend down over its curve AT THE KNUCKLES (MCP 50-54°, PIP 8-10°), fanned like the still's fingers (38/35/30/28° from index to little; tools/finger_angles.mjs: 36/33/30/27 on the film), the tips stepping down a diagonal. Placed by the still's four fingertips (hand_place --tips) with her LEFT hand drawn from the back (thumbSide −1, lesson 53), palm down (--palm-down 0.55); the far spec's knuckle arc and finger lengths step the tips, lineMcpK keeps the lines whole (lesson 54). Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts (on the mirrored hand): together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw'); v8 (mild curl 6-14° placed by the tips' centroid): 'short, nearly horizontal… tips bunched'; MCP 55-62°: lines cut to stubs, a mitten; v10 (spread reversed, little finger 44°): parallel fingers 7° flatter than the still's index, the lower two 'hooked into stubs'. Picked side by side with the still, zoomed and at film size (tools/hand_shapes.py, lessons 51-54)",
+ "_note": "the top hand DRAPED over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): the back of the hand lies on the dome's top and the straight fingers bend down over its curve AT THE KNUCKLES (MCP 50-54°, PIP 8-10°), fanned like the still's fingers (38/35/30/28° from index to little; tools/finger_angles.mjs: 36/33/30/27 on the film), the tips stepping down a diagonal. Placed by the still's four fingertips (hand_place --tips) with her LEFT hand drawn from the back (thumbSide −1, lesson 53), palm down (--palm-down 0.55); the far spec's knuckle arc and finger lengths step the tips, lineMcpK keeps the lines whole (lesson 54). Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts (on the mirrored hand): together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw'); v8 (mild curl 6-14° placed by the tips' centroid): 'short, nearly horizontal… tips bunched'; MCP 55-62°: lines cut to stubs, a mitten; v10 (spread reversed, little finger 44°): parallel fingers 7° flatter than the still's index, the lower two 'hooked into stubs'. Picked side by side with the still, zoomed and at film size (tools/hand_shapes.py, lessons 51-54) The little finger bends further at its knuckle (62°) so it lies at the still's 25–28° once the knuckle line slants like the still's (lesson 56).",
  "f1": [
   50,
   8,
@@ -17,7 +17,7 @@
   5
  ],
  "f4": [
-  54,
+  62,
   10,
   5
  ],

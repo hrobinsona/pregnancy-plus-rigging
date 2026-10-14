@@ -9,7 +9,7 @@ import { loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
-export const ANCHORS = { 'neck': 8, 'chest.skin': 11, 'dress': 36, 'dress.strap': 7 };
+export const ANCHORS = { 'neck': 8, 'chest.skin': 11, 'dress': 37, 'dress.strap': 7 };
 
 export function build({ P: C, C: char }) {
   const X = char.params.P, out = [];
@@ -43,9 +43,14 @@ export function build({ P: C, C: char }) {
     [sf.arm[0], sf.arm[1], { a: 45 }],
     [X.bust[0] - 0.03, X.bust[1] - 0.11, { a: 62 }], [X.bust[0], X.bust[1], { a: 97 }],
     [b.under[0] + 0.018, b.under[1] + 0.04, { c: true, ai: -120, ao: 40, ti: 0.7, to: 0.8 }], // under-bust notch: the bump starts here (rows: deepest 0.662 at y −5.05)
-    [b.upper[0], b.upper[1], { a: 55 }],
-    [b.apex[0], b.apex[1], { a: 90 }],
-    [b.lower[0], b.lower[1], { a: 125 }],
+    // the bump's front: its tangents MEASURED on the master at each named row (61° at upper, 85° at the apex row, 110° at
+    // lower, 121° at low; it widens to its apex just below the apex's row). Designed ones (55, 90, 125, no low) turned down
+    // too early, a flat front then a straight chamfer into the skirt: "a rounded box… a corner" (natural lens v11–v13;
+    // lesson 56). The rows were within 5 px of the master's; the curvature was not
+    [b.upper[0], b.upper[1], { a: 61 }],
+    [b.apex[0], b.apex[1], { a: 85 }],
+    [b.lower[0], b.lower[1], { a: 110 }],
+    [b.low[0], b.low[1], { a: 121 }],
     [b.bottom[0], b.bottom[1], { c: true, ai: -55, ao: 95, ti: 0.8, to: 0.6 }],               // the bump meets the skirt
     [near(st, -3.2)[0], -3.2, { a: 95 }],
     [hm.front[0], hm.front[1], { a: 100 }], [hm.front[0] - 0.04, hm.y - 0.01, { a: 160, t: 0.7 }],

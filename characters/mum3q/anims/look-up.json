@@ -803,8 +803,8 @@
     "hidden": "the far arm hangs at her side (still q_k4_down_0): the upper arm is the strip past her bust, drawn near full length; the forearm points at us over the top of the bump from the elbow on its edge, drawn END-ON as the still's round mass (parts/arms.js, 13–18% of its length: its size is the cross-section's, so it never reads as shrinking; lesson 53)"
    },
    "hand.near": {
-    "min": 0.8,
-    "note": "the cradling hand lies palm up under the bump, turned a little from us as in the still q_k4_down_0"
+    "min": 0.74,
+    "note": "the cradling hand lies palm up under the bump, turned a little from us as in the still q_k4_down_0: drawn at 76% of its length all shot (it never changes, so it can't read as shrinking). Fitted to the still's four tips it matches the still's hand best there (tools/mask_overlay.py: 1166 px of mismatch; held near full length with --hand-len 0.85, 91%, it was 1431 px, the little finger hidden and the hand tipped down; lesson 56)"
    }
   }
  },

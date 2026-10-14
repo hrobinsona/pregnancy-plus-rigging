@@ -16,26 +16,28 @@ NEAR=shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot
 STILL=$STILL,$NEAR
 $B n-base fit-q_k4_down fit-q_k_down 1 --keep $FAR,$NEAR --from B --hands near=cradle,far=hold --note "the look-down key (q_k_down_0) holding the bump with both hands: the far hand curled over its top, the near one cradling it (q_k4_down_0)"
 python3 tools/pose_set.py mum3q n-base --zbias arm.far.hand=40 >/dev/null
-$B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8 --note "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little"
-# the head bowed a little deeper than the fit's face angle: the natural lens on v6 saw 'the head too upright… glancing
-# sideways' against the stills' chin toward the chest
-python3 tools/pose_set.py mum3q n-down --fx headPitch=28 >/dev/null
+$B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --note "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump"
+# the stills look down with the head TIPPED toward the bump (their eye line slopes ~20° down toward it, the chin down and
+# forward) on a long neck, the face hardly foreshortened, the eyes doing the looking. A deep nod instead (v6's 'too upright'
+# answered with headPitch 28) squashed the face under the hair: 'chin on the neckline, eye-to-chin 25% short, the lids
+# nearly shut' (natural lens v13; lesson 56). So: the head tipped 8° and a lighter nod, picked beside q_k_down_0
+python3 tools/pose_set.py mum3q n-down --fx headPitch=14 >/dev/null
 # the breakdown is HALF way in the head (the still q_k_mid_2 is ~85% up: through it the lift happened in 0.3 s, "a little
 # brisk for unhurried", natural lens v6 round 2); the eyes are already on us
 $B n-mid n-base fit-q_k_mid 1 --keep $STILL --from B --hands near=cradle,far=hold --add head=-7,neck=7 --note "half way up, the eyes already on us (still q_k_mid_2, the head held back to half way), both hands holding the bump as in still q_k4_down_0"
-python3 tools/pose_set.py mum3q n-mid --fx headPitch=12 >/dev/null
+python3 tools/pose_set.py mum3q n-mid --fx headPitch=8 >/dev/null   # half way from n-down's 14 to n-up's 1.6
 # eye contact: the chest opens and the shoulders lift with the breath in (the body joins the look up)
 $B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0"
 python3 tools/pose_set.py mum3q n-up --scale chest=1.02:1.01 >/dev/null
 # the lift's anticipation: before the head comes up it sinks a touch deeper into the nod (and the shoulders settle)
 $B n-dip n-down --hands near=cradle --add neck=1.5,clavicle.near=-1.5 --note "anticipation before the look up: a touch deeper into the nod"
-python3 tools/pose_set.py mum3q n-dip --fx headPitch=31 >/dev/null
+python3 tools/pose_set.py mum3q n-dip --fx headPitch=17 >/dev/null
 # a moving hold while she looks at us: the head tips a little (a warm tilt), never a dead hold
 $B n-tilt n-up --hands near=cradle --add head=2.5,neck=1 --note "eye contact, the head tipped a little: a warm tilt in the hold"
 python3 tools/pose_set.py mum3q n-tilt --scale chest=1.02:1.01 >/dev/null
 # the way back down is its own softer path, not the look up in reverse: half way, the head a touch forward and tipped
 # toward the bump (Lasseter v1: beats 3 and 5 traced the same sweep)
 $B n-ret n-up n-down 0.45 --hands near=cradle --add head=3,neck=-1 --note "breakdown on the way back down: forward and tipped toward the bump"
-python3 tools/pose_set.py mum3q n-ret --fx headPitch=13 >/dev/null
+python3 tools/pose_set.py mum3q n-ret --fx headPitch=9 >/dev/null
 # every key draws the far hand on her dress (n-mid and n-up take their discrete fields from their own stills' fits)
 for n in n-down n-mid n-up n-dip n-tilt n-ret; do python3 tools/pose_set.py mum3q $n --zbias arm.far.hand=40 >/dev/null; done

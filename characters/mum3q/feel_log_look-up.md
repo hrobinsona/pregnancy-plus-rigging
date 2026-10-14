@@ -315,3 +315,39 @@ back of the hand" (the still's crease "long, the mass flowing into the hand's he
 3. the bump's lower front a chamfer into a corner;
 4. the hands' life invisible at phone size (top hand ≤ 4.6 px all shot, the head 38 px); the lower thumb a stub, its tips a
    blunt column; the top hand's shadow harder than the still's.
+
+## v14 — the v13 natural lens's four drawings, each measured on the still (lesson 56)
+
+Each had met its points with the wrong form between them:
+- **Top fingertips.** The still's knuckle line slants down toward the little finger (its lines start 564,538 → 573,551 →
+  583,561 px) and the little finger is short: `knuckleArc` [1, .97, .9, .8], `fingerLen` [1.05, 1, .86, .68], f4 bent 62°
+  at its knuckle; refit to the four tips 4.7 → 3 px rms, the tips stepping 516 → 520 → 534 → 552 px across. Finger angles
+  on the film 37/33/29/27° against the still's 38/35/30/28.
+- **Look-down head.** n-down rolls the head 8° toward the bump with half the nod (headPitch 28 → 14; n-dip 17, n-mid 8,
+  n-ret 9): the stills tip the head and keep the face.
+- **Bump's lower front.** Tangents measured on the master (61°, 85°, 110°, and 121° at a new point `low`) in place of the
+  designed 55/90/125: one convex curve into the skirt. Rest IoU 0.965 (v13 0.965).
+- **Lower hand.** Overlaid on the still (new `tools/mask_overlay.py`): thumb ~8 px short, fingers fat, fanned past the
+  bump's edge, 1682 px of mismatch. Thumb longer and slimmer (prox .43, dist .37), fingers slimmer and tapered (fingerK
+  .9, taper to .66), the index longest, cradle fan −3…3, refit to the still's four tips (623,756 · 620,764 · 608,772 ·
+  588,780): 1166 px. It's drawn at 76% of its length all shot (v13 84%): `spec.qa.limbs` hand.near min .74 with the
+  reason; held at 91% (`--hand-len 0.85`) it matched worse (1431 px).
+
+QA PASS (limbs with that exception), tip_check PASS both hands, finger angles PASS (worst 2°), handedness PASS, mum2 and
+mum3 SVG identical. Blind A/B v14 vs v13: **v14 6.5, v13 6** ("its top hand reads as a hand lying over the bump with
+fingers you can make out… a relaxed hand resting on the bump"; v13's "a cap or paw"; the lower hand "slightly more like
+cradling", the bump "a touch rounder at the bottom front"). In both: the hands dead still at phone size, the look-up mostly
+the head, the look-down "very bowed".
+
+Natural lens on v14: **NOT YET**. Checked against the stills myself (face at 2×, `out/mum3q_look-up_refmatch_00.png`):
+1. **The look-down eyes and neck (real).** The stills' eyes are OPEN, the iris resting on the lower lid, looking down; ours
+   are half-lidded, the iris under a flat low lid, so she reads "sleepy or smug, not tender". The stills keep a long neck
+   (~43 still px from chin to neckline; ours ~25): the head bows at the top of the neck, it doesn't sink onto it.
+2. **The hands' life at phone size (real, open since v6).** Both hands look identical in all 120 phone-size frames; the
+   head travels ~40 px. They need a press or gather on the outline as the smile blooms, a ride on the breath, a settle.
+3. Top fingertips "stubby, stacked", the lower hand "a comb, stub thumb": NOT what the still overlay shows now (top tips
+   within 3 px of the still's, lower 1166 px from 1682). The reviewer judged "from the crops… small at the size shown";
+   re-check after 1–2 at a larger crop before tuning again.
+4. The bump's lower front "a straighter diagonal… a corner": the rows now follow the master; low confidence at that size.
+5. Small: the eyes go round and wide at 2.0 s from a still-bowed head ("peeking"); at 5.9–6.3 s lowered lids with the
+   head up read as a sideways glance; the top hand's shadow harder than the still's.

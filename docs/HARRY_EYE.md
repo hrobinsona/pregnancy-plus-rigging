@@ -125,3 +125,8 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     pixel but lay behind the hand, the hand outlined round its end: "an oval ringed by a crease", "a knob"; v12 put it in
     front with an outline round it: "a C-shaped crease… a puffy cuff". · eye on the overlaps beside the still
     (`hand_shapes.py`, zoomed) · 55
+22. **Between the points that match, does the form match: the curve, the tips' spacing, the thumb's length?** Overlay
+    the region a reviewer names on the still, both masks, before tuning a number. mum3q v13 met its points and still read
+    "a stubby paw" (the top tips stacked: a square knuckle line), "a corner" (the bump's rows matched, its tangents
+    didn't), "a stub thumb" (8 px short, the fingers fat), and a look-down "bowed too deep" (a nod where the stills tip
+    the head). · `mask_overlay.py` (still only / render only, px) + eye · 56

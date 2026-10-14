@@ -7,7 +7,7 @@
   "far": "hold"
  },
  "fx": {
-  "headPitch": 13.0
+  "headPitch": 9.0
  },
  "scale": {
   "chest": [
@@ -20,23 +20,23 @@
   -0.0079
  ],
  "bones": {
-  "armAbd.far": 92.7,
-  "armAbd.near": 37.6,
-  "armRot.far": 37.4,
-  "armRot.near": 50.9,
+  "armAbd.far": 91.5,
+  "armAbd.near": 37.3,
+  "armRot.far": 38.2,
+  "armRot.near": 50.6,
   "belly": 0.0,
   "chest": 1.26,
   "clavicle.far": -4.6,
   "clavicle.near": 3.38,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": 3.5,
-  "foreRot.near": -57.7,
-  "forearm.far": 115.9,
-  "forearm.near": 43.7,
+  "foreRot.far": 3.2,
+  "foreRot.near": -41.8,
+  "forearm.far": 115.3,
+  "forearm.near": 43.5,
   "hand.far": 17.7,
-  "hand.near": 30.2,
-  "head": -5.74,
+  "hand.near": 30.4,
+  "head": -2.13,
   "hipAbd.far": 0.0,
   "hipAbd.near": 0.0,
   "neck": 3.77,
@@ -51,14 +51,14 @@
   "thigh.near": 1.4,
   "toe.far": 0.0,
   "toe.near": 0.0,
-  "upperArm.far": 24.4,
-  "upperArm.near": 9.4,
-  "wristFlex.far": -63.2,
-  "wristFlex.near": 15.9
+  "upperArm.far": 23.5,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
  },
  "_orig": {},
  "_edits": [
-  "--fx headPitch=13",
+  "--fx headPitch=9",
   "--zbias arm.far.hand=40"
  ],
  "zBias": {

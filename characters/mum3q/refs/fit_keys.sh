@@ -58,4 +58,6 @@ node tools/fit_pose.mjs mum3q $R/pose/q_k4_down_0.json fit-q_k4_down
 # the still's 35° (v8, lesson 54)
 python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side far --keys 632,552,572,543,531,578 --tips 516,563,520,577,534,584,552,586 --elbow 630,580 --hang 0.8 --hide none --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 60 --hand-len 0.85 --palm-down 0.55
 # the near arm across her front, the hand cradling the underside with the thumb on its lower front
-python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side near --keys 528,738,568,764,618,768 --elbow 366,621 --hide none --hand cradle --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 40
+# the lower hand by its four tips too (measured on the still at 12x: 623,756 · 620,764 · 608,772 · 588,780, each ~4 px inside
+# the drawn tip), so they meet the bump's edge in one diagonal; checked with tools/mask_overlay.py (lesson 56)
+python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side near --keys 528,738,568,764,618,768 --tips 623,756,620,764,608,772,588,780 --elbow 366,621 --hide none --hand cradle --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 40

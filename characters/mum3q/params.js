@@ -46,6 +46,7 @@ const frontAt = (y) => front.reduce((a, q) => (Math.abs(q[1] - y) < Math.abs(a[1
 const bump = { under: lm('underBust'), apex: lm('bumpApex'), bottom: lm('bumpBottom') };
 bump.upper = frontAt(bump.under[1] + 0.55 * (bump.apex[1] - bump.under[1]));
 bump.lower = frontAt(bump.apex[1] + 0.6 * (bump.bottom[1] - bump.apex[1]));
+bump.low = frontAt(bump.apex[1] + 0.85 * (bump.bottom[1] - bump.apex[1]));
 const edgeAt = (y) => at(F.edgeRight.reduce((a, q) => (Math.abs(q[1] - y) < Math.abs(a[1] - y) ? q : a)));
 const hl = F.hairline.map(at), peak = hl.reduce((a, q) => (q[1] < a[1] ? q : a));
 const eyeOf = (e) => ({ c: at(e.c), rx: e.rx / Hpx, ry: e.ry / Hpx, rot: e.rot, hi: at(e.highlight) });
@@ -120,11 +121,15 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] - 0.03, joints.wristNear[1] + 0.03],
           dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
-          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: { from: 'hand.near' },
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
-          rim: 0.012, taper: [1, 0.92, 0.84, 0.76], tipK: 1.0, lineEnd: 0.85 },   // drawn like the stills' hands: thinner lines between the fingers than mum3's (0.02 read as stripes, 'a comb'), fingers tapering a little more, each tip still ROUND and its own (thinner still, 0.009, with pointed tips, fused the fingers into 'a paddle'; lesson 52)
+          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 0.9, across: [0.3, 0.08, -0.15, -0.37], flexFx: { from: 'hand.near' },
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, prox: 0.43, dist: 0.37, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0], thumbWeb: [0.88, 0.86], fingerLen: [1.0, 0.95, 0.86, 0.72], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
+          rim: 0.012, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9, lineEnd: 0.95, lineTipGap: 0.3 },   // drawn like the stills' hands: thinner lines between the fingers than mum3's (0.02 read as stripes, 'a comb'), fingers tapering a little more, each tip still ROUND and its own (thinner still, 0.009, with pointed tips, fused the fingers into 'a paddle'; lesson 52)
 };
-handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03], dir: 95, flexFx: { from: 'hand.far' }, thumbSide: -1, thumbFx: 0.15, thenarEdge: [0.9, 0.85], knuckleArc: [1.0, 1.0, 0.95, 0.85], fingerLen: [1.0, 1.0, 0.9, 0.74], lineMcpK: 0.25 };   // hangs straight down beside the skirt (the estimator found only the near hand)
+// the near (lower) hand overlaid on still q_k4_down_0 (tools/mask_overlay.py): its thumb ~8 px short, the fingers fat and
+// fanned past the bump's edge ("a stub thumb, tips stacked in a column", natural lens v13). A longer, slimmer thumb (prox
+// .43, dist .37), slimmer tapered fingers (fingerK .9, taper to .66), the index longest: 1682 → 1166 px of mismatch once
+// refitted to the still's tips (lesson 56). The far hand keeps the old palm, fingers and thumb (set again below)
+handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03], dir: 95, flexFx: { from: 'hand.far' }, thumbSide: -1, thumbFx: 0.15, thenarEdge: [0.9, 0.85], palmW: 0.3, fingerK: 1.0, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, knuckleArc: [1.0, 0.97, 0.9, 0.8], fingerLen: [1.05, 1.0, 0.86, 0.68], lineMcpK: 0.25, lineTipGap: 0.3, lineEnd: 0.95, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9 };   // hangs straight down beside the skirt (the estimator found only the near hand)
 // the far hand is her LEFT hand: MIRRORED from the near (right) one (thumbSide −1, the thumb's in-plane flexion flipped). A
 // spec copied from the other hand draws a right hand on her left arm; it is right only seen from the palm (it hangs palm in,
 // a sliver beside the skirt), wrong from the back (on the bump). v1–v7 lay a RIGHT hand on the bump: thumb and index on its
@@ -132,7 +137,12 @@ handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wri
 // it). The thumb-side edge kept flat (thenarEdge 0.9), as the still's top edge runs straight from the knuckles to the wrist.
 // Draped over the dome (q_k4_down_0) its little-finger side wraps down and away from us: the knuckle arc steps back and the
 // outer fingers read shorter, so the tips step down a diagonal as the still's do (fitted to its four tips: 6.6 → 4.5 px rms);
-// lineMcpK 0.25 keeps the lines between the fingers whole through the knuckles' 45–55° bend (lesson 54)
+// lineMcpK 0.25 keeps the lines between the fingers whole through the knuckles' 45–55° bend (lesson 54). The knuckle line
+// slants down toward the little finger as the still's does (where its lines start: 564,538 → 573,551 → 583,561 px), the
+// little finger short (knuckleArc .8, fingerLen .68), so the tips step 516 → 520 → 534 → 552 px across (4.7 → 2.8 px rms);
+// with a near-square knuckle line the fit stacked the index and middle tips in one column, "a stubby paw" (v13 natural
+// lens). The lines run into the notches between the tips (lineTipGap .3, lineEnd .95) and the fingers taper to slimmer
+// tips (taper, tipK), as the still's do; they stopped short of a fused, blunt row of tips (lesson 56)
 
 // DEPTH PROXIES (engine/depth.js): mum3's shapes, placed on this view's screen (a body's silhouette edge sits
 // √((a·fx)² + (c·sinYaw)²) from its centre: the bump's centre is 0.47 H inside its apex here)

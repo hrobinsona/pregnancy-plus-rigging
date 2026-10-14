@@ -1,7 +1,7 @@
 {
  "name": "n-down",
- "note": "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little",
- "_recipe": "n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8 --note looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little",
+ "note": "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump",
+ "_recipe": "n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --note looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump",
  "hands": {
   "near": "cradle",
   "far": "hold"
@@ -10,30 +10,30 @@
   "arm.far.hand": 40.0
  },
  "fx": {
-  "headPitch": 28.0
+  "headPitch": 14.0
  },
  "root": [
   -0.0225,
   -0.0175
  ],
  "bones": {
-  "armAbd.far": 92.7,
-  "armAbd.near": 37.6,
-  "armRot.far": 37.4,
-  "armRot.near": 50.9,
+  "armAbd.far": 91.5,
+  "armAbd.near": 37.3,
+  "armRot.far": 38.2,
+  "armRot.near": 50.6,
   "belly": 0.0,
   "chest": 3.3,
   "clavicle.far": -5.7,
   "clavicle.near": 2.0,
   "foot.far": -0.7,
   "foot.near": -1.2,
-  "foreRot.far": 3.5,
-  "foreRot.near": -57.7,
-  "forearm.far": 115.9,
-  "forearm.near": 43.7,
+  "foreRot.far": 3.2,
+  "foreRot.near": -41.8,
+  "forearm.far": 115.3,
+  "forearm.near": 43.5,
   "hand.far": 17.7,
-  "hand.near": 30.2,
-  "head": -24.3,
+  "hand.near": 30.4,
+  "head": -16.3,
   "hipAbd.far": 0.0,
   "hipAbd.near": 0.0,
   "neck": 20.5,
@@ -46,14 +46,14 @@
   "spineUpper": 1.2,
   "thigh.far": 0.0,
   "thigh.near": 1.4,
-  "upperArm.far": 24.4,
-  "upperArm.near": 9.4,
-  "wristFlex.far": -63.2,
-  "wristFlex.near": 15.9
+  "upperArm.far": 23.5,
+  "upperArm.near": 9.5,
+  "wristFlex.far": -62.5,
+  "wristFlex.near": 28.9
  },
  "_orig": {},
  "_edits": [
-  "--fx headPitch=28",
+  "--fx headPitch=14",
   "--zbias arm.far.hand=40"
  ]
 }

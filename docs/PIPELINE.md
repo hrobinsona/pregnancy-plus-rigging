@@ -531,6 +531,33 @@ or composited.
    Rules: before reshaping a part the critics call a lump, mark on the still which form lies over which and where each line
    runs, and match that order; a silhouette can match to the pixel and still read wrong. Draw a line only where the still
    draws one.
+56. **Points can match while the form between them doesn't: measure the curve, the spacing and the length the reviewer
+   names, and overlay the still before tuning.** mum3q look-up v13 → v14. The natural lens on v13 (NOT YET) named four
+   drawings that the still draws differently; each had been fitted to the right points with the wrong form between them:
+   - *The top fingertips, "a stubby paw".* The fit met the four tips to 4.7 px rms, but with a square knuckle line the
+     index and middle tips stacked in one column. The still's knuckle line slants down toward the little finger (where its
+     lines start: 564,538 → 573,551 → 583,561 px) and its little finger is short: `knuckleArc` [1, .97, .9, .8] and
+     `fingerLen` [1.05, 1, .86, .68] step the tips 516 → 520 → 534 → 552 px across (2.8 px rms; the little finger bent 62°
+     at its knuckle to keep the still's 25–28°). The lines between the fingers now run into the notches between the tips
+     (`lineTipGap` .3, `lineEnd` .95).
+   - *The look-down head, "bowed too deep".* `fx.headPitch` is a nod warp: at 28 it squashed the face toward the bump.
+     The stills look down with the head TIPPED ~20° toward the bump and the face still readable, so n-down rolls the head
+     8° (`--add head=8`) with half the nod (headPitch 14; n-dip 17, n-mid 8, n-ret 9).
+   - *The bump's lower front, "a rounded box… a corner".* Its named rows were within 5 px of the master's, but the
+     designed tangents (55°, 90°, 125°) turned down too early: a flat front, then a straight chamfer into the skirt. The
+     tangents measured on the master at each row (61°, 85°, 110°, and 121° at a new point `low`, 85% of the way to the
+     bottom) make one convex curve into the skirt, as the master and the stills draw it.
+   - *The lower hand, "a stub thumb, tips stacked in a column".* Side by side the two hands looked alike. Overlaid on the
+     still's skin (`tools/mask_overlay.py`: red only in the still, blue only in the render), the thumb was ~8 px short and
+     the fingers fat and fanned past the bump's edge: 1682 px of mismatch. A longer, slimmer thumb (`prox` .43, `dist`
+     .37), slimmer tapered fingers (`fingerK` .9, `taper` to .66), the index the longest (`fingerLen` [1, .95, .86, .72]),
+     the fan tightened (cradle `s` −3…3) and the hand refitted to the still's four tips: 1166 px, the tips meeting the
+     bump's edge in one diagonal. Fitting the tips turned the hand 8% further from us (76% of its length, still all shot:
+     `spec.qa.limbs`); held near full length (`--hand-len 0.85`) it matched worse (1431 px, the little finger hidden).
+   v14 beat v13 blind (6.5 vs 6; "a relaxed hand resting on the bump… the tips follow the bump's lower curve").
+   Rules: when a reviewer names a shape, overlay that region on the still (`mask_overlay.py`) before tuning; the two
+   numbers show each fix at once. Measure a curve's tangents, not only its rows; a tip's spacing and a thumb's length,
+   not only the tips' centroid. Look down with a roll of the head before a deeper nod.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
