@@ -502,3 +502,20 @@ Results on v18:
 - QA PASS (fingers every/fan new); mum2 and mum3 SVG unchanged. Render `renders/mum3q_look-up_v24.mp4`.
 - Next: the top wrist's mass (the anchor alone, A/B); the lower fingers at 6.5–7.5 s; the natural lens before calling
   it finished.
+
+## v25 — the top wrist's line only the still's hook
+
+- Overlaid on q_k4_down_0 (`mask_overlay.py mum3q look-up@0 / @4.5 --box 500,500,700,640`) the top hand and wrist's
+  silhouette matches the still at 0 s (1047 px of mismatch); what differs is the drawing on it: the still draws ONE
+  short hook where the back of the hand folds into the wrist, v24's line ([235, 150] round the end-on mass) ran on over
+  its top as a second hump beside the hand's top edge, "a mitten… its top edge wavy". v25: [205, 150], the short hook.
+- **Blind v25 vs v24: tie, 6 vs 6, leaning v25.** "one fewer line wrapping the lump, so it reads a little less like a
+  stitched mitten or cuff and more like one forearm turning into a hand"; invisible at phone size. Kept (a tie removing
+  a named fault). QA PASS.
+- Still wrong in both, and the bigger fault: "the top hand's wrist and heel mass… bulges past the bump's silhouette as a
+  big rounded lump… a mitten or cuff, not a wrist bending over the top of the bump". Side by side wider
+  (`/mnt/project-files/rigging/mum3/mum3q_top_arm_still_vs_v25.png`): the still's far arm comes down past her bust as a
+  slim arm of even width on a steeper diagonal (~31° from vertical by eye) into the wrist; ours is more upright and
+  widens toward the wrist (a cone), so the round mass sits on the end of a club. Next: measure the far arm's edges on the
+  still (angle and width every 20 px) and fit `upperArm.far` and `armFar.w` to them; then the lower hand's thumb swing at
+  0.5–1.5 s ("a twitch", 10 px in a second).
