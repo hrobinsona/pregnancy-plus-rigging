@@ -34,7 +34,7 @@ or composited.
    mattered. Use F as the gate, C as a technical lint.
 6. **Lint the rig, not just the picture.** Hidden failures found the hard way:
    - joint limits silently CLAMP keyed values (clavicle ±10° ate every shrug for three rounds);
-   - sign conventions differ per side (+ lowers the far clavicle);
+   - sign conventions differ per side (+ lowers the far clavicle; check with `tools/bone_signs.mjs`, lesson 61);
    - normalised blend weights (`{lid: {open: 0.75}}` renders fully open);
    - per-key shifts that differ between neighbouring keys squeeze a channel's segment to 1 frame (a pop) —
      `makeAnim` now warns;
@@ -628,6 +628,21 @@ or composited.
    look at something needs the iris showing. A knee BENDS with a NEGATIVE shin angle (mum3's `shin` limits: min −150,
    max 5; v1's `shin.near=+3` "soft knee" is a clamped hyperextension): read a bone's limits before choosing a sign.
    A reviewer's prescriptions are hypotheses: each one goes through its own A/B.
+61. **Fit a form at every key, not only at the still's frame; check a bone's sign before claiming a direction.** mum3q
+   look-up v26–v28 (2026-10-14). The far arm read "a mitten… a club". Overlaid on q_k4_down_0 its mismatch was ~2200 px
+   either side, which says nothing about shape; its OUTER EDGE row by row (`mask_overlay.py … --edge right`) did: 8° more
+   upright than the still's straight diagonal, +17 px at a hump above the strap, −11 px where it met the wrist's mass at a
+   corner. v26 slimmed its outer side (beat v25 blind: "a slim wedge… lets the hand read as a hand"). v27 fitted the edge
+   at the still's frame to 1.1 px rms (the shoulder 10 px lower and in via `clavicle.far` before `hand_place`, no deltoid
+   cap, the arm widening toward the elbow while the forearm is end-on) and LOST blind (6 vs 6.5): through the look up
+   the lower shoulder hid the arm above the bust, "the arm only appears below the bust… an upright wedge that gets wider
+   toward the wrist… a mitten on a post", where v26's small shoulder cap let the eye follow "shoulder to arm to hand".
+   The edge at 2.75, 4.5 and 6.4 s had said so (the strip hidden at 2–5 rows, more than v26) before the A/B. Meanwhile
+   n-up's `clavicle.far=2` "shoulders up a touch" had LOWERED the far shoulder 2.4 px since v17: + lowers the far clavicle
+   (already in lesson 6's lint list, and still missed); raising it as the comment meant (v28) was a blind tie leaning to
+   the lower shoulder, so the frames stay and the recipe now says what +2 does. Rules: run an edge or overlay at every key of the shot,
+   not only the still's frame; a far limb's path from the body (shoulder → arm → hand) must stay readable in every
+   pose; before writing `--add bone=…` with a direction, run `node tools/bone_signs.mjs <char> <pose> --bones <bone>`.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

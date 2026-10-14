@@ -1,7 +1,7 @@
 {
  "name": "n-up",
- "note": "head up, eye contact (still q_k_up_1), the chest lifted and open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0",
- "_recipe": "n-up n-base fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far,shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot.near,hand.near,wristFlex.near --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest lifted and open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0",
+ "note": "head up, eye contact (still q_k_up_1), the chest lifted and open and the near shoulder up a touch, both hands holding the bump as in still q_k4_down_0",
+ "_recipe": "n-up n-base fit-q_k_up 1 --keep clavicle.far,shoulderAbd.far,upperArm.far,armAbd.far,armRot.far,forearm.far,foreRot.far,hand.far,wristFlex.far,thigh.near,shin.near,foot.near,toe.near,thigh.far,shin.far,foot.far,toe.far,hipAbd.near,hipAbd.far,shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot.near,hand.near,wristFlex.near --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note head up, eye contact (still q_k_up_1), the chest lifted and open and the near shoulder up a touch, both hands holding the bump as in still q_k4_down_0",
  "hands": {
   "near": "cradle",
   "far": "hold"

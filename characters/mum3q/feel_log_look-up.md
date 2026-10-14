@@ -536,3 +536,35 @@ Results on v18:
   a rake at 3.0–4.5 s and re-shaping at 2–3 s and 5–6 s.
 - Next: the strip's width at the bust against the still's (not under 14 px); the far shoulder lower and further in
   (≈10 px and 22 px of still), which needs a refit of the arm so the hand stays on the still's tips.
+
+## v27 (lost) — the far arm's outer edge fitted to the still
+
+- Measured with the new `mask_overlay.py --edge right` (rows 400–520, every 10 px) at 0 s: v26's outer edge +17 px at
+  a hump above the strap down to −11 px where it meets the wrist's mass; 8° more upright than the still's straight
+  diagonal (6.5 px rms). Sweeping the far shoulder (`clavicle.far` −14 … +9, the arm refit to the hand's points each
+  time) and the arm's widths: + LOWERS the far clavicle; moving the joint alone hid the arm behind the bust. v27: the
+  shoulder 10 px lower and in (`clavicle.far` 1), no deltoid cap and the arm widening toward the elbow while the forearm
+  is end-on (new `endOn.w`, `endOn.capA`): 1.1 px rms at 0 s, 3142 px of mismatch (was 4171). QA PASS.
+- **Blind v27 vs v26: v26 6.5, v27 6.** "X's far arm reads as one arm, running from a visible far shoulder down to the
+  top hand. In Y the arm appears only below her bust, as an upright wedge… a mitten on a post"; v26's "visible shoulder
+  cap and arm strip lift with the shoulders, so the far side of her body visibly joins in the look up". Dropped (the
+  diff is kept outside the repo). The edge at 2.75, 4.5 and 6.4 s had shown v27's strip hidden at more rows than v26's.
+- Found on the way: n-up's `clavicle.far=2` ("the shoulders up a touch") lowered the far shoulder 2.4 px since v17.
+  v28 tries the fix alone (`clavicle.far=-2`): the far shoulder 5 px higher at the look-up.
+
+## v28 (tie, not kept) — the far shoulder up with the near one
+
+- v26 with n-up's `clavicle.far=-2` (was +2): the far shoulder 5 px higher at 4.5 s; nothing else differs. QA PASS.
+- **Blind v28 vs v26: tie, 6 vs 6, leaning v26** "by a hair": at 3–6 s v28's far shoulder cap "stays a slightly rounder
+  hump… 1–2 px higher", v26's "tucks into a slimmer sliver… a touch less hunched behind the strap". "A viewer will not see
+  a difference." Kept v26's frames; derive_lookup.sh now says what +2 does (the far shoulder a touch DOWN).
+- Still wrong in both: the top hand's end "a rounded lump that reads as a mitten", its fingers "parallel stripes rather
+  than separate fingers draped over the bump"; the lower hand re-poses every second or two (0–1, 2–3, 5–6, 7–8 s: the
+  fingers fan out again, the thumb lifts "as a separate flat bar" at 1.0 and 6.0 s), "fidgeting or sliding rather than a
+  resting cradle"; the head tips back a little past level at 3.0–3.3 s before settling.
+- Next: the lower hand's fidgets (calm the cradle: fewer, smaller re-poses, the thumb with the fingers); then the top
+  hand's fingers as separate fingers draped over the dome.
+- Still wrong in both (reviewer): the lower thumb and fingers curl and uncurl at 0–1, 2–3, 5–6 and 7–8 s ("a pulsing or
+  kneading grip rather than a calm cradle"); the top hand's outer knob past the bump's outline; at 6.1–6.3 s the lids
+  drop and the eyes go down while the head still faces us ("a sidelong or coy glance").
+- Tools: `mask_overlay.py --edge`, `bone_signs.mjs` (lesson 61).
