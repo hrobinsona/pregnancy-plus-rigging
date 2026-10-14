@@ -39,4 +39,7 @@ print(f'''characters/{a.id}: scaffolded from {a.src}. Next (skill: "New characte
      and calibrate the fitter: python3 tools/pose_est.py characters/{a.id}/ref/master.png --out characters/{a.id}/refs/pose/master.json
   3. redraw params.js and parts/ from the measurements; gate: node tools/char_check.mjs {a.id}, python3 tools/char_compare.py {a.id} rest (IoU ≥ 0.95)
   4. limbs hidden by design → C.fit.hidden; contact shadow gated by fx.contact.<side>; hands early (tools/hand_fit.py)
+     the far hand is the OTHER hand: a copy of the near spec is its mirror image. Seen from the back (on her bump) it needs
+     thumbSide −1 and its thumbFx flipped; seen from the palm (hanging) the copy is right. char_check's handedness gate says
+     which (tools/handed.mjs; mum3q v1–v7 lay a right hand on her left arm, lesson 53)
   5. key stills through the worker, then python3 tools/new_pose.py fit {a.id} <name> (base: rest)''')

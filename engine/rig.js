@@ -98,7 +98,9 @@ export function createRig(C) {
       if (b.flex) { const f = param(b.flex, bonesIn); v = rotAbout(v, g, f); n = cross(v, g); }
     }
     const cam = toCam(v, side);
-    return { v, g, n, side, cam, ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };
+    // g is the RADIAL direction once the hand is reached (rest: forward, the thumb's side; pronation and the wrist's bends
+    // carry it): gcam says on which side of the drawn hand the thumb must be (qa_checks 'handed', lesson 53)
+    return { v, g, n, side, cam, gcam: toCam(g, side), ncam: n && toCam(n, side), scr: Math.atan2(cam[1], cam[0]) / DEG, len: Math.hypot(cam[0], cam[1]) };
   }
   function solve(pose = {}) {
     const st = {}, bonesIn = driven(pose);

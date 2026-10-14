@@ -38,8 +38,10 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 4. **Are the joints clean shapes a body has?** No knob, pinch, step or round cap at an ankle, elbow or wrist. mum3 v4:
    "ankles are a super weird shape" (a round tube end at the ankle). mum3q v6: a sharp "pointed wrist corner" where a hand
    bent 50° meets its forearm (cured by a heel-of-the-hand pad, `params.arm*.wristRound`); mum3q v7 draft: that pad drawn
-   wider than the forearm, "a ball", "a swollen joint". A joint is never wider than the limb it ends. · eye +
-   `qa_closeups.mjs` at the stress times · 41, 51, 52
+   wider than the forearm, "a ball", "a swollen joint". A joint is never wider than the limb it ends. mum3q v8 draft: a
+   forearm pointing at the camera drawn as a tube became a hairpin under the upper arm, "a box", then a hook; seen along
+   its length a forearm is its round cross-section (`parts/arms.js` draws it end-on). · eye + `qa_closeups.mjs` at the
+   stress times · 41, 51, 52, 53
 5. **Does anything bleed?** Clothing through limbs, limbs through clothing or the body, outlines running over skin.
    mum2: "the real bleeding through clothes and body parts, which looked super weird as they move". · `anim_audit.py` +
    eye · 17
@@ -104,3 +106,10 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 18. **Does a hand or arm resting on her cast the soft shadow the still shows?** Without it a hand reads pasted on, not
     resting. mum3q v1–v6 and mum3 v1–v5 had one configured that never drew (a keyed channel dropped by the engine). · gate
     `qa_checks` channels (every keyed channel reaches the pose; a gated shadow draws while keyed on) + eye · 52
+19. **Is each hand the RIGHT hand, the right way round?** Say which edge of the hand the thumb and index are on and where
+    the little finger is, in the still and in the render; the far hand is the other hand, the mirror of the near one, not
+    a copy. mum3q v1–v7: the top hand's spec was copied from the near (right) hand, so a RIGHT hand lay on her left arm,
+    thumb and index along its lower edge, the little finger on top. Four rounds tuned its curl, wrist and lines; the
+    critics called it "a paw", "a claw", "a thumb pad"; Harry on v7: "a total mess. It looks like it's the wrong way
+    round". · gate `char_check` and `qa_checks` handed (the thumb on the side the 3D arm puts it, every pose and frame;
+    `tools/handed.mjs`) + eye · 53

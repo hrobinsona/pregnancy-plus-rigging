@@ -86,12 +86,21 @@ export default {
   // lying across her front casts one too, onto the dress only (on chest.skin it drew a stripe inside the upper arm), at 16 %,
   // (5, 9) px as still q_k4_down_0 reads (lesson 52). A group holds every part of the hand INCLUDING the wrist pad: the shadow is
   // drawn just below the group's lowest part, so a pad left out got the hand's shadow painted over it ("a darker wedge on the heel")
-  contactShadow: { opacity: 0.16, offset: [5, 9], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$)', gate: 'contact.far' }],   // pose.fx['contact.near']: the hanging hand casts none
+  contactShadow: { opacity: 0.16, offset: [5, 9], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$|arm\\.far\\.end$)', gate: 'contact.far' }],   // pose.fx['contact.near']: the hanging hand casts none
     on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
+
+    // the far hand lying over its own upper arm (it comes down past her bust behind the hand): the still draws the hand's top
+    // edge there as a fine line, so the back of the hand reads apart from the arm (q_k4_down_0; without it hand and arm were
+    // one skin mass, lesson 53)
+    { match: /^hand\.far\./, behind: /^arm\.far$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.007 },
   ],
+  // handedness (tools/handed.mjs, lesson 53): the far hand is her LEFT hand drawn from the BACK, as it lies on the bump in
+  // every shot; hanging, the 3D shows its palm (a sliver beside the skirt) and this drawing is its mirror there. Before a
+  // shot shows it hanging it needs a palm drawing swapped in (handView, as mum2's farBack)
+  qa: { handed: [{ side: 'far', view: 'palm', why: 'drawn from the back for the bump; hanging, only a sliver shows (no palm drawing yet)' }] },
   // fitting (tools/fit_pose.mjs): in ¾ both arms show (the far one hangs behind the bump, its hand below it)
   fit: { hidden: [] },
   frame: params.frame,

@@ -653,10 +653,10 @@
    "t1": 2.3,
    "cycles": 1,
    "bones": {
-    "hand.far.f1s": -3,
-    "hand.far.f2s": -1,
-    "hand.far.f3s": 1,
-    "hand.far.f4s": 3,
+    "hand.far.f1s": 3,
+    "hand.far.f2s": 1,
+    "hand.far.f3s": -1,
+    "hand.far.f4s": -3,
     "hand.far.f1a": -12,
     "hand.far.f2a": -10,
     "hand.far.f3a": -8,
@@ -677,8 +677,8 @@
     "hand.far.f3b": 14,
     "hand.far.f4a": 10,
     "hand.far.f4b": 12,
-    "hand.far.f1s": 2,
-    "hand.far.f4s": -2
+    "hand.far.f1s": -2,
+    "hand.far.f4s": 2
    },
    "note": "'holding you' on the top hand too, 4–5 frames behind the near one: the fingertips draw in over the dome and release"
   },
@@ -728,16 +728,16 @@
    "t1": 2.25,
    "cycles": 1,
    "bones": {
-    "hand.far": 24
+    "hand.far": 16
    },
-   "note": "the caress: the top hand turns on the dome about its wrist (hand.far, in its own plane) and back, the fingertips sweeping ~25 px. A turn of the forearm (foreRot) swept them as far but twisted the forearm's drawn edges off the underbust, opening a white gap between bust, arm and hand (up to 73 px) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52)"
+   "note": "the caress: the top hand turns on the dome about its wrist (hand.far, in its own plane) and back, the fingertips sweeping ~25 px. A turn of the forearm (foreRot) swept them as far but twisted the forearm's drawn edges off the underbust, opening a white gap between bust, arm and hand (up to 73 px) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52). v8: the arm hanging at her side with the forearm end-on, a 24–26° turn grew the drawn hand 12% (qa limbs): 14–17° keeps it within 10%"
   },
   {
    "t0": 3.75,
    "t1": 5.8,
    "cycles": 1,
    "bones": {
-    "hand.far": 26
+    "hand.far": 17
    },
    "note": "the stroke as she smiles: the same turn, a little larger"
   },
@@ -746,7 +746,7 @@
    "t1": 7.4,
    "cycles": 1,
    "bones": {
-    "hand.far": 22
+    "hand.far": 14
    },
    "note": "and a small one as her eyes come back to the bump"
   },
@@ -759,8 +759,8 @@
     "hand.far.f2a": -13,
     "hand.far.f3a": -10,
     "hand.far.f4a": -8,
-    "hand.far.f1s": -3,
-    "hand.far.f4s": 3
+    "hand.far.f1s": 3,
+    "hand.far.f4s": -3
    },
    "note": "as her eyes come back to the bump the top hand's fingers lift a little and settle back onto it, index first"
   },
@@ -779,7 +779,7 @@
    "t1": 7.95,
    "cycles": 1,
    "bones": {
-    "hand.far": 10
+    "hand.far": 7
    },
    "note": "and the top hand eases round on the dome with it, into the loop"
   }
@@ -787,14 +787,11 @@
  "qa": {
   "limbs": {
    "hand.far": {
-    "min": 0.75,
-    "note": "the top hand lies across the dome nearly unforeshortened, as the still q_k4_down_0 draws it (placed with hand_place --hand-len 0.85 --palm-down 0.55: at 0.68 it read as a stubby mitten; turned palm down onto the dome so its fingers curl down over it, it is drawn at 79% of its length)"
-   },
-   "upperArm.far": {
-    "hidden": "drawn behind her bust except the strip past its edge, coming down into the hand on top of the bump (still q_k4_down_0); its drawn length swings (upper arm ~57–71%, forearm ~16–35%) as the elbow takes up her breath, the look up and the hand's caress. The strip that shows (skin past the dress edge, rows 530–632, every 6 frames) narrows slowly as her chest opens on the look up: area 2357–3314 px, ±17% over the shot, never a sliver. A 14–18 px wrist slide for the stroke took it to ±26% (the forearm pulled in behind her bust), so the stroke turns the hand about its wrist (hand.far fidget) and slides the wrist only ~6 px; the forearm's inner edge is drawn a little wider near the wrist (P.armFar.w) so no white gap opens under her bust as the hand turns"
+    "min": 0.72,
+    "note": "the top hand lies across the dome as the still q_k4_down_0 draws it: its wrist, middle knuckle and fingertips placed on the still's (hand_place), it is drawn at 73% of its length, the still's own foreshortening (palm down onto the dome, --palm-down 0.55, so its fingers curl down over it). Its caress turns it about the wrist by 14–17° (hand.far fidgets): at 24–26° the turn took it to 82%, a hand growing 12% (v8 draft)"
    },
    "forearm.far": {
-    "hidden": "drawn behind her bust except the strip past its edge, coming down into the hand on top of the bump (still q_k4_down_0); its drawn length swings (upper arm ~57–71%, forearm ~16–35%) as the elbow takes up her breath, the look up and the hand's caress. The strip that shows (skin past the dress edge, rows 530–632, every 6 frames) narrows slowly as her chest opens on the look up: area 2357–3314 px, ±17% over the shot, never a sliver. A 14–18 px wrist slide for the stroke took it to ±26% (the forearm pulled in behind her bust), so the stroke turns the hand about its wrist (hand.far fidget) and slides the wrist only ~6 px; the forearm's inner edge is drawn a little wider near the wrist (P.armFar.w) so no white gap opens under her bust as the hand turns"
+    "hidden": "the far arm hangs at her side (still q_k4_down_0): the upper arm is the strip past her bust, drawn near full length; the forearm points at us over the top of the bump from the elbow on its edge, drawn END-ON as the still's round mass (parts/arms.js, 13–18% of its length: its size is the cross-section's, so it never reads as shrinking; lesson 53)"
    },
    "hand.near": {
     "min": 0.8,

@@ -87,14 +87,12 @@ export const P = {
   //    (−0.41, −5.75) → (−0.47, −5.65) → (−0.5, −5.55) as the still's does (parts/arms.js flattens it as the arm rises)
   //  · far: narrower; its cap is the dome past the far strap, from the strap's top corner ((0.44, −5.79) → (0.54, −5.74) →
   //    (0.6, −5.64) → (0.63, −5.51)), lit like the near arm (the still's far shoulder and hand sample the chest's skin; only
-  //    the far leg is a step darker). Its forearm's back edge is fuller toward the wrist (0.165, 0.15): drawn behind her
-  //    bust, it fills the notch under the bust as the hand on top of the bump caresses (look-up v6: a white gap up to 73 px
-  //    opened between bust, arm and hand; now ≤ 13). Its wrist pad over the bent wrist carries a short, fine crease where the
-  //    back of the hand bends off it, as the still draws it (wristRound.crease; without it the pad read as "a swollen joint",
-  //    a long full arc cut it off into "a ball, a fist": look-up v7). The pad is 0.65 × the wrist's fuller back edge: at 1.0 it
-  //    was wider than the forearm, "a teardrop swelling into a ball" that hid the back of the hand
+  //    the far leg is a step darker). Its forearm is the near one's: on the bump it hangs at her side with the forearm
+  //    pointing at us over the top of the bump, drawn END-ON (parts/arms.js: the still's round mass at the bump's edge), so
+  //    v6–v7's fuller forearm (drawn behind her bust to fill a gap there) and its wrist pad and crease ("a ball", "a thumb
+  //    pad": the hand read mirrored) are gone (lesson 53)
   arm: { capA: 1.0, w: [{ front: 0.18, back: 0.155 }, { front: 0.18, back: 0.18 }, { front: 0.115, back: 0.16 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
-  armFar: { capA: 1.0, fill: 'skin', wristRound: { r: 0.65, out: 0, along: 0.5, crease: { span: 35, w: 0.007 } }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.09, back: 0.165 }, { front: 0.08, back: 0.15 }] },
+  armFar: { capA: 1.0, fill: 'skin', w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
   // legs: the shin's half-widths at every measured station; above the knee, read off the still's rows (hem → knee): the near
   // thigh 0.28 in front / 0.19 behind at y −2.3, its knee 0.24 / 0.21; the far thigh 0.20 / 0.25, its knee 0.155 / 0.245
   legStations: LEG_ST,
@@ -118,7 +116,12 @@ export const handSpecs = {
           thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
           rim: 0.012, taper: [1, 0.92, 0.84, 0.76], tipK: 1.0, lineEnd: 0.85 },   // drawn like the stills' hands: thinner lines between the fingers than mum3's (0.02 read as stripes, 'a comb'), fingers tapering a little more, each tip still ROUND and its own (thinner still, 0.009, with pointed tips, fused the fingers into 'a paddle'; lesson 52)
 };
-handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03], dir: 95, flexFx: { from: 'hand.far' } };   // hangs straight down beside the skirt (the estimator found only the near hand)
+handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03], dir: 95, flexFx: { from: 'hand.far' }, thumbSide: -1, thumbFx: 0.15, thenarEdge: [0.9, 0.85] };   // hangs straight down beside the skirt (the estimator found only the near hand)
+// the far hand is her LEFT hand: MIRRORED from the near (right) one (thumbSide −1, the thumb's in-plane flexion flipped). A
+// spec copied from the other hand draws a right hand on her left arm; it is right only seen from the palm (it hangs palm in,
+// a sliver beside the skirt), wrong from the back (on the bump). v1–v7 lay a RIGHT hand on the bump: thumb and index on its
+// lower edge, the little finger on top — Harry: "it looks like it's the wrong way round" (lesson 53; tools/handed.mjs gates
+// it). The thumb-side edge kept flat (thenarEdge 0.9), as the still's top edge runs straight from the knuckles to the wrist
 
 // DEPTH PROXIES (engine/depth.js): mum3's shapes, placed on this view's screen (a body's silhouette edge sits
 // √((a·fx)² + (c·sinYaw)²) from its centre: the bump's centre is 0.47 H inside its apex here)

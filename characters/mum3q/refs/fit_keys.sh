@@ -48,8 +48,11 @@ python3 tools/hand_place.py mum3q --fit q_k3_down --side far --keys 632,556,558,
 # put them, not where the illustration draws them (lesson 51)
 [ -f $R/pose/q_k4_down_0.json ] || python3 tools/pose_est.py $R/images/q_k4_down_0.png --out $R/pose/q_k4_down_0.json --hands
 node tools/fit_pose.mjs mum3q $R/pose/q_k4_down_0.json fit-q_k4_down
-# the far arm comes down past her bust (a point on it: --fore) and round the bump's side, the hand curled over the top:
-# palm DOWN onto the dome (--palm-down), so its curl bends the fingers down over it on screen (lesson 51)
-python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side far --keys 632,552,580,552,535,578 --fore 600,495 --hide none --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 60 --hand-len 0.85 --palm-down 0.55
+# the far arm HANGS past her bust (the strip the still shows is the upper arm), the elbow at her side on the bump's edge
+# (--elbow, under the still's round mass, --hang 0.8), the forearm pointing at us over the top of the bump (drawn end-on:
+# the still's round mass) and the hand curled over the top, palm DOWN onto the dome (--palm-down), so its curl bends the
+# fingers down over it on screen (lesson 51). v7's arm (a point on the strip taken as the forearm, --fore 600,495) lifted
+# the elbow back to her bust, 'a chicken wing', and drew the forearm's end as a ball over the bump (lesson 53)
+python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side far --keys 632,552,580,552,535,578 --elbow 630,580 --hang 0.8 --hide none --hand hold --zbias arm.far.hand=40 --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 60 --hand-len 0.85 --palm-down 0.55
 # the near arm across her front, the hand cradling the underside with the thumb on its lower front
 python3 tools/hand_place.py mum3q --fit q_k4_down --sample 0 --side near --keys 528,738,568,764,618,768 --elbow 366,621 --hide none --hand cradle --bones upperArm,forearm,hand,armAbd,armRot,foreRot,wristFlex --natural --slack 10 --restarts 40

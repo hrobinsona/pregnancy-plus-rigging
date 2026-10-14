@@ -315,7 +315,7 @@ export function makeHand(spec0) {
   }
   // library spread values are 'away from the thumb'; this sign maps them onto screen rotation for this hand
   const spreadSign = S.thumbSide;
-  return { joints, bones, planes, ANCHORS, parts, spreadSign, id };
+  return { joints, bones, planes, ANCHORS, parts, spreadSign, id, view: S.view, thumbSide: S.thumbSide };
 }
 
 /** keep every loop clockwise on screen (y down) so offsets/outsets behave; deterministic for a given construction */

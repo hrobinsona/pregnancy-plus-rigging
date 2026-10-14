@@ -43,8 +43,23 @@ export function build(ctx) {
     // the arm rises (an arm raised forward pushed a full round end out BEHIND the shoulder: a lump, ¾ stress pose x-reach)
     const cap0 = (side === 'far' && X.armFar ? X.armFar : X.arm).capA ?? 0.75, elev = Math.acos(Math.max(-1, Math.min(1, u1[1]))) * 180 / Math.PI;
     const ke = Math.min(1, Math.max(0, (elev - 20) / 60)), kA = cap0 + (Math.min(cap0, 0.5) - cap0) * ke * ke * (3 - 2 * ke);
-    const g = tube(axis, widths, { capK: [kA, 0.3] });
+    // a forearm pointing at the camera is seen END-ON: its silhouette is the round cross-section, so its wrist end rounds
+    // fully as it foreshortens (still q_k4_down_0: the far forearm rising from her side to the top of the bump is a round
+    // mass at the bump's edge; the flat 0.3 end drew a box there, look-up v8 draft; lesson 53)
+    const lenF = st[`forearm.${side}`].a3?.len ?? 1, kW = 0.3 + 0.7 * Math.min(1, Math.max(0, (0.6 - lenF) / 0.35));
+    // END-ON (s → 0 as the forearm's drawn length falls from 0.5 to 0.3 of its length): the tube's forearm thins inside a
+    // round mass, the forearm's cross-section seen along it, drawn with the hand over the dress where it rounds the bump's
+    // edge. A 0.15 H forearm as a tube was a hairpin under the upper arm, notched and hooked (look-up v8 draft); the still
+    // draws one smooth ball whose top flows out of the upper arm (q_k4_down_0; lesson 53)
+    const sE = Math.min(1, Math.max(0, (lenF - 0.3) / 0.2)), eOn = 1 - sE * sE * (3 - 2 * sE);
+    if (eOn > 0) widths.forEach((v, i) => { if (i >= 4) { const f = 1 - 0.6 * eOn * (i - 3) / 3; v.r *= f; v.l *= f; } });
+    const g = tube(axis, widths, { capK: [kA, kW] });
     out.push({ id: `arm.${side}`, bone: `forearm.${side}`, z: zb, fill, world: true, geom: ensureCW(g) });
+    if (eOn > 0.01) {
+      const nF = perpL(u2), rA = ((w[3].front + w[3].back) / 2) * 0.85 * eOn, c = add(lerp(Ep, Wp, 0.5), mulS(nF, (w[3].front - w[3].back) / 2));
+      out.push({ id: `arm.${side}.end`, bone: `forearm.${side}`, z: zb + 0.45 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true,
+                 geom: ellipse(c, 0.4 * L2 + rA, rA, Math.atan2(u2[1], u2[0]) * 180 / Math.PI) });
+    }
     // the HEEL of a sharply bent wrist (P.arm/armFar.wristRound): a round pad over the outer corner where the forearm's
     // end meets the hand, as the stills draw it (q_k4_down_0: the far hand curled over the top of the bump, its heel a
     // round bulge over the bump's edge). Without it the tube's end and the palm's narrower heel left a pointed corner

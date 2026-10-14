@@ -1,31 +1,31 @@
 {
  "name": "hold",
- "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers lying together, fanned only a few degrees so the round tips stay their own, the curl GRADED from the index (~30° tip to knuckle) to the little finger (~70°) so the tips step in a diagonal and the lines between the fingers run long; the thumb tucked along the far side. Works with the hand placed palm DOWN onto the dome (hand_place --palm-down 0.55): with its palm normal pointing away from us a 3D curl only shortened the fingers. Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts: together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw', its lines broken into dashes). Picked side by side with the still (tools/hand_shapes.py, lessons 51-52)",
+ "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers lying TOGETHER along the dome, the spread closed a few degrees toward the middle finger and the curl graded mildly (index ~30° tip to knuckle, little finger ~60°) so the tips step without the gaps opening; the thumb tucked along the hand's top edge. Works with her LEFT hand drawn from the back (thumbSide −1, lesson 53) placed palm DOWN onto the dome (hand_place --palm-down 0.55): on a palm-down hand a 3D curl swings the more curled fingers sideways, so a steep grade fans them apart. Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts (on the mirrored hand): together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw'). Picked side by side with the still, zoomed and at film size (tools/hand_shapes.py, lessons 51-53)",
  "f1": [
-  4,
-  14,
+  6,
+  15,
   11
  ],
  "f2": [
-  8,
+  9,
   18,
   14
  ],
  "f3": [
   12,
-  24,
-  19
+  22,
+  17
  ],
  "f4": [
-  16,
-  30,
-  24
+  14,
+  27,
+  21
  ],
  "s": [
-  -6,
-  -2,
+  5,
   2,
-  6
+  -2,
+  -5
  ],
  "t": [
   25,

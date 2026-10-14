@@ -1,11 +1,13 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
 //     channels every channel a track keys reaches the pose under its whole name, and a contact shadow gated on a keyed
 //             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
+//     handed  each hand the right way round in every frame: its thumb drawn on the side its 3D arm puts it (tools/handed.mjs;
+//             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53)
 //     frames  pixel jumps (a frame changing > 1.8× its neighbours, inside --box) and still stretches > 1 s
 //             (tools/qa_frames.py; the film should always be alive)
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
@@ -93,6 +95,24 @@ if (!skip.has('channels')) {
     const ts = [...Array(9).keys()].map((k) => (k / 8) * spec.duration * 0.999), on = ts.filter((t) => (A.poseAt(t).fx?.[g.gate] ?? 0) > 0.5);
     if (on.length) { const svg = rig.toSVG(A.poseAt(on[0]), { frame: 'still' }), id = `shadow-${g.match.replace(/[^\w]/g, '')}`;
       gate(svg.includes(id), `contact shadow ${g.gate} drawn while keyed on (${on[0].toFixed(2)} s)`); }
+  }
+}
+
+if (!skip.has('handed')) {
+  // HANDEDNESS (tools/handed.mjs, lesson 53): every frame, each hand's thumb on the side its 3D arm puts it. mum3q v1–v7 lay
+  // a RIGHT hand on her left arm on the bump (its spec copied from the near hand); every gate passed and four critic rounds
+  // tuned its curl, wrist and lines before Harry saw "it looks like it's the wrong way round"
+  console.log('handed: each hand the right way round (thumb where its 3D arm puts it)');
+  const { handedness, excuse, explain } = await import('./handed.mjs');
+  const A = fresh(), bad = {}, exc = {};
+  for (let i = 0; i <= ALL; i++) {
+    const pose = A.poseAt(i / spec.fps);
+    for (const r of handedness(C, rig.solve(pose), expandHands(pose, lib, C.handSides))) if (!r.ok) ((excuse(C, r) ? exc : bad)[r.side] ??= []).push([i, r]);
+  }
+  for (const side of ['near', 'far']) {
+    const b = bad[side] || [], e = exc[side] || [];
+    if (e.length) console.log(`  · ${side}: ${e.length} frames excused by C.qa.handed (${excuse(C, e[0][1]).why})`);
+    gate(!b.length, `${side} hand the right way round${b.length ? `: wrong in ${b.length} frames from ${(b[0][0] / spec.fps).toFixed(2)} s — ${explain(b[0][1])}` : ''}`);
   }
 }
 

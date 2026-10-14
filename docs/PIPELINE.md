@@ -438,6 +438,41 @@ or composited.
      crosses the seam.
    Rules: pick a character's hand DRAWING beside its stills at the New character gate, at film size, as you pick a hand
    shape at the New pose gate; when a configured effect never shows, check that its channel arrives before tuning it.
+53. **A hand drawing is chiral: the far hand is the OTHER hand, and a spec copied from the near one draws its mirror
+   image. Read the still's hand by its anatomy (which edge the thumb and index are on, where the little finger is, which
+   face we see, where the arm comes from) before its shape or its style.** mum3q look-up v1–v7. Harry on v7's top hand: "a
+   total mess. It looks like it's the wrong way round. How does it compare to the reference image?" It was: `params.js`
+   built the far hand as `{ ...handSpecs.near, … }`, keeping the near (right) hand's `thumbSide`, so a RIGHT hand lay on
+   her left arm, thumb and index along its lower edge and the little finger on top, where the still has the index on top
+   and the little finger lowest. A right hand seen from the back is a left hand seen from the palm, so the copy was right
+   while the far hand hung palm in (a sliver beside the skirt) and wrong from the first key that laid it on the bump.
+   Four rounds (curl, wrist pad, crease, line weight, finger fan) tuned a mirrored hand; the critics named symptoms ("a
+   paw", "a claw", "the wrist a ball", the pad's crease read as "a thumb pad"), never the cause, and every gate passed.
+   - *The fix:* the far spec takes `thumbSide` −1 and its `thumbFx` flipped (mum2's back-view far hand already did). Spreads
+     keyed raw in the shot (`hand.far.f*s` fidgets) flip with it; library shapes go through `spreadSign` and flip alone.
+   - *The arm, read the same way.* Beside the still at the same crop, the strip coming down past her bust is the UPPER arm,
+     hanging; the elbow is at her side on the bump's edge and the forearm points at us over the top of the bump: that is
+     the still's round mass. v7's placement had taken the strip for the forearm (`--fore` on it): the solve lifted the
+     elbow back to her bust (the upper arm drawn at 57%, abducted 122°, "a chicken wing") and the forearm's end became a
+     ball with a crease. Re-placed with `--elbow` under the mass and `--hang 0.8`. A forearm drawn at under half its
+     length is now drawn END-ON (`parts/arms.js`: its tube thins inside a round mass, the cross-section seen along it): as
+     a tube, a 0.15 H forearm was a hairpin under the upper arm, "a box", then a hook. The wrist pad and crease went.
+   - *Then the drawing came close in a few tries,* each picked beside the still (`hand_shapes.py`, zoomed and at film
+     size): the fingers together (the spread closed toward the middle finger, the curl graded mildly: on a palm-down
+     hand a 3D curl swings the more curled fingers sideways, which had opened the gaps); the thumb-side edge flat
+     (`thenarEdge` 0.9) as the still's top edge runs straight to the wrist; the hand's edge over its own upper arm drawn
+     as a fine line (an outline group), so the back of the hand reads apart from the arm, as the still draws it. With
+     the arm hanging, the caress's 24° turn grew the drawn hand 12% (the limbs gate): 14–17° keeps it within 10%.
+   - *Gates.* `tools/handed.mjs`: per hand, the side the 3D arm puts the thumb (arm3's radial direction, now `a3.gcam`)
+     against the side the drawing puts the index knuckle, with the remedy (flip the spec, or swap in a drawing of the
+     other face). `char_check` runs it on every pose, `qa_checks handed` on every frame; it fails v7 on all 240 frames.
+     Exceptions carry a reason in `C.qa.handed`: mum3q's hanging far hand (drawn from the back for the bump; it needs a
+     palm drawing before a shot shows it hanging), mum2's far hand (turned by drawing swaps, not its 3D arm). HARRY_EYE 19;
+     `new_char.py` and the skill's step zero say it.
+   - *The sign-off.* The natural lens said NOT YET on v7's top hand ("a paw… the wrist a ball") and v7 still went to Harry
+     with that point "explained". A point about something the still draws differently is fixed before he sees it.
+   Rules: when tuning a hand doesn't converge, ask which hand it is and which face we see before anything else; never
+   copy one hand's spec to the other without mirroring it; say what each visible segment of an arm IS before placing it.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

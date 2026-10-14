@@ -5,7 +5,8 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 ## Render and inspect (daily loop)
 | Tool | What it's for |
 |---|---|
-| ★ `char_check.mjs <char>` | <1 s gate: the character loads, anchor contract holds (`--fix-anchors`). |
+| ★ `char_check.mjs <char>` | <1 s gate: the character loads, anchor contract holds (`--fix-anchors`), every hand the right way round in every pose (handedness, below). |
+| `handed.mjs` | Handedness (lesson 53): per hand, the side its 3D arm puts the thumb (arm3's radial direction, `a3.gcam`) against the side the drawing puts the index knuckle; says whether to flip the spec's `thumbSide` (the other hand's copy) or swap in a drawing of the other face. Used by `char_check` (every pose) and `qa_checks` handed (every frame); exceptions with a reason in `C.qa.handed`. |
 | ★ `char_anim.mjs --char c --anim a` | Render a shot → `out/frames/…` + `out/<c>_<a>.mp4`. `--from/--to` re-render a window; `--tracks-only` prints per-frame speeds (find pops); `--verify` checks determinism. |
 | ★ `frame_at.mjs` | Single frames to PNG; `--mods JSON` overrides spec fields to isolate a layer. |
 | ★ `frame_strip.py` | Strip of frames f0..f1 with a crop box — the way to *see* a move. |
@@ -61,7 +62,7 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 ## Review and audit
 | Tool | What it's for |
 |---|---|
-| ★ `qa_checks.mjs --char c --anim a [--box …]` | The QA gate (from reels): frames rendered out of order match, no state leaks (pose and SVG markup alone vs after every earlier frame), pixel jumps and still stretches (`qa_frames.py`), hands (palm pops, wrist angle one way per move, hands < 15 px apart, size ratio), alive (each hand moves ≥ 5 px on her in every 2 s: life a viewer sees on a phone; a deliberate hold goes in `spec.qa.still`), limbs (each 3D arm segment's drawn length; an elbow hopping > 6 px in a frame while its wrist holds), channels (every keyed track channel reaches the pose; a gated contact shadow draws while keyed on, lesson 52). Exit 1 on a fail. |
+| ★ `qa_checks.mjs --char c --anim a [--box …]` | The QA gate (from reels): frames rendered out of order match, no state leaks (pose and SVG markup alone vs after every earlier frame), pixel jumps and still stretches (`qa_frames.py`), hands (palm pops, wrist angle one way per move, hands < 15 px apart, size ratio), alive (each hand moves ≥ 5 px on her in every 2 s: life a viewer sees on a phone; a deliberate hold goes in `spec.qa.still`), limbs (each 3D arm segment's drawn length; an elbow hopping > 6 px in a frame while its wrist holds), channels (every keyed track channel reaches the pose; a gated contact shadow draws while keyed on, lesson 52), handed (each hand the right way round in every frame, lesson 53). Exit 1 on a fail. |
 | ★ `tip_check.mjs --char c --anim a [--t …] [--from … --to … --every …]` | Do a resting hand's fingertips end INSIDE her silhouette? Draws her without that arm and hand and walks each tip along its finger: + px inside, − px past the outline. Exit 1 if a tip on her is under `--min` (4) px inside. |
 | `part_tint.mjs c a t out.png id=#col …` | One frame with chosen parts tinted, to see which part makes an edge, notch or sliver (pair with `parts_dump.mjs`). |
 | `qa_frames.py <frames dir>` | Pixel jumps (> 1.8× neighbours) and still stretches > 1 s on a rendered frame folder. |
