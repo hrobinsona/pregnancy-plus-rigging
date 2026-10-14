@@ -1,6 +1,6 @@
 {
  "name": "fit-q_k4_down",
- "note": "fitted to characters/mum3q/refs/pose/q_k4_down_0.json (MediaPipe landmarks, base rest); near arm (upperArm.near 9.5, forearm.near 43.7, hand.near 30.2, armAbd.near 37.5, armRot.near 51.4, foreRot.near -56.6, wristFlex.near 17.1) on the still's hand points by tools/hand_place.py (rms 9.2 px, the arm visible, elbow on the still's, a natural arm); far arm (upperArm.far 56.6, forearm.far 128.1, hand.far 33.8, armAbd.far 121.7, armRot.far 43.8, foreRot.far 23.9, wristFlex.far -40.3) on the still's hand points by tools/hand_place.py (rms 6 px, the arm visible, a natural arm)",
+ "note": "fitted to characters/mum3q/refs/pose/q_k4_down_0.json (MediaPipe landmarks, base rest); far arm (upperArm.far 56.6, forearm.far 128.1, hand.far 33.2, armAbd.far 121.7, armRot.far 43.4, foreRot.far 24.6, wristFlex.far -40.9) on the still's hand points by tools/hand_place.py (rms 6.6 px, the arm visible, a natural arm); near arm (upperArm.near 9.4, forearm.near 43.7, hand.near 30.2, armAbd.near 37.6, armRot.near 50.9, foreRot.near -57.7, wristFlex.near 15.9) on the still's hand points by tools/hand_place.py (rms 9.3 px, the arm visible, elbow on the still's, a natural arm)",
  "hands": {
   "near": "cradle",
   "far": "hold"
@@ -22,11 +22,11 @@
   "belly": 0,
   "clavicle.near": -1.6,
   "shoulderAbd.near": -3.4,
-  "upperArm.near": 9.5,
-  "armAbd.near": 37.5,
-  "armRot.near": 51.4,
+  "upperArm.near": 9.4,
+  "armAbd.near": 37.6,
+  "armRot.near": 50.9,
   "forearm.near": 43.7,
-  "foreRot.near": -56.6,
+  "foreRot.near": -57.7,
   "hand.near": 30.2,
   "thigh.near": 1.5,
   "shin.near": -1.5,
@@ -36,16 +36,16 @@
   "shoulderAbd.far": 0,
   "upperArm.far": 56.6,
   "armAbd.far": 121.7,
-  "armRot.far": 43.8,
+  "armRot.far": 43.4,
   "forearm.far": 128.1,
-  "foreRot.far": 23.9,
-  "hand.far": 33.8,
+  "foreRot.far": 24.6,
+  "hand.far": 33.2,
   "thigh.far": 0,
   "shin.far": 1.8,
   "foot.far": -2,
   "hipAbd.far": 0,
-  "wristFlex.far": -40.3,
-  "wristFlex.near": 17.1
+  "wristFlex.far": -40.9,
+  "wristFlex.near": 15.9
  },
  "_fit": {
   "ref": "characters/mum3q/refs/pose/q_k4_down_0.json",

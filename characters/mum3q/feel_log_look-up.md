@@ -186,3 +186,54 @@ the stills draw each finger as its own tapered shape, the tips stepping. Redraw 
 pose), judge it on `hand_shapes.py` against q_k4_down_0, then re-place. Then: the far wrist (a crease where it bends
 over the edge, not a pad), visible life checked on the phone-size video rather than contact sheets, the bump's lower
 front.
+
+## v7 — the hands drawn like the stills' hands, their shadows, life you can see (round 5)
+Round 4's natural lens on v6: the top hand "a paw", the far wrist "a round knob", the lower fingers "four even parallel
+stripes", the hands frozen at phone size. The curl had swung mitten → planks → paw, so this round changed the DRAWING
+(lesson 52), judged beside still q_k4_down_0 with `hand_shapes.py --try '[{"style": …}]'`, then re-placed both hands.
+1. **Drawing, three tries.**
+   - First (thin lines `rim` 0.009, pointed tips, steep graded curls): **lost** its blind A/B to v6, **v6 6.5, v7 6**:
+     "the fingers fused into one wedge… a flat paddle"; the natural lens: "a fused mitten with lines drawn on", the lower
+     fingers "converge to one point… a flipper".
+   - Second (`rim` 0.012, `taper` [1, .92, .84, .76], round tips `tipK` 1.0, fingers fanned a few degrees, a wrist
+     crease, the shadows): **won narrowly, v7 6, v6 5.5** (55–60%): the shadows give the hands "weight… the torso has
+     volume"; against it, the creased wrist "a ball, a fist… a puffy glove cuff". The natural lens: NOT YET (the wrist
+     "a teardrop swelling into a ball… no back of the hand", the top fingers fanned ±10° "a claw" with "dashes", the
+     lower tips "blunt… in a column", the hands' moves invisible at phone size, the bump's flat lower front, drowsy
+     look-down eyes).
+   - Third (kept): the far wrist pad at 0.65 (it had been wider than the forearm: its radius came from the back edge v6
+     widened; `arms.js` now clamps a pad to the wrist's width), a short fine crease, the top fingers together (±6°, 30° →
+     70°) with long lines, the lower fingers fanned up to 6° so their round tips step, the little finger shortest, the
+     lower thumb's end joints bent toward the bump.
+2. **The shadows were never drawn.** The look-up (and mum3's breathe-stroke) keyed `fx.contact.near/far`, but
+   `anim.js` stored them as `fx.contact`, so no contact shadow ever drew. Fixed, with a `qa_checks` gate (`channels`) that
+   fails on the old engine. The near forearm casts one too, as in the still (dress only, 16 %, 5,9 px); the far wrist pad
+   is in its hand's shadow group (left out, the hand's shadow was painted on it).
+3. **Life.** The top hand's turn about its wrist (15–24°) moved its fingertips only ~6 px: lying palm down, the turn is
+   seen edge-on. Its life is now in its fingers: they lift and settle while she looks down, gather into a squeeze as she
+   smiles (2–3× the old angles). The lower thumb strokes 26°, the lower fingers gather as she lifts her eyes, the cradle
+   lifts ~11 px with the breath, and a small thumb stroke crosses the loop's seam (v6: dead still 7.4 → 0.4 s). The
+   lower hand's forward strokes are a little shorter (6 px): the longer middle fingertip came within 7 px of the bump's
+   front edge (tip_check).
+
+Checks on the final render: QA PASS (including the new channels gate), tip_check PASS both hands, char_check ok, the
+underbust slit ≤ 18 px of near-white (invisible at phone size). mum2's SVG output is identical (33 sampled frames); mum3
+changes only by its contact shadow, now drawn from the landing on (QA PASS).
+
+Blind A/B of the kept v7 vs v6 (fresh reviewer): **v7 6, v6 5.5**, low confidence (55–60%): v7's lower hand "reads as a
+relaxed hand cradling the bump", its thumb "slightly hooked… looks alive", its contact shadows make "the hands seem to
+press on the bump"; v6's top fingers read better ("clear gaps… curve down over the dome"), v7's "a flat paddle scored
+with thin lines" whose lines break into dashes as the fingers curl (`hand.js` fades a back-view line past 55° of curl).
+In both: the far wrist still a round lump where the forearm meets the hand; the hands' caress a pixel or two at phone
+size beside the head's move; a brief wide-eyed stare at 2.8–3.1 s before the smile blooms. "Harry's eye should decide."
+Kept v7 (it beat v6 in two of three blind A/Bs, each narrowly). Render: `renders/mum3q_look-up_v7.mp4`.
+Natural lens on the kept v7: **NOT YET.** Landed: the contact shadows (item 18), no arm shrink, the unhurried look up.
+Open: the top hand's fingers short and hooked at the tips ("a paw") out of a wrist that still reads as a ball wider
+than the foreshortened forearm entering it; the lower fingers' three long even lines ("a comb") and short thumb; each
+hand's centroid moves ~3 px on the phone-size film against the head's 37 (the visible life is the lower thumb and the top
+fingers tilting); the look-down head bowed too deep (the chin at the neckline, the neck short) with sleepy lids; the
+bump's lower front a straight diagonal into a corner.
+
+Next: the far wrist as the still draws it (the forearm narrowing into a wrist that bends over the dome's edge, not a
+pad over a tube's end); the top fingers' lines kept whole through a curl; gestures large enough to read beside the
+head's move, measured in the frames; the bump's lower front; the look-down lids.

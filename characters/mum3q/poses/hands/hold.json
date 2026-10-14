@@ -1,31 +1,31 @@
 {
  "name": "hold",
- "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers, together but fanned a few degrees so the tips step down in a diagonal, the curl mostly in the middle and end joints (~65-85° tip to knuckle, graded index least) so the fingertips bend down over the dome; the thumb tucked along the far side. Works with the hand placed palm DOWN onto the dome (hand_place --palm-down 0.55): with its palm normal pointing away from us a 3D curl only shortened the fingers (v6 first try at 70-85°: 'a mitten'; at 45-65°: 'straight planks'). Picked side by side with the still (tools/hand_shapes.py, lesson 51)",
+ "_note": "the top hand curled a little over the bump (still q_k4_down_0; Harry on v5: 'rather than being a little curled over the top of the bump'): LONG fingers lying together, fanned only a few degrees so the round tips stay their own, the curl GRADED from the index (~30° tip to knuckle) to the little finger (~70°) so the tips step in a diagonal and the lines between the fingers run long; the thumb tucked along the far side. Works with the hand placed palm DOWN onto the dome (hand_place --palm-down 0.55): with its palm normal pointing away from us a 3D curl only shortened the fingers. Tried: 70-85° ('a mitten'), 45-65° unplaced ('straight planks'), 65-85° placed ('a paw'); v7 drafts: together with thin lines ('a fused mitten'), fanned ±10° with ~90° on the little finger ('a claw', its lines broken into dashes). Picked side by side with the still (tools/hand_shapes.py, lessons 51-52)",
  "f1": [
-  10,
-  28,
-  24
+  4,
+  14,
+  11
  ],
  "f2": [
-  12,
-  31,
-  27
+  8,
+  18,
+  14
  ],
  "f3": [
-  14,
-  34,
-  29
+  12,
+  24,
+  19
  ],
  "f4": [
   16,
-  37,
-  31
+  30,
+  24
  ],
  "s": [
-  -5,
+  -6,
   -2,
   2,
-  5
+  6
  ],
  "t": [
   25,

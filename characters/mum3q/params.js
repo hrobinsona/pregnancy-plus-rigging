@@ -89,9 +89,12 @@ export const P = {
   //    (0.6, −5.64) → (0.63, −5.51)), lit like the near arm (the still's far shoulder and hand sample the chest's skin; only
   //    the far leg is a step darker). Its forearm's back edge is fuller toward the wrist (0.165, 0.15): drawn behind her
   //    bust, it fills the notch under the bust as the hand on top of the bump caresses (look-up v6: a white gap up to 73 px
-  //    opened between bust, arm and hand; now ≤ 13)
+  //    opened between bust, arm and hand; now ≤ 13). Its wrist pad over the bent wrist carries a short, fine crease where the
+  //    back of the hand bends off it, as the still draws it (wristRound.crease; without it the pad read as "a swollen joint",
+  //    a long full arc cut it off into "a ball, a fist": look-up v7). The pad is 0.65 × the wrist's fuller back edge: at 1.0 it
+  //    was wider than the forearm, "a teardrop swelling into a ball" that hid the back of the hand
   arm: { capA: 1.0, w: [{ front: 0.18, back: 0.155 }, { front: 0.18, back: 0.18 }, { front: 0.115, back: 0.16 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
-  armFar: { capA: 1.0, fill: 'skin', wristRound: { r: 1.0, out: 0, along: 0.5 }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.09, back: 0.165 }, { front: 0.08, back: 0.15 }] },
+  armFar: { capA: 1.0, fill: 'skin', wristRound: { r: 0.65, out: 0, along: 0.5, crease: { span: 35, w: 0.007 } }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.09, back: 0.165 }, { front: 0.08, back: 0.15 }] },
   // legs: the shin's half-widths at every measured station; above the knee, read off the still's rows (hem → knee): the near
   // thigh 0.28 in front / 0.19 behind at y −2.3, its knee 0.24 / 0.21; the far thigh 0.20 / 0.25, its knee 0.155 / 0.245
   legStations: LEG_ST,
@@ -112,7 +115,8 @@ export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] - 0.03, joints.wristNear[1] + 0.03],
           dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
           length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: { from: 'hand.near' },
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0], thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
+          rim: 0.012, taper: [1, 0.92, 0.84, 0.76], tipK: 1.0, lineEnd: 0.85 },   // drawn like the stills' hands: thinner lines between the fingers than mum3's (0.02 read as stripes, 'a comb'), fingers tapering a little more, each tip still ROUND and its own (thinner still, 0.009, with pointed tips, fused the fingers into 'a paddle'; lesson 52)
 };
 handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03], dir: 95, flexFx: { from: 'hand.far' } };   // hangs straight down beside the skirt (the estimator found only the near hand)
 

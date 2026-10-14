@@ -301,7 +301,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       if (kind === 'bone') pose.bones[ch.slice(5)] = val;
       else if (kind === 'scale') { const id = ch.slice(6, -2), ix = +ch.slice(-1); (pose.scale[id] ||= [1, 1])[ix] = val; }
       else if (kind === 'face') (pose.face[a] ||= {})[b] = val;
-      else if (kind === 'fx') pose.fx[a] = val;
+      else if (kind === 'fx') pose.fx[ch.slice(3)] = val;   // the whole name after 'fx.' (fx.contact.near was stored as fx.contact: no contact shadow ever drew from a keyed channel)
       else if (kind === 'root') (pose.root ||= [0, 0])[+a] = val;
     }
     const add = (b, v) => { pose.bones[b] = (pose.bones[b] || 0) + v; };

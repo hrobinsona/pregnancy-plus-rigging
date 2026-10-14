@@ -399,7 +399,45 @@ or composited.
    times; the top hand's curl swung "mitten" → "planks" → "paw". When a shape ping-pongs like that the fault is the
    DRAWING, not the pose (lesson 15: change the method): a back-view hand drawn as one silhouette with crease lines reads
    as a mitten or a comb at any curl; the stills draw each finger as its own tapered shape (the next step, feel log).
-
+52. **Match the DRAWING to the still, not only the pose: line weight, finger taper and tips, the gaps between fingers, the
+   wrist crease, and the shadow a resting hand casts. And every channel a shot keys must reach the drawing.** mum3q
+   look-up v7. Correction to 51: `hand.js` already draws each finger as its own tapered tube; what read as "a mitten",
+   "a comb" and "four even parallel stripes" was the drawing's settings and how the fingers sat together. Side by side
+   with still q_k4_down_0 at the same crop (`hand_shapes.py --try '[{"style": {...}}]'`): our lines between the fingers
+   were thick, dark and ran each finger's whole length (`rim` 0.02 H ≈ 4.5 px); the still's are thin and faint.
+   - *Both ways wrong.* The first redraw went all the way to the still's look at zoom (`rim` 0.009, strong taper, pointed
+     tips `tipK` 0.82, a steep graded curl) and LOST its blind A/B to v6 (6 vs 6.5): at phone size the fingers fused into
+     one tapering shape, "a flat paddle", "a flipper", "a fused mitten with lines drawn on". Thin lines alone don't
+     separate fingers; at phone size a finger reads by its own ROUND tip and a small gap beside it. The second redraw:
+     `rim` 0.012, `taper` [1, 0.92, 0.84, 0.76], `tipK` 1.0 (round tips), the fingers fanned a few degrees so small gaps
+     open toward the tips (lower hand up to 6°), the curl graded so the tips step (index straightest), the lower thumb's
+     end joints bent toward the bump (straight, "a stiff bar"). It won its blind A/B, narrowly (6 vs 5.5). Too far the
+     other way on the top hand: fanned ±10° with ~90° on the little finger it read as "a claw", its lines broken into
+     dashes (`hand.js` fades a line where the finger beside it curls hard); it now lies together (±6°, 30° → 70°) with
+     long lines. Judge a hand drawing at the size the film is seen (`--scale 1`), not only zoomed: the zoomed sheet
+     favoured the version that lost.
+   - *The wrist.* The round pad over the far wrist read "a big rounded lump… a swollen joint", "a teardrop swelling into a
+     ball" that hid the back of the hand. Its radius was taken from the forearm's back edge at the wrist, which v6 had
+     widened to fill the underbust notch, so the pad was WIDER than the forearm: a joint must never be wider than the limb
+     it ends. Now 0.65 × (`P.armFar.wristRound.r`), with a short fine crease where the back of the hand bends off it
+     (`.crease`); a long full arc cut the pad off into "a ball, a fist".
+   - *The shadow.* The still shows each resting hand and the near forearm casting a soft shadow on the dress. mum3q had a
+     contact shadow configured since its first shot and it had NEVER drawn: `anim.js` stored a keyed track channel
+     `fx.contact.near` as `fx.contact` (it kept only the first word after `fx.`), so the shadow's gate stayed 0, in mum3's
+     breathe-stroke as well, through every version and every review. Fixed, with a `qa_checks` gate (`channels`: every
+     keyed channel reaches the pose under its whole name; a contact shadow gated on a keyed channel draws while it is on).
+     The near group now includes its forearm (`arm.near`, on the dress only: on `chest.skin` it drew a stripe inside the
+     upper arm), 16 %, (5, 9) px as the still reads. A shadow group must hold every part of its hand including the wrist
+     pad: the shadow is drawn just below the group's lowest part, so a pad left out got the hand's shadow painted on it.
+   - *Life, again.* The natural lens measured the hands' moves at 3–4 px on a 600 px figure against the head's 15, and
+     both hands dead still over the loop's seam (7.4 → 0.4 s). Raising the top hand's turn about its wrist from 15° to
+     24° moved its fingertips ~6 px: the hand lies palm down on the dome, so a turn in its own plane is seen nearly
+     edge-on. Measure a gesture in the rendered frames before trusting its degrees. Its life is now in the fingers (their
+     curl shows on screen once the hand is palm down): they lift and settle, gather into a squeeze as she smiles, 2–3×
+     the old angles; the lower thumb strokes 26°, the lower fingers gather as she lifts her eyes, and a small thumb stroke
+     crosses the seam.
+   Rules: pick a character's hand DRAWING beside its stills at the New character gate, at film size, as you pick a hand
+   shape at the New pose gate; when a configured effect never shows, check that its channel arrives before tuning it.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

@@ -146,12 +146,12 @@
     "keepSize": true,
     "t": 1.35,
     "dp": [
-     0.035,
+     0.024,
      -0.008
     ],
     "slide": true,
     "handLag": 4,
-    "note": "the lower hand strokes along the underside toward the bump's front and back (~8 px), half a beat behind the top hand (overlap, never in unison)"
+    "note": "the lower hand strokes along the underside toward the bump's front and back (~6 px; v7: at ~8 px the longer middle fingertip came within 7 px of the bump's front edge, tip_check), half a beat behind the top hand (overlap, never in unison)"
    },
    {
     "pose": "n-down",
@@ -174,11 +174,11 @@
     "t": 3.2,
     "dp": [
      0.01,
-     -0.035
+     -0.05
     ],
     "slide": true,
     "handLag": 4,
-    "note": "the cradle lifts the bump a touch (~8 px) as she breathes in to look up: she feels its weight"
+    "note": "the cradle lifts the bump a touch (~11 px) as she breathes in to look up: she feels its weight"
    },
    {
     "pose": "n-down",
@@ -188,7 +188,7 @@
     "t": 4.4,
     "dp": [
      0.01,
-     -0.035
+     -0.05
     ],
     "slide": true
    },
@@ -199,7 +199,7 @@
     "keepSize": true,
     "t": 5.4,
     "dp": [
-     0.04,
+     0.03,
      -0.03
     ],
     "slide": true,
@@ -584,32 +584,32 @@
    "t1": 1.7,
    "cycles": 1,
    "bones": {
-    "hand.near.ts": -16,
-    "hand.near.t1": 10
+    "hand.near.ts": -26,
+    "hand.near.t1": 14
    },
-   "note": "the near thumb strokes the bump's lower front, out and back (the cradling hand's life is in its thumb, the one digit we see on the bump)"
+   "note": "the near thumb strokes the bump's lower front, out and back (the cradling hand's life is in its thumb, the one digit we see on the bump) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52)"
   },
   {
-   "t0": 2.9,
-   "t1": 4.7,
+   "t0": 2.3,
+   "t1": 4.4,
    "cycles": 1,
    "bones": {
-    "hand.near.f1a": 8,
-    "hand.near.f2a": 8,
-    "hand.near.f3a": 7,
-    "hand.near.f4a": 6,
-    "hand.near.f1b": 6,
-    "hand.near.f2b": 6,
-    "hand.near.t1": 5
+    "hand.near.f1a": 13,
+    "hand.near.f2a": 13,
+    "hand.near.f3a": 12,
+    "hand.near.f4a": 10,
+    "hand.near.f1b": 9,
+    "hand.near.f2b": 9,
+    "hand.near.t1": 8
    },
-   "note": "as she smiles at us the cradling fingers gather a little under the bump ('holding you') and release"
+   "note": "as she lifts her eyes to us the cradling fingers gather under the bump ('holding you', bringing the baby with her) and release (v7: starts with the look up, 1.5× larger: 'nothing happens with the hands when she looks up at us')"
   },
   {
    "t0": 4.6,
    "t1": 6.0,
    "cycles": 1,
    "bones": {
-    "hand.near.ts": -12
+    "hand.near.ts": -20
    },
    "note": "a second, smaller thumb stroke as the smile eases"
   },
@@ -653,28 +653,30 @@
    "t1": 2.3,
    "cycles": 1,
    "bones": {
-    "hand.far.f1s": -2.5,
+    "hand.far.f1s": -3,
     "hand.far.f2s": -1,
     "hand.far.f3s": 1,
-    "hand.far.f4s": 2.5,
-    "hand.far.f1a": -4,
-    "hand.far.f2a": -3
+    "hand.far.f4s": 3,
+    "hand.far.f1a": -12,
+    "hand.far.f2a": -10,
+    "hand.far.f3a": -8,
+    "hand.far.f4a": -6
    },
-   "note": "the top hand's fingers breathe while she looks down, after the thumb stroke has begun (overlap, never in unison): the index lifts a touch and the fingers ease apart by a degree or two (they lie together, as in the still)"
+   "note": "the top hand's fingers breathe while she looks down, after the thumb stroke has begun (overlap, never in unison): the index lifts a touch and the fingers ease apart by a degree or two (they lie together, as in the still) (v7: 2-3× larger, every finger: the top hand's visible life is in its fingers. Its turn about the wrist (hand.far) barely shows: the hand lies palm down on the dome, so a turn in its own plane is seen nearly edge-on; 24° moved the tips ~6 px)"
   },
   {
    "t0": 3.05,
    "t1": 4.85,
    "cycles": 1,
    "bones": {
-    "hand.far.f1a": 8,
-    "hand.far.f1b": 10,
-    "hand.far.f2a": 8,
-    "hand.far.f2b": 10,
-    "hand.far.f3a": 7,
-    "hand.far.f3b": 9,
-    "hand.far.f4a": 6,
-    "hand.far.f4b": 8,
+    "hand.far.f1a": 14,
+    "hand.far.f1b": 16,
+    "hand.far.f2a": 14,
+    "hand.far.f2b": 16,
+    "hand.far.f3a": 12,
+    "hand.far.f3b": 14,
+    "hand.far.f4a": 10,
+    "hand.far.f4b": 12,
     "hand.far.f1s": 2,
     "hand.far.f4s": -2
    },
@@ -685,8 +687,8 @@
    "t1": 5.9,
    "cycles": 1,
    "bones": {
-    "hand.far.f1a": -7,
-    "hand.far.f1b": -4
+    "hand.far.f1a": -14,
+    "hand.far.f1b": -8
    },
    "note": "the top hand's index lifts and settles back as the smile eases (a small tap of affection)"
   },
@@ -695,7 +697,7 @@
    "t1": 5.98,
    "cycles": 1,
    "bones": {
-    "hand.far.f2a": -4
+    "hand.far.f2a": -10
    }
   },
   {
@@ -703,11 +705,11 @@
    "t1": 4.2,
    "cycles": 1,
    "bones": {
-    "hand.far.f1a": 10,
-    "hand.far.f2a": 10,
-    "hand.far.f3a": 9,
-    "hand.far.f4a": 8,
-    "hand.far.wristFlex": -4
+    "hand.far.f1a": 14,
+    "hand.far.f2a": 14,
+    "hand.far.f3a": 12,
+    "hand.far.f4a": 11,
+    "hand.far.wristFlex": -8
    },
    "note": "as the smile blooms the top hand gives the bump a small squeeze (fingers press in, the wrist dips) and lets go: the hands answer her smile (natural lens: 'nothing answers the smile at 3.0–3.4 s')"
   },
@@ -726,16 +728,16 @@
    "t1": 2.25,
    "cycles": 1,
    "bones": {
-    "hand.far": 15
+    "hand.far": 24
    },
-   "note": "the caress: the top hand turns on the dome about its wrist (hand.far, in its own plane) and back, the fingertips sweeping ~15 px. A turn of the forearm (foreRot) swept them as far but twisted the forearm's drawn edges off the underbust, opening a white gap between bust, arm and hand (up to 73 px)"
+   "note": "the caress: the top hand turns on the dome about its wrist (hand.far, in its own plane) and back, the fingertips sweeping ~25 px. A turn of the forearm (foreRot) swept them as far but twisted the forearm's drawn edges off the underbust, opening a white gap between bust, arm and hand (up to 73 px) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52)"
   },
   {
    "t0": 3.75,
    "t1": 5.8,
    "cycles": 1,
    "bones": {
-    "hand.far": 17
+    "hand.far": 26
    },
    "note": "the stroke as she smiles: the same turn, a little larger"
   },
@@ -744,7 +746,7 @@
    "t1": 7.4,
    "cycles": 1,
    "bones": {
-    "hand.far": 15
+    "hand.far": 22
    },
    "note": "and a small one as her eyes come back to the bump"
   },
@@ -753,14 +755,33 @@
    "t1": 7.3,
    "cycles": 1,
    "bones": {
-    "hand.far.f1a": -8,
-    "hand.far.f2a": -6,
-    "hand.far.f3a": -5,
-    "hand.far.f4a": -4,
-    "hand.far.f1s": -2,
-    "hand.far.f4s": 2
+    "hand.far.f1a": -16,
+    "hand.far.f2a": -13,
+    "hand.far.f3a": -10,
+    "hand.far.f4a": -8,
+    "hand.far.f1s": -3,
+    "hand.far.f4s": 3
    },
    "note": "as her eyes come back to the bump the top hand's fingers lift a little and settle back onto it, index first"
+  },
+  {
+   "t0": 7.0,
+   "t1": 7.95,
+   "cycles": 1,
+   "bones": {
+    "hand.near.ts": -16,
+    "hand.near.t1": 8
+   },
+   "note": "a small thumb stroke over the loop's seam (v6: both hands dead still from 7.4 s round to 0.4 s)"
+  },
+  {
+   "t0": 7.35,
+   "t1": 7.95,
+   "cycles": 1,
+   "bones": {
+    "hand.far": 10
+   },
+   "note": "and the top hand eases round on the dome with it, into the loop"
   }
  ],
  "qa": {

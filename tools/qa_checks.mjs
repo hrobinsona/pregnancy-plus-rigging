@@ -1,9 +1,11 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
+//     channels every channel a track keys reaches the pose under its whole name, and a contact shadow gated on a keyed
+//             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
 //     frames  pixel jumps (a frame changing > 1.8× its neighbours, inside --box) and still stretches > 1 s
 //             (tools/qa_frames.py; the film should always be alive)
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
@@ -71,6 +73,27 @@ if (!skip.has('order') || !skip.has('leak')) {
     for (let i = 0; i <= upto; i++) { const m = await markup(pg2, seq2.poseAt(i / spec.fps)); if (i in want) gate(m === alone[i], `markup at frame ${i}: ${m === alone[i] ? 'same' : 'DIFFERS after rendering the frames before it'}`); }
   }
   await browser.close(); srv.close();
+}
+
+if (!skip.has('channels')) {
+  // every channel a track keys must reach the pose under its whole name (fx.contact.near was stored as fx.contact, so
+  // mum3's and mum3q's contact shadows never drew, through six versions and every review: lesson 52)
+  console.log('channels: every keyed track channel reaches the pose');
+  const chans = [...new Set(Object.values(spec.tracks || {}).flatMap((t) => (Array.isArray(t) ? [] : t.channels || [])))];
+  const A = fresh(), lost = new Set();
+  for (const t of [0, 0.25, 0.5, 0.75].map((k) => k * spec.duration)) {
+    const p = A.poseAt(t), paths = new Set([...Object.keys(p.fx || {}).map((k) => 'fx.' + k), ...Object.keys(p.bones || {}).map((k) => 'bone.' + k),
+      ...Object.entries(p.face || {}).flatMap(([a, o]) => (o && typeof o === 'object' ? Object.keys(o).map((b) => `face.${a}.${b}`) : [`face.${a}`])),
+      ...Object.entries(p.scale || {}).flatMap(([id, v]) => [0, 1].map((ix) => `scale.${id}.${ix}`))]);
+    for (const ch of chans) if (/^(fx|bone|face|scale)\./.test(ch) && ![...paths].some((q) => q === ch || q.startsWith(ch + '.'))) lost.add(ch);   // a track channel is a prefix (face.gaze owns face.gaze.0/1)
+  }
+  gate(!lost.size, lost.size ? `keyed but never in the pose: ${[...lost].join(', ')}` : `${chans.length} keyed channels all reach the pose`);
+  // a contact shadow gated on a channel the shot keys must actually draw while the gate is on
+  for (const g of C.contactShadow?.groups || []) if (g.gate && chans.includes('fx.' + g.gate)) {
+    const ts = [...Array(9).keys()].map((k) => (k / 8) * spec.duration * 0.999), on = ts.filter((t) => (A.poseAt(t).fx?.[g.gate] ?? 0) > 0.5);
+    if (on.length) { const svg = rig.toSVG(A.poseAt(on[0]), { frame: 'still' }), id = `shadow-${g.match.replace(/[^\w]/g, '')}`;
+      gate(svg.includes(id), `contact shadow ${g.gate} drawn while keyed on (${on[0].toFixed(2)} s)`); }
+  }
 }
 
 if (!skip.has('frames')) {

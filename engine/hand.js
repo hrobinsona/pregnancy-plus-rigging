@@ -49,7 +49,10 @@ export const HAND_DEFAULTS = {                // anatomical defaults (override p
 /** spec: { id, parentBone, wrist:[x,y], dir:deg (wrist→middle tip), length, palmFrac, wristW, palmW, thumbSide:+1|-1,
  *          flexFx, thumbFx?, order:[back→front finger indices], z?, thumbZ?, thumbBehind?, + any key of HAND_DEFAULTS }
  *  across: knuckle offsets as fractions of palmW (+ = thumb side); thumb.cmc/mcp: [× palmL, × palmW/2] */
-export function makeHand(spec) {
+export function makeHand(spec0) {
+  // globalThis.HAND_STYLE_TRY: drawing-style overrides ({key: value}, thumb merged) set ONLY by tools/hand_shapes.py --try
+  // [{style}] through view.html ?handStyle=, to pick a hand's drawing (line weight, taper, tips) beside its still (lesson 52)
+  const tryS = globalThis.HAND_STYLE_TRY || {}, spec = { ...spec0, ...tryS, thumb: { ...(spec0.thumb || {}), ...(tryS.thumb || {}) } };
   const S = { ...HAND_DEFAULTS, ...spec, thumb: { ...HAND_DEFAULTS.thumb, ...(spec.thumb || {}) } };
   const id = S.id, W = S.wrist, u = dirv(S.dir), n = mulS(perpL(u), S.thumbSide);
   const P = (along, across) => add(add(W, mulS(u, along)), mulS(n, across));   // hand frame → world

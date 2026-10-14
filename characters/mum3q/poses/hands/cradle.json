@@ -1,10 +1,10 @@
 {
  "name": "cradle",
- "_note": "the lower hand holding the underside of the bump (still q_k4_down_0, after Harry's photo): the palm on its lower front, the fingers TOGETHER, long and nearly straight along the curve toward its front (~30-45° tip to knuckle, graded index least), the thumb out above them along the bump, a clear V between thumb and index. v6's first 'cradle' curled ~75-90°: the fingers hooked down and fanned with dark gaps, 'a rake' to the natural reviewer. Picked side by side with the still (lesson 51)",
+ "_note": "the lower hand holding the underside of the bump (still q_k4_down_0, after Harry's photo): the palm on its lower front, the fingers side by side along the curve, fanned a few degrees (s up to 6°) so their four ROUND tips step down round the underside, the little finger shortest; the thumb lying along the top of the hand with a narrow V to the index (ts 8; at 18 it stood off the hand), its end joints bent a little toward the bump (t 16/14; straight it read as 'a stiff bar'). v6's first 'cradle' curled ~75-90° ('a rake'); its second, fingers together with an even curl, ended in a column ('four even parallel stripes'); v7's steep grade ran the tips together into one point ('a flipper', 'a paddle'). Picked side by side with the still (tools/hand_shapes.py, lessons 51-52)",
  "f1": [
   10,
-  14,
-  10
+  12,
+  9
  ],
  "f2": [
   12,
@@ -13,24 +13,24 @@
  ],
  "f3": [
   14,
-  18,
-  12
- ],
- "f4": [
-  16,
   20,
   14
  ],
- "s": [
-  -0.5,
-  0,
-  0.3,
-  0.8
+ "f4": [
+  16,
+  24,
+  17
  ],
- "t": [
-  8,
+ "s": [
+  -2,
+  0,
+  3,
   6
  ],
+ "t": [
+  16,
+  14
+ ],
  "to": 5,
- "ts": 18
+ "ts": 8
 }

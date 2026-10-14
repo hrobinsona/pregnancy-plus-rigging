@@ -3,7 +3,7 @@
 // tube's own round end (the deltoid), tucked under the dress strap. Nothing pivots on a pin: there is no sleeve or cuff to
 // slide over a joint (mum2's "pinned on" look came from cloth pieces hinged at the elbow and wrist).
 // Near arm in front of the body; far arm behind it, one step darker (it is hidden in the master's pose).
-import { tube } from '../../../engine/shapes.js';
+import { tube, taper } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
 import { add, sub, mulS, norm, perpL, lerp, ellipse } from '../../../engine/geom.js';
 
@@ -54,8 +54,21 @@ export function build(ctx) {
       const hd = norm(sub(Kp, Wp)), bw = Math.acos(Math.max(-1, Math.min(1, u2[0] * hd[0] + u2[1] * hd[1]))) * 180 / Math.PI;
       const k = Math.max(0, Math.min(1, (bw - 25) / 35));
       if (k > 0.01) {
-        const W_ = { r: 1, out: 0.3, along: 0, ...(typeof wr === 'object' ? wr : {}) }, r = Math.max(w[4].front, w[4].back) * W_.r * (0.8 + 0.2 * k), out_ = norm(sub(u2, hd));
-        out.push({ id: `arm.${side}.heel`, bone: `hand.${side}`, z: zb + 0.45 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true, geom: ellipse(add(add(Wp, mulS(out_, W_.out * r * k)), mulS(hd, W_.along * r)), r, r) });
+        const W_ = { r: 1, out: 0.3, along: 0, ...(typeof wr === 'object' ? wr : {}) }, out_ = norm(sub(u2, hd));
+        // never wider than the limb it ends: the pad's radius ≤ half the wrist's width (look-up v7 draft: r from the fuller back
+        // edge alone drew it wider than the forearm, "a ball", "a swollen joint"; lesson 52)
+        const r = Math.min(Math.max(w[4].front, w[4].back) * W_.r, (w[4].front + w[4].back) / 2) * (0.8 + 0.2 * k);
+        const c0 = add(add(Wp, mulS(out_, W_.out * r * k)), mulS(hd, W_.along * r));
+        out.push({ id: `arm.${side}.heel`, bone: `hand.${side}`, z: zb + 0.45 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill, world: true, geom: ellipse(c0, r, r) });
+        // the wrist CREASE (wristRound.crease {span°, at × r, w H}): where the back of the hand bends off the round wrist, an arc
+        // of the pad facing the fingers, drawn over the hand's base as the stills draw it (q_k4_down_0). Without it the pad
+        // read as "a big rounded lump… a swollen joint, not a bent wrist" (look-up v7 blind A/B; lesson 52)
+        if (W_.crease) {
+          const Cr = { span: 55, at: 0.95, w: 0.009, ...W_.crease }, a0 = Math.atan2(hd[1], hd[0]);
+          const pts = [-1, -0.5, 0, 0.5, 1].map((q) => { const a = a0 + q * Cr.span * Math.PI / 180; return add(c0, mulS([Math.cos(a), Math.sin(a)], r * Cr.at)); });
+          out.push({ id: `arm.${side}.crease`, bone: `hand.${side}`, z: zb + 0.62 + (ctx.pose?.zBias?.[`arm.${side}.hand`] ?? 0), fill: C.skinLine, world: true,
+                     opacity: Math.min(1, k * 1.5), geom: taper(pts, pts.map((_, i) => Cr.w * [0.4, 0.9, 1, 0.9, 0.4][i]), 'round') });
+        }
       }
     }
     // hand (engine/hand.js) just above its arm: the palm's wrist end covers the tube's end. pose.zBias['arm.<side>.hand']

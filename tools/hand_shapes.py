@@ -5,8 +5,10 @@
 Pick a hand SHAPE side by side with the still's hand, BEFORE placing it (lesson 51): the key rendered once per candidate
 shape, each cropped to the same region as the still and tiled after it, labelled.
   --shapes   hand-library names (characters/<c>/poses/hands/<name>.json) to try on --side
-  --try      a JSON list of candidates [{"label": "...", "shape": {f1..f4, s, t, to, ts}, "bones": {...}, "face": {...}, "fx": {...}}];
-             "shape" is a library entry written inline (tune numbers here, then save the winner as a library file)
+  --try      a JSON list of candidates [{"label": "...", "shape": {f1..f4, s, t, to, ts}, "bones": {...}, "face": {...}, "fx": {...},
+             "style": {...}}]; "shape" is a library entry written inline (tune numbers here, then save the winner as a library
+             file); "style" overrides the hand's DRAWING (params.handSpecs keys, both hands: rim = finger line weight, taper,
+             tipK, fingerK, fingerW, lineStart/lineEnd, thumb {w, taper}) — save the winner in params.handSpecs
   --bones    explicit bones for every tile (e.g. '{"foreRot.far": 18}' to see a turn of the hand)
   --face     a face for every tile (pose.face; eyes are shape too: try lids against a look-down still)
   --fx       pose.fx fields for every tile (e.g. '{"headPitch": 30}': how far the head bows)
@@ -16,7 +18,12 @@ shape, each cropped to the same region as the still and tiled after it, labelled
 Why: mum3q look-up v6's first `hold` (fingers curled 70-85°) and `cradle` (75-90°) were chosen by reasoning about angles;
 the 3D fingers turned them into "a mitten" and "a rake". Eight candidates next to the still showed the right shape in
 minutes: long fingers, fanned so the tips step, curved 45-65°. Then place the hand WITH the chosen shape
-(tools/hand_place.py --hand <shape>)."""
+(tools/hand_place.py --hand <shape>).
+The DRAWING is judged the same way (lesson 52), zoomed AND at film size (--scale 1): v6's fingers were drawn with thick
+dark lines the full length of each finger, "four even parallel stripes, a comb"; the first redraw, picked zoomed (thin lines,
+pointed tips), fused them into "a paddle" at phone size and lost its blind A/B. mum3q now: rim 0.012, taper [1, .92, .84,
+.76], tipK 1.0, fingers fanned a few degrees. Pass "fx": {"contact.near": 1, "contact.far": 1} to see the hands' contact
+shadows as the shot draws them."""
 import sys, os, json, subprocess, argparse
 from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -53,7 +60,14 @@ def main():
     cands += json.loads(a.tries)
     fr = [float(v) for v in a.region.split(',')]
     os.makedirs('out/hand_shapes', exist_ok=True)
-    srv = subprocess.Popen(['node', 'tools/still_server.mjs', '--char', c], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+    srvs = {}   # one still server per drawing style (a hand's drawing is built when the character loads)
+
+    def server(style):
+        k = json.dumps(style or {}, sort_keys=True)
+        if k not in srvs:
+            srvs[k] = subprocess.Popen(['node', 'tools/still_server.mjs', '--char', c] + (['--hand-style', k] if style else []),
+                                       stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+        return srvs[k]
 
     def crop(im):
         x0, y0, x1, y1 = bbox(im); w, h = x1 - x0, y1 - y0
@@ -71,12 +85,13 @@ def main():
         if a.face or cd.get('face'):
             q['face'] = cd.get('face') or json.loads(a.face)
         f = f'out/hand_shapes/{a.pose}_{k}.png'
-        srv.stdin.write(json.dumps({'pose': q, 'out': f}) + '\n'); srv.stdin.flush()
+        srv = server(cd.get('style')); srv.stdin.write(json.dumps({'pose': q, 'out': f}) + '\n'); srv.stdin.flush()
         r = srv.stdout.readline().strip()
         if r != 'ok':
             print(f'{cd.get("label")}: {r}', file=sys.stderr); continue
         tiles.append((cd.get('label', str(k)), crop(Image.open(f).convert('RGB'))))
-    srv.stdin.close(); srv.wait()
+    for srv in srvs.values():
+        srv.stdin.close(); srv.wait()
     th = max(t.height for _, t in tiles)
     tiles = [(l, t.resize((round(t.width * a.scale * th / t.height), round(th * a.scale)))) for l, t in tiles]
     tw, th = max(t.width for _, t in tiles), tiles[0][1].height

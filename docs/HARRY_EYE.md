@@ -37,8 +37,9 @@ can judge it · the lesson in `docs/PIPELINE.md`.
    foreshortening must hold its size) · 39
 4. **Are the joints clean shapes a body has?** No knob, pinch, step or round cap at an ankle, elbow or wrist. mum3 v4:
    "ankles are a super weird shape" (a round tube end at the ankle). mum3q v6: a sharp "pointed wrist corner" where a hand
-   bent 50° meets its forearm (cured by a heel-of-the-hand pad, `params.arm*.wristRound`). · eye + `qa_closeups.mjs` at the
-   stress times · 41, 51
+   bent 50° meets its forearm (cured by a heel-of-the-hand pad, `params.arm*.wristRound`); mum3q v7 draft: that pad drawn
+   wider than the forearm, "a ball", "a swollen joint". A joint is never wider than the limb it ends. · eye +
+   `qa_closeups.mjs` at the stress times · 41, 51, 52
 5. **Does anything bleed?** Clothing through limbs, limbs through clothing or the body, outlines running over skin.
    mum2: "the real bleeding through clothes and body parts, which looked super weird as they move". · `anim_audit.py` +
    eye · 17
@@ -66,7 +67,8 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     settles a finger now and then, and answers what her face does (a squeeze as she smiles). Never frozen on her while
     the rest of her moves. mum3q v5: "creepy and lifeless". mum3q v6 passed a 1.5 px floor with 2–4 px finger settles and
     both fresh reviewers still saw "the hands look identical in every frame… held props": life a viewer sees is a 10–20 px
-    caress or stroke. · gate `qa_checks` alive (each hand moves ≥ 5 px on her in every 2 s; a deliberate hold goes in
+    caress or stroke, measured in the frames (v7: a 24° turn of a hand lying palm down moved its tips ~6 px, seen edge-on;
+    its fingers' curl shows). · gate `qa_checks` alive (each hand moves ≥ 5 px on her in every 2 s; a deliberate hold goes in
     `spec.qa.still`) + eye on the phone-size film · 50, 51
 11. **Does a hand ever flip, pop or point at the camera?** A palm flipping in a few frames, a hand seen end-on, the
     wrist springing back. mum2: the palm flip at 7.5 s; "the wrist angle looked wrong". · gate `qa_checks` hands (palm
@@ -92,3 +94,13 @@ can judge it · the lesson in `docs/PIPELINE.md`.
 16. **Is the starting illustration good enough to be the standard?** If the master or a still is weak (muddy shapes,
     wrong proportions, a pose no one makes), fix the reference before fitting to it. mum2: "the underlying illustration
     itself is not good enough quality as a starting point". · eye, at the New character and New pose gates · 26, 29
+17. **Are the hands DRAWN the way the stills draw hands, at the size the film is seen?** Each finger its own: a round tip,
+    a small gap beside it toward the tip, the tips stepping; thin lines between the fingers; the thumb resting along the
+    hand; a crease where a bent wrist meets the hand. Never thick dark lines the full length of each finger ("four even
+    parallel stripes", "a comb"), blunt pads stacked in a column ("a mitten", "a paw"), fingers fused into one tapering
+    shape ("a paddle", "a flipper": mum3q v7's first redraw, thin lines and pointed tips, lost its blind A/B), or a round
+    wrist with no crease ("a swollen joint"). · eye on `hand_shapes.py --try '[{"style": …}]' --scale 1` beside the still, at
+    the New character gate · 52
+18. **Does a hand or arm resting on her cast the soft shadow the still shows?** Without it a hand reads pasted on, not
+    resting. mum3q v1–v6 and mum3 v1–v5 had one configured that never drew (a keyed channel dropped by the engine). · gate
+    `qa_checks` channels (every keyed channel reaches the pose; a gated shadow draws while keyed on) + eye · 52

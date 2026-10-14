@@ -1,6 +1,6 @@
 {
  "name": "fit-q_k3_down",
- "note": "fitted to characters/mum3q/refs/pose/q_k3_down_1.json (MediaPipe landmarks, base rest); far arm (upperArm.far -19.6, forearm.far 112.6, hand.far 3.5, armAbd.far -17.7, armRot.far 3.8, foreRot.far 15, wristFlex.far -66.6) on the still's hand points by tools/hand_place.py (rms 0.4 px, arm inside her outline, a natural arm)",
+ "note": "fitted to characters/mum3q/refs/pose/q_k3_down_1.json (MediaPipe landmarks, base rest); far arm (upperArm.far -27.5, forearm.far 114.2, hand.far -4.3, armAbd.far -14.6, armRot.far -0.8, foreRot.far 13.3, wristFlex.far -67) on the still's hand points by tools/hand_place.py (rms 3.9 px, arm inside her outline, a natural arm)",
  "hands": {
   "near": "hang",
   "far": "hold"
@@ -34,17 +34,17 @@
   "hipAbd.near": -0.2,
   "clavicle.far": -2.9,
   "shoulderAbd.far": 3.4,
-  "upperArm.far": -19.6,
-  "armAbd.far": -17.7,
-  "armRot.far": 3.8,
-  "forearm.far": 112.6,
-  "foreRot.far": 15,
-  "hand.far": 3.5,
+  "upperArm.far": -27.5,
+  "armAbd.far": -14.6,
+  "armRot.far": -0.8,
+  "forearm.far": 114.2,
+  "foreRot.far": 13.3,
+  "hand.far": -4.3,
   "thigh.far": 0,
   "shin.far": 0.4,
   "foot.far": 2.2,
   "hipAbd.far": 0,
-  "wristFlex.far": -66.6
+  "wristFlex.far": -67
  },
  "_fit": {
   "ref": "characters/mum3q/refs/pose/q_k3_down_1.json",
