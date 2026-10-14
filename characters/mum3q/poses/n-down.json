@@ -1,7 +1,7 @@
 {
  "name": "n-down",
  "note": "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump",
- "_recipe": "n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --note looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump",
+ "_recipe": "n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --set hand.near=35.4 --note looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump",
  "hands": {
   "near": "cradle",
   "far": "hold"
@@ -32,7 +32,7 @@
   "forearm.far": 115.3,
   "forearm.near": 43.5,
   "hand.far": 17.7,
-  "hand.near": 30.4,
+  "hand.near": 35.4,
   "head": -16.3,
   "hipAbd.far": 0.0,
   "hipAbd.near": 0.0,

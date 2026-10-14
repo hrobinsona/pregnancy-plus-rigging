@@ -131,5 +131,12 @@ can judge it · the lesson in `docs/PIPELINE.md`.
     didn't), "a stub thumb" (8 px short, the fingers fat), and a look-down "bowed too deep" (a nod where the stills tip
     the head). · `mask_overlay.py` (still only / render only, px) + eye · 56
 23. **Do the eyes read as looking where she looks, AT PHONE SIZE?** Judge the dark mass (iris and lash line) at film
-    size: mum3q's look-down eyes with a white, matched to the still zoomed, lost two blind A/Bs to a plain dark oval
-    ("white all round… a side-glance"; "a short dark slash"). · blind A/B at film size + eye · 57
+    size: mum3q's look-down eyes with a white guessed from the still lost two blind A/Bs to a plain dark oval ("white all
+    round… a side-glance"; "a short dark slash"); measured from it (the white a sliver on the iris's BACK side, the iris
+    pushed toward what she looks at, the lids open) it won ("open and looking at her bump"). An eye pose belongs to its
+    head pose: the look-down iris under a still-raised head read "side-eye". · blind A/B at film size + eye · 57
+24. **On the FILM, is each hand where the still puts it, at its angle?** A key fitted to the still can leave it once the
+    shot's trunk and reach act on it: mum3q's cradling hand sat 26 px behind the still's and 6° steeper ("a comb… the tips
+    well inside the edge") while its key matched. And before calling a hand "frozen", check the motion sheets (magenta):
+    still tiles at phone size hide 20 px moves. · `finger_angles.mjs` (QA `fingers`), tips on the film vs the still's,
+    `motion_sheet.py` + eye · 58

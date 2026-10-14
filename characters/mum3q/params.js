@@ -61,10 +61,12 @@ export const P = {
           jaw: [-0.02, -6.21], earLow: [-0.11, -6.33], back: [-0.2, -6.55], top: [0.2, -6.95] },
   eyes: { near: eyeOf(F.eyes[0]), far: eyeOf(F.eyes[1]) },   // left of the picture = her near eye (bigger), then the far one, narrower
   // the gaze can move the iris INSIDE the eye's white opening (parts/head.js): the opening rides it ×lidK, the iris ×irisK,
-  // shrinking to irisR of the opening off-centre. mum3q keeps lidK = irisK = 1 (the whole dark eye slides, no white): with
-  // a white the look-down lost two blind A/Bs to the dark oval, "wide open, white all round… a side-glance" (.3/1.6/.82)
-  // and "a short dark slash… sleepier" (heavy lids): at phone size the dark mass reads, the white doesn't (lesson 57)
-  eyeLook: { lidK: 1, irisK: 1, irisR: 1 },
+  // shrinking to irisR of the opening off-centre. The look-down still (q_k_down_0) draws a big dark iris pushed FORWARD
+  // (toward the bump) under a heavy lash line, the white a sliver on its BACK side only: so the opening stays put (lidK 0),
+  // the iris slides with the gaze (face-tender's gaze is mostly forward) at 0.92 of the opening. v15–v16's whites lost
+  // blind: .3/1.6/.82 with a mostly DOWN gaze showed "white all round… a side-glance"; heavy lids "a dark slash"; v17's
+  // dark oval with no white read "sleepy, or smug" (natural lens v14–v17). v18 measured the still (lesson 57)
+  eyeLook: { lidK: 0, irisK: 1, irisR: 0.92 },
   brows: { near: strokeOf(F.brows[0]), far: strokeOf(F.brows[1]) },
   mouth: strokeOf(F.mouth),
   nose: { tip: fa('noseTip'), bridge: fa('noseBridge') },

@@ -5,6 +5,13 @@
  "loop": true,
  "story": "Seen in three-quarter view, turned toward us, holding her bump with both hands the way an expectant mother does: one hand curled a little over its top, the other cradling it from beneath. She is looking down at her bump with a tender smile. Then she looks up from her bump to us, the viewer, and smiles warmly, holding our eyes for a moment, before her gaze drifts back down to her bump.",
  "intensity": "gentle, warm and intimate: a private moment that turns into a quiet connection with the viewer. Unhurried; the look up is the one clear move, nothing big or fast.",
+ "handsBox": [
+  520,
+  600,
+  785,
+  970
+ ],
+ "handsBoxNote": "film px holding both hands all shot: blind_ab.py and critic_F.py draw them at 1:1 and their motion per second (lesson 58)",
  "beats": [
   {
    "name": "looking down at the bump",
@@ -123,10 +130,10 @@
     "keepSize": true,
     "t": 0.0,
     "dp": [
-     0.06,
-     0
+     0.124,
+     -0.005
     ],
-    "note": "the near hand cradles the underside of the bump, palm up, the thumb on its lower front (still q_k4_down_0; Harry's pick 2026-10-13). Pinned to the belly so it rides her breath and the look up; keepSize holds its drawn size. Every stop sits 0.06 H further forward than the fitted hand (v17): on n-down's trunk the fitted hand's tips stopped ~24 px short of the bump's front edge, where the still's reach it (natural lens v15); now 12 px, 9 at the stroke's end (tip_check clear ≥ 9)"
+    "note": "the near hand cradles the underside of the bump, palm up, the thumb on its lower front (still q_k4_down_0; Harry's pick 2026-10-13). Pinned to the belly so it rides her breath and the look up; keepSize holds its drawn size. v17 put every stop 0.06 H further forward so the tips reached the bump's front edge as in the still; blind, the tips meeting the edge read as 'an awkward tangent' and the hand 'oversized, like a paw' (v17 lost to v14), so v18 keeps v14's place and instead lays the fingers at the still's ANGLE (n-down's hand.near, refs/derive_lookup.sh): the film had them 6° steeper than the fitted key (tools/finger_angles.mjs; QA 'fingers' gate, lesson 58). v20 puts it where the still does: at 0 s the film's tips sat 26 px behind the still's (the fitted arm on n-down's trunk, whose bump front matches the still's to 2 px: tools/mask_overlay.py), so every stop moves (+0.124, −0.005) H and the tips land on q_k4_down_0's, the index at the bump's edge as the still draws it (natural lens v15, v17, v18: 'the tips stop well inside the edge'; v17's half-way move with the fingers 6° too steep read 'a tangent')"
    },
    {
     "pose": "n-down",
@@ -135,8 +142,8 @@
     "keepSize": true,
     "t": 0.45,
     "dp": [
-     0.06,
-     0
+     0.124,
+     -0.005
     ]
    },
    {
@@ -146,12 +153,12 @@
     "keepSize": true,
     "t": 1.35,
     "dp": [
-     0.084,
-     -0.0128
+     0.124,
+     -0.026
     ],
     "slide": true,
     "handLag": 4,
-    "note": "the lower hand strokes along the underside toward the bump's front and back (~6 px; v7: at ~8 px the longer middle fingertip came within 7 px of the bump's front edge, tip_check), half a beat behind the top hand (overlap, never in unison)"
+    "note": "the lower hand strokes up along the underside and back (~6 px), half a beat behind the top hand (overlap, never in unison). On the still's tips (v20) a stroke toward the front pushed the middle tip past the bump's edge at 1.0 s (blind A/B v20; tip_check)"
    },
    {
     "pose": "n-down",
@@ -160,8 +167,8 @@
     "keepSize": true,
     "t": 2.15,
     "dp": [
-     0.06,
-     0
+     0.124,
+     -0.005
     ],
     "slide": true,
     "handLag": 4
@@ -173,8 +180,8 @@
     "keepSize": true,
     "t": 3.2,
     "dp": [
-     0.07,
-     -0.08
+     0.134,
+     -0.085
     ],
     "slide": true,
     "handLag": 4,
@@ -187,8 +194,8 @@
     "keepSize": true,
     "t": 4.4,
     "dp": [
-     0.07,
-     -0.08
+     0.134,
+     -0.085
     ],
     "slide": true
    },
@@ -199,8 +206,8 @@
     "keepSize": true,
     "t": 5.4,
     "dp": [
-     0.09,
-     -0.048
+     0.13,
+     -0.06
     ],
     "slide": true,
     "handLag": 4,
@@ -213,8 +220,8 @@
     "keepSize": true,
     "t": 6.6,
     "dp": [
-     0.06,
-     0
+     0.124,
+     -0.005
     ],
     "slide": true,
     "handLag": 4
@@ -371,15 +378,15 @@
      "ease": "inOut"
     },
     {
-     "t": 1.6,
+     "t": 1.85,
      "pose": "face-tender",
      "ease": "inOut"
     },
     {
-     "t": 2.05,
+     "t": 2.3,
      "pose": "face-rise",
      "ease": "inOut",
-     "note": "the eyes lead: on us before the head moves, the lids lifting with the gaze"
+     "note": "the eyes lead the head, a beat ahead, not before it: the lids lift with the gaze as the head starts up (v17's lift at 1.6-2.05 s, while the head still sank into the dip, read as 'peeking up from under her brow', natural lens v17)"
     },
     {
      "t": 3.35,
@@ -404,10 +411,10 @@
      "ease": "inOut"
     },
     {
-     "t": 5.8,
+     "t": 6.2,
      "pose": "face-tender",
      "ease": "inOut",
-     "note": "the eyes go back to the bump first, the lids lowering with them (v2 kept them open: the eyes read as still on us), the head follows at once"
+     "note": "the eyes go back to the bump a beat ahead of the head, not before it moves (the head leaves n-up at 5.5, n-ret at 6.4): at 5.8 s the forward gaze under a still-raised head read 'a sideways glance… side-eye' (natural lens v14, v18)"
     }
    ]
   },
@@ -455,7 +462,7 @@
      "ease": "inOut"
     },
     {
-     "t": 6.0,
+     "t": 6.4,
      "pose": "face-tender",
      "ease": "inOut",
      "note": "the lips close over 0.55 s, a beat behind the eyes"
@@ -593,10 +600,11 @@
    "t1": 1.7,
    "cycles": 1,
    "bones": {
-    "hand.near.ts": -26,
-    "hand.near.t1": 14
+    "hand.near.ts": -13,
+    "hand.near.t1": 7,
+    "hand.near": 4
    },
-   "note": "the near thumb strokes the bump's lower front, out and back (the cradling hand's life is in its thumb, the one digit we see on the bump) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52)"
+   "note": "the near thumb strokes the bump's lower front, out and back (the cradling hand's life is in its thumb, the one digit we see on the bump) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52) v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
   },
   {
    "t0": 2.3,
@@ -618,9 +626,10 @@
    "t1": 6.0,
    "cycles": 1,
    "bones": {
-    "hand.near.ts": -20
+    "hand.near.ts": -10,
+    "hand.near": 4
    },
-   "note": "a second, smaller thumb stroke as the smile eases"
+   "note": "a second, smaller thumb stroke as the smile eases v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
   },
   {
    "t0": 5.6,
@@ -786,10 +795,11 @@
    "t1": 7.95,
    "cycles": 1,
    "bones": {
-    "hand.near.ts": -16,
-    "hand.near.t1": 8
+    "hand.near.ts": -8,
+    "hand.near.t1": 4,
+    "hand.near": 4
    },
-   "note": "a small thumb stroke over the loop's seam (v6: both hands dead still from 7.4 s round to 0.4 s)"
+   "note": "a small thumb stroke over the loop's seam (v6: both hands dead still from 7.4 s round to 0.4 s) v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
   },
   {
    "t0": 7.35,
@@ -811,10 +821,43 @@
     "hidden": "the far arm hangs at her side (still q_k4_down_0): the upper arm is the strip past her bust, drawn near full length; the forearm points at us over the top of the bump from the elbow on its edge, drawn END-ON as the still's round mass (parts/arms.js, 13–18% of its length: its size is the cross-section's, so it never reads as shrinking; lesson 53)"
    },
    "hand.near": {
-    "min": 0.74,
-    "note": "the cradling hand lies palm up under the bump, turned a little from us as in the still q_k4_down_0: drawn at 76% of its length all shot (it never changes, so it can't read as shrinking). Fitted to the still's four tips it matches the still's hand best there (tools/mask_overlay.py: 1166 px of mismatch; held near full length with --hand-len 0.85, 91%, it was 1431 px, the little finger hidden and the hand tipped down; lesson 56)"
+    "min": 0.7,
+    "note": "the cradling hand lies palm up under the bump, turned a little from us as in the still q_k4_down_0: drawn at 76% of its length all shot (it never changes, so it can't read as shrinking). Fitted to the still's four tips it matches the still's hand best there (tools/mask_overlay.py: 1166 px of mismatch; held near full length with --hand-len 0.85, 91%, it was 1431 px, the little finger hidden and the hand tipped down; lesson 56). v18 laid it at the still's finger angle (n-down's hand.near 35.4, QA 'fingers'): 70–76% of its length (the least at the thumb stroke's 4° turn, 1.0 s), the fingers at the still's lengths (finger_angles 56/54/50/42 px, the key 57/55/51/43), holding its size within 1.03"
    }
-  }
+  },
+  "fingers": [
+   {
+    "side": "near",
+    "t": [
+     0,
+     7.3
+    ],
+    "want": [
+     18,
+     13,
+     7,
+     -2
+    ],
+    "tol": 3,
+    "note": "the cradling hand's fingers as the still q_k4_down_0 lays them (fit-q_k4_down, fitted to its four tips) at the look-down frames: v17's film had them 6° steeper than the key (n-down's trunk turned the hand with it), read as 'straight, parallel, a comb' (natural lens v17; lesson 58)"
+   },
+   {
+    "side": "far",
+    "t": [
+     0,
+     2.75,
+     7.3
+    ],
+    "want": [
+     38,
+     35,
+     30,
+     28
+    ],
+    "tol": 4,
+    "note": "the top hand's fingers draped over the dome as the still q_k4_down_0 (lesson 54)"
+   }
+  ]
  },
  "preflight": {
   "1": "both arms placed on still q_k4_down_0 by hand_place --natural (elbows at her sides, the far arm coming down past her bust and round the bump's side), on the look-down key's trunk",

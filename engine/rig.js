@@ -348,11 +348,13 @@ export function createRig(C) {
         // g.noCast: parts that set where the group's shadow sits in depth but cast none themselves (mum3q's end-on forearm, a
         // round mass standing off the bump's edge in the air: its own shadow read as "a ball casting its shadow", lesson 54)
         const cast = g.noCast ? hp.filter((p) => !new RegExp(g.noCast).test(p.id)) : hp;
-        if (on.length && cast.length && gk > 0.002) shadows.push({ zh, hp: cast, on, k: gk, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
+        // g.k, g.offset: this group's own strength and offset (mum3q's top hand lies ON the dome: the still shows almost no
+        // shade under its fingers, where the cradling hand under the bump casts a clear one)
+        if (on.length && cast.length && gk > 0.002) shadows.push({ zh, hp: cast, on, k: gk * (g.k ?? 1), off: g.offset, id: `shadow-${g.match.replace(/[^\w]/g, '')}` });
       }
       shadows.sort((a, b) => a.zh - b.zh);
       var emitShadow = (S) => {
-        const [dx, dy] = (CS.offset || [4, 6]).map((v) => v / k);
+        const [dx, dy] = (S.off || CS.offset || [4, 6]).map((v) => v / k);
         out += `<clipPath id="${S.id}">${S.on.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`
           + `<g clip-path="url(#${S.id})"><g opacity="${f2((CS.opacity ?? 0.12) * (S.k ?? 1))}"><g transform="translate(${f2(dx)} ${f2(dy)})">`
           + S.hp.map((c) => `<path d="${pathD(c.geom, Hpx)}" fill="${CS.color || '#000'}" transform="${tfOf(c.M)}"/>`).join('') + '</g></g></g>';

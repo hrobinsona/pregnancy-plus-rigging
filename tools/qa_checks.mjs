@@ -1,6 +1,6 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs,fingers] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
@@ -21,6 +21,9 @@
 //             moves of 10–20 px; a deliberate hold: spec.qa.still {near|far: [[t0, t1, why]]}
 //     limbs   each 3D arm segment's drawn length stays ≥ --limb-min of its length (exceptions: spec.qa.limbs) (a forearm pointing at the camera reads
 //             as an arm that shrinks); and no elbow jumps > 6 px in a frame while its wrist stays (the arm solve changing branch)
+//     fingers each spec.qa.fingers entry {side, t: [s…], want: [index…little °], tol}: the FILM's finger angles at those
+//             times within tol of the still's (tools/finger_angles.mjs). A key fitted to the still can leave it on the film:
+//             the derived trunk turned mum3q's pinned cradling hand 6° steeper, "a comb" (natural lens v17; lesson 58)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -230,6 +233,15 @@ if (!skip.has('limbs')) {
       gate(lo[b][0] >= m, `${b}: shortest ${(lo[b][0] * 100).toFixed(0)}% at ${lo[b][1].toFixed(2)} s${ex ? ` (designed ≥ ${m * 100}%: ${ex.note})` : ''}${lo[b][0] < m ? ' — it points at the camera: put the wrist on the surface it touches (reach surface:) and turn the elbow (dphi) until the arm lies across the picture' : ''}`);
       if (ex) gate(hi[b] / lo[b][0] <= 1.1, `${b}: holds its size, longest/shortest ${(hi[b] / lo[b][0]).toFixed(2)} (want ≤ 1.1; reach stop keepSize: true)`);
     }
+  }
+}
+if (!skip.has('fingers') && spec.qa?.fingers?.length) {
+  console.log("fingers: each hand's fingers at the still's angles on the film (tools/finger_angles.mjs)");
+  for (const f of spec.qa.fingers) {
+    const tol = f.tol ?? 4; let out, pass = true;
+    try { out = execFileSync('node', ['tools/finger_angles.mjs', '--char', char, '--side', f.side, '--anim', name, '--t', f.t.join(','), '--want', f.want.join(','), '--tol', String(tol)], { encoding: 'utf8' }); }
+    catch (e) { out = String(e.stdout || e.message); pass = false; }
+    gate(pass, `${f.side} fingers at ${f.t.join(', ')} s within ${tol}° of the still's ${f.want.join('/')}°: ${out.trim().split('\n').pop()}${pass ? '' : " — the film turned the hand off its fitted key: set the hand bone of the reach stop's pose (refs/derive_*.sh) until finger_angles matches"}`);
   }
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

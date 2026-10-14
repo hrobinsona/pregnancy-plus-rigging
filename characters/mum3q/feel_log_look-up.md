@@ -379,3 +379,71 @@ From the reviews of v14–v16 (all three named them):
   on the bump: near 20 → 26 px over the shot (up to 20 px in a second), far 24 → 26 (16 in a second). Finger-joint
   fidgets alone barely move a pixel at phone size; whole-hand moves do.
 QA, tip_check both hands, finger angles (worst 2°), handedness PASS; mum2 and mum3 SVG unchanged.
+
+Results on v17:
+- **Natural lens: NOT YET.** (1) The look-down eyes are "lidded dark irises, no white" where both stills draw an open
+  almond with white behind an iris aimed at the bump, and the mouth "a wide crescent with a filled lip": "sleepy, or a
+  bit smug, not loving" (0–1.8, 6.4–8 s). (2) The lower fingers "straight and parallel, the tips in a near-even row… a
+  comb" against the still's (0, 2.75, 7.3 s). (3) "The two hands look identical in every frame" at phone size. Also: hard,
+  dark contact shadows; the eyes going round while the head is still bowed (1.9–2.0 s, "peeking"). Its "no"s: weight,
+  arms, wrists, handedness, the top hand's shape and angle, the body opening on the look up.
+- **Blind A/B v17 vs v14: "NO CLEAR DIFFERENCE"** (6 vs 6): "the close-ups are only about 170 px per figure… a real but
+  small hand or eye change could be there without me seeing it". Measured: the review packs showed the figure at a third
+  of film size, so a 20 px hand move was ~7 px between two still tiles. `tools/motion_sheet.py` now draws the hands at
+  1:1 and what moved each second (magenta) into both packs (`spec.handsBox`; lesson 58).
+- **Re-run with those sheets: v14 6.5, v17 6** (low confidence). v17's lower hand, 12 px forward, read "chunkier… its
+  fingertips meeting the bump's edge, an awkward tangent"; v17's head "further back" on the look up. In both: "the lower
+  thumb is the only visibly moving digit… a thumb tic", the look-down eyes sleepy.
+Checked: the film's lower fingers lay 6° steeper than the fitted key at the look-down frames (`finger_angles.mjs`: 24/19/
+13/4° against the key's and still's 18/13/7/−2): the reach pins the hand to the belly at n-down's angle, and n-down's
+trunk had turned it. The fitted key matches the still (mask_overlay 939 px).
+
+## v18 — the still's look-down eye; the lower fingers at the still's angle; the thumb tic calmed
+
+- **Look-down eyes, measured on q_k_down_0 at film size:** a big dark iris pushed forward toward the bump under a heavy
+  lash line, the white a sliver on its BACK side only. `eyeLook` {lidK 0, irisK 1, irisR .92}; face-tender lids .75/.25,
+  gaze (.022, .014) (forward more than down: v15's mostly-down gaze showed white all round), the mouth warm .6 + soft .4
+  (a closed smile a touch slimmer). The look up's eyes start at 1.85 s and land at 2.3 (were 1.6–2.05: "peeking").
+- **Lower hand:** back to v14's place (v17's forward shift lost blind) and laid at the still's angle: n-down's hand.near
+  30.4 → 35.4 (`derive_lookup.sh`), the film's fingers 18/13/6/−2° at 0 and 7.3 s. New QA gate `fingers`
+  (`spec.qa.fingers`: near within 3° of 18/13/7/−2, far within 4° of 38/35/30/28; it fails v17).
+- **Thumb:** each lone thumb stroke halved, the whole hand turning 4° with it.
+- **Contact shadows** 16 % at (5, 9) px → 11 % at (4, 7).
+
+Results on v18:
+- **Blind A/B v18 vs v14: v18 6.5, v14 6.** The most visible difference, the eyes: "open with the iris dropped toward
+  the lower lid, so she is plainly looking down at the bump… X's read as half-shut or drowsy… a little smug". Also: the
+  head's small tilt in the hold "warmer". In both: the lower thumb lifting off "as a long straight stalk"; the top hand
+  "a flat, nearly static paddle"; the look-down neck short.
+- **QA:** one fail, hand.near drawn at 71% at 1.03 s (min 0.74): the still's angle plus the thumb stroke's hand turn.
+- **Natural lens: NOT YET.** The lower hand "about a fifth shorter… its tips ~28 px inside the outline" where the
+  still's reach it; the top hand's back flatter than the still's and its shadow crisp; "a side-eye on the way back
+  down" (5.6–6.4 s: the eyes reached the look-down pose 0.6 s before the head).
+
+## v19–v21 — the thumb, the lower hand on the still's tips, the top shadow, the eyes down with the head
+
+- **v19:** the lone thumb strokes became a small curl (t1, t2) with a 3° hand turn. **Blind v19 vs v18: v18 6.5, v19 6**:
+  v18's "thumb rises 10–12 px… a tender thumb stroke while she gazes down"; v19's hand "only rides the breath… pasted
+  on". So the reviewers split on the thumb's swing (a tic to two, a tender stroke to one) and a curl too small to see
+  lost: v21 keeps v18's halved swing with the 4° hand turn.
+- **Measured the film against the still** (`mask_overlay.py mum3q look-up@0`, new): the bump's front matched the still's
+  to 2 px but the cradling hand's tips sat 26 px behind the still's (596.9,760.2 against 623.4,759.6 for the index; the
+  same for every tip): the fitted arm on n-down's trunk. **v20** moves every near reach stop by (+0.124, −0.005) H: the
+  tips land on the still's, the index at the bump's edge as the still draws it; the top hand's shadow 60 % at (3, 5) px
+  (`contactShadow` groups take `k` and `offset` now); the eyes go back down at 6.2 s with the head (were 5.8), the lips at
+  6.4. **Blind v20 vs v19: v20 6.5, v19 6**: "the hand sits further forward at the bottom front of the bump… the bump
+  looks as if it rests in the hand, the arm one relaxed curve"; against it, the middle tip poked a few px past the
+  edge at 1.0 s (the stroke toward the front).
+- **v21:** v18's thumb back; the lower stroke goes up the underside, not forward (1.35 s: dp .124,−.026; 5.4 s: .13,−.06),
+  so no tip passes the edge (tip_check min 4 PASS; clear 6 px at the index, as the still draws it at the edge).
+  **Blind v21 vs v20: v21 6.5, v20 6**: "the hand stays on the bump… a gentle caress up the bump… a tender thumb
+  stroke"; v20's tips "slide off the front edge". Risk named: the 7.1 s and 0.3 s strokes 0.4 s apart across the loop
+  could read as patting.
+- QA v21: PASS with hand.near's designed least length 0.70 (the thumb stroke's turn, holding its size within 1.03);
+  fingers gate PASS (near worst 2°, far 2°); mum2 and mum3 SVG unchanged.
+- **Natural lens on v20: NOT YET.** (1) The look-down eyes: "a flat lash line, the iris high under it… looking off to
+  her right" where the stills' heavy lid comes down over a low iris; side-glance still at 6.0–6.5 s. (2) The hands'
+  life: the top hand identical at phone size; nothing answers the smile. (3) "What's that lump on top of the bump?": the
+  top wrist's mass hangs ~10 px below the still's, with a notch in the hand's lower edge (overlay: 729 px). Also the
+  lower fingers at 3.0–3.5 s "a rake". Its "no"s now include the neck, the shadows, both hands' handedness and angles,
+  the top hand's shape, the timing.

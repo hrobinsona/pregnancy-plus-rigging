@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""mask_overlay.py <char> <pose> --still <name> --box x0,y0,x1,y1 [--scale 5] [--rgb 253,184,136] [--tol 45]
+"""mask_overlay.py <char> <pose | anim@t> --still <name> --box x0,y0,x1,y1 [--scale 5] [--rgb 253,184,136] [--tol 45]
    [--rgb2 r,g,b] [--hands near=cradle,far=hold] [--out out/mask_<pose>.png]
 
 Overlay one colour's mask (default: skin) of a pose and of its still, in the same box of the still's pixels: grey where
@@ -11,7 +11,9 @@ Why: mum3q look-up v13's lower hand was fitted to its keys and read "a stub thum
 lens). Side by side the two hands looked alike; overlaid, the thumb was ~8 px short, the fingers fat and fanned past the
 bump's edge, 1682 px of mismatch. Each fix (a longer slimmer thumb, slimmer fingers, the fan tightened, the tips refit)
 showed in the two numbers at once: 1166 (lesson 56). Overlay before tuning anything a reviewer names; rows and points
-can match while a thumb's length, a tip's spacing or a curve between them doesn't."""
+can match while a thumb's length, a tip's spacing or a curve between them doesn't.
+anim@t (e.g. look-up@0): the SHOT's pose at t s (keys, reaches, fidgets applied), not a key: v18's cradling hand matched
+the still as a key (939 px) and sat 26 px behind it on the film, where n-down's trunk and the reach had put it (lesson 58)."""
 import argparse, json, os, subprocess, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -31,10 +33,20 @@ G, Hpx = info['ref']['groundPx'], info['ref']['Hpx']
 bx = [int(v) for v in a.box.split(',')]
 boxH = [(bx[0] - G[0]) / Hpx, (bx[1] - G[1]) / Hpx, (bx[2] - G[0]) / Hpx, (bx[3] - G[1]) / Hpx]
 W0, H0 = round((bx[2] - bx[0]) * a.scale), round((bx[3] - bx[1]) * a.scale)
-pose = json.load(open(f'{D}/poses/{a.pose}.json'))
+if '@' in a.pose:   # the shot's pose at t
+    an, t = a.pose.split('@')
+    js = (f"import fs from 'node:fs'; const D = './{D}/', C = (await import(D + 'character.js')).default;"
+          " const { createRig } = await import('./engine/rig.js'), { makeAnim } = await import('./engine/anim.js'), { expandHands } = await import('./engine/handlib.js');"
+          " const HL = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(D + 'poses/hands/' + h + '.json'))]));"
+          f" const spec = JSON.parse(fs.readFileSync(D + 'anims/{an}.json')), names = new Set();"
+          " JSON.stringify(spec, (k, v) => { if (k === 'pose' && typeof v === 'string') names.add(v); return v; });"
+          " const lib = Object.fromEntries([...names].filter((p) => fs.existsSync(D + 'poses/' + p + '.json')).map((p) => [p, expandHands(JSON.parse(fs.readFileSync(D + 'poses/' + p + '.json')), HL, C.handSides)]));"
+          f" console.log(JSON.stringify(makeAnim(spec, lib, {{ rig: createRig(C), C, quiet: true }}).poseAt({float(t)})));")
+    pose = json.loads(subprocess.run(['node', '--input-type=module', '-e', js], capture_output=True, text=True, check=True).stdout)
+else: pose = json.load(open(f'{D}/poses/{a.pose}.json'))
 if a.hands: pose['hands'] = {**pose.get('hands', {}), **dict(kv.split('=') for kv in a.hands.split(','))}
 os.makedirs('out', exist_ok=True)
-tmp = f'out/_mask_{a.pose}.png'
+tmp = f'out/_mask_{a.pose.replace("@", "_")}.png'
 srv = subprocess.Popen(['node', 'tools/still_server.mjs', '--char', a.char, '--box', ','.join(map(str, boxH)), '--px', str(W0)],
                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 srv.stdin.write(json.dumps({'pose': pose, 'out': tmp}) + '\n'); srv.stdin.flush()
@@ -54,5 +66,5 @@ sheet = Image.new('RGB', (W0 * 2 + 6, H0 * 2 + 50), 'white'); d = ImageDraw.Draw
 sheet.paste(still, (0, 22)); sheet.paste(ours, (W0 + 6, 22)); sheet.paste(Image.fromarray(o), (0, H0 + 50))
 d.text((4, 2), f'still {a.still}', fill=(200, 0, 0), font=F); d.text((W0 + 10, 2), a.pose, fill=(200, 0, 0), font=F)
 d.text((4, H0 + 28), f'still only (red) {so} px   render only (blue) {oo} px', fill=(200, 0, 0), font=F)
-out = a.out or f'out/mask_{a.pose}.png'; sheet.save(out); os.remove(tmp)
+out = a.out or f'out/mask_{a.pose.replace("@", "_")}.png'; sheet.save(out); os.remove(tmp)
 print(f'{out}: still only {so} px, render only {oo} px, total {so + oo}')

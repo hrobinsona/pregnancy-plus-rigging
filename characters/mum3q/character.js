@@ -83,10 +83,11 @@ export default {
     { bone: 'clavicle.far', from: 'upperArm.far', k: -0.18, start: 30, soft: 20, max: 60 },
   ],
   // a hand on her casts a faint near-hard shadow onto her dress and skin (reels: ~12 %, a few px, no blur); the near forearm
-  // lying across her front casts one too, onto the dress only (on chest.skin it drew a stripe inside the upper arm), at 16 %,
-  // (5, 9) px as still q_k4_down_0 reads (lesson 52). A group holds every part of the hand INCLUDING the wrist pad: the shadow is
+  // lying across her front casts one too, onto the dress only (on chest.skin it drew a stripe inside the upper arm), at 11 %,
+  // (4, 7) px: v7's 16 % at (5, 9) read "a hard, dark offset band" beside the still's soft, pale shade (natural lens v17;
+  // lesson 52). The top hand, lying ON the dome, casts 60 % of that at (3, 5) px: the still shows almost none under it (v20). A group holds every part of the hand INCLUDING the wrist pad: the shadow is
   // drawn just below the group's lowest part, so a pad left out got the hand's shadow painted over it ("a darker wedge on the heel")
-  contactShadow: { opacity: 0.16, offset: [5, 9], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$|arm\\.far\\.end$)', gate: 'contact.far', noCast: '^arm\\.far\\.end$' }],   // pose.fx['contact.near']: the hanging hand casts none
+  contactShadow: { opacity: 0.11, offset: [4, 7], color: '#5a1f12', groups: [{ match: '^(hand\\.near\\.|arm\\.near$|arm\\.near\\.heel$)', gate: 'contact.near', on: '^dress$' }, { match: '^(hand\\.far\\.|arm\\.far\\.heel$|arm\\.far\\.end$)', gate: 'contact.far', k: 0.6, offset: [3, 5], noCast: '^arm\\.far\\.end$' }],   // pose.fx['contact.near']: the hanging hand casts none
     on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [

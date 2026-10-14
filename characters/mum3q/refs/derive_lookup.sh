@@ -16,7 +16,11 @@ NEAR=shoulderAbd.near,upperArm.near,armAbd.near,armRot.near,forearm.near,foreRot
 STILL=$STILL,$NEAR
 $B n-base fit-q_k4_down fit-q_k_down 1 --keep $FAR,$NEAR --from B --hands near=cradle,far=hold --note "the look-down key (q_k_down_0) holding the bump with both hands: the far hand curled over its top, the near one cradling it (q_k4_down_0)"
 python3 tools/pose_set.py mum3q n-base --zbias arm.far.hand=40 >/dev/null
-$B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --note "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump"
+# the cradling hand keeps the still's finger ANGLE on this trunk: the reach pins it to the belly at n-down's own angle, and
+# n-down's trunk (the q_k_down fit + the rounded back) turned it 5° steeper than its fitted key (18/13/7/-2° → 23/18/11/2°,
+# tools/finger_angles.mjs): "straight, parallel fingers, a comb" (natural lens v17). hand.near 30.4 → 35.4 lays them back
+# (QA 'fingers' gate, spec.qa.fingers; lesson 58)
+$B n-down n-base --hands near=cradle --add chest=1.5,spineUpper=0.8,head=8 --set hand.near=35.4 --note "looking down at her bump (still q_k_down_0), holding it with both hands (still q_k4_down_0), the upper back rounded a little, the head tipped toward the bump"
 # the stills look down with the head TIPPED toward the bump (their eye line slopes ~20° down toward it, the chin down and
 # forward) on a long neck, the face hardly foreshortened, the eyes doing the looking. A deep nod instead (v6's 'too upright'
 # answered with headPitch 28) squashed the face under the hair: 'chin on the neckline, eye-to-chin 25% short, the lids

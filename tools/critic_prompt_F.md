@@ -166,3 +166,7 @@ How your review is used: you are one input. Harry's eye overrules a reviewer, an
 to change something (reviewers have been wrong: a gulp one called "barely registers" read to Harry as a burp). The
 client's brief and its intensity beat your taste: never ask for a move bigger, faster or more dramatic than the brief
 asks for. Every claim you make will be checked on the frames before anyone acts on it, so name the frame times.
+
+Still frames hide small moves that a viewer of the film sees at once. The motion sheets (magenta = everything that changed
+during that second) and, when present, the hands at 1:1 film px show them: before calling a part "frozen" or "static",
+check its magenta. A band's thickness is how far that edge travelled; no magenta means it truly did not move.

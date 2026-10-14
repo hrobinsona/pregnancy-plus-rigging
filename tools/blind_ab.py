@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""blind_ab.py <a.mp4> <b.mp4> [--t0 s --t1 s] [--crop x0,y0,x1,y1] [--step s] [--anim char/anim | --brief "text"] [--out out/blind_ab]
+"""blind_ab.py <a.mp4> <b.mp4> [--t0 s --t1 s] [--crop x0,y0,x1,y1] [--hands x0,y0,x1,y1] [--step s] [--anim char/anim | --brief "text"] [--out out/blind_ab]
    blind_ab.py --reveal <out>
 Blind A/B pack: the two renders relabelled X/Y in a random order (secret in <out>/key.json), frame sheets of both at
 matched times, and <out>/prompt.md for a FRESH subagent that is not told what changed. Hand it: "Read <out>/prompt.md and
 follow it exactly". Afterwards `--reveal <out>` prints which file was X and which Y.
+Small moves are drawn for the reviewer (tools/motion_sheet.py, lesson 58): the upper body's motion per second (magenta =
+changed), and with --hands (default: the --anim spec's handsBox, film px) the hands at 1:1 every 0.5 s and their motion.
 Why (reels, kits/rig/LESSONS.md): a blind A/B caught what scored rubrics missed, and is how principle-driven changes were
 tested before keeping them. Harry's eye still overrules the verdict."""
 import sys, os, json, glob, shutil, random, subprocess, argparse
@@ -18,9 +20,13 @@ if len(sys.argv) == 3 and sys.argv[1] == '--reveal':
 
 ap = argparse.ArgumentParser(); ap.add_argument('a'); ap.add_argument('b')
 ap.add_argument('--t0', type=float, default=0); ap.add_argument('--t1', type=float); ap.add_argument('--crop')
+ap.add_argument('--hands', help='x0,y0,x1,y1 film px: the hands at 1:1 + their motion (default: the --anim spec\'s handsBox)')
 ap.add_argument('--step', type=float, default=0.1, help='seconds between paired frames on the pair sheets')
 ap.add_argument('--anim', help='char/anim: brief + intensity from its spec'); ap.add_argument('--brief'); ap.add_argument('--out', default='out/blind_ab')
 o = ap.parse_args(); root = os.getcwd()
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import motion_sheet as MS
+spec = json.load(open('characters/{}/anims/{}.json'.format(*o.anim.split('/')))) if o.anim else {}
+hb = tuple(map(int, o.hands.split(','))) if o.hands else tuple(spec['handsBox']) if spec.get('handsBox') else None
 
 def probe(p):
     r = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate:format=duration', '-of', 'json', p], capture_output=True, text=True, check=True)
@@ -97,11 +103,18 @@ for L in 'XY':
     for k, i in enumerate(allf):
         x, y = (k % cols) * tw, 30 + (k // cols) * (th + 16); S.paste(fr(L, i).crop(bx).resize((tw, th), Image.LANCZOS), (x, y + 16)); d.text((x + 2, y), f'{tl(i):.2f}s', fill='#c00', font=F(11))
     S.save(f'{o.out}/{L}_every_frame.png'); files.append((f'{o.out}/{L}_every_frame.png', f'clip {L} alone, every frame, close up'))
+# 4. small moves drawn (lesson 58): the upper body's motion per second, larger than the film; the hands at 1:1 and their motion
+get = lambda L, i: fr(L, i)
+ub = (fb[0], fb[1], fb[2], int(fb[1] + 0.55 * (fb[3] - fb[1]))); nw = max(1, round((t1 - o.t0)))
+sc = min(1.0, (MS.MAX - 60) / (2 * (ub[3] - ub[1])), ((MS.MAX - 34) / min(8, nw) - 8) / (ub[2] - ub[0]))
+MS.motion(get, 'XY', N, fps, o.t0, ub, sc, f'{o.out}/ab_motion_body_%02d.png', 'upper body', files=files)
+if hb:
+    MS.at_scale(get, 'XY', list(range(0, N, max(1, round(0.5 * fps)))), hb, tl, f'{o.out}/ab_hands_%02d.png', 'the hands every 0.5 s', files=files)
+    MS.motion(get, 'XY', N, fps, o.t0, hb, 1.0, f'{o.out}/ab_motion_hands_%02d.png', 'the hands at 1:1', files=files)
 shutil.rmtree(tmp)
 
 brief = o.brief or ''
 if o.anim:
-    c, a = o.anim.split('/'); spec = json.load(open(f'characters/{c}/anims/{a}.json'))
     brief = spec.get('story', '') + (f"\n\nINTENSITY (set by the client — judge against THIS, do not push it further): {spec['intensity']}" if spec.get('intensity') else '')
 flist = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in files)
 prompt = f"""You are a fresh reviewer in a BLIND A/B test of two renders of the same character animation shot, labelled X and Y
@@ -122,7 +135,10 @@ How to review:
 2. Then go through the close-ups pair by pair, and each clip's every-frame sheet as a move: the arm and hands (wrist angle,
    elbow, shoulder joining in, size of the hands), the body and clothes moving as one, timing and spacing (slow in and out,
    no pops, no floaty or mechanical evenness), contact (a hand on the body touches it, no hovering or sinking), the face.
-3. Differences may be small. Name only what you can point to in the frames; if you can't see a difference, say so.
+3. Then the motion sheets (magenta = what changed during that second) and, if given, the hands at full film size: on a
+   phone a viewer SEES small moves that still frames hide. Judge whether each part lives and moves like a real body (a
+   still body breathes; resting hands shift a little), and whether each move reads natural: not whether it is bigger.
+4. Differences may be small. Name only what you can point to in the frames; if you can't see a difference, say so.
 
 Output, exactly in this form:
 - **First impression**: X or Y (one sentence why).

@@ -8,6 +8,8 @@ Anim mode (run after tools/char_anim.mjs) writes:
   out/<c>_<a>_feel_beat_<n>.png per beat: onion skin (ghost outlines, early = blue → late = red, over the middle frame)
                                 + the beat's frames side by side, zoomed on what moves
   out/<c>_<a>_feel_keys.png     the key moments, upper body, large
+  out/<c>_<a>_feel_motion_*.png what changed each second (magenta), upper body; with spec.handsBox also the hands at 1:1
+                                (+ _feel_hands_1to1_*.png every 0.5 s): small moves drawn, lesson 58
 Pose mode writes out/<c>_feel_poses.png (each pose large, upper body + full figure).
 Prints the filled prompt (tools/critic_prompt_F.md) with history from characters/<c>/feel_log_<a or poses>.md.
 --lens (anim mode; default feel): lasseter = the 12 principles, a score and a timed fix each; hands = the hands at size,
@@ -136,6 +138,17 @@ for z in spec.get('feelZoom', []):
     for k, i in enumerate(idx):
         x, y = (k % cols) * tw, (k // cols) * (th + 16); zs.paste(fr(i).crop(tuple(bz)).resize((tw, th), Image.LANCZOS), (x, y + 16)); d.text((x + 2, y), f'{i / fps:.2f}s', fill='#c00', font=F(11))
     zp = f'out/{name}_feel_zoom_{z["name"].replace(" ", "_")}.png'; zs.save(zp); files.append((zp, f"every frame of '{z['name']}', close up"))
+# 2c. small moves drawn (tools/motion_sheet.py, lesson 58): what changed each second, the upper body larger than the film;
+#     with spec.handsBox (film px) the hands at 1:1 every 0.5 s and their motion. Still strips at phone size hid 20 px hand moves
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import motion_sheet as MS
+get = lambda L, i: fr(i); nw = max(1, round(N / fps))
+ub = (bx[0], bx[1], bx[2], int(bx[1] + 0.55 * (bx[3] - bx[1])))
+sc = min(1.0, (MS.MAX - 60) / (ub[3] - ub[1]), ((MS.MAX - 34) / min(8, nw) - 8) / (ub[2] - ub[0]))
+MS.motion(get, ('',), N, fps, 0, ub, sc, f'out/{name}_feel_motion_body_%02d.png', 'upper body', files=files)
+if spec.get('handsBox'):
+    hb = tuple(spec['handsBox'])
+    MS.at_scale(get, ('',), list(range(0, N, max(1, round(0.5 * fps)))), hb, lambda i: i / fps, f'out/{name}_feel_hands_1to1_%02d.png', 'the hands every 0.5 s', files=files)
+    MS.motion(get, ('',), N, fps, 0, hb, 1.0, f'out/{name}_feel_motion_hands_%02d.png', 'the hands at 1:1', files=files)
 # 3. key moments, upper body, large
 kt = sorted(set([round(k['t'] * fps) for k in spec['keys']] + [b['from'] for b in beats]))
 kt = [k for k in kt if k < N][:16]; ub = (bx[0], bx[1], bx[2], int(bx[1] + (bx[3] - bx[1]) * 0.6)); tw = 300; th = int(tw * (ub[3] - ub[1]) / (ub[2] - ub[0]))

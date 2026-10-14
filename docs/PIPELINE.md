@@ -571,6 +571,29 @@ or composited.
    v15 said the eyes "landed", yet both A/Bs preferred v14. mum3q keeps `eyeLook` {1, 1, 1} (the old drawing).
    Rules: judge a feature's redraw at the size the film is watched, blind against the version before, not only zoomed
    beside the still. A light detail (a white, a highlight) only reads if the dark shape around it still does.
+   **Then measured, it won (v18).** v15–v16 had guessed the eye; v18 read q_k_down_0's at film size: a big dark iris
+   pushed FORWARD toward the bump under a heavy lash line, the white a sliver on its back side only, the lids open
+   (.75/.25). So the opening stays put (`lidK` 0), the iris slides with a mostly-forward gaze (.022, .014) at .92 of the
+   opening. Blind v18 vs v14: v18 6.5, v14 6, the eyes the most visible difference: "open, plainly looking down at the
+   bump… X's read half-shut or drowsy". The white works when it sits where the still puts it and the dark mass stays big;
+   v15's mostly-DOWN gaze put white above and around the iris. An eye pose belongs to its head pose: the forward-down
+   look-down iris under a still-raised head read "side-eye" (natural lens v18: the eyes went down 0.6 s before the head).
+58. **Review what the viewer sees: draw the small moves at film size, and check the FILM against the still, not the key.**
+   mum3q look-up v14–v17. QA measured both hands moving 20–26 px on her each second and the chest lifting on the look
+   up, yet three reviewers in a row called the hands "frozen" and a blind A/B said "a real but small hand or eye change
+   could be there without me seeing it". The packs showed the figure at a third of film size as still tiles: a 20 px move
+   was ~7 px between two tiles a row apart. `tools/motion_sheet.py` now puts into both packs the hands at 1:1 every
+   0.5 s (`spec.handsBox`) and, per second, the first frame faded with every changed pixel in magenta. With them the
+   next reviewers sized the moves ("the thumb rises 10–12 px… settles back by 1.5 s") and judged them: one A/B read the
+   thumb's swing alone as "a tic… a straight stalk", another preferred it to a curl too small to see (v19 lost 6 vs 6.5).
+   The same sheets showed the cradling hand wrong ON THE FILM while its key matched the still (`mask_overlay` 939 px):
+   the reach pins the hand to the belly at the look-down key's place and angle, and that key's trunk (another still's
+   fit) had put it 26 px behind the still's and 6° steeper ("a comb… the tips well inside the edge"). v18 set the key's
+   hand bone to the still's finger angles (18/13/7/−2°); v20 moved the reach stops by the measured 26 px and won blind
+   ("the bump looks as if it rests in the hand"; v21 kept its stroke inside the edge and won again).
+   Rules: give every shot a `handsBox`; before acting on "frozen" or "static", read the motion sheet. When a derived key
+   or a reach acts on a fitted hand, measure the film against the still: `finger_angles.mjs --anim` (gated by QA
+   `fingers`, `spec.qa.fingers`) and `mask_overlay.py <char> <anim>@<t>` (the shot's pose at t over the still).
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

@@ -1,17 +1,18 @@
 {
  "name": "face-tender",
- "note": "looking down at her bump: the eyes OPEN under heavy, half-lowered upper lids, the irises low, the gaze down, as the stills draw it (q_k_down_0, q_k4_down_0); no smile crescent on the lower lid; the brows relaxed (brow.soft), a warm smile. v6's first lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 read 'wide-eyed, glancing sideways'. Picked side by side with the still (tools/hand_shapes.py --face). v15\u2013v16 tried an eye with a white, the iris down toward the bump inside it (parts/head.js eyeLook): both lost blind to this dark oval at phone size ('white all round\u2026 a side-glance'; 'a short dark slash\u2026 sleepier'), so it stays (lesson 57)",
+ "note": "looking down at her bump as the stills draw it (q_k_down_0, q_k4_down_0): the eyes OPEN under heavy upper lids, a big dark iris pushed forward toward the bump with a sliver of white behind it (params eyeLook), the brows relaxed (brow.soft), a closed warm smile, a touch slimmer than the look-up's. History: v6's lids (open 0.6 + half 0.26 + smile 0.2) squashed the eye to a slit ('closed arcs'); open 0.8 + half 0.2 with no white read 'wide-eyed, glancing sideways'; v15–v16's whites with the gaze mostly down showed white all round ('a side-glance') and lost blind; v17's dark oval (open 0.6 + half 0.4, no white) read 'sleepy, or smug' with the full warm mouth ('a wide crescent'). v18: the still's eye measured side by side at film size (lesson 57)",
  "face": {
   "lid": {
-   "open": 0.6,
-   "half": 0.4
+   "open": 0.75,
+   "half": 0.25
   },
   "gaze": [
-   0.006,
-   0.035
+   0.022,
+   0.014
   ],
   "mouth": {
-   "warm": 1
+   "warm": 0.6,
+   "soft": 0.4
   },
   "brow": {
    "soft": 1
