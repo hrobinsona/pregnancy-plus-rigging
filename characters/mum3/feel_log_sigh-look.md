@@ -16,7 +16,7 @@ down at her bump (7.4–7.85 s), then a hold; a calm face instead of the smile; 
   0.87–1.33 s "a slight squeeze"; (5) the look-down "starts like a small drop"; (6) the hand drawing generic (a comb of
   fingers, a long straight thumb, a corner under the wrist: breathe-stroke's hand, open there too).
 
-## v2 — a front-loaded sigh, a slow heavy eye-open, a held end
+## v2 — a front-loaded sigh, a slow heavy eye-open, a held end (kept)
 
 - The sigh from 0.2 s with ease [0.15, 0.5, 0.35, 1] (most of the drop in its first 0.6 s, a long tail); the lids stay
   as shut as face-in's through it (face-letgo, face-settle .1/.9), lips parted.
@@ -26,3 +26,10 @@ down at her bump (7.4–7.85 s), then a hold; a calm face instead of the smile; 
 - The breath's phase moved (phase0 0.2 → 0.65): a recovery breath in as her eyes open (1.4–3.6 s), the next breath OUT
   through the hold (3.6–5.0 s), the head riding it at 0.5° (was 1.2°): the hold settles instead of lifting.
 - QA PASS.
+- **Blind v2 vs v1: v2 6.5, v1 6** (low confidence, "at phone size the two clips look the same"). v2 "eases the head down:
+  it builds to its fastest at about 2.6 s, then keeps settling slowly"; "breathes out over the last second… its head
+  stays down, so the clip ends on a settled, held pose"; v1's "head lifts back… from 4.6 s and is still moving when the
+  clip ends". For v1: its hand's settle "creeps from 1.0 s… a little softer and chains nicely: hand, then eyes, then
+  head". Wrong in both: the hand frozen 2–5 s (declared in qa.still: the held end the story cuts on), its fingers
+  "parallel bars, a little rake-like"; the eye-open still the quickest event (2–3 frames to a full iris).
+- Render `renders/mum3_sigh-look_v2.mp4`.
