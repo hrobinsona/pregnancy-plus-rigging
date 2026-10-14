@@ -1,0 +1,9 @@
+{
+  "char": "mum3",
+  "name": "s_all_fours",
+  "prompt_file": "docs/prompts/s_all_fours.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3
+}

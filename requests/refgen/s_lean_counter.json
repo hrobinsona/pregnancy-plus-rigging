@@ -1,0 +1,9 @@
+{
+  "char": "mum3",
+  "name": "s_lean_counter",
+  "prompt_file": "docs/prompts/s_lean_counter.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3
+}
