@@ -519,3 +519,20 @@ Results on v18:
   widens toward the wrist (a cone), so the round mass sits on the end of a club. Next: measure the far arm's edges on the
   still (angle and width every 20 px) and fit `upperArm.far` and `armFar.w` to them; then the lower hand's thumb swing at
   0.5–1.5 s ("a twitch", 10 px in a second).
+
+## v26 — the far upper arm slim on its body side
+
+- Measured row by row on q_k4_down_0, the far arm shows 14–18 px of still past her bust, on a ~31° diagonal; v25 showed
+  26–31 px, widening down into the wrist's round mass, so the mass sat on the end of a club. v26 slims the arm's FRONT
+  (its body side, which the bust hides at rest, so the rest drawing is unchanged) by 0.05 H on its first three segments
+  (`armFar.w`).
+- **Blind v26 vs v25: v26 6.5, v25 6** (about 60/40). The pixel diff touched only the arm's strip. v26's forearm "a slim
+  wedge… reads as a woman's wrist and lets the hand read as a hand"; v25's "flares into the wrist… the forearm and the
+  hand's outer knob merge into one lump", "a stiff cone with no elbow". v26 "implies a bent arm reaching around the
+  bump". One reservation: at 0–1.5 s and 5–8 s v26's strip pinches at the widest point of the bust "thin enough that the
+  strip looks like a thread on a phone". Kept. QA PASS; mum2 and mum3 SVG unchanged.
+- Still wrong in both: the top hand's outer knob a "mitten-like lump past the bump's silhouette"; its four fingers
+  near-parallel and evenly spaced; it hardly changes shape as it moves ("stiff rather than resting"); the lower fingers
+  a rake at 3.0–4.5 s and re-shaping at 2–3 s and 5–6 s.
+- Next: the strip's width at the bust against the still's (not under 14 px); the far shoulder lower and further in
+  (≈10 px and 22 px of still), which needs a refit of the arm so the hand stays on the still's tips.
