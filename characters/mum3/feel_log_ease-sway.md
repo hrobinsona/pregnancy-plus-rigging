@@ -17,7 +17,7 @@ floor by the door and she smiles; it ends on a held pose. No stills: keys derive
   down" in the hold. (6) The opening weight back doesn't register (a standstill to 0.4 s). Right: the feet planted, the
   hand glued to the bump, the tempo for "very gentle", the bump's overlap at 2.5–3.5 s, the blink on the look.
 
-## v2 — a weight shift, not a tilt
+## v2 (lost) — a weight shift, not a tilt
 
 - Opens mid-drift back (n-sway-start, half way from settled to the back foot, an ease that starts moving).
 - The hips lead: a trunk fidget leans back ~1.6° as the hips go forward and follows through 0.6° as they stop; the head
@@ -29,3 +29,14 @@ floor by the door and she smiles; it ends on a held pose. No stills: keys derive
   .45).
 - The fingers: every curl and lift in a cascade, little finger first, 0.08 s apart; the thumb presses with the hand.
 - Feet drift ≤ 0.7 px (feet_probe).
+- **Blind v2 vs v1: v1 6.5, v2 5.5.** v2 "a back-forward-back rock… a visible bounce at 2.8–3.2 s"; "the whole figure
+  tips like a plank from the ankles and the head travels as far as the hips or further… the head bobs" (the trunk's
+  trail moved the head BACK in space first); its end eye "narrows into a thin dark slit… reads as eyes closing again…
+  the 'eyes lift to her bag' beat is lost". v1: "the pelvis carries the shift under a fairly steady head (head about 6 px
+  against hips about 10 px)", one sway, "you can tell she looks up at something and smiles" (a little wide, "a slight
+  stare"). Wrong in both: the bump moves rigidly with the pelvis (no visible settle), the lower fingers a parallel stack,
+  the gaze level rather than down-forward to the floor, the breath out hard to see.
+- **v1 stands** (keys, poses and spec back to commit 1d87e7b; derive script's notes corrected: v1's shin +3 is a clamped
+  hyperextension, not a soft knee). Render `renders/mum3_ease-sway_v1.mp4`. Lesson 60.
+- Next if it comes back: a visible bump settle (the belly fidget ±1.2° doesn't show), the gaze a touch lower with the iris
+  showing, a cascade in the fingers (untested alone), each on its own A/B.

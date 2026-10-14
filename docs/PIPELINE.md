@@ -618,12 +618,16 @@ or composited.
    2.5 px into it at the back one. `spec.plantFeetSink: true`
    moves the hips by what the foot nearest the floor still lacks: the ankles hold within 0.6 px all shot. Opt-in, so
    earlier shots keep their frames. Probe the feet on any shot that moves the hips: `node tools/feet_probe.mjs <char> <anim>`.
-   Then make it a weight shift, not a tilt (feel review on v1: "a cut-out on a pivot… two legs as parallel poles hinged
-   at the ankles"): the hips lead and the trunk trails them (a `spineLower`/`chest` fidget leaning back as the hips go
-   forward, then a smaller follow-through), and the knee the weight leaves softens. A knee BENDS with a NEGATIVE shin
-   angle (mum3's `shin` limits: min −150, max 5): v1's `shin.near=3` "soft knee" was a hyperextension clamped at 5°,
-   unseen. Read a bone's limits before choosing a sign; a bent knee lets the same thigh tilt carry the hips ~40% further,
-   so scale the tilt back to the brief's size.
+   A feel reviewer then called v1 "a cut-out on a pivot… two legs as parallel poles" and asked for the hips to lead, the
+   trunk to trail, the back knee to soften, a lidded look and a squinting smile; v2 did all of it and LOST blind (5.5 vs
+   6.5): leaning the trunk back as the hips went forward moved the HEAD back in space before it swung forward ("the head
+   bobs… tips like a plank"), opening mid-drift made a back-forward-back rock with "a rebound", and the squint (lid smile
+   .45) read at phone size as "a closed dash… the look is lost". v1's head already moved less than its hips (0.13 H to
+   0.21 H). Rules: in a weight shift keep the head steady IN SPACE (measure it with `anim_dump`), never trail it back; one
+   sway, its settle much smaller and slower than the move; at phone size an eye with a smile squint reads closed, so a
+   look at something needs the iris showing. A knee BENDS with a NEGATIVE shin angle (mum3's `shin` limits: min −150,
+   max 5; v1's `shin.near=+3` "soft knee" is a clamped hyperextension): read a bone's limits before choosing a sign.
+   A reviewer's prescriptions are hypotheses: each one goes through its own A/B.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

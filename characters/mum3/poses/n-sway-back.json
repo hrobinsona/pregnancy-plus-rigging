@@ -1,7 +1,7 @@
 {
  "name": "n-sway-back",
- "note": "weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, the front knee eased, her head bowed to her bump (ease-sway)",
- "_recipe": "n-sway-back n-bump --add thigh.near=1.5,thigh.far=1.5,spineLower=0.8,shin.far=-2,head=3,neck=3 --note weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, the front knee eased, her head bowed to her bump (ease-sway)",
+ "note": "weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, her head bowed to her bump (ease-sway)",
+ "_recipe": "n-sway-back n-bump --add thigh.near=2,thigh.far=2,spineLower=0.8,head=3,neck=3 --note weight on the back foot, the hips ~25 px back, the trunk a touch forward over them, her head bowed to her bump (ease-sway)",
  "hands": {
   "near": "lay",
   "far": "relaxed"
@@ -26,13 +26,13 @@
   "hipAbd.near": 0,
   "neck": 2.8,
   "pelvis": 0,
-  "shin.far": -3.6,
+  "shin.far": -1.6,
   "shin.near": -1.2,
   "shoulderAbd.near": 1,
   "spineLower": 0.8,
   "spineUpper": -0.2,
-  "thigh.far": 1.5,
-  "thigh.near": 1.4,
+  "thigh.far": 2.0,
+  "thigh.near": 1.9,
   "upperArm.near": -6.1
  }
 }

@@ -1,7 +1,7 @@
 {
  "name": "n-sway-settle",
  "note": "settled, the weight a little forward of centre (ease-sway)",
- "_recipe": "n-sway-settle n-bump --add thigh.near=-0.9,thigh.far=-0.9,spineLower=-0.6,shin.near=-2,head=3,neck=3 --note settled, the weight a little forward of centre (ease-sway)",
+ "_recipe": "n-sway-settle n-bump --add thigh.near=-1.5,thigh.far=-1.5,spineLower=-0.6,shin.near=1.5,head=3,neck=3 --note settled, the weight a little forward of centre (ease-sway)",
  "hands": {
   "near": "lay",
   "far": "relaxed"
@@ -27,12 +27,12 @@
   "neck": 2.8,
   "pelvis": 0,
   "shin.far": -1.6,
-  "shin.near": -3.2,
+  "shin.near": 0.3,
   "shoulderAbd.near": 1,
   "spineLower": -0.6,
   "spineUpper": -0.2,
-  "thigh.far": -0.9,
-  "thigh.near": -1.0,
+  "thigh.far": -1.5,
+  "thigh.near": -1.6,
   "upperArm.near": -6.1
  }
 }

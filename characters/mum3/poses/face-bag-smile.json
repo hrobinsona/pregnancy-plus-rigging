@@ -1,14 +1,15 @@
 {
  "name": "face-bag-smile",
+ "note": "the smile reaches her eyes, still on the bag (ease-sway)",
  "face": {
   "lid": {
-   "open": 0.5,
-   "half": 0.3,
-   "smile": 0.45
+   "open": 0.62,
+   "half": 0.18,
+   "smile": 0.2
   },
   "gaze": [
-   0.014,
-   0.03
+   0.012,
+   0.026
   ],
   "mouth": {
    "warm": 1
@@ -16,6 +17,5 @@
   "brow": {
    "soft": 1
   }
- },
- "note": "the smile at the bag reaches her eyes: the cheek lifts the lower lid into a soft squint (ease-sway; v2: lid smile .2 → .45, feel review v1: 'the bag doesn't earn a new smile')"
+ }
 }

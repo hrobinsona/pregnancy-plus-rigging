@@ -1,7 +1,7 @@
 {
  "name": "n-sway-front",
- "note": "weight onto the front foot, the hips ~30 px forward, the trunk a touch back, the back knee soft as the weight leaves it, the shoulders settled on the breath out (ease-sway v2: feel review v1, the legs two straight poles and the breath out unseen)",
- "_recipe": "n-sway-front n-bump --add thigh.near=-1.5,thigh.far=-1.5,spineLower=-1.4,shin.near=-5,clavicle.near=-2.5,head=3,neck=3 --note weight onto the front foot, the hips ~30 px forward, the trunk a touch back, the back knee soft as the weight leaves it, the shoulders settled on the breath out (ease-sway v2: feel review v1, the legs two straight poles and the breath out unseen)",
+ "note": "weight onto the front foot, the hips ~30 px forward, the trunk a touch back (ease-sway)",
+ "_recipe": "n-sway-front n-bump --add thigh.near=-2.5,thigh.far=-2.5,spineLower=-1,shin.near=3,head=3,neck=3 --note weight onto the front foot, the hips ~30 px forward, the trunk a touch back (ease-sway)",
  "hands": {
   "near": "lay",
   "far": "relaxed"
@@ -15,7 +15,7 @@
   "armRot.near": -13.7,
   "belly": 0,
   "chest": -0.6,
-  "clavicle.near": -4.0,
+  "clavicle.near": -1.5,
   "foot.far": 1.6,
   "foot.near": 2.9,
   "foreRot.near": -0.7,
@@ -27,12 +27,12 @@
   "neck": 2.8,
   "pelvis": 0,
   "shin.far": -1.6,
-  "shin.near": -6.2,
+  "shin.near": 1.8,
   "shoulderAbd.near": 1,
-  "spineLower": -1.4,
+  "spineLower": -1.0,
   "spineUpper": -0.2,
-  "thigh.far": -1.5,
-  "thigh.near": -1.6,
+  "thigh.far": -2.5,
+  "thigh.near": -2.6,
   "upperArm.near": -6.1
  }
 }

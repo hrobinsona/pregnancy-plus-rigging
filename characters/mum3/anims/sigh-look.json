@@ -38,15 +38,15 @@
    "note": "the top of the deep breath in (breathe-stroke 4.85 s): ribcage lifted, chin up, eyes shut"
   },
   {
-   "t": 0.3,
+   "t": 0.2,
    "pose": "n-breath",
    "ease": [
-    0.22,
-    0.4,
-    0.3,
+    0.15,
+    0.5,
+    0.35,
     1
    ],
-   "note": "a beat at the top, then the sigh: a fast release and a long settle (breathe-stroke's own ease)"
+   "note": "a beat at the top, then the sigh: v2 front-loaded, most of the drop in its first 0.6 s and a long tail (feel review v1: 'someone being gently lowered… not someone letting a breath go')"
   },
   {
    "t": 2.0,
@@ -58,16 +58,16 @@
    "t": 3.4,
    "pose": "n-gaze",
    "ease": [
-    0.35,
-    0.05,
-    0.2,
+    0.42,
+    0,
+    0.3,
     1
    ],
    "shift": {
     "head": -6,
     "neck": -6
    },
-   "note": "the eyes open onto the bump first (2.2 s), the head follows down a beat later (breathe-stroke 7.7–9.0 s)"
+   "note": "the eyes open onto the bump first (2.05–2.85 s), the head follows down a beat later (breathe-stroke 7.7–9.0 s); v2: an S-curve, not a drop at its start (feel review v1: 'a little nod or dip at the start')"
   },
   {
    "t": 5.0,
@@ -106,7 +106,7 @@
     "gap": 0.04
    },
    {
-    "t": 2.0,
+    "t": 1.5,
     "pose": "n-bump",
     "on": "belly",
     "dphi": -25,
@@ -116,7 +116,8 @@
     ],
     "lie": "bump",
     "surface": "bump",
-    "gap": 0.04
+    "gap": 0.04,
+    "note": "v2: the hand's settle on the bump ends with the body's sigh (1.5 s), not after it: v1's ended at 2.0 s, the hand sliding over a still bump and stopping on the beat (feel review: 'slips, then stops dead')"
    },
    {
     "t": 5.0,
@@ -154,9 +155,9 @@
     },
     {
      "t": 1.2,
-     "pose": "face-out",
+     "pose": "face-letgo",
      "ease": "breath",
-     "note": "lips part on the sigh"
+     "note": "lips part on the sigh; v2 the lids stay shut and thin (face-out's opened a hair: 'the closed-eye line gets thicker and darker… a slight squeeze')"
     },
     {
      "t": 1.95,
@@ -170,10 +171,21 @@
      "ease": "inOut"
     },
     {
-     "t": 2.35,
+     "t": 2.4,
+     "pose": "face-heavy",
+     "ease": "inOut",
+     "note": "v2: the lids lift slowly through a heavy half-lid, the gaze already down (feel review v1: 'the eyes snap open… close to a startle', 0.1 s)"
+    },
+    {
+     "t": 2.55,
+     "pose": "face-heavy",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.9,
      "pose": "face-gaze",
      "ease": "inOut",
-     "note": "the eyes open onto the bump FIRST, lids half lowered, calm (the head follows from 2.35)"
+     "note": "calm, lids half lowered onto her bump"
     },
     {
      "t": 5.0,
@@ -197,19 +209,19 @@
  },
  "breath": {
   "period": 4,
-  "phase0": 0.2,
+  "phase0": 0.65,
   "amp": [
    {
     "t": 0,
     "amp": 0.2
    },
    {
-    "t": 1.9,
+    "t": 1.4,
     "amp": 0.2
    },
    {
-    "t": 2.6,
-    "amp": 1
+    "t": 2.4,
+    "amp": 0.8
    }
   ],
   "shape": {
@@ -240,10 +252,10 @@
    "chestAcross": 0.03,
    "chestDeg": -1,
    "shoulderDeg": 2.2,
-   "headDeg": -1.2,
+   "headDeg": -0.5,
    "belly": 0.012
   },
-  "note": "the keyed sigh replaces the breath cycle until it ends (breathe-stroke's 0.2 over its keyed breath), then she breathes on"
+  "note": "the keyed sigh replaces the breath cycle until it ends (breathe-stroke's 0.2 over its keyed breath), then she breathes on. v2: the cycle's phase puts a recovery breath in as her eyes open (1.4–3.6 s) and the next breath OUT through the hold (3.6–5.0 s), the head riding it at 0.5°: v1's breath in lifted and tipped her head back from 4.5 s ('the ending is not a held pose… she is starting to look up again')"
  },
  "blink": {
   "close": 3,
