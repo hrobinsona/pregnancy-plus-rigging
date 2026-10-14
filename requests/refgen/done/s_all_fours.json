@@ -1,0 +1,16 @@
+{
+  "char": "mum3",
+  "name": "s_all_fours",
+  "prompt_file": "docs/prompts/s_all_fours.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/s_all_fours_0.png",
+    "characters/mum3/refs/images/s_all_fours_1.png",
+    "characters/mum3/refs/images/s_all_fours_2.png"
+  ],
+  "finished": "2026-10-14 21:46:17"
+}

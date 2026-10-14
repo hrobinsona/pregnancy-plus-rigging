@@ -1,0 +1,16 @@
+{
+  "char": "mum3",
+  "name": "s_bend_pick",
+  "prompt_file": "docs/prompts/s_bend_pick.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/s_bend_pick_0.png",
+    "characters/mum3/refs/images/s_bend_pick_1.png",
+    "characters/mum3/refs/images/s_bend_pick_2.png"
+  ],
+  "finished": "2026-10-14 21:48:27"
+}
