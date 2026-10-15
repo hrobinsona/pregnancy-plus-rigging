@@ -1,9 +1,0 @@
-{
-  "char": "mum3",
-  "name": "s_walk_down",
-  "prompt_file": "docs/prompts/s_walk_down.txt",
-  "refs": [
-    "characters/mum3/ref/master.png"
-  ],
-  "n": 3
-}
