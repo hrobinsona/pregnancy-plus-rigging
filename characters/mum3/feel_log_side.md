@@ -732,3 +732,26 @@ at least 8/10"), so the ceiling goes to him as a decision; work continues agains
   (index to little), the end joints 12–18°, the knuckles still one angle.
 - **The walking hands** (natural: "the wrist in line with the forearm… no flop"): each hand trails its forearm ~12°
   against the swing (4–5° before), in all three keys and so in the walk.
+
+**Scores, round 15** (three fresh critics on Fable):
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 5.5 | 6 | 5.5 |
+| kneel | 6.5 | 7 | 7 |
+| kneel-pick | 4.5 | 5 | 4.5 |
+| lean-counter | 6 | 7 | 6.5 |
+| sit-ball | 6 | 6.5 (+0.5) | 6 |
+| sit-chair | 7 | 7 | 7 |
+| squat | 5 | 5.5 | 5 |
+| walk-contact | 6 | 6.5 | 6.5 |
+| walk-down | 6 | 6.5 | 6.5 |
+| walk-pass | 6.5 | 6.5 | 6.5 |
+
+Every round-15 change was confirmed as landed by at least two lenses (the chair "a kitchen chair, not a toy", sit-ball's
+shins "no longer open an X", the resting fingers' middle-joint curl "visible at 1:1", the walking hands trailing) and
+the scores moved by one half point in thirty. Lean-counter's far hand split the lenses: body "on the worktop now", natural
+and craft "still on the near forearm". Asks that lead again: the folded thigh "~0.6–0.7 of the still's depth" (body,
+craft: all-fours, the squat, kneel-pick, sit-ball, sit-chair), the folded cloth (the squat's sack, kneel-pick's bell,
+all-fours' notch under the bump, sit-ball's wedge under the thigh), kneel-pick kneeling tall, the hands closing from the
+knuckle.
