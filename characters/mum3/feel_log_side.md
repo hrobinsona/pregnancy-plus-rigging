@@ -328,3 +328,34 @@ What changed (lesson 69, HARRY_EYE 31–35):
 Blind A/B on breathe-stroke (one fresh reviewer on **Fable**, the shared shoe and shoulder changes, whole figure in frame):
 no clear difference, 6.5 vs 6.5; kept (the standing far shoe is mostly behind the near one; the shoulder points move
 ≤ 0.0055 H). Both: the breath lives in the chin more than the body; the stroke's fingers comb-like at 8.8–9.5 s.
+
+Round 8 critics (three fresh reviewers on **Fable**, the pack with the new hand-and-foot close-ups), natural / body / craft:
+
+| pose | natural | body | craft | round 7 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| kneel-pick | 4.5 | 5 | 4.5 | 4.5 / 5 / 5 |
+| all-fours | 5.5 | 6 | 5.5 | 5.5 / 6 / 6 |
+| sit-chair | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| sit-ball | 6.5 | 6 | 6 | 6 / 6 / 6 |
+| squat | 5.5 | 5 | 5 | 5.5 / 5 / 5.5 |
+| lean-counter | 6.5 | 7 | 6.5 | 6.5 / 6.5 / 6.5 |
+| walk-contact | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 6.5 |
+| walk-down | 6 | 6.5 | 6 | 6 / 6 / 6 |
+| walk-pass | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 6.5 |
+
+Landed, every lens: the far shoe a whole flat in every pose (item 32), the far leg where the still puts it (33: squat wide
+and up, sit-chair set back, sit-ball ahead and up), the shoulder one line with the strap a band (34), the worktop palms
+down. Not landed: the hands. All three, unprompted, at the 1:1 close-ups: every hand "a flat paddle carrying four long
+parallel lines from mid-hand to the tips", the curl "too small to see" ("the current gate (mean ≥ 4°) passes a curl
+nobody can see; the still's bend is 25°+"), and the far hand "a full duplicate of the near one", a second fan, wherever
+both rest on one surface (kneel, sit-chair, sit-ball, lean); the squat's `hold` "a cluster of lumps… paws on a stick",
+kneel-pick's far hand "a pointer". Side-by-side tries beside the stills (tools/side_zoom.py --try, sit-chair and
+walk-pass): a deeper in-picture curl turns the hanging hand into a claw curling FORWARD, while the walk-pass still's near
+hand hangs nearly straight; the sit-chair still's hand points forward level where ours points 30° down, its fingers shorter
+and fuller. So the gap is the hand's ANGLE, its far hand's PLACE and the fingers' proportions, measured per still, not
+more curl: the next round places each hand on its still (the mum3q method, lesson 54) rather than tuning shapes.
+Also: sit-ball's near hand now rests on the near thigh (the far leg moved) and fails QA `alive` (its tips move 4–5 px a
+2 s window, the pin holding the palm); the far shin there hangs behind the near one while the far shoe sits ahead (body
+lens). Squat's feet: the craft reviewer read the near shoe as floating above the far one; at 1:1 the near foot stands on
+the floor with its shadow and the far one is up and ahead as in the still (a misread, not changed).
