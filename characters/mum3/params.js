@@ -80,9 +80,14 @@ export const P = {
   // The far leg's measured FRONT stands ≈ 0.06 H further forward of its joints (its landmarks are guessed, vis 0.34):
   // its profile keeps that front and the near leg's depth.
   legProfile: (() => {
-    const sw = (side) => [0.1, 0.23, 0.37, 0.5, 0.63, 0.77, 0.9].map((f) => { const q = W(side === 'near' ? 'shinNear' : 'shinFar', f); return [f, q.front, q.back]; });
+    // (side-on round 1, every lens: "shins posts with no calf"; the standing A/B preferred v5's "readable knee dip and then
+    // the calf"): on the stills' straight shins the calf's back stands ≈ 1.4× the knee's back (ours 1.2×), so the calf's
+    // back swells ≈ 5 % more round a third of the way down and the ankle slims a touch. (Thighs that are FLESH hanging
+    // when horizontal: parts/legs.js)
+    const calf = (f) => 1 + 0.05 * Math.exp(-(((f - 0.3) / 0.18) ** 2)) - 0.05 * Math.max(0, (f - 0.7) / 0.2);
+    const sw = (side) => [0.1, 0.23, 0.37, 0.5, 0.63, 0.77, 0.9].map((f) => { const q = W(side === 'near' ? 'shinNear' : 'shinFar', f); return [f, q.front, q.back * (side === 'near' ? calf(f) : 1)]; });
     const near = { thigh: [[0, 0.3, 0.4], [0.25, 0.25, 0.3], [0.5, 0.21, 0.24], [1, 0.115, 0.26]],
-                   shin: [[0, 0.115, 0.26], ...sw('near'), [1, 0.062, 0.172]] };
+                   shin: [[0, 0.115, 0.26], ...sw('near'), [1, 0.062, 0.165]] };
     const dN = (f) => { const P = near.shin, i = P.findIndex((q) => q[0] >= f); return P[i][1] + P[i][2]; };
     const farS = sw('far').map(([f, fr]) => [f, fr, dN(f) - fr]), off = farS[0][1] - near.shin[1][1];
     const far = { thigh: near.thigh.map(([f, fr, bk]) => [f, fr + off * f, bk - off * f]), shin: [[0, 0.115 + off, 0.26 - off], ...farS, [1, 0.138, 0.096]] };

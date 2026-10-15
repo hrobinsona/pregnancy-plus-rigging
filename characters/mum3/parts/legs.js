@@ -24,7 +24,15 @@ export function legFor({ C: char, st, rig }, side) {
     heel: onFoot([h[0] + 0.08, h[1] - 0.04]),
     achilles: carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, back, 0.5),
   };
-  return legOutline({ hip: st[`thigh.${side}`].pos, knee: st[`shin.${side}`].pos, ankle: st[`foot.${side}`].pos, thigh: LP.thigh.P, shin: LP.shin.P, foot, kneeRound: X.knee.round, top: 0.18 });
+  // FLESH HANGS: a thigh held level (sitting, squatting, bending) is deeper than a hanging one, its underside sagging and
+  // spreading (on a seat, squashed): every sitting and squatting still draws the thigh ≈ 1.3× the standing one's depth
+  // (side-on round 1: "the near thigh a thin, straight-sided tube… spindly under that torso and bump"). By how far the
+  // thigh points from straight down (30° → 80°): the underside (back) up to +30 %, the top +10 %; a hanging thigh
+  // (standing, kneeling, on all fours) keeps the drawn one.
+  const H = st[`thigh.${side}`].pos, K = st[`shin.${side}`].pos, dv = [K[0] - H[0], K[1] - H[1]];
+  const a = Math.acos(Math.max(-1, Math.min(1, dv[1] / Math.hypot(...dv)))) * 180 / Math.PI, s1 = Math.max(0, Math.min(1, (a - 30) / 50)), k = s1 * s1 * (3 - 2 * s1);
+  const thigh = LP.thigh.P.map(([f, fr, bk]) => [f, fr * (1 + 0.1 * k * (1 - f * 0.6)), bk * (1 + 0.3 * k * (1 - f * 0.5))]);
+  return legOutline({ hip: H, knee: K, ankle: st[`foot.${side}`].pos, thigh, shin: LP.shin.P, foot, kneeRound: X.knee.round, top: 0.18 });
 }
 
 export function build(ctx) {

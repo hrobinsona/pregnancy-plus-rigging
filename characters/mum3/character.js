@@ -11,6 +11,7 @@ import * as arms from './parts/arms.js';
 import * as legs from './parts/legs.js';
 import { skirtPart } from './parts/skirt.js';
 import { propsFor } from './parts/props.js';
+import { ap } from '../../engine/geom.js';
 
 const J = { ...params.joints };
 const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far) };
@@ -98,9 +99,33 @@ export default {
     legs: Object.fromEntries(['near', 'far'].map((s) => { const S = s === 'near' ? 'Near' : 'Far';
       return [s, { abd: `hipAbd.${s}`, thigh: `thigh.${s}`, shin: `shin.${s}`, foot: `foot.${s}`, toe: `toe.${s}`, hip: `hip${S}`, knee: `knee${S}`, ankle: `ankle${S}`, ball: `ball${S}` }]; })),
   },
-  /** flat contact shadow under the feet (SVG string; model px) */
-  ground(pose, fill, Hpx) {
-    const x0 = X.shoe.near.heel[0] - 0.1, x1 = X.shoe.far.toe[0] + 0.1, flip = (pose.facing || 'right') === 'left' ? -1 : 1;
-    return `<ellipse cx="${(flip * (x0 + x1) / 2 * Hpx).toFixed(2)}" cy="${(-0.05 * Hpx).toFixed(2)}" rx="${((x1 - x0) / 2 * Hpx).toFixed(2)}" ry="${(0.09 * Hpx).toFixed(2)}" fill="${fill}"/>`;
+  /** flat contact shadow under whatever touches the floor (SVG string; model px): standing, one ellipse under both feet;
+   *  side-on poses (kneeling, all fours, sitting, squatting), one under each group of contacts: the shins along the floor,
+   *  each palm, each chair leg, the ball (a pose off its feet with the standing ellipse under empty floor reads as floating) */
+  ground(pose, fill, Hpx, parts) {
+    const flip = (pose.facing || 'right') === 'left' ? -1 : 1, rest = [X.shoe.near.heel[0] - 0.1, X.shoe.far.toe[0] + 0.1];
+    const E = ([x0, x1], ry = 0.09) => `<ellipse cx="${(flip * (x0 + x1) / 2 * Hpx).toFixed(2)}" cy="${(-0.05 * Hpx).toFixed(2)}" rx="${((x1 - x0) / 2 * Hpx).toFixed(2)}" ry="${(ry * Hpx).toFixed(2)}" fill="${fill}"/>`;
+    if (!parts) return E(rest);
+    // each part's stretch of floor (the x-span of its outline within a hair of the floor; a shoe's sole lifts at the heel),
+    // then the stretches that touch or nearly touch merged into one shadow each
+    const spans = [], low = (p) => p.geom.P.map((q) => ap(p.M, q));
+    for (const p of parts) {
+      if (!/^(shoe|leg|hand|prop)\./.test(p.id) || p.id.endsWith('.ol')) continue;
+      const P = low(p), lo = Math.max(...P.map((q) => q[1])), shoe = p.id.startsWith('shoe.');
+      const floor = p.id === 'shoe.far' && Math.abs(lo - X.shoe.far.sole) < 0.04 ? X.shoe.far.sole : 0;   // the far foot on its own floor line (she is turned a little toward us)
+      const xs = P.filter((q) => q[1] > floor - (shoe ? 0.12 : 0.08)).map((q) => q[0]);
+      if (xs.length) spans.push({ x0: Math.min(...xs), x1: Math.max(...xs), ids: [p.id] });
+    }
+    if (!spans.length) return '';
+    spans.sort((a, b) => a.x0 - b.x0);
+    const groups = [spans[0]];
+    for (const q of spans.slice(1)) { const g = groups[groups.length - 1]; if (q.x0 - g.x1 > 0.25) groups.push({ ...q }); else { g.x1 = Math.max(g.x1, q.x1); g.ids.push(...q.ids); } }
+    return groups.map((g) => {
+      let x0 = g.x0 - 0.1, x1 = g.x1 + 0.1;
+      if (g.ids.every((id) => /^(shoe|leg)\./.test(id)) && Math.abs(x0 - rest[0]) < 0.12 && Math.abs(x1 - rest[1]) < 0.12) return E(rest);   // standing: the shadow it always had
+      const ball = parts.find((p) => p.id === 'prop.ball');
+      if (ball && g.ids.includes('prop.ball')) { const xs = low(ball).map((q) => q[0]), r = (Math.max(...xs) - Math.min(...xs)) / 2, c = (x0 + x1) / 2; x0 = Math.min(x0, c - 0.7 * r); x1 = Math.max(x1, c + 0.7 * r); }
+      return E([x0, x1], x1 - x0 < 0.5 ? 0.06 : 0.09);
+    }).join('');
   },
 };

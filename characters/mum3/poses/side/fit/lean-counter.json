@@ -2,10 +2,11 @@
  "name": "side/fit/lean-counter",
  "note": "fitted to characters/mum3/refs/pose/s_lean_counter_1.json (MediaPipe landmarks, base rest)",
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": "press",
+  "far": "press"
  },
  "fx": {
+  "turn": 0.4,
   "show.far.arm": 1
  },
  "props": {
@@ -16,52 +17,52 @@
   ]
  },
  "root": [
-  -0.8469,
-  0.1208
+  -0.8644,
+  0.1207
  ],
  "bones": {
-  "pelvis": 22.3,
-  "spineLower": 7.2,
-  "spineUpper": -1.1,
-  "chest": -9.4,
-  "neck": -6.4,
-  "head": -1.6,
+  "pelvis": 22.4,
+  "spineLower": 7.9,
+  "spineUpper": -1,
+  "chest": -9.5,
+  "neck": -7.5,
+  "head": -1.9,
   "belly": 0,
   "clavicle.near": -22,
-  "shoulderAbd.near": -6.4,
-  "upperArm.near": 15.6,
-  "armAbd.near": 1.5,
+  "shoulderAbd.near": -6.8,
+  "upperArm.near": 16,
+  "armAbd.near": 1.6,
   "armRot.near": 4.8,
-  "forearm.near": 52.4,
+  "forearm.near": 52.3,
   "foreRot.near": -0.1,
   "hand.near": -8.3,
-  "thigh.near": 16.1,
-  "shin.near": 0.4,
+  "thigh.near": 16.2,
+  "shin.near": 0.1,
   "foot.near": 2.8,
-  "hipAbd.near": -2.8,
-  "clavicle.far": -15.8,
-  "shoulderAbd.far": -5.8,
-  "upperArm.far": 15.3,
-  "armAbd.far": 1.7,
-  "armRot.far": -1.3,
-  "forearm.far": 49,
-  "foreRot.far": 0.1,
+  "hipAbd.near": -3.2,
+  "clavicle.far": -18.6,
+  "shoulderAbd.far": -5.1,
+  "upperArm.far": 15.4,
+  "armAbd.far": 1.8,
+  "armRot.far": -1.2,
+  "forearm.far": 48.7,
+  "foreRot.far": 0,
   "hand.far": -7.4,
-  "thigh.far": 23.2,
-  "shin.far": 3.7,
-  "foot.far": -0.8,
-  "hipAbd.far": 0
+  "thigh.far": 32.8,
+  "shin.far": -8.2,
+  "foot.far": 0.9,
+  "hipAbd.far": -0.3
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_lean_counter_1.json",
   "scale": 1.0208,
-  "rms": 0.0805,
+  "rms": 0.0745,
   "worst": [
-   "indexL 0.178",
-   "pinkyL 0.168",
-   "thumbL 0.147",
-   "hipL 0.134",
-   "shoulderR 0.109"
+   "indexL 0.156",
+   "pinkyL 0.147",
+   "hipL 0.136",
+   "thumbL 0.129",
+   "shoulderR 0.108"
   ]
  }
 }

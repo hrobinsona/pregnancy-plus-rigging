@@ -1,11 +1,12 @@
 {
- "name": "side/fit/sit-chair",
- "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:low, shoe.far:low on the floor",
+ "name": "side/sit-chair",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:5, shoe.near:6, shoe.far:5, shoe.far:6 on the floor",
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": "lay",
+  "far": "lay"
  },
  "fx": {
+  "turn": 0.4,
   "show.far.arm": 1
  },
  "props": {
@@ -16,55 +17,56 @@
   ]
  },
  "root": [
-  -0.4535,
-  1.5268
+  -0.4533,
+  1.5085
  ],
  "bones": {
   "pelvis": 0,
-  "spineLower": 1.8,
-  "spineUpper": 0.6,
-  "chest": 0.8,
-  "neck": 1.4,
-  "head": -0.2,
+  "spineLower": 2.3,
+  "spineUpper": 0.5,
+  "chest": 0.3,
+  "neck": 0.9,
+  "head": 0.2,
   "belly": 0,
-  "clavicle.near": -10,
-  "shoulderAbd.near": 6.8,
-  "upperArm.near": -5.2,
-  "armAbd.near": -0.5,
-  "armRot.near": 4,
-  "forearm.near": 72.3,
+  "clavicle.near": -9.4,
+  "shoulderAbd.near": 6.4,
+  "upperArm.near": -9.1,
+  "armAbd.near": -12.1,
+  "armRot.near": 13.2,
+  "forearm.near": 49.6,
   "foreRot.near": 0,
-  "hand.near": 1.9,
-  "thigh.near": 85.3,
-  "shin.near": -95.7,
-  "foot.near": 8.6,
-  "hipAbd.near": -5.5,
-  "clavicle.far": -4.1,
-  "shoulderAbd.far": 0.8,
-  "upperArm.far": -4.5,
-  "armAbd.far": -0.3,
-  "armRot.far": 0.5,
-  "forearm.far": 65.8,
-  "foreRot.far": 0,
-  "hand.far": 1.8,
-  "thigh.far": 76.8,
-  "shin.far": -106.1,
-  "foot.far": 20.4,
-  "hipAbd.far": -6.2,
-  "toe.near": -1.4,
-  "toe.far": -1.3
+  "hand.near": 40,
+  "thigh.near": 86.2,
+  "shin.near": -95.1,
+  "foot.near": 5.7,
+  "hipAbd.near": -4.7,
+  "clavicle.far": -6.1,
+  "shoulderAbd.far": 1.3,
+  "upperArm.far": 26.6,
+  "armAbd.far": -56,
+  "armRot.far": 55.9,
+  "forearm.far": 5.2,
+  "foreRot.far": -40,
+  "hand.far": 40,
+  "thigh.far": 78.6,
+  "shin.far": -112,
+  "foot.far": 26.9,
+  "hipAbd.far": -7.2,
+  "toe.near": -2.2,
+  "toe.far": 1.3
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_sit_chair_1.json",
   "scale": 0.9978,
-  "rms": 0.0599,
+  "rms": 0.0619,
   "worst": [
-   "hipL 0.121",
-   "kneeR 0.111",
-   "footL 0.110",
-   "indexL 0.105",
-   "indexR 0.101"
+   "hipL 0.125",
+   "indexL 0.118",
+   "kneeR 0.110",
+   "indexR 0.104",
+   "pinkyR 0.104"
   ]
  },
- "fitFrom": "side/fit/sit-chair"
+ "fitFrom": "side/fit/sit-chair",
+ "_contact": "--side far --at 0.53,-3.85 --on belly --surface bump --handDir -20 --hand lay (base side/sit-chair)"
 }

@@ -1,20 +1,21 @@
 {
  "name": "side/fit/bend-pick",
- "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest)",
+ "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-52,spineLower=-52,spineUpper=-53,chest=-60,neck=-35,thigh.near=-10,shin.near=128",
  "hands": {
   "near": "grip",
   "far": "relaxed"
  },
  "fx": {
+  "turn": 0.4,
   "show.far.arm": 1
  },
  "scale": {
   "thigh.near": [
-   0.789,
+   0.879,
    1
   ],
   "thigh.far": [
-   0.888,
+   0.879,
    1
   ]
  },
@@ -27,52 +28,53 @@
   ]
  },
  "root": [
-  -1.0305,
-  1.9796
+  -1.0662,
+  1.9492
  ],
  "bones": {
-  "spineLower": 0,
-  "spineUpper": 0,
-  "chest": 0,
-  "pelvis": 28.1,
-  "neck": -15.1,
-  "head": -12.6,
+  "pelvis": 47.3,
+  "spineLower": -3.1,
+  "spineUpper": -4.9,
+  "chest": -2,
+  "neck": 5.2,
+  "head": -8,
   "belly": 0,
   "clavicle.near": -22,
-  "shoulderAbd.near": -0.7,
-  "upperArm.near": -0.6,
-  "armAbd.near": 0.1,
-  "armRot.near": 5.3,
-  "forearm.near": 23,
-  "foreRot.near": 0,
-  "hand.near": -8.1,
-  "thigh.near": 110.8,
-  "shin.near": -120.1,
-  "foot.near": 36.4,
-  "hipAbd.near": -12.2,
-  "clavicle.far": -22,
-  "shoulderAbd.far": -4.3,
-  "upperArm.far": 11.3,
-  "armAbd.far": 1.7,
+  "shoulderAbd.near": -4.6,
+  "upperArm.near": 8.5,
+  "armAbd.near": -2.8,
+  "armRot.near": 0,
+  "forearm.near": -3.1,
+  "foreRot.near": 0.2,
+  "hand.near": -5.6,
+  "thigh.near": 135,
+  "shin.near": -130.4,
+  "foot.near": 39.6,
+  "hipAbd.near": -9,
+  "clavicle.far": -1,
+  "shoulderAbd.far": -3.7,
+  "upperArm.far": 21.4,
+  "armAbd.far": 5.3,
   "armRot.far": -0.4,
-  "forearm.far": 1.5,
+  "forearm.far": 2,
   "foreRot.far": -0.6,
-  "hand.far": -10.7,
-  "thigh.far": 104.7,
-  "shin.far": -131.3,
-  "foot.far": 39.9,
-  "hipAbd.far": -17.4
+  "hand.far": -10.9,
+  "thigh.far": 135,
+  "shin.far": -130.4,
+  "foot.far": 39.6,
+  "hipAbd.far": -9
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_bend_pick_1.json",
-  "scale": 1.0371,
-  "rms": 0.3046,
+  "scale": 1.0478,
+  "rms": 0.3178,
   "worst": [
-   "indexR 0.876",
-   "pinkyR 0.834",
-   "thumbR 0.782",
-   "wristR 0.771",
-   "elbowR 0.406"
+   "indexR 0.835",
+   "thumbR 0.813",
+   "pinkyR 0.813",
+   "wristR 0.714",
+   "elbowR 0.391"
   ]
- }
+ },
+ "fitFrom": "side/fit/bend-pick"
 }

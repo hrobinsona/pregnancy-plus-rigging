@@ -43,14 +43,15 @@ export function ball(o, z = 4) {
     floors: [[c[0] - 0.75 * r, c[0] + 0.75 * r, o.topY + 0.12 * r]], cloth: [] };
 }
 
-/** A kitchen counter: its front face at x0, its worktop at topY, running off to the right. */
+/** A kitchen counter: its front face at x0, its worktop at topY, one unit deep (o.w, default 2.2 H: a counter run seen end
+ *  on; at 4 H it read as a wall, critic R1 "twice the still's width"), the worktop slab overhanging both faces. */
 export function counter(o, z = 4) {
-  const { x0, topY } = o, x1 = x0 + 4, slab = 0.13;
+  const { x0, topY } = o, x1 = x0 + (o.w ?? 2.2), slab = 0.13;
   return { parts: [
     { id: 'prop.counter', z, fill: o.fill || '#ebe4da', geom: rect(x0, topY + slab, x1, 0, 0.01) },
     { id: 'prop.counter.plinth', z: z + 0.05, fill: o.plinth || '#d9d0c4', geom: rect(x0 + 0.1, -0.22, x1, 0, 0.005) },
-    { id: 'prop.counter.top', z: z + 0.1, fill: o.top || '#cdbfae', geom: rect(x0 - 0.07, topY, x1, topY + slab, 0.03) },
-  ], floors: [[x0 - 0.07, x1, topY]], cloth: [] };
+    { id: 'prop.counter.top', z: z + 0.1, fill: o.top || '#cdbfae', geom: rect(x0 - 0.09, topY, x1 + 0.09, topY + slab, 0.03) },
+  ], floors: [[x0 - 0.09, x1 + 0.09, topY]], cloth: [] };
 }
 
 /** A small toy ball on the floor at x (something to pick up), or at y in her hand (held). */

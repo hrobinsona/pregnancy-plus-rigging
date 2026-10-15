@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""side_match.py <char> <pose>[:<still.png>] ... [--out out/side_match.png] [--px 420 | --pxh 225] [--margin 0.25] [--json out.json] [--tiles dir]
+"""side_match.py <char> <pose>[:<still.png>] ... [--out out/side_match.png] [--px 420 | --pxh 225] [--margin 0.25] [--json out.json] [--tiles dir [--ground #hex]]
 
 A fitted pose against its reference still, MATERIAL by material: the still is mapped into rig units with the pose's fit
 (out/fit_<pose>_targets.json, written by tools/fit_pose.mjs; the still defaults to the fit's own), both are classified
@@ -20,7 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('char'); ap.add_argument('pairs', nargs='+')
 ap.add_argument('--out', default='out/side_match.png'); ap.add_argument('--px', type=int, default=420)
 ap.add_argument('--margin', type=float, default=0.25); ap.add_argument('--json'); ap.add_argument('--cols', type=int, default=2)
-ap.add_argument('--pxh', type=float, help='pixels per H instead of --px (225: film size)'); ap.add_argument('--tiles', help='also save <dir>/<pose>_still.png and _ours.png (tools/critic_F.py --side)')
+ap.add_argument('--pxh', type=float, help='pixels per H instead of --px (225: film size)'); ap.add_argument('--tiles', help='also save <dir>/<pose>_still.png and _ours.png (tools/critic_F.py --side)'); ap.add_argument('--ground', help='#hex: the _ours tile with the floor shadow (character.ground)')
 a = ap.parse_args()
 os.chdir(R)
 D = f'characters/{a.char}'
@@ -77,7 +77,11 @@ for pr in a.pairs:
     still_m = Image.fromarray(M)
     if a.tiles:
         os.makedirs(a.tiles, exist_ok=True); tn = pose.replace('/', '_')
-        still_m.save(f'{a.tiles}/{tn}_still.png'); ours.save(f'{a.tiles}/{tn}_ours.png')
+        still_m.save(f'{a.tiles}/{tn}_still.png'); og = ours
+        if a.ground:   # the tile as the film draws her: with the floor shadow under whatever touches the floor (not compared)
+            subprocess.run(['node', 'tools/char_still.mjs', '--char', a.char, '--pose', pose, '--box', f'{x0},{y0},{x1},{y1}', '--px', str(W), '--ground', a.ground, '--out', rend], check=True, capture_output=True)
+            og = Image.open(rend).convert('RGB').resize((W, H))
+        og.save(f'{a.tiles}/{tn}_ours.png')
     cs, co = classify(still_m), classify(ours)
     res = {}
     for gi, g in enumerate(NAMES[1:], 1):

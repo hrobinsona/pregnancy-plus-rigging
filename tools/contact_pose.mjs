@@ -1,7 +1,7 @@
 // contact_pose.mjs — make a key pose whose hand RESTS ON the body at a chosen spot, with the 3D arm solved to it.
 //   node tools/contact_pose.mjs <char> <basePose> <outPose> --side far --at x,y (screen H, the wrist) --surface bump
 //        [--gap 0.05] [--back] [--phi deg (elbow swivel; default: the base pose's)] [--handDir deg (screen angle the hand points)]
-//        [--hand '{"pose":"relaxed","mix":{"cup":0.35}}'] [--view back]
+//        [--hand '{"pose":"relaxed","mix":{"cup":0.35}}'] [--view back] [--on belly (--at in that bone's rest space) [--print-rest]]
 // For contacts no reference shows (or shows badly): the wrist goes on the proxy's near surface at that point of the screen
 // (engine/depth.js), the arm comes from 2-bone 3D IK at the given swivel, the hand is turned to point along the surface.
 // Everything else is copied from the base pose; the recipe is stored in the pose (_contact) so it can be re-made.
@@ -13,9 +13,14 @@ const [char, baseName, outName] = argv, D = `characters/${char}/`;
 const C = (await import(`../${D}character.js`)).default, rig = createRig(C), J = C.joints, BONE = rig.BONE;
 const base = JSON.parse(fs.readFileSync(`${D}poses/${baseName}.json`)), pose = structuredClone(base); pose.bones ||= {};
 const side = arg('side', 'far'), S = side === 'near' ? 'Near' : 'Far', ua = `upperArm.${side}`, fa = `forearm.${side}`, ha = `hand.${side}`, ab = `armAbd.${side}`, ar = `armRot.${side}`;
-const at = arg('at').split(',').map(Number), gap = +arg('gap', 0.05);
+let at = arg('at').split(',').map(Number); const gap = +arg('gap', 0.05);
 const L = (a, b) => Math.hypot(J[b][0] - J[a][0], J[b][1] - J[a][1]), L1 = L('shoulder' + S, 'elbow' + S), L2 = L('elbow' + S, 'wrist' + S);
 const st0 = rig.solve(pose), fr0 = armFrame(rig, st0, side), A0 = armPoints(rig, st0, side);
+// --on belly: --at is a REST-space point carried by that bone (a spot on the bump, wherever the pose has put the bump: a
+// library pose rebuilt from a new fit keeps its hands on the same spot), --print-rest: say where a posed --at is in it
+if (arg('on')) { const b = arg('on'), M = st0[b].M, j = J[BONE[b].joint];
+  if (argv.includes('--print-rest')) { const det = M[0] * M[3] - M[1] * M[2], dx = at[0] - M[4], dy = at[1] - M[5]; console.log(`${at} posed = ${b} rest ${((M[3] * dx - M[2] * dy) / det + j[0]).toFixed(3)},${((-M[1] * dx + M[0] * dy) / det + j[1]).toFixed(3)}`); process.exit(0); }
+  at = [M[0] * (at[0] - j[0]) + M[2] * (at[1] - j[1]) + M[4], M[1] * (at[0] - j[0]) + M[3] * (at[1] - j[1]) + M[5]]; }
 const phi = arg('phi') !== undefined ? +arg('phi') * Math.PI / 180 : swivelOf(A0.el, A0.wr);
 let z = fr0.depthOf(A0.wr);
 if (arg('surface')) {

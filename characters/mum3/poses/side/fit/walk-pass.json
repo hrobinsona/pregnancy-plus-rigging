@@ -6,55 +6,56 @@
   "far": "relaxed"
  },
  "fx": {
+  "turn": 0.4,
   "show.far.arm": 1
  },
  "root": [
-  -0.0543,
-  0.0226
+  -0.0214,
+  0.01
  ],
  "bones": {
-  "pelvis": 0.4,
-  "spineLower": 2.7,
-  "spineUpper": 1,
-  "chest": 0.4,
-  "neck": -6,
-  "head": -8,
+  "pelvis": 0.3,
+  "spineLower": 1.9,
+  "spineUpper": 0.8,
+  "chest": 0.5,
+  "neck": -5.8,
+  "head": -6.9,
   "belly": 0,
-  "clavicle.near": 9.3,
-  "shoulderAbd.near": -2.7,
-  "upperArm.near": 1.3,
+  "clavicle.near": 7.9,
+  "shoulderAbd.near": -1.8,
+  "upperArm.near": -0.3,
   "armAbd.near": 0,
   "armRot.near": 0.3,
-  "forearm.near": 8.2,
+  "forearm.near": 8.3,
   "foreRot.near": 0.1,
   "hand.near": -4.5,
-  "thigh.near": 13.2,
-  "shin.near": -5.8,
+  "thigh.near": 14.7,
+  "shin.near": -5.7,
   "foot.near": -0.7,
-  "hipAbd.near": -2.2,
-  "clavicle.far": -20.4,
-  "shoulderAbd.far": 0.4,
-  "upperArm.far": 2,
-  "armAbd.far": 0.1,
+  "hipAbd.near": -0.1,
+  "clavicle.far": -21.8,
+  "shoulderAbd.far": 1.1,
+  "upperArm.far": 0.3,
+  "armAbd.far": 0,
   "armRot.far": -0.5,
-  "forearm.far": 8.8,
+  "forearm.far": 8.7,
   "foreRot.far": -0.2,
   "hand.far": -5.6,
-  "thigh.far": -19.9,
-  "shin.far": -14.1,
-  "foot.far": -6,
-  "hipAbd.far": -0.8
+  "thigh.far": -16.4,
+  "shin.far": -22.4,
+  "foot.far": -3.5,
+  "hipAbd.far": -3.9
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_walk_pass_1.json",
   "scale": 1.0601,
   "rms": 0.1149,
   "worst": [
-   "kneeL 0.336",
-   "pinkyL 0.193",
-   "thumbL 0.187",
-   "wristL 0.186",
-   "kneeR 0.148"
+   "kneeL 0.302",
+   "pinkyL 0.207",
+   "wristL 0.200",
+   "thumbL 0.200",
+   "kneeR 0.154"
   ]
  }
 }

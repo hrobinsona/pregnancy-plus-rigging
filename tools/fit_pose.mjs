@@ -5,6 +5,9 @@
 //        [--set kneeR:x:y,...] [--swap legs|arms|both]   (landmarks read off the still where the estimator failed; L/R swapped)
 //        [--splay] [--props chair,ball,counter,toy,chair:back=1]   (thighs foreshortened by knees turned out; the pose's furniture)
 //        [--dirs 0.5] [--posw 0.3]   (match each segment's DIRECTION: the posture, whatever the still's proportions)
+//        [--turn 0.4]   (pose.fx.turn: drawn nearer a true profile, the far hip and shoulder closer behind the near ones)
+//        [--twin legs]   (the far leg copies the near one: a squat's feet both flat, its knees both forward)
+//        [--reach R]   (the near (R) hand's landmarks at full weight: a hand that reaches for something, not a hanging one)
 // The reference is measurement only: its landmarks become IK targets for "virtual points" — where the same landmark sits
 // on the REST drawing, carried by the bone that moves it. Calibration (virtual points) comes from running the same
 // estimator on the rest drawing (ref/standing_34 → refs/pose/standing_34.json), so the estimator's own conventions cancel.
@@ -93,7 +96,7 @@ const HID = new Set((C.fit?.hidden || []).filter((h) => !(arg('show', '') || '')
 const hiddenBone = (b) => [...HID].some((h) => { const [sd, limb] = h.split('.'); return limb === 'arm' && new RegExp(`^(clavicle|shoulderAbd|upperArm|armAbd|armRot|forearm|foreRot|hand)\\.${sd}$`).test(b); });
 const targets = [];
 for (const n of Object.keys(tgt)) {
-  if (vis[n] < 0.3 || !calH[n] || hiddenBone(carrier(n))) continue;
+  if (vis[n] < 0.3 || !calH[n] || hiddenBone(carrier(n)) || (arg('twin') === 'legs' && /^(knee|ankle|heel|foot)L$/.test(n))) continue;
   targets.push({ n, bone: carrier(n), rest: calH[n], to: tgt[n], w: wOf(n) * Math.min(1, vis[n] + 0.2) });
 }
 // hands (MediaPipe hand landmarks): attach each detected hand to the nearer pose wrist; joints of OUR hand rig as points
@@ -117,6 +120,7 @@ const FAR_ARM_UNSEEN = 1 - ['elbowL', 'wristL'].filter((n) => targets.some((t) =
 const baseName = arg('base', fs.existsSync(`${D}poses/bump-rest.json`) ? 'bump-rest' : 'rest');
 const base = JSON.parse(fs.readFileSync(`${D}poses/${baseName}.json`));
 const fixed = Object.fromEntries((arg('fix', '') || '').split(',').filter(Boolean).map((kv) => { const [a, b] = kv.split('='); return [a, +b]; }));
+const TWIN = arg('twin') === 'legs';
 const VARS = ['root.0', 'root.1', 'pelvis', 'spineLower', 'spineUpper', 'chest', 'neck', 'head', 'belly',
   ...['near', 'far'].flatMap((sd) => [`clavicle.${sd}`, `shoulderAbd.${sd}`, `upperArm.${sd}`, `armAbd.${sd}`, `armRot.${sd}`, `forearm.${sd}`, `foreRot.${sd}`, `hand.${sd}`, `thigh.${sd}`, `shin.${sd}`, `foot.${sd}`, `hipAbd.${sd}`]),
   ...(flag('hands') ? ['near', 'far'].flatMap((sd) => [1, 2, 3, 4].flatMap((f) => [`hand.${sd}.f${f}a`, `hand.${sd}.f${f}b`, `hand.${sd}.f${f}s`]).concat([`hand.${sd}.t0`, `hand.${sd}.t1`, `hand.${sd}.ts`])) : [])]
@@ -131,16 +135,23 @@ const VARS = ['root.0', 'root.1', 'pelvis', 'spineLower', 'spineUpper', 'chest',
   // --splay: the THIGHS' foreshortening. Squatting (or sitting with the knees apart, as a pregnant woman does to make room
   // for her bump) the knees turn out toward us and a side view sees the thighs shorter: the squat still's thigh is 0.8 of
   // hers. Without it the fit pushed the knees out past the still's (rms 0.084 H, the hips 0.16 H off)
-  .concat(flag('splay') ? ['scale.thigh.near.0', 'scale.thigh.far.0'] : []);   // (not the upper spine: it carries the top of the bump, which must keep its size — critic R18 "the bump shrinks")
+  .concat(flag('splay') ? ['scale.thigh.near.0', 'scale.thigh.far.0'] : [])   // (not the upper spine: it carries the top of the bump, which must keep its size — critic R18 "the bump shrinks")
+  // --twin legs: the far leg copies the near one's angles (and splay), drawn just behind it. Squatting, a woman's feet are
+  // both flat and her knees both forward; the estimator can't see the far leg there (it swapped the knees, stood the far
+  // shoe on its toe and pushed the far knee up past the near one: critic R1 "folded legs on hinges")
+  .filter((v) => !(TWIN && /^(thigh|shin|foot|hipAbd)\.far$|^scale\.thigh\.far\./.test(v)));
 // a fixed fx.* channel (--fix fx.headPitch=22: a nod measured on the face, tools/head_pose.py) is held in the pose's fx,
 // not among the bones (it was silently dropped)
-const fixedFx = Object.fromEntries(Object.entries(fixed).filter(([k]) => k.startsWith('fx.')).map(([k, v]) => [k.slice(3), v]));
+// --turn 0.4: how far she is turned toward us (pose.fx.turn, engine/rig.js depthFrom): the side-on library is fitted nearer
+// a true profile, so the far knee and shoulder stay behind the near ones
+const fixedFx = { ...Object.fromEntries(Object.entries(fixed).filter(([k]) => k.startsWith('fx.')).map(([k, v]) => [k.slice(3), v])), ...(arg('turn') ? { turn: +arg('turn') } : {}) };
 const basePose = expandHands({ ...base, ...(Object.keys(fixedFx).length ? { fx: { ...(base.fx || {}), ...fixedFx } } : {}) }, handLib, C.handSides);
 const b0 = { ...basePose.bones, ...Object.fromEntries(Object.entries(fixed).filter(([k]) => !k.startsWith('fx.'))) }, r0 = base.root || [0, 0];
 const val0 = (v) => (v.startsWith('root') ? r0[+v.slice(5)] : v.startsWith('fx.') ? (base.fx?.[v.slice(3)] ?? 0) : v.startsWith('scale.') ? (base.scale?.[v.split('.').slice(1, -1).join('.')]?.[+v.split('.').at(-1)] ?? 1) : (b0[v] ?? 0));
-const lim = (v) => (v.startsWith('root') ? (FLOOR ? [-4, 4] : [-0.6, 0.6]) : v === 'fx.headPitch' ? [-30, 45] : v.startsWith('scale.') ? [0.62, 1.1] : [BONE[v].min ?? -180, BONE[v].max ?? 180]);
+const lim = (v) => (v.startsWith('root') ? (FLOOR ? [-4, 4] : [-0.6, 0.6]) : v === 'fx.headPitch' ? [-30, 45] : v.startsWith('scale.thigh') ? [0.45, 1.1] : v.startsWith('scale.') ? [0.62, 1.1] : [BONE[v].min ?? -180, BONE[v].max ?? 180]);
 const poseOf = (x) => { const bones = { ...b0 }, root = [...r0], fx = { ...(basePose.fx || {}) }, scale = Object.fromEntries(Object.entries(basePose.scale || {}).map(([k, v]) => [k, [...v]]));
   VARS.forEach((v, i) => { if (v.startsWith('root')) root[+v.slice(5)] = x[i]; else if (v.startsWith('fx.')) fx[v.slice(3)] = x[i]; else if (v.startsWith('scale.')) { const q = v.split('.'), b = q.slice(1, -1).join('.'), ix = q.at(-1); (scale[b] ||= [1, 1])[+ix] = x[i]; } else bones[v] = x[i]; });
+  if (TWIN) { for (const b of ['thigh', 'shin', 'foot', 'hipAbd']) if (`${b}.near` in bones) bones[`${b}.far`] = bones[`${b}.near`]; if (scale['thigh.near']) scale['thigh.far'] = [...scale['thigh.near']]; }
   return { ...basePose, bones, root, fx, scale }; };
 // a landmark drawn on a WARPED bone (the nodding head) is carried through the warp first, like the drawing
 const carry = (st, bone, p, pose) => { if (pose && C.warps?.[bone]) p = C.warps[bone](pose)(p); const M = st[bone].M, j = J[BONE[bone].joint]; return [M[0] * (p[0] - j[0]) + M[2] * (p[1] - j[1]) + M[4], M[1] * (p[0] - j[0]) + M[3] * (p[1] - j[1]) + M[5]]; };
@@ -171,13 +182,20 @@ function dirRes(got) {
 }
 // (the hands least of all: a longer-armed still reaches the floor where her hand can't, and chasing it pitched her trunk;
 // a prop the hand holds is placed from the hand, parts/props.js)
-const posW = (t) => (FEET.test(t.n) ? 1 : DIRW && /^(wrist|index|pinky|thumb)[LR]$/.test(t.n) ? 0.05 * POSW : POSW);
+// --reach R: that hand is where the pose's point is (picking a toy up off the floor): its landmarks count in full
+const REACH = arg('reach', '');
+const posW = (t) => (FEET.test(t.n) ? 1 : REACH && new RegExp(`^(wrist|index|pinky|thumb)${REACH}$`).test(t.n) ? 1 : DIRW && /^(wrist|index|pinky|thumb)[LR]$/.test(t.n) ? 0.05 * POSW : POSW);
 const err = (x) => {
   const po = poseOf(x), st = rig.solve(po); let e = 0; const got = {};
   for (const t of targets) { const a = carry(st, t.bone, t.rest, po); got[t.n] = a; e += posW(t) * t.w * ((a[0] - t.to[0]) ** 2 + (a[1] - t.to[1]) ** 2); }
   for (const q of dirRes(got)) e += q * q;
-  return e + reg * VARS.reduce((acc, v, i) => acc + (v.startsWith('root') ? (FLOOR ? 1 : 400) : v.startsWith('scale.') ? 2500 : 1) * (x[i] - val0(v)) ** 2, 0) + prior3(x) + order3(st);
+  return e + reg * VARS.reduce((acc, v, i) => acc + (v.startsWith('root') ? (FLOOR ? 1 : 400) : v.startsWith('scale.') ? 2500 : 1) * (x[i] - val0(v)) ** 2, 0) + prior3(x) + order3(st) + kneeOrder(st);
 };
+// KNEES TOGETHER, THE NEAR ONE IN FRONT (--splay): squatting or sitting with the knees apart, both knees come forward and
+// the near one is the front one (every still). The rig's ¾ turn sets the far hip 0.3 H ahead of the near one, and the fit
+// left the far knee 0.28 H ahead with the near knee lost under the skirt (round 1: "only the far knee comes forward; the near
+// leg a kneeless stilt"): the far thigh, turned out away from us, foreshortens more instead
+const kneeOrder = (st) => { if (!flag('splay') || TWIN) return 0; const ex = st['shin.far'].pos[0] - (st['shin.near'].pos[0] - 0.06); return ex > 0 ? 0.5 * ex * ex : 0; };
 // OVERLAP ORDER seen in the reference (--order far.hand=front,far.fore=front | far.hand=behind): 2D landmarks leave the arm's
 // depth free (mirror solutions); what is drawn over what in the reference settles it (engine/depth.js proxies).
 const ORDER = (arg('order', '') || '').split(',').filter(Boolean).map((kv) => { const [k, w] = kv.split('='); const [sd, part] = k.split('.'); return { sd, part, want: w }; });   // want: front|behind|onfront|onback[:proxy+proxy]
@@ -195,33 +213,39 @@ function order3(st) {
 // the same picture (mirror solutions in depth). Real arms raise in the scapular plane (≈ 45° between forward and side),
 // with moderate humeral rotation — so ask for that, weighted by how far the arm is raised (a hanging arm has no plane).
 const DEG = Math.PI / 180, PRI = +arg('prior', 4e-6);
-function prior3(x) {
-  let p = 0;
+function prior3(x, parts) {
+  let p = 0; const tag = (n) => { if (parts) { parts[n] = (parts[n] || 0) + p - (parts._p || 0); parts._p = p; } };
   for (const sd of ['near', 'far']) {
     const iU = VARS.indexOf(`upperArm.${sd}`), iB = VARS.indexOf(`armAbd.${sd}`), iR = VARS.indexOf(`armRot.${sd}`), iA = VARS.indexOf(`shoulderAbd.${sd}`);
     if (iB < 0) continue;
     const e = x[iU], s2 = Math.sin(Math.min(90, Math.abs(e)) * DEG) ** 2;
     p += PRI * (s2 * (x[iB] - 45) ** 2 + (1 - s2) * x[iB] ** 2 + 0.5 * x[iR] ** 2 + 2 * (iA >= 0 ? (x[iA] - val0(`shoulderAbd.${sd}`)) ** 2 : 0));   // shoulderAbd is a 2D screen rotation: keep it for small corrections
   }
+  tag('arm plane');
   // TRUNK PRIOR: 2D shoulder/hip landmarks barely constrain how the bend shares out between the spine links, and the free
   // fit invented S-curves (lower back forward, upper back and chest arched back, neck back, head rolled 40° forward). A real
   // trunk bends as one smooth curve: neighbouring links alike. Legs stay near their rest unless the picture insists.
   const v = (n) => { const i = VARS.indexOf(n); return i >= 0 ? x[i] : (b0[n] ?? 0); };
   const TW = +arg('trunkPrior', 2e-5), LW = +arg('legPrior', FLOOR ? 1e-7 : 1e-5);   // off her feet the legs go where the still puts them
   p += TW * ((v('spineLower') - v('spineUpper')) ** 2 + (v('spineUpper') - v('chest')) ** 2 + 0.5 * (v('chest') - v('neck')) ** 2 + 0.5 * (v('neck') - v('head')) ** 2);
+  tag('trunk smooth');
   // NEUTRAL SPINE (--floor): off her feet the hips' landmarks are guesses under the dress (0.3–0.5 H off), and the fit
   // pitched the pelvis 49° forward against a lumbar arched 34° back to meet them: the bump rotated down behind the thighs
   // ("where is the bump?") and the head thrown back. A pregnant woman squatting, bending, kneeling keeps her back long:
   // the trunk leans from the hips, the spine near its rest curve, the head in line. The picture can still bend it.
   if (FLOOR) p += +arg('neutral', 1e-5) * (v('spineLower') ** 2 + v('spineUpper') ** 2 + v('chest') ** 2 + 0.5 * v('neck') ** 2 + 0.5 * v('head') ** 2);
-  for (const sd of ['near', 'far']) for (const b of ['thigh', 'shin', 'foot', 'hipAbd']) p += LW * (v(`${b}.${sd}`) - (b0[`${b}.${sd}`] ?? 0)) ** 2;
+  tag('neutral spine');
+  for (const sd of TWIN ? ['near'] : ['near', 'far']) for (const b of ['thigh', 'shin', 'foot', 'hipAbd']) p += LW * (v(`${b}.${sd}`) - (b0[`${b}.${sd}`] ?? 0)) ** 2;
+  tag('legs rest');
   // off her feet the far leg is mostly hidden behind the near one and the estimator drops its landmarks: it then folds
   // like the near leg (kneeling, all fours) instead of staying where the base had it (a leg left standing under a kneel)
   // (only as far as its landmarks are missing: a walk's back leg, seen, keeps its own bend)
-  if (FLOOR) for (const b of ['thigh', 'shin', 'foot']) p += 2e-5 * FAR_UNSEEN * (v(`${b}.far`) - v(`${b}.near`)) ** 2;
+  if (FLOOR && !TWIN) for (const b of ['thigh', 'shin', 'foot']) p += 2e-5 * FAR_UNSEEN * (v(`${b}.far`) - v(`${b}.near`)) ** 2;
+  tag('far leg as near');
   // a far arm the pose SHOWS (--show far.arm) but the still hides (behind her, its landmarks dropped) does what the near
   // one does: the squat still's far hand is on the chair too (left at rest it hung down her back)
   if (FLOOR && !HID.has('far.arm')) for (const b of ['upperArm', 'armAbd', 'forearm', 'hand']) p += 2e-5 * FAR_ARM_UNSEEN * (v(`${b}.far`) - v(`${b}.near`)) ** 2;
+  tag('far arm as near');
   return p;
 }
 let x = VARS.map(val0), e = err(x);
@@ -328,7 +352,8 @@ if (flag('why')) {   // --why: what the final error is made of (positions, direc
   for (const t of targets) { const a = carry(st, t.bone, t.rest, poF); got[t.n] = a; rows.push([`pos ${t.n}`, posW(t) * t.w * ((a[0] - t.to[0]) ** 2 + (a[1] - t.to[1]) ** 2)]); }
   const dr = dirRes(got); let k = 0;
   for (const [A, B] of SEGS) { const tw = Object.fromEntries(targets.map((t) => [t.n, 1])); if (!A.some((n) => tw[n]) || !B.some((n) => tw[n])) continue; rows.push([`dir ${A.join('+')}→${B.join('+')}`, dr[k] ** 2 + dr[k + 1] ** 2]); k += 2; }
-  rows.push(['prior3', prior3(x)], ['order3', order3(st)]);
+  const pp = {}; prior3(x, pp); delete pp._p;
+  rows.push(...Object.entries(pp).map(([k, v]) => [`prior ${k}`, v]), ['order3', order3(st)]);
   rows.sort((a, b) => b[1] - a[1]); console.log('why: ' + rows.slice(0, 14).map(([n, v]) => `${n} ${v.toFixed(4)}`).join(', '));
 }
 for (const t of targets) { const a = carry(st, t.bone, t.rest, poF); rep.push([t.n, Math.hypot(a[0] - t.to[0], a[1] - t.to[1])]); }

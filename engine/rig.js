@@ -116,8 +116,11 @@ export function createRig(C) {
         // the body's DEPTH seen a little from the front (the master is turned ~20° to us), a picture-space offset that
         // does not turn with the trunk. Carried rigidly, pitching her onto all fours stood the near hip 0.3 H above the far
         // one (her near knee floated off the floor). So the near joint is carried and the offset added unrotated.
-        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint]));
-        pos = [q[0] + J[b.joint][0] - J[b.depthFrom][0], q[1] + J[b.joint][1] - J[b.depthFrom][1]];
+        // pose.fx.turn (default 1) scales that offset: how far she is turned toward us. The side-on library is drawn nearer a
+        // true profile, as its stills are (0.4: their far hip 0.12 H ahead of the near one, the master's 0.3); at 1 the far
+        // knee led a squat and the far shoulder stood up behind the near one as a knob (side-on round 1)
+        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1;
+        pos = [q[0] + tn * (J[b.joint][0] - J[b.depthFrom][0]), q[1] + tn * (J[b.joint][1] - J[b.depthFrom][1])];
       } else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
       if (b.plane === 'arm3') {
         const a3 = arm3(b, d, ps, bonesIn), parentSame = BONE[b.parent].plane === 'arm3';
@@ -318,7 +321,7 @@ export function createRig(C) {
     const bg = opts.bg ?? '#ffffff', sil = opts.silhouette;
     let out = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${Ht}" viewBox="${vb.map(f2).join(' ')}" shape-rendering="geometricPrecision">`;
     if (bg !== 'none') out += `<rect x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}" fill="${bg}"/>`;
-    if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx);
+    if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx, parts);   // (parts: the posed drawing, for a shadow under whatever touches the floor)
     out += `<g id="${C.name}">`;
     const tfOf = (m) => `matrix(${[m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx].map(f2).join(' ')})`;
     const byId = Object.fromEntries(parts.map((p) => [p.id, p])), outDefs = new Set();

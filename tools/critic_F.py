@@ -74,7 +74,7 @@ if args[1] == '--side':
     poses = args[2].split(',') if len(args) > 2 and not args[2].startswith('--') else sorted(os.path.splitext(f)[0] for f in os.listdir(f'characters/{c}/poses/side') if f.endswith('.json'))
     td = 'out/side_critic'; os.makedirs(td, exist_ok=True)
     for f in glob.glob(f'{td}/*.png'): os.remove(f)
-    subprocess.run([sys.executable, 'tools/side_match.py', c] + [f'side/{p}' for p in poses] + ['--pxh', '225', '--margin', '0.3', '--tiles', td, '--out', f'{td}/_match.png'], check=True, capture_output=True)
+    subprocess.run([sys.executable, 'tools/side_match.py', c] + [f'side/{p}' for p in poses] + ['--pxh', '225', '--margin', '0.3', '--tiles', td, '--ground', '#efe5dc', '--out', f'{td}/_match.png'], check=True, capture_output=True)
     files = []
     for p in poses:
         a, b = Image.open(f'{td}/side_{p}_ours.png').convert('RGB'), Image.open(f'{td}/side_{p}_still.png').convert('RGB')

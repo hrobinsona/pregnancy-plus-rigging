@@ -13,6 +13,7 @@
 // --fixroot  keep her height (only the named bones move: a hand laid on the floor under a body already placed)
 // --flat   hand.near,…: lay that palm flat (level, fingers forward, palm down) on what it touches
 // --vars   extra bones to move by full name (wristFlex.near,hand.near,foreRot.near: a palm laid flat)
+// --twin legs  the far leg copies the near one (a squat fitted with fit_pose --twin legs)
 // Writes the pose (default: in place) and prints each contact's height before and after (film px).
 import fs from 'node:fs';
 import { createRig } from '../engine/rig.js';
@@ -25,12 +26,14 @@ const C = (await import(`../characters/${char}/character.js`)).default, rig = cr
 const lib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`${D}poses/hands/${h}.json`))]));
 const raw = JSON.parse(fs.readFileSync(`${D}poses/${poseName}.json`)), pose0 = expandHands(raw, lib, C.handSides);
 const touch = arg('touch', '').split(',').filter(Boolean).map((s) => { const [pw, lv = '0'] = s.split('@'), [part, w = 'low'] = pw.split(':'); return { part, w, lv: +lv }; });   // @y: a surface at height y (H; a counter top), not the floor
-const sides = arg('sides', 'near,far').split(','), stems = arg('bones', 'shin,foot').split(',');
+const sides = arg('sides', arg('twin') === 'legs' ? 'near' : 'near,far').split(','), stems = arg('bones', 'shin,foot').split(',');
 const VARS = [...(argv.includes('--fixroot') ? [] : ['root.1']), ...(arg('free', '') ? arg('free').split(',') : []), ...(arg('vars', '') ? arg('vars').split(',') : []), ...stems.flatMap((b) => sides.map((s) => `${b}.${s}`)).filter((b) => rig.BONE[b])];
 const keep = +arg('keep', 1), PX = 225;
 const val0 = (v) => (v.startsWith('root') ? (pose0.root || [0, 0])[+v.slice(5)] : pose0.bones?.[v] ?? 0);
 const lim = (v) => (v.startsWith('root') ? [-6, 6] : [rig.BONE[v].min ?? -180, rig.BONE[v].max ?? 180]);
-const poseOf = (x) => { const p = { ...pose0, bones: { ...pose0.bones }, root: [...(pose0.root || [0, 0])] }; VARS.forEach((v, i) => { if (v.startsWith('root')) p.root[+v.slice(5)] = x[i]; else p.bones[v] = x[i]; }); return p; };
+// --twin legs: the far leg is the near one's twin (fit_pose --twin legs: a squat): only the near leg's bones move, the far copies them
+const TWIN = arg('twin') === 'legs', twin = (b) => { if (TWIN) for (const k of ['thigh', 'shin', 'foot', 'toe', 'hipAbd']) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
+const poseOf = (x) => { const p = { ...pose0, bones: { ...pose0.bones }, root: [...(pose0.root || [0, 0])] }; VARS.forEach((v, i) => { if (v.startsWith('root')) p.root[+v.slice(5)] = x[i]; else p.bones[v] = x[i]; }); twin(p.bones); return p; };
 // rest-pose anchor for ':top' (which anchor is the part's highest at rest)
 const rest = Object.fromEntries(rig.build({ ...pose0, bones: {} }).map((p) => [p.id, p.geom.P.map((q) => ap(p.M, q))]));
 const pick = (pts, t) => {
@@ -112,7 +115,7 @@ for (let step = 2; step > 0.02; step /= 2) for (let pass = 0, imp = true; imp &&
   }
 }
 const after = measure(x);
-const out = { ...raw, root: poseOf(x).root.map((v) => +v.toFixed(4)), bones: { ...raw.bones, ...Object.fromEntries(VARS.filter((v) => !v.startsWith('root')).map((v, i) => [v, Math.round(x[VARS.indexOf(v)] * 10) / 10])) } };
+const out = { ...raw, root: poseOf(x).root.map((v) => +v.toFixed(4)), bones: twin({ ...raw.bones, ...Object.fromEntries(VARS.filter((v) => !v.startsWith('root')).map((v, i) => [v, Math.round(x[VARS.indexOf(v)] * 10) / 10])) }) };
 out.note = (raw.note ? raw.note + '; ' : '') + `floor_pose: ${touch.map((t) => t.part + ':' + t.w).join(', ')} on the floor`;
 out.fitFrom = raw.fitFrom || poseName;   // the still's mapping (out/fit_<pose>_targets.json) stays the fit's: side_match.py finds it
 const outName = arg('out', poseName);
