@@ -60,7 +60,7 @@
     "hand.near.f2a": 3,
     "hand.near.f3a": 3,
     "hand.near.f4a": 3,
-    "hand.near": 5
+    "hand.near": 10
    },
    "note": "near: the fingers settle onto what they rest on (the easy breath)"
   },
@@ -73,7 +73,7 @@
     "hand.near.f3s": 1.5,
     "hand.near.f4s": 4,
     "hand.near.t0": 4,
-    "hand.near": -4.5
+    "hand.near": -9
    },
    "note": "near: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
   },
@@ -90,7 +90,7 @@
     "hand.near.f3b": -2,
     "hand.near.f4a": -3,
     "hand.near.f4b": -2,
-    "hand.near": 4
+    "hand.near": 8
    },
    "note": "near: the breath out: the fingers ease long"
   },

@@ -58,15 +58,15 @@ const back = /--back/.test(raw._contact || '') ? (raw._contact.match(/--side (ne
 // visible life is the wrist's and the fan. ±3° moved the tips ~7 px at 225 px/H and read FROZEN on the kneeling and seated
 // loops (qa_checks alive: under 5 px in any 2 s on her); 4–5° moves them 10–12 px, the SKILL's 10–20 px of a resting hand. A hand bearing her weight (the floor, a worktop:
 // 'world') keeps its wrist (it is planted) and only fans: a deliberate hold (spec.qa.still)
-const life = (s, w) => [
-  { t0: 0.5, t1: 2.7, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].map((i) => [`hand.${s}.f${i}a`, 3])), ...(w ? {} : { [`hand.${s}`]: 5 }) }, note: `${s}: the fingers settle onto what they rest on (the easy breath)` },
-  { t0: 3.2, t1: 5.6, cycles: 1, bones: { [`hand.${s}.f1s`]: -3, [`hand.${s}.f3s`]: 1.5, [`hand.${s}.f4s`]: 4, [`hand.${s}.t0`]: 4, ...(w ? {} : { [`hand.${s}`]: -4.5 }) }, note: `${s}: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch` },
-  { t0: 5.4, t1: 7.8, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].flatMap((i) => [[`hand.${s}.f${i}a`, -3], [`hand.${s}.f${i}b`, -2]])), ...(w ? {} : { [`hand.${s}`]: 4 }) }, note: `${s}: the breath out: the fingers ease long` },
+const life = (s, w, k = 1) => [
+  { t0: 0.5, t1: 2.7, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].map((i) => [`hand.${s}.f${i}a`, 3])), ...(w ? {} : { [`hand.${s}`]: 5 * k }) }, note: `${s}: the fingers settle onto what they rest on (the easy breath)` },
+  { t0: 3.2, t1: 5.6, cycles: 1, bones: { [`hand.${s}.f1s`]: -3, [`hand.${s}.f3s`]: 1.5, [`hand.${s}.f4s`]: 4, [`hand.${s}.t0`]: 4, ...(w ? {} : { [`hand.${s}`]: -4.5 * k }) }, note: `${s}: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch` },
+  { t0: 5.4, t1: 7.8, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].flatMap((i) => [[`hand.${s}.f${i}a`, -3], [`hand.${s}.f${i}b`, -2]])), ...(w ? {} : { [`hand.${s}`]: 4 * k }) }, note: `${s}: the breath out: the fingers ease long` },
 ];
 // a free hand HOLDING something (kneel-pick's toy: 'ball') gets the same life, its wrist easing the toy with the breath:
 // carried by her body alone it read FROZEN 0.9–4.6 s (qa_checks alive, side-on round 9; the toy follows the palm)
 const holding = (s) => ['ball'].includes(typeof states[s] === 'string' ? states[s] : states[s]?.pose);
-const fidget = Object.entries(pins).filter(([s, on]) => (on || holding(s)) && s !== back).flatMap(([s, on]) => life(s, on === 'world'));
+const fidget = Object.entries(pins).filter(([s, on]) => (on || holding(s)) && s !== back).flatMap(([s, on]) => life(s, on === 'world', on ? 1 : 2));   // (free: the whole hand and toy turn at the wrist, twice a resting hand's ±5°: at ±5° the tips moved 4–6 px a 2 s window)
 const still = Object.fromEntries(Object.entries(pins).filter(([s, on]) => on === 'world' && s !== back).map(([s]) => [s, [[0, 8, 'bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers']]]));
 // a hand HIDDEN by her body in the posed drawing is out of sight too (sit-ball's far hand on the far knee, 100% under the
 // legs and the lap, round 7): sampled inside the hand's outline, the share covered by a nearer filled part

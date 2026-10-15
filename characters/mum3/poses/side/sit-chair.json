@@ -32,12 +32,12 @@
   "belly": 0,
   "clavicle.near": -6.1,
   "shoulderAbd.near": 4.3,
-  "upperArm.near": -22.1,
-  "armAbd.near": 27.7,
-  "armRot.near": -13.3,
-  "forearm.near": 83.2,
+  "upperArm.near": -22.2,
+  "armAbd.near": 27.6,
+  "armRot.near": -13.1,
+  "forearm.near": 83.9,
   "foreRot.near": 0,
-  "hand.near": 24,
+  "hand.near": 20,
   "thigh.near": 86.7,
   "shin.near": -92,
   "foot.near": 5.4,
@@ -45,11 +45,11 @@
   "clavicle.far": -18.7,
   "shoulderAbd.far": 3.4,
   "upperArm.far": -32.8,
-  "armAbd.far": -52,
-  "armRot.far": 52.2,
-  "forearm.far": 99.4,
-  "foreRot.far": 10,
-  "hand.far": 18,
+  "armAbd.far": -51.7,
+  "armRot.far": 51.9,
+  "forearm.far": 99.5,
+  "foreRot.far": 0,
+  "hand.far": 16,
   "thigh.far": 81.4,
   "shin.far": -89.8,
   "foot.far": 0.6,
@@ -80,5 +80,5 @@
    1
   ]
  },
- "_contact": "--side far --at 0.63,-4.42 --on belly --surface bump --handDir 4 --hand softrest --back --inside 0.05 (base side/sit-chair)"
+ "_contact": "--side far --at 0.63,-4.42 --on belly --surface bump --handDir 7 --hand softrest --back --inside 0.05 (base side/sit-chair)"
 }

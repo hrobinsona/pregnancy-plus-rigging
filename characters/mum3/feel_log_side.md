@@ -359,3 +359,55 @@ Also: sit-ball's near hand now rests on the near thigh (the far leg moved) and f
 2 s window, the pin holding the palm); the far shin there hangs behind the near one while the far shoe sits ahead (body
 lens). Squat's feet: the craft reviewer read the near shoe as floating above the far one; at 1:1 the near foot stands on
 the floor with its shadow and the far one is up and ahead as in the still (a misread, not changed).
+
+## Round 9 (2026-10-15): each hand shaped for what it does
+
+Answers the three hand threads Harry left open on round 8 (walk-pass "stiff, the close hand points very down, the far
+thumb wrong"; squat "not holding the chair"; sit-ball "stiff vs relaxed on the leg") and round 8's critics (every hand
+"a flat paddle with four long lines", the far hand "a second fan").
+
+- **The finger drawing (S3: fuller, 10% shorter, the lines from the middle phalanx) lost blind on breathe-stroke**, one
+  fresh reviewer on **Fable**, 6 vs 6.5: "a short bunched cluster of nubs… a doll's mitten", where the kept drawing
+  "reads as a hand with fingers" at phone size. The third loss for that direction (rounds 5 and 7, lesson 64). Kept
+  the drawing; every change below is a shape, a place or a prop (lesson 70).
+- Shapes: `idle` fingers together (spread −0.5…1: at −1…2 the swinging far hand read "a splayed fan"), `softrest`
+  together, `hold` hooked at the knuckles (85/20/0), a new `ball` for kneel-pick's toy (30/30/20 along its curve; `grip`
+  closed into a fist on top of it).
+- Placement: the chair's rail under the palm's UNDERSIDE over the rail and its far edge just past the knuckles (it stood
+  0.03 H under the hand, the fingers hanging in the air); the worktop hands and forearms flat (fingersIn 0.2: at 0.7 the
+  fingers curled to the slab's line and the forearm hovered over it); sit-chair's hand at 7° (at 10° with its curl it
+  still "pointed 30° down"; at 4° the 3D arm turned the hand toward the camera on the breath, 84% of its length,
+  QA limbs); the squat's far arm hidden; kneel-pick's knee hand `softrest`; the toy the still's orange.
+- Life: a hand resting on a leg slides a little with the breath (sit-ball's was FROZEN, QA alive: wrist 7 px, tips
+  13 px); a hand holding the toy turns at the wrist twice as far as a resting hand (FROZEN at ±5°).
+- Tooling: the critic pack's close-up shows a grey panel where the far hand is hidden (`side_zoom.py --hidden-far`).
+  Cropped at the hidden far hand it showed the near hand a second time, and all three critics read "the far hand a full
+  duplicate of the near one, a second fan" (kneel, sit-chair, sit-ball, lean-counter).
+
+Round 9 critics (three fresh reviewers on **Fable**, run twice: before and after the hidden-hand panel, the flat
+worktop hands and the walking fingers together; the second pass below):
+
+| pose | natural | body | craft | round 8 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| kneel-pick | 4.5 | 5 | 4.5 | 4.5 / 5 / 4.5 |
+| all-fours | 5.5 | 6 | 5.5 | 5.5 / 6 / 5.5 |
+| sit-chair | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| sit-ball | 6 | 6.5 | 6 | 6.5 / 6 / 6 |
+| squat | 5 | 5.5 | 5 | 5.5 / 5 / 5 |
+| lean-counter | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| walk-contact | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 6.5 |
+| walk-down | 6 | 6 | 6 | 6 / 6.5 / 6 |
+| walk-pass | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 6.5 |
+
+Flat, as the first pass was. What holds them there, named by every lens in every pose and NOT a hand: legs as even
+tubes (no calf belly, no kneecap plane, folded thighs ~0.65 of the stills'), a long thin neck with a hook at the
+throat, the folded poses' cloth (squat's sack and tail, kneel-pick's balloon and bare raised thigh, sit-ball's pouch,
+all-fours' bump below the hem), the walks' straight trailing knee and the skirt's front slanting in under the bump. On
+the hands, the critics now see the placements land (lean-counter's palms "on the top, no gap", the far hands hidden)
+but still read every hand as "a flat wedge, four even lines from mid-hand": the drawing the film's blind reviewer
+keeps choosing. That conflict is Harry's to settle: the review page asks him A (today's) or B (S3) beside the stills.
+The far hand hidden also costs: the natural and craft lenses ask for the still's second set of fingertips on the
+squat's post and the worktop. Next (round 10): the shared shapes, one change at a time, each A/B'd blind on
+breathe-stroke where it reaches the standing shot: the leg's calf and kneecap and the folded thigh's mass; the neck;
+the folded poses' cloth; kneel-pick's reach (the toy on the floor).

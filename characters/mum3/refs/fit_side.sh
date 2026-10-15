@@ -158,9 +158,10 @@ farleg sit-chair -0.17,-0.02 -0.25,-0.07
 # hung steeply down to her lap, critic R3; the still's spot and its hand 17° down, round 5)
 # (round 9: the hands 10° down, as the still lays its near hand nearly level across the bump; at 17° the fingers pointed
 # down the bump's front, "a long flat paddle… straight at one angle", round 8; at 10° with the curl the fingers still
-# "point ~30° down", round 9 natural, craft and body: 4°, the curl kept for qa_checks curl, the wrist 0.035 H back so
+# "point ~30° down", round 9 natural, craft and body: 7° (at 4° the hand turned toward the camera on the breath, drawn
+# at 84% of its length, qa_checks limbs), the curl kept for qa_checks curl, the wrist 0.035 H back so
 # the tips stay inside the bump)
-bumphands sit-chair 0.6,-4.369 4 0.63,-4.42 4 -20
+bumphands sit-chair 0.6,-4.369 7 0.63,-4.42 7 -20
 fxset sit-chair fingersIn=0.5   # (the fingers curving round the bump in the picture; at 0.3 they measured 4° of curl, qa_checks curl)
 
 # sitting on a birth ball, her hips a little above her knees (the thighs 13° down to the knee, as a birth ball is chosen
