@@ -807,6 +807,26 @@ or composited.
    shape on one pose first (`side_zoom.py --try` with `fx.legTry` / `fx.clothTry`); draw soft tissue that moves with the
    head on the head's bone (a skin region); a prop held off the floor gets a floor shadow; read the notes in a pose's
    build line before trying a fix there again.
+72. **When a fix keeps failing across poses, measure the character against a real body: a reach the library asks for
+   may be a proportion the master never had.** Side-on round 11 (2026-10-15). Kneel-pick's reference stills rounded
+   her back like a second bump (the lenses read the back as the bump, rounds 7–10): a new still asked for the bump in
+   front and a straight back fixed the reference, not the rig (`s_kneel_pick2`). Refitted to it, her hand still
+   couldn't reach a toy on the floor: lifted, "floating"; leaned 20°, the seat swung back into a second mass and the
+   arm covered the bump; a floor ball grown to meet the palm (`toy reach=1`) read "a beach ball… rest a hand on a
+   ball, not pick up a toy" (every lens). The same shortfall ran through the squat (a level rod of an arm to the
+   chair), lean-counter (the forearm resting where the still presses on a straight arm) and all-fours (vertical
+   posts). Measured against a real arm: in the master her fingertips hang at 41% of her height (a real woman's ~38%,
+   so ~0.2 H, 5 cm, higher): her arm is ~90% of a real one, her hand (wrist to fingertip 0.63 H) ~80% of a real
+   hand's 0.108 × stature; the stills draw the arm ~105% of real, 0.5 H beyond hers. The master draws her so, and the
+   critic prompt excluded "her arms" from scoring, but the lenses scored everything they forced. Three rounds of
+   cloth and prop changes left the scores flat (lesson 15: explore, don't tune). Rules: before working round a reach,
+   check the limb against a real body's ratios (fingertips hang at ~0.38 of stature, the shoulder's top at ~0.82, the
+   hand 0.108 of stature, the knee at ~0.285) and against the stills; a proportion of the master is the client's
+   call, so put it to him with what it costs (every shot re-rendered, a blind A/B on the standing film) rather than
+   tune props round it; a prop's size is part of the story (a ball sized to her reach changed "pick up a toy" into
+   "rest on a ball"). Smaller round-11 rules: a seated hem resting on a prop takes a corner there (`seatCorner`), and
+   a walking skirt's front flares by the stride (`frontWalk`), the hem's front near plumb under the bump as the
+   stills hang it.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

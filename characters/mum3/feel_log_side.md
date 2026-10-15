@@ -476,3 +476,60 @@ in the order the lenses weigh it:
    sit-chair), a strap tab at the squat and all-fours shoulders, lean-counter standing 30–40 px too close (the bump flat
    on the cabinet), sit-ball's far shin leaving the near kneecap.
 Next (round 11): the folded cloth and kneel-pick's bump first, then the walks' front and knees.
+
+## Round 11 (2026-10-15): the folded cloth, kneel-pick's bump, the walks' skirt front
+
+Round 10's lenses put the folded poses' cloth and kneel-pick's hidden bump first, then the walks. Round 11:
+
+- **Kneel-pick, new stills.** All three old stills rounded her BACK like a second bump and hid the front one behind the
+  hanging arm (the lenses read the back as the bump). `s_kneel_pick2` asked for the bump in front and a straight back;
+  `_1` shows it. Refitted to it with the trunk nearly upright (~6° forward): leaned 20° from the hips for the reach, the
+  seat swung back into a second round mass and the hanging arm covered the bump's front. Upright, her palm hung 0.25 H
+  above the play ball's crown, so a floor ball now grows to meet the palm (`toy reach=1`, `parts/props.js`).
+- **Squat.** The skirt's side panel covers less of the thigh (`SQ.top` 0.2) and the tail sits higher and nearer
+  (`SQ.tail` −0.05, 0.22): it had hung to mid-shin. Squat shape per pose through `clothTry.sq`.
+- **Sit-ball.** The lap panel meets the ball at a corner (`skirt` `seatCorner` 0.6), not one smooth point (a U, "a
+  pouch").
+- **The walks** (and lean-counter, legs apart): the skirt's front flares by the stride (`frontWalk` 0.2), the hem's
+  front ~10 px behind the bump's at film size where it was 35–40 (the stills 3–20).
+- Kneel, all-fours, sit-chair and breathe-stroke: pixel-identical.
+
+Round 11 critics (three fresh reviewers on **Fable**):
+
+| pose | natural | body | craft | round 10 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 7 | 6.5 / 7 / 7 |
+| kneel-pick | 4.5 | 5 | 5 | 4.5 / 5 / 5 |
+| all-fours | 5.5 | 6 | 6 | 5.5 / 6 / 6 |
+| sit-chair | 7 | 7 | 7 | 7 / 7 / 7 |
+| sit-ball | 6 | 6.5 | 6.5 | 6 / 6 / 6.5 |
+| squat | 5 | 5.5 | 5.5 | 5.5 / 5.5 / 5 |
+| lean-counter | 6.5 | 7 | 7 | 6.5 / 7 / 7 |
+| walk-contact | 6.5 | 6.5 | 7 | 6.5 / 6.5 / 7 |
+| walk-down | 6 | 6.5 | 6.5 | 6 / 6.5 / 6.5 |
+| walk-pass | 6.5 | 6.5 | 7 | 6.5 / 6.5 / 6.5 |
+
+Flat for the third round (up half a point in three cells, down half in one). None of the cloth changes landed as the
+lenses weigh it: the squat "still a sack", sit-ball's corner now "a triangular flap hanging in the air", the walks'
+front "a touch behind" (better, still named). Kneel-pick swapped "floating" for "a beach ball… the action reads 'rest a
+hand on a ball', not 'pick up a toy'"; every lens: make the reach with the body (drop the near shoulder, hinge from the
+hips with a long back, the head tipped not bowed) and keep the toy liftable, and they still read the bowed head and neck
+as a hunch.
+
+**What the reach faults have in common: her arms.** In the master her fingertips hang at 41% of her height (the
+pixels, crown to sole); a real woman's hang at ~38%, so hers end ~0.2 H (~5 cm) higher: her arm is ~90% of a real one
+(the rig, joint to joint: shoulder to fingertip 2.68 H, the hand 0.63, about 80% of a real hand's 0.108 × stature). The
+stills draw the arm longer still (3.2 H joint to fingertip, ~105% of real), so every still's reach is ~0.5 H beyond hers.
+Every reach the library asks of her runs out of arm: kneel-pick's ball (grown or lifted), the squat's arm a level rod
+to the chair, lean-counter resting on the forearm instead of pressing on a straight arm, all-fours' arms vertical
+posts. The critic prompt calls her arms design and doesn't score them, but the lenses score what they force. Harry's
+brief is "like a real woman, just illustrated in 2D": whether to lengthen them is his call (decision card, round 11).
+
+What the lenses still put first, all three: (1) the knee: a kneecap plane and a calf belly on every bent or loaded leg,
+the walks' loaded knees soft and trailing knees bent 15–30° (every walk leg reads locked); (2) hands shaped to what they
+touch (bending at the knuckles to the bump's underside, the knee, the post, a flat palm on the floor), the swinging far
+hand closed, and the second hand where the still shows it (lean-counter's far fingertips, sit-chair's under the bump);
+(3) the folded cloth taut over the form and ending where it ends (squat, kneel-pick over the raised thigh, sit-ball's
+hem on the ball, all-fours' bump round with the hem a curtain behind it); the stacked kneeling shoes parted.
+Next (round 12): the walks' knees (pose directions, every lens), kneel-pick's reach with the body and a liftable toy,
+the stacked shoes; the arms when Harry decides.
