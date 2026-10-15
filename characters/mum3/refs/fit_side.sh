@@ -73,9 +73,9 @@ onthigh() {   # onthigh <pose> <side> <wrist x,y in the thigh's rest space> <han
   want "$1" || return 0   # thigh, palm down, the fingers softly curled over it toward the knee (softrest + fx.fingersIn<Side> 0.5)
   node tools/contact_pose.mjs mum3 side/$1 side/$1 --side $2 --on thigh.$2 --at $3 --handDir $4 --hand softrest 2>/dev/null | tail -1
 }
-onknee() {   # onknee <pose> <side> <wrist x,y in the shin's rest space> <hand dir> [knee side]: that hand resting on a knee
+onknee() {   # onknee <pose> <side> <wrist x,y in the shin's rest space> <hand dir> [knee side] [shape]: that hand resting on a knee
   want "$1" || return 0   # (its own by default; the other: reaching across her, the far hand on the near knee)
-  node tools/contact_pose.mjs mum3 side/$1 side/$1 --side $2 --on shin.${5:-$2} --at $3 --handDir $4 --hand lay 2>/dev/null | tail -1
+  node tools/contact_pose.mjs mum3 side/$1 side/$1 --side $2 --on shin.${5:-$2} --at $3 --handDir $4 --hand ${6:-lay} 2>/dev/null | tail -1
 }
 nudge() {   # nudge <pose> bone=deg,...: add degrees to bones of side/<pose> in place, after its floor solve (signs differ per
   want "$1" || return 0   # bone and side: check them with tools/bone_signs.mjs before writing one)
@@ -156,7 +156,11 @@ floor sit-chair --touch shoe.near:ball,shoe.near:heel@-0.1,shoe.far:ball@-0.162,
 farleg sit-chair -0.17,-0.02 -0.25,-0.07
 # (the near hand at the bump's widest point, the forearm near level, as the still rests it; under the bump, the forearm
 # hung steeply down to her lap, critic R3; the still's spot and its hand 17° down, round 5)
-bumphands sit-chair 0.635,-4.369 17 0.66,-4.42 17 -20
+# (round 9: the hands 10° down, as the still lays its near hand nearly level across the bump; at 17° the fingers pointed
+# down the bump's front, "a long flat paddle… straight at one angle", round 8; at 10° with the curl the fingers still
+# "point ~30° down", round 9 natural, craft and body: 4°, the curl kept for qa_checks curl, the wrist 0.035 H back so
+# the tips stay inside the bump)
+bumphands sit-chair 0.6,-4.369 4 0.63,-4.42 4 -20
 fxset sit-chair fingersIn=0.5   # (the fingers curving round the bump in the picture; at 0.3 they measured 4° of curl, qa_checks curl)
 
 # sitting on a birth ball, her hips a little above her knees (the thighs 13° down to the knee, as a birth ball is chosen
@@ -210,6 +214,9 @@ floor squat --touch shoe.near:ball,shoe.near:heel@-0.1 --bones foot,toe --twin l
 # one, "the legs aren't separated enough which means the knee then forms at a wierd place/angle", Harry; the still's
 # landmarks: knee −0.06, −0.23, ankle +0.29, −0.42)
 farleg squat -0.05,-0.2 0.3,-0.4
+# (round 9: the far arm HIDDEN behind the near one, as the still draws it: shown, its hand sat a hand's width ahead of the
+# near one on the post as a second set of fingers, round 8)
+fxset squat show.far.arm=0
 
 # leaning her forearms on a kitchen counter: the forearms and hands laid level on its top (the fit left them sloping down
 # to the hands, the forearms off the worktop)
@@ -217,8 +224,10 @@ farleg squat -0.05,-0.2 0.3,-0.4
 # palms pressed flat on the worktop)
 # (the palms DOWN, the backs of the hands a low dome, the fingers curling just onto the worktop, the thumbs under out of
 # sight: 'palmdown', fx.fingersIn; 'press' drew each hand thumb side up with its fingers straight out in the air, "hands
-# are the wrong way around on the counter", Harry, round 8)
-fit lean-counter s_lean_counter_1 --props counter --hand near=palmdown,far=palmdown --fix fx.fingersIn=0.7
+# are the wrong way around on the counter", Harry, round 8). fingersIn 0.2: the hand and forearm lie FLAT on the top; at 0.7
+# the fingers curled down to the worktop's line, the slab sat at their tips and the forearm hovered over it, "the
+# fingertips drooping over the corner… holding the edge, not resting on the slab" (round 9, natural and craft)
+fit lean-counter s_lean_counter_1 --props counter --hand near=palmdown,far=palmdown --fix fx.fingersIn=0.2
 scale lean-counter hand.near=1:0.6,hand.far=1:0.6   # (the palms on the worktop seen side-on, edge-on as all fours')
 # (the knees SOFT, ~14° each, as the still: a woman leaning her weight on her forearms unlocks her knees; at 5° they read
 # locked, round 4)
@@ -227,6 +236,10 @@ floor lean-counter --touch shoe.near:ball,shoe.near:heel@-0.1,shoe.far:ball@-0.1
 # (the hands sloping ~10° down from the wrist so the curled fingertips rest on the worktop, as the still's; level, the
 # fingers stood out in the air above it, round 8)
 settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperArm.far,forearm.far,hand.near,hand.far --aim forearm.near=0,forearm.far=0,hand.near=10,hand.far=10
+# (round 9: the far hand just BEHIND the near one on the worktop, as the still: its forearm a little more bent under the far
+# shoulder, the hand at the near one's angle (wrist 0.06 H back, level). Left where the fit put it, it lay 0.25 H AHEAD of
+# the still's, "a second row of fingertips poking out ahead of the near hand", round 8, every lens; tools/bone_signs.mjs)
+nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
 
 # picking up a ball: kneeling on ONE knee, as a pregnant woman is told to (the far knee, shin and the top of the far shoe
 # on the far floor line, sitting back toward that heel; the NEAR foot flat ahead, its thigh level and its knee up, the
@@ -241,10 +254,12 @@ settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperA
 # over the kneecap: its fingers curl down the knee's front, in the picture: fx.fingersIn, round 5, lesson 64)
 # (bending down she ROUNDS her back, the still one C from the shoulder blade over the seat: fx.lumbar 0, no hollow at the
 # waist; at the pitch's 0.1 H in it ran from the blade to the seat as a ramp, "a cape", round 6)
-fit kneel-pick s_kneel_pick_0 --props toy:r=0.24:near=1:held=1 --hand near=grip --fix fx.fingersIn=0.6,fx.lumbar=0
+fit kneel-pick s_kneel_pick_0 --props toy:r=0.24:near=1:held=1 --hand near=ball --fix fx.fingersIn=0.6,fx.lumbar=0
 dirs kneel-pick --dir pelvis=-64,spineLower=-62,spineUpper=-62,chest=-64,neck=-52,head=-58,thigh.near=-8,shin.near=95,thigh.far=58,shin.far=-172,upperArm.near=96,forearm.near=84,hand.near=86,upperArm.far=70,forearm.far=20,hand.far=40
 floor kneel-pick --touch leg.far:4@-0.162,leg.far:7@-0.162,leg.far:9@-0.162,shoe.far:tip@-0.162,shoe.near:ball,shoe.near:heel@-0.1 --bones shin,foot --sides far --vars thigh.far,thigh.near,foot.near
-onknee kneel-pick far -0.05,-2.26 45 near
+# (round 9: 'softrest', the fingers together and the thumb along the top: 'lay' (the bump's open hand, its thumb out apart
+# from the index) stuck the thumb straight out past the kneecap, "the single worst mark in the library… a pointer", round 8)
+onknee kneel-pick far -0.05,-2.26 45 near softrest
 
 # walking: the contact position (front heel down, back toe pushing off)
 # (every walking hand IDLE: following its forearm, the wrist drooping a few degrees toward plumb, the fingers a little curled

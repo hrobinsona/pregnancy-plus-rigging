@@ -1,0 +1,12 @@
+{
+ "name": "ball",
+ "f1": [30, 30, 20],
+ "f2": [32, 32, 20],
+ "f3": [34, 32, 20],
+ "f4": [36, 34, 22],
+ "s": [-3, 0, 3, 6],
+ "t": [25, 30],
+ "to": 30,
+ "ts": -5,
+ "_note": "a hand HOLDING a small ball from above (kneel-pick's toy): the palm on its crown, the fingers spread a little and following its curve (about 80° over the three joints: a finger's length over a 0.24 H ball), their pads on its surface. 'grip' (55/60/40, a cylinder's) closed into a fist on top of the ball with the knuckles showing (side-on round 9, beside the still with side_zoom.py --try)"
+}

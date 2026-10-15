@@ -33,9 +33,20 @@
     "on": "thigh.far"
    },
    {
-    "t": 4,
+    "t": 4.6,
     "pose": "side/sit-ball",
-    "on": "thigh.far"
+    "on": "thigh.far",
+    "dp": [
+     -0.03,
+     -0.006
+    ],
+    "slide": true
+   },
+   {
+    "t": 7.9,
+    "pose": "side/sit-ball",
+    "on": "thigh.far",
+    "slide": true
    }
   ],
   "far": [
@@ -45,9 +56,20 @@
     "on": "thigh.near"
    },
    {
-    "t": 4,
+    "t": 4.6,
     "pose": "side/sit-ball",
-    "on": "thigh.near"
+    "on": "thigh.near",
+    "dp": [
+     -0.03,
+     -0.006
+    ],
+    "slide": true
+   },
+   {
+    "t": 7.9,
+    "pose": "side/sit-ball",
+    "on": "thigh.near",
+    "slide": true
    }
   ]
  },

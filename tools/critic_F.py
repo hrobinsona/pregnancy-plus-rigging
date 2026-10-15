@@ -84,7 +84,7 @@ if args[1] == '--side':
         t.save(f'{td}/{p}.png'); files.append((f'{td}/{p}.png', f'{p}: the render (left) beside its reference still (right)'))
         # the hands and feet at 1:1 beside the still's (Harry, round 8: stiff hands and thin shoes "across many poses",
         # which a whole figure at film size draws too small to judge; lesson 69)
-        subprocess.run([sys.executable, 'tools/side_zoom.py', c, f'side/{p}', '--at', 'near,far,toe.near@-0.1:0', '--size', '0.75', '--px', '300', '--out', f'{td}/{p}_close.png'], check=True, capture_output=True)
+        subprocess.run([sys.executable, 'tools/side_zoom.py', c, f'side/{p}', '--at', 'near,far,toe.near@-0.1:0', '--size', '0.75', '--px', '300', '--hidden-far', '--out', f'{td}/{p}_close.png'], check=True, capture_output=True)
         files.append((f'{td}/{p}_close.png', f'{p}: CLOSE-UPS, rows near hand, far hand, feet; each [still | render 1:1 | render at film size]'))
     T = open('tools/critic_prompt_side.md').read(); parts = re.split(r'^<!-- (lens:\w+|framing) -->\n', T, flags=re.M); B = dict(zip(parts[1::2], parts[2::2]))
     eye = open('docs/HARRY_EYE.md').read(); eye = eye[eye.index('## The whole figure'):]

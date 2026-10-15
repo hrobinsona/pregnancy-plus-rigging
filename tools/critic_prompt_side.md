@@ -102,7 +102,8 @@ a still's long arm reaches something hers can't, the pose may change the prop or
 on whether a real pregnant woman would do it that way). Judge how she holds herself, how the cloth and flesh behave, and
 the drawing; say where a still's choice is better and why.
 Each pose also has a CLOSE-UP sheet: one row per crop, [still | render at 1:1 | render at film size], for her near hand,
-her far hand and her feet (a hand the pose hides behind her shows as her body). Judge the hands and shoes THERE: the
+her far hand and her feet (a far hand the pose hides, behind her bump, her near hand or her body, shows as a grey
+panel saying so: there is no second hand there, and its absence is the pose's choice when the still hides it too). Judge the hands and shoes THERE: the
 client's two faults across the library were stiff hands, "fingers always pointed directly out at a specific angle,
 rather than a little curled like most people naturally hold their hands", and "one shoe always looks really thin/cut
 off" (checklist items 31 and 32).

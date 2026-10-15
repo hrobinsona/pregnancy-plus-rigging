@@ -72,14 +72,15 @@ export function counter(o, z = 4) {
   ], floors: [[x0 - 0.09, x1 + 0.09, topY]], cloth: [] };
 }
 
-/** A small toy ball on the floor at x (something to pick up), or at y in her hand (held). */
+/** A small toy ball on the floor at x (something to pick up), or at y in her hand (held). Orange, the still's one colour
+ *  plus a shade for its band (yellow with an orange band read as a different, two-tone toy, side-on round 8). */
 export function toy(o, z = 4) {
   // (held: under her whole hand, the palm on its crown, the fingers curling over it; o.near: on the floor on her near side,
   // beside her near foot where her near hand picks it up: in front of her near leg, behind her near arm)
   const r = o.r ?? 0.2, y = o.y ?? (o.near ? 0.05 - r : -r), zz = o.held ? 55.45 : o.near ? 30.8 : z;   // (near: a step nearer us, so a little lower)
   return { parts: [
-    { id: 'prop.toy', z: zz, fill: o.fill || '#f2b134', geom: ensureCW(ellipse([o.x, y], r, r)) },
-    { id: 'prop.toy.band', z: zz + 0.05, fill: o.band || '#e8873a', geom: ensureCW(loop([[o.x - r * 0.96, y - r * 0.25, { a: 70 }], [o.x - r * 0.3, y + r * 0.95, { a: 0 }], [o.x + r * 0.5, y + r * 0.8, { a: -40 }], [o.x - r * 0.1, y, { a: 200 }]])) },
+    { id: 'prop.toy', z: zz, fill: o.fill || '#f38a3a', geom: ensureCW(ellipse([o.x, y], r, r)) },
+    { id: 'prop.toy.band', z: zz + 0.05, fill: o.band || '#e07330', geom: ensureCW(loop([[o.x - r * 0.96, y - r * 0.25, { a: 70 }], [o.x - r * 0.3, y + r * 0.95, { a: 0 }], [o.x + r * 0.5, y + r * 0.8, { a: -40 }], [o.x - r * 0.1, y, { a: 200 }]])) },
   ], floors: [], cloth: [] };
 }
 

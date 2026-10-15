@@ -199,7 +199,7 @@ const inside = (q, poly) => { let c = false; for (let i = 0, j = poly.length - 1
 export default {
   name: 'mum3',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape', 'siderest', 'idle', 'softrest', 'palmdown', 'hold'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape', 'siderest', 'idle', 'softrest', 'palmdown', 'hold', 'ball'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,

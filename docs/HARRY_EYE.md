@@ -187,7 +187,10 @@ shoe with its volume (32). The critic pack shows every pose's hands and feet at 
     around on the counter"; squat: "wrist/hands look odd and not holding the chair"; walk-pass: "the far thumb in the wrong
     position". Palms down on a worktop (the backs of the hands a low dome, the fingertips just over its edge, the thumbs
     under); a chair's back gripped (the palm on the top, the fingers wrapped over and down, the wrist in line with the
-    forearm); the thumb where the still shows it. · eye at 1:1 beside the still · 69
+    forearm); the thumb where the still shows it. Round 9: the fingers hooked over the rail's far edge, the palm ON its top
+    (no gap under the hand), a held ball under the palm with the fingers along its curve (not a fist on top); a fault
+    seen at 1:1 is fixed in the hand's shape, and a change to the finger drawing is blind A/B'd on the film · eye at 1:1
+    beside the still · 69, 70
 
 26. **Do the legs look like a real woman's legs in this pose?** A thigh that is thick at the hip and tapers to the knee,
     a knee that is a joint (kneecap in front, the crease behind, the calf pressed under the thigh when it folds), a calf

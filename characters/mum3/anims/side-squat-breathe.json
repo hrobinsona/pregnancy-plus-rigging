@@ -10,8 +10,8 @@
     -5.67
    ],
    [
-    3.53,
-    0.36
+    3.63,
+    0.37
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
@@ -134,6 +134,12 @@
   }
  ],
  "qa": {
+  "handed": [
+   {
+    "side": "far",
+    "why": "the hand is out of sight, 100% behind her body in the pose (tools/side_loop.mjs)"
+   }
+  ],
   "still": {
    "near": [
     [

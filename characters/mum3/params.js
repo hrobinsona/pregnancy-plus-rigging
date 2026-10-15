@@ -151,6 +151,10 @@ export const handSpecs = {
           // (lineStart 1, the lines from the middle knuckles as the side-on stills draw them (round 6: "paddles with four long
           // stripes"), lost blind on breathe-stroke, 6 vs 6.5: the hanging hand "a mitten-shaped lump" where the full lines
           // read as four loose fingers, round 7. The lines start just past the knuckles, engine/hand.js default)
+          // (round 9 tried it a THIRD time: the side-on critics at 1:1 asked for "one mass with two or three short tip
+          // separations"; fuller fingers, 10% shorter, the lines from the middle phalanx lost blind on breathe-stroke, 6 vs 6.5:
+          // "a short bunched cluster of nubs… a doll's mitten", where these "read as a hand with fingers" at phone size. A
+          // close-up at 1:1 is not the film: the drawing stays; a stiff hand is cured by its SHAPE, the hand library, lesson 70)
           fingerK: 0.9, rim: 0.012, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9, lineEnd: 0.95, lineTipGap: 0.3 },
 };
 handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03] };

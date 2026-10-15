@@ -16,7 +16,7 @@
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
  },
- "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays put where it rests, her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
+ "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand hangs free, her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
  "intensity": "very gentle and calm: small, soft moves",
  "keys": [
   {
@@ -26,18 +26,6 @@
   }
  ],
  "reach": {
-  "near": [
-   {
-    "t": 0,
-    "pose": "side/kneel-pick",
-    "on": "world"
-   },
-   {
-    "t": 4,
-    "pose": "side/kneel-pick",
-    "on": "world"
-   }
-  ],
   "far": [
    {
     "t": 0,
@@ -45,9 +33,20 @@
     "on": "thigh.near"
    },
    {
-    "t": 4,
+    "t": 4.6,
     "pose": "side/kneel-pick",
-    "on": "thigh.near"
+    "on": "thigh.near",
+    "dp": [
+     -0.03,
+     -0.006
+    ],
+    "slide": true
+   },
+   {
+    "t": 7.9,
+    "pose": "side/kneel-pick",
+    "on": "thigh.near",
+    "slide": true
    }
   ]
  },
@@ -60,7 +59,8 @@
     "hand.near.f1a": 3,
     "hand.near.f2a": 3,
     "hand.near.f3a": 3,
-    "hand.near.f4a": 3
+    "hand.near.f4a": 3,
+    "hand.near": 5
    },
    "note": "near: the fingers settle onto what they rest on (the easy breath)"
   },
@@ -72,7 +72,8 @@
     "hand.near.f1s": -3,
     "hand.near.f3s": 1.5,
     "hand.near.f4s": 4,
-    "hand.near.t0": 4
+    "hand.near.t0": 4,
+    "hand.near": -4.5
    },
    "note": "near: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
   },
@@ -88,7 +89,8 @@
     "hand.near.f3a": -3,
     "hand.near.f3b": -2,
     "hand.near.f4a": -3,
-    "hand.near.f4b": -2
+    "hand.near.f4b": -2,
+    "hand.near": 4
    },
    "note": "near: the breath out: the fingers ease long"
   },
@@ -137,15 +139,6 @@
   }
  ],
  "qa": {
-  "still": {
-   "near": [
-    [
-     0,
-     8,
-     "bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers"
-    ]
-   ]
-  },
   "curl": {
    "sides": [
     "far"
@@ -260,7 +253,7 @@
    "chestAlong": 0.032,
    "chestAcross": 0.03,
    "chestDeg": -1,
-   "shoulderDeg": 0.8,
+   "shoulderDeg": 2.2,
    "headDeg": -1.2,
    "belly": 0.012
   }

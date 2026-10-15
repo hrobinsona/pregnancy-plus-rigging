@@ -24,12 +24,18 @@ ap.add_argument('--out', default='out/side_zoom.png'); ap.add_argument('--px', t
 ap.add_argument('--size', type=float, default=0.7, help='crop side in H'); ap.add_argument('--film', type=float, default=225, help='film px per H')
 ap.add_argument('--try', dest='try_', help='candidates JSON (tools/side_zoom.mjs)'); ap.add_argument('--at', default='near,far', help='hands (near, far) or bones, name@dx:dy')
 ap.add_argument('--marks', default='', help='parts whose anchors are drawn numbered over ours (dress,dress.skirt)')
+ap.add_argument('--hidden-far', action='store_true', help='a far hand the pose hides (behind her bump, her near hand, her body) gets a blank panel saying so, not a crop of what covers it')
 a = ap.parse_args()
 os.chdir(R)
 tmp = tempfile.mkdtemp(prefix='side_zoom_')
 cands = json.loads(a.try_) if a.try_ else [{'label': 'ours'}]
+# --hidden-far: the same figure drawn without its far arm, so the far crop's changed pixels are the far hand we SEE. A far
+# hand hidden behind her bump or her near hand cropped as "far" showed the near hand a second time, and every critic read
+# it as "the far hand a full duplicate of the near one, a second fan" (side-on round 9, all three lenses)
+nofar = a.hidden_far and 'far' in a.at.split(',')
+run = cands + ([{**cands[0], 'label': '_nofar', 'fx': {**cands[0].get('fx', {}), 'show.far.arm': 0}}] if nofar else [])
 subprocess.run(['node', 'tools/side_zoom.mjs', '--char', a.char, '--out', tmp, '--px', str(a.px), '--size', str(a.size), '--at', a.at,
-                '--try', json.dumps(cands), *(['--marks', a.marks] if a.marks else []), *a.poses], check=True, capture_output=True)
+                '--try', json.dumps(run), *(['--marks', a.marks] if a.marks else []), *a.poses], check=True, capture_output=True)
 centre = json.load(open(f'{tmp}/centres.json'))
 
 def fit_of(pose):
@@ -77,8 +83,16 @@ for p in a.poses:
         elif p == 'rest': row.paste(master_crop(cx, cy), (0, 28))
         dr.text((6, 6), f'{p} {sd}: still{off}', fill='black')
         x = a.px + 20
+        crop = lambda k: Image.open(f"{tmp}/{p.replace('/', '_')}_{re.sub(r'[^\w.-]', '_', sd)}_{k}.png").convert('RGB')
+        seen = None
+        if nofar and sd == 'far':   # the share of the crop that is far arm (more than a faint edge: 24 levels)
+            A_, B_ = crop(0), crop(len(cands)); seen = sum(1 for u, v in zip(A_.getdata(), B_.getdata()) if max(abs(u[i] - v[i]) for i in range(3)) > 24) / (A_.width * A_.height)
         for k, c in enumerate(cands):
-            im = Image.open(f"{tmp}/{p.replace('/', '_')}_{re.sub(r'[^\w.-]', '_', sd)}_{k}.png").convert('RGB')
+            im = crop(k)
+            if seen is not None and seen < 0.03:   # (a hand's back fills ~8–15% of a 0.75 H crop; under 3% only a sliver or a tip shows)
+                im = Image.new('RGB', im.size, '#eeeeee'); di = ImageDraw.Draw(im)
+                for j, ln in enumerate(['FAR HAND HIDDEN', f'only {seen * 100:.1f}% of this crop is her', 'far arm: it is behind her bump,', 'her near hand or her body', '(there is no second hand)']):
+                    di.text((12, 12 + 18 * j), ln, fill='#333')
             row.paste(im, (x, 28)); row.paste(im.resize((F, F), Image.LANCZOS), (x + a.px + 10, 28))
             dr.text((x + 4, 30), c.get('label', str(k)), fill='black'); x += a.px + F + 30
         rows.append(row)

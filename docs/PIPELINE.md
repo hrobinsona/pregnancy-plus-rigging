@@ -763,6 +763,26 @@ or composited.
    ≥ 4°, 8° swinging, where the straight shapes measured −3°); measure a part's VOLUME as well as its outline (`shoe_gauge`);
    read the far knee and ankle off the still for every pose (HARRY_EYE 33); a lifted arm's shoulder is checked at 1:1
    with the anchors marked (HARRY_EYE 34).
+70. **A close-up judges a hand's SHAPE; only the film judges its DRAWING. Shape a hand for what it holds, and place the
+   prop from the hand.** Side-on round 9 (2026-10-15). With round 8's 1:1 close-ups every critic lens called every hand
+   "a flat paddle carrying four long parallel lines… the stills' fingers are one mass with two or three short tip
+   separations". Beside the stills, fuller fingers 10% shorter with the lines from the middle phalanx matched; on the
+   film it lost blind for the THIRD time (6 vs 6.5): "a short bunched cluster of nubs… a doll's mitten", where the kept
+   drawing "reads as a hand with fingers" at phone size (rounds 5 and 7 lost the same way, lesson 64). A 1:1 crop beside
+   a soft painted still rewards mass; the film rewards separate fingers. So the drawing (`params.handSpecs`) changes only
+   on a blind win on the standing shot, and a close-up fault is cured by the hand's SHAPE (`poses/hands/`): `idle` and
+   `softrest` hold the fingers together (spread −1…2 and −0.5…1: −3…6 fanned into a rake), `hold` hooks at the knuckles
+   (85°, the middle and end joints 20° and 0°: curled 50–63° at every joint the fingers bunched into "paws on a stick"),
+   a new `ball` follows a small ball's curve (about 80° over three joints for a 0.24 H ball, spread a little: `grip`, a
+   cylinder's 155°, closed into a fist on top of it). The prop is placed FROM the hand: the chair's rail under the
+   palm's underside where the rail is (not the palm's lowest point, its heel by the wrist: the rail stood 0.03 H under
+   the hand), its far edge just past the knuckles so the fingers go over it (at +0.06 they hung down its near face);
+   the held ball under the palm's crown. And a pinned resting hand only fans: on a thigh its fingers alone moved 4–5 px
+   in 2 s (QA alive: frozen); a hand on a leg now slides a little with the breath, drawn back as the shoulder rises and
+   down again on the breath out (`side_loop.mjs`: reach stops with `dp` and `slide`), 7 px at the wrist, 13 at the tips.
+   Rules: blind A/B any hand-drawing change on breathe-stroke before keeping it, whatever a close-up shows; pick shapes
+   beside the stills with `side_zoom.py --try` (`lib` inline); place a held prop from the posed hand's contact, not its
+   bounding box.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

@@ -19,7 +19,16 @@ export function propsFor(parts, ctx) {
     else if (it.type === 'chair') {   // in front of her: she holds its back, the top rail under her palm (not at her wrist: the hands hung past it)
       const pts = parts.filter((p) => /^hand\.near\.(palm|hypo|thenar)$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
       const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, lo = Math.max(...pts.map((q) => q[1]));
-      o = { seatY: -1.85, x0: cx + 0.06, back: 1, backTop: lo - 0.02, ...it };   // (the stile's top, leaning 0.1 back toward her, under the palm's centre; the seat a kitchen chair's ≈ 45 cm: at 2.05 H it read as a bar stool, round 4)
+      // the stile's top (x0 − 0.11: it leans back toward her) just behind the KNUCKLES, so the palm sits on the top and the
+      // fingers wrap over its front: under the palm's centroid (its thenar near the wrist) the post stood under her wrist
+      // and the fingers hung past it in the air, "paws on a stick" (side-on round 8, every lens)
+      const kn = [1, 2, 3, 4].map((i) => st[`hand.near.f${i}a`]?.pos).filter(Boolean), kx = kn.length ? kn.reduce((a, q) => a + q[0], 0) / kn.length : cx + 0.11;
+      // The rail's far edge just past the knuckles (x0 + 0.01: the fingers go over it and down its far face; at + 0.06 they
+      // hung down its near face), its top at the PALM'S UNDERSIDE over the rail (the palm's lowest point is its heel by the
+      // wrist, and the rail stood 0.03 H under the hand, round 9)
+      const rx0 = kx + 0.01 - 0.11, over = pts.filter((q) => Math.abs(q[0] - (rx0 + 0.04)) < 0.035);
+      const top = over.length ? Math.max(...over.map((q) => q[1])) - 0.012 : lo - 0.02;
+      o = { seatY: -1.85, x0: kx + 0.01, back: 1, backTop: top, ...it };   // (the stile's top, leaning 0.1 back toward her, under the palm's centre; the seat a kitchen chair's ≈ 45 cm: at 2.05 H it read as a bar stool, round 4)
     }
     else if (it.type === 'ball') {   // a birth ball as big as a real one (≈ 65 cm: r ≈ 1.35 H), she sits ON its crown (the
       // still; 0.35 r in front of it she perched on its front edge, critic R1 "the ball is behind her"): the centre 0.1 r

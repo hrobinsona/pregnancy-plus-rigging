@@ -63,7 +63,10 @@ const life = (s, w) => [
   { t0: 3.2, t1: 5.6, cycles: 1, bones: { [`hand.${s}.f1s`]: -3, [`hand.${s}.f3s`]: 1.5, [`hand.${s}.f4s`]: 4, [`hand.${s}.t0`]: 4, ...(w ? {} : { [`hand.${s}`]: -4.5 }) }, note: `${s}: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch` },
   { t0: 5.4, t1: 7.8, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].flatMap((i) => [[`hand.${s}.f${i}a`, -3], [`hand.${s}.f${i}b`, -2]])), ...(w ? {} : { [`hand.${s}`]: 4 }) }, note: `${s}: the breath out: the fingers ease long` },
 ];
-const fidget = Object.entries(pins).filter(([s, on]) => on && s !== back).flatMap(([s, on]) => life(s, on === 'world'));
+// a free hand HOLDING something (kneel-pick's toy: 'ball') gets the same life, its wrist easing the toy with the breath:
+// carried by her body alone it read FROZEN 0.9–4.6 s (qa_checks alive, side-on round 9; the toy follows the palm)
+const holding = (s) => ['ball'].includes(typeof states[s] === 'string' ? states[s] : states[s]?.pose);
+const fidget = Object.entries(pins).filter(([s, on]) => (on || holding(s)) && s !== back).flatMap(([s, on]) => life(s, on === 'world'));
 const still = Object.fromEntries(Object.entries(pins).filter(([s, on]) => on === 'world' && s !== back).map(([s]) => [s, [[0, 8, 'bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers']]]));
 // a hand HIDDEN by her body in the posed drawing is out of sight too (sit-ball's far hand on the far knee, 100% under the
 // legs and the lap, round 7): sampled inside the hand's outline, the share covered by a nearer filled part
@@ -83,11 +86,17 @@ const handed = [...(back ? [{ side: back, why: 'the hand rests on the bump\'s fa
   ...hidden.map(([side, k]) => ({ side, why: `the hand is out of sight, ${Math.round(100 * k)}% behind her body in the pose (tools/side_loop.mjs)` }))];
 // (a hand that rests or hangs free keeps a little curl in the picture, qa_checks 'curl': straight fingers read "stiff",
 // Harry, side-on round 8; not one bearing her weight or gripping, nor one out of sight)
-const curlSides = ['near', 'far'].filter((s) => s !== back && !hidden.some(([h]) => h === s) && pins[s] !== 'world' && !['press', 'grip', 'hold', 'drape'].includes(typeof states[s] === 'string' ? states[s] : states[s]?.pose));
+const curlSides = ['near', 'far'].filter((s) => s !== back && !hidden.some(([h]) => h === s) && pins[s] !== 'world' && !['press', 'grip', 'hold', 'drape', 'ball'].includes(typeof states[s] === 'string' ? states[s] : states[s]?.pose));
 const qa = { ...(handed.length ? { handed } : {}), ...(Object.keys(still).length ? { still } : {}), ...(curlSides.length ? { curl: { sides: curlSides } } : {}) };
 // a resting hand is a HELD reach (engine/anim.js reachArm: the arm solved in 3D to the wrist each frame, then a damped
 // solve; two equal stops = a hold): the plain 2D pin diverged on the far arms and the straight ones (26-75 px)
-for (const [s, on] of Object.entries(pins)) if (on) reach[s] = [0, 4].map((t) => ({ t, pose: `side/${poseName}`, on }));
+// A hand resting on a LEG keeps its palm on it (the pin holds the wrist's ease), so the fingers alone moved sit-ball's
+// near hand 4–5 px a 2 s window: FROZEN (qa_checks alive, round 9). A real hand on a thigh slides a little with the breath:
+// the shoulder rises on the breath in and draws it back toward the hip, the breath out lets it slide down again (e.dp,
+// screen H, engine/anim.js; slide: no lift off the thigh between the stops)
+for (const [s, on] of Object.entries(pins)) if (on) reach[s] = /^(thigh|shin)\./.test(on)
+  ? [{ t: 0, pose: `side/${poseName}`, on }, { t: 4.6, pose: `side/${poseName}`, on, dp: [-0.03, -0.006], slide: true }, { t: 7.9, pose: `side/${poseName}`, on, slide: true }]
+  : [0, 4].map((t) => ({ t, pose: `side/${poseName}`, on }));
 const desc = Object.entries(pins).map(([s, on]) => `her ${s} hand ${on === null ? 'hangs free' : on === 'world' ? 'stays put where it rests' : on === (C.roles?.belly || 'belly') ? 'rides her bump' : 'stays on her ' + on.replace('.', ' (') + ')'}`).join(', ');
 // the shot's framing: the pose's posed bounds (props too) with a margin, fitted in the 1080×1920 frame (all fours is wider
 // than she is tall: the still frame cut her feet off)

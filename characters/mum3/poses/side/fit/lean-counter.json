@@ -6,7 +6,7 @@
   "far": "palmdown"
  },
  "fx": {
-  "fingersIn": 0.7,
+  "fingersIn": 0.2,
   "turn": 0.4,
   "show.far.arm": 1
  },
