@@ -835,6 +835,24 @@ or composited.
    still worse (15.6k). So the proportion stays and the reach is made with the body. Rule: before changing a
    proportion, overlay every shot's keys on their own stills with the change, at a swivel the `limbs` gate passes:
    stills from different prompts can disagree about the same limb, and the shipped shots' stills win.
+73. **When a shape has been set by eye for rounds and still reads wrong, fit its few numbers to the still by
+   measurement.** Side-on rounds 6–12 (2026-10-15). The folded poses' skirts (the squat's tail, kneel-pick's back
+   corner, the hem on the ball, the all-fours hem) were tuned one constant at a time from the critics' words, and the
+   lenses read "a sack… a sail… a flap… the bump below the hem" four rounds running. Round 13 kept the drape procedural
+   and fitted only its shape numbers (`engine/drape.js`'s SQ, KP, AF, SEATED and `parts/skirt.js`'s CLOTH, per pose
+   in `fx.clothTry`) to the still's dress outline below the hip: `tools/cloth_fit.py` maps the still into rig units by
+   the pose's fit, as `side_match.py` does, renders each trial and keeps the best dress IoU, a coordinate search with
+   the range halved each pass. Squat 0.64 → 0.79, kneel-pick 0.51 → 0.58, all-fours 0.74 → 0.80, sit-ball 0.80 → 0.82.
+   The first run scored the squat 0.39: the chair's wood and the orange toy sat within the colour distance of the
+   dress, so a prop counted as skirt; the props' colours are now background in both classifiers. Rules: when a shape
+   has failed by eye twice, find the few numbers that make it and fit them to the still (the still is measured, never
+   drawn); score only the region the shape owns (below the hip for a skirt), so the posture's other differences don't
+   pull the fit; give every classifier the props' colours as not-her; read the before/after sheet
+   (`out/cloth_fit_<pose>.png`) before taking a fit, since IoU can rise by a shape no illustrator would draw, and set a
+   knob the score is flat in by eye at 1:1 (the squat's tail scored the same rounded or not: the fit left a sharp point,
+   0.75 drew a knob, 0.25 the still's soft point, `side_zoom.py --try`). Round 12
+   also reached kneel-pick's toy by hinging her forward from the hips (pelvis −72): every lens read "hunched". She now
+   sits back toward her heel with an upright trunk, as the still sits; a reach made with the body keeps the back long.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

@@ -54,6 +54,15 @@ for e in kv.split(','): k, v = e.split('='); x[k] = float(v)
 json.dump(p, open(f, 'w'), indent=1); print(f'fx {f.split("/")[-1]}: {kv}')
 PYS
 }
+cloth() {   # cloth <pose> '<json>': the skirt's shape numbers for this pose (pose.fx.clothTry: engine/drape.js's SQ, KP, AF,
+  want "$1" || return 0   # SEATED and the cloth options), FITTED to the still's dress outline by tools/cloth_fit.py, which
+  # prints this line (lesson 73); after the pose's solves
+  n=$1; python3 - "characters/mum3/poses/side/$n.json" "$2" <<'PYS'
+import json, sys
+f, v = sys.argv[1], sys.argv[2]; p = json.load(open(f)); p.setdefault('fx', {})['clothTry'] = json.loads(v)
+json.dump(p, open(f, 'w'), indent=1); print(f'clothTry {f.split("/")[-1]}: {v}')
+PYS
+}
 dirs() {   # dirs <pose> [pose_dirs options]: a posture written as segment directions, on side/fit/<pose> in place
   want "$1" || return 0
   n=$1; shift
@@ -137,6 +146,9 @@ V="pelvis,spineLower,spineUpper,chest"; for sd in near far; do V="$V,wristFlex.$
 floor all-fours --touch leg.near:4,leg.near:7,leg.far:4@-0.162,leg.far:7@-0.162,leg.near:9,shoe.near:tip,leg.far:9@-0.162,shoe.far:tip@-0.162,hand.near.palm:low,hand.far.palm:low@-0.162 --flat hand.near,hand.far --bones thigh,shin,foot,toe --vars $V --free root.0 --keep 0.3 --aim upperArm.near=88,forearm.near=86,upperArm.far=86,forearm.far=84,hand.near=0,hand.far=0 --aimw 6 --twin legs
 # (the far shin and shoe parallel, 0.2 H above the near ones all along, as kneeling: round 6 "the far shoe fused into it")
 nudge all-fours shin.far=-1.5,foot.far=-8
+# (round 13: the skirt FITTED to the still's dress below the hip, tools/cloth_fit.py: dress IoU 0.74 → 0.80. The hem
+# lower and level along the thigh, a wider flare at the back; "the bump below the hem", rounds 10–12)
+cloth all-fours '{"af":{"drop":-0.025,"back":0.6,"edge":0.325,"flare":0.45}}'
 
 # sitting on a kitchen chair, both feet flat (the far shoe at the standing rest pose's height, 0.162 H up: the floor seen a
 # little from above, as on every pose)
@@ -189,6 +201,9 @@ onknee sit-ball far -0.5,-2.25 20
 # tools/side_zoom.py, 0.03 H off)
 onthigh sit-ball near 0.317,-2.917 25
 fxset sit-ball fingersInNear=0.5
+# (round 13: the skirt FITTED to the still's dress below the hip, tools/cloth_fit.py: 0.80 → 0.82. The back corner
+# over the ball rounder and tucked (seatCorner 0.6 → 0.125), "a flap at the back", rounds 10–12)
+cloth sit-ball '{"seatCorner":0.125}'
 
 # supported squat, holding a chair's back in front of her; both feet flat and both knees forward (--twin legs: the far leg
 # the near one's twin, just behind it). The thighs at full length: the stills draw the near thigh long and level from the
@@ -220,6 +235,11 @@ farleg squat -0.05,-0.2 0.3,-0.4
 # (round 9: the far arm HIDDEN behind the near one, as the still draws it: shown, its hand sat a hand's width ahead of the
 # near one on the post as a second set of fingers, round 8)
 fxset squat show.far.arm=0
+# (round 13: the skirt's shape FITTED to the still's dress outline below the hip, tools/cloth_fit.py: dress IoU 0.64 →
+# 0.79. The side panel leaves more of the near thigh bare (top 0.5), the tail hangs just under the seat (0.06 behind,
+# 0.3 below the hem's crossing); set by eye over rounds 6–11, "a sack… a tail" every round. The IoU is flat in the
+# tail's rounding (0 to 1 all 0.794): 0 drew a sharp point, 0.75 a knob; 0.25 is the still's soft point at 1:1)
+cloth squat '{"sq":{"top":0.5,"bot":0.1,"bow":0.1175,"tail":[-0.0625,0.3]},"tailRound":0.25}'
 
 # leaning her forearms on a kitchen counter: the forearms and hands laid level on its top (the fit left them sloping down
 # to the hands, the forearms off the worktop)
@@ -269,16 +289,21 @@ nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
 # crown, so the ball grows to meet it: toy reach=1, parts/props.js)
 # ROUND 12: grown to her palm the ball was r 0.68 H (~30 cm), "a beach ball… rest a hand on a ball, not pick up a toy"
 # (every lens). Her arm is the master's (lesson 72: longer arms lost on the standing still), so she reaches with her
-# BODY, as a real woman gets down to the floor: she sits back toward her kneeling heel (the kneeling thigh at 30°, the
-# front knee up, the hips ~0.5 H lower), hinges 18° from the hips with a long back, the head tipped down to the toy;
-# the arm hangs a little BACK (104°), so the bump shows in front of it; the toy sits under her FINGERTIPS (tips=1),
-# r 0.31 H (~13 cm, a toddler's ball) instead of under her palm
+# BODY, as a real woman gets down to the floor: she sits back toward her kneeling heel (the kneeling thigh at 26°, the
+# front knee up, the hips ~0.5 H lower) with her back upright and long, the head tipped down to the toy; the arm hangs
+# straight down beside the bump; the toy sits under her FINGERTIPS (tips=1), r 0.33 H (~15 cm, a toddler's ball)
+# instead of under her palm. (Hinged 18° from the hips, the arm 104° back, every lens read "hunched… head bowed… the
+# bump half-hidden behind the arm", round 12: the still keeps her upright, so the reach comes from sitting back)
 fit kneel-pick s_kneel_pick2_1 --props toy:r=0.2:near=1:reach=1:tips=1 --hand near=softrest --fix fx.fingersIn=0.6
-dirs kneel-pick --dir pelvis=-72,spineLower=-72,spineUpper=-70,chest=-68,neck=-62,head=-44,thigh.near=-30,shin.near=90,thigh.far=26,shin.far=-172,upperArm.near=104,forearm.near=100,hand.near=98,upperArm.far=70,forearm.far=20,hand.far=40
+dirs kneel-pick --dir pelvis=-84,spineLower=-84,spineUpper=-82,chest=-80,neck=-66,head=-50,thigh.near=-30,shin.near=90,thigh.far=26,shin.far=-172,upperArm.near=96,forearm.near=94,hand.near=95,upperArm.far=70,forearm.far=20,hand.far=40
 floor kneel-pick --touch leg.far:4@-0.162,leg.far:7@-0.162,leg.far:9@-0.162,shoe.far:tip@-0.162,shoe.near:ball,shoe.near:heel@-0.1 --bones shin,foot --sides far --vars thigh.far,thigh.near,foot.near
 # (round 9: 'softrest', the fingers together and the thumb along the top: 'lay' (the bump's open hand, its thumb out apart
 # from the index) stuck the thumb straight out past the kneecap, "the single worst mark in the library… a pointer", round 8)
 onknee kneel-pick far -0.05,-2.26 45 near softrest
+# (round 13: the skirt's back FITTED to the still's dress outline below the hip, tools/cloth_fit.py: dress IoU 0.51 →
+# 0.58. The back corner rises 0.4 H and isn't pulled forward: it hung to the floor beside the toy, "a balloon to the
+# floor… a sail", every lens, round 12; the still's ends at the top of the kneeling thigh)
+cloth kneel-pick '{"kp":{"pull":0.0,"bow":-0.04,"drop":-0.4}}'
 
 # walking: the contact position (front heel down, back toe pushing off)
 # (every walking hand IDLE: following its forearm, the wrist drooping a few degrees toward plumb, the fingers a little curled

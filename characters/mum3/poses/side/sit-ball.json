@@ -9,7 +9,10 @@
   "farUpLegs": 0.162,
   "turn": 0.4,
   "show.far.arm": 1,
-  "fingersInNear": 0.5
+  "fingersInNear": 0.5,
+  "clothTry": {
+   "seatCorner": 0.125
+  }
  },
  "props": {
   "items": [

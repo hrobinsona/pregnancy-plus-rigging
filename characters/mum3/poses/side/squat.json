@@ -10,7 +10,19 @@
   "fingersIn": 1,
   "farUpLegs": 0.162,
   "turn": 0.4,
-  "show.far.arm": 0.0
+  "show.far.arm": 0.0,
+  "clothTry": {
+   "sq": {
+    "top": 0.5,
+    "bot": 0.1,
+    "bow": 0.1175,
+    "tail": [
+     -0.0625,
+     0.3
+    ]
+   },
+   "tailRound": 0.25
+  }
  },
  "props": {
   "items": [

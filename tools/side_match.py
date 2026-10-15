@@ -32,6 +32,9 @@ cols, lab = [[255, 255, 255]], [0]
 for gi, (g, ks) in enumerate(GROUPS.items(), 1):
     for k in ks:
         if k in pal: cols.append(hexrgb(pal[k])); lab.append(gi)
+# the props' own colours (engine/props.js: the chair's wood, the toy, the ball, the worktop): not her. Within 70 of the
+# dress the wood and the orange toy classed as DRESS, so a chair or a toy counted as skirt (round 13)
+for h in ['#c98d5c', '#ad7446', '#9c663c', '#f38a3a', '#e07330', '#a9cdec', '#ebe4da', '#d9d0c4', '#cdbfae']: cols.append(hexrgb(h)); lab.append(0)
 cols, lab = np.array(cols, float), np.array(lab)
 NAMES = ['bg'] + list(GROUPS)
 

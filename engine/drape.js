@@ -136,6 +136,8 @@ export const SQ = { top: 0.2, bot: 0.05, bow: 0.08 };
 SQ.tail = [-0.05, 0.22];
 export const KP = { pull: 0.27, bow: 0.06 };
 export const SEATED = { drop: 0.45 };
+// (each of SQ, KP, AF, SEATED is overridden for one pose by pose.fx.clothTry.sq / .kp / .af / .seated: fitted to the pose's
+// still's dress outline with tools/cloth_fit.py; KP.drop lowers or raises the kneeling back corner, H)
 // the back's cloth from its fullest point (screen back) to a hem point T below: a cubic leaving the seat straight down and
 // arriving along its chord, its second handle bowed in toward her by `bow` of the chord (the stills' outline turns in
 // under the buttocks: the seat rounds into one long diagonal, an S)
@@ -292,7 +294,7 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
     // it falls from there onto what she sits on, its hem corner resting on it and the hem running back along it to the
     // seat (the sit-ball still: 0.35 H below the thigh, down the ball's front; ended at the thigh, the seat sat on a shelf,
     // "a balloon on a ball", round 6). Only within SEATED.drop below the thigh
-    const fl = (o.floors || []).filter(([x0, x1, y]) => bot[0] >= x0 && bot[0] <= x1 && y > bot[1] && y - bot[1] < SEATED.drop);
+    const fl = (o.floors || []).filter(([x0, x1, y]) => bot[0] >= x0 && bot[0] <= x1 && y > bot[1] && y - bot[1] < (o.seated?.drop ?? SEATED.drop));
     const rest = fl.length ? [bot[0], Math.min(...fl.map((f) => f[2]))] : null;
     if (rest && w > 0.5) bot = rest;
     side = { top: top(fsT), bot, w, wb: wl[0], apart: bt, backOff: iB !== 0, rest: rest && w > 0.5 ? rest : null };
@@ -300,7 +302,7 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
     // kneeling on ONE knee with the near thigh forward (the back on the kneeling far leg, iB 1): the forward thigh lifts the
     // tube's front and pulls its back in under the seat, the hem's back corner KP.pull ahead of the seat's fullest point
     // (the kneel-pick still: 0.27 H; hung plumb from the seat the back read as "a cape", round 6)
-    else if (iB !== 0) { const T = add(Hb, [KP.pull * free, 0]); pb = toward(pb, T, KP.bow); Hb = T; }
+    else if (iB !== 0) { const kp = { ...KP, ...(o.kp || {}) }, T = add(Hb, [kp.pull * free, kp.drop ?? 0]); pb = toward(pb, T, kp.bow); Hb = T; }
     if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: Lf, Lb: cal.Lb, thighL: g.Lt };
   }
   // ON ALL FOURS the back's cloth climbs from the back waist up over the buttocks (they stand above it) and the hem is a
@@ -320,17 +322,17 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
   // (the still), the hem a diagonal down to the front; the front no lower than the thigh at its standing reach (cal.fs).
   let fold = null;
   if (cl > 0) {
-    const g = legs[0], phi = phiB + AF.flare, gv = [-Math.sin(phi), Math.cos(phi)], nb = [-gv[1], gv[0]];   // nb: out behind her, across the fall
+    const af = { ...AF, ...(o.af || {}) }, g = legs[0], phi = phiB + af.flare, gv = [-Math.sin(phi), Math.cos(phi)], nb = [-gv[1], gv[0]];   // nb: out behind her, across the fall
     // (the panel's front edge AF.edge behind the bump's lowest point, on its underside: the still shows the bump's whole round
     // bottom in front of the cloth; at the lowest point the panel hid its back half and the bump read as a wedge's corner)
     const lowB = (o.bump || []).reduce((m, q) => (q[1] > m[1] ? q : m), Wf), u = o.under || [];
-    const e = u.find((q) => q[0] < lowB[0] - AF.edge && q[1] < lowB[1]) || Wf;
+    const e = u.find((q) => q[0] < lowB[0] - af.edge && q[1] < lowB[1]) || Wf;
     Wf = lerp(Wf, e, cl);
-    const HfA = [Wf[0] - 0.04, Math.min(lowB[1] + AF.drop, g.TB(Math.min(cal.fs, g.fT))[1])];
+    const HfA = [Wf[0] - 0.04, Math.min(lowB[1] + af.drop, g.TB(Math.min(cal.fs, g.fT))[1])];
     Hf = lerp(Hf, HfA, cl); pf = [Wf, Hf];
     fold = { a: Wf, b: Hf, k: cl };
     let k = 0; pb.forEach((q, i) => { if (dot(q, nb) > dot(pb[k], nb) + 1e-9) k = i; });
-    const P = pb[k], yc = g.TB(Math.min(cal.fs, g.fT) * AF.back)[1], H2 = add(P, mulS(gv, Math.max(0, (yc - P[1]) / gv[1])));
+    const P = pb[k], yc = g.TB(Math.min(cal.fs, g.fT) * af.back)[1], H2 = add(P, mulS(gv, Math.max(0, (yc - P[1]) / gv[1])));
     const onLine = (q) => add(P, mulS(gv, dot(sub(q, P), gv)));
     pb = pb.map((q, i) => (i <= k ? q : i === pb.length - 1 ? lerp(q, H2, cl) : lerp(q, onLine(q), cl)));
     if (k === pb.length - 1) pb.push(lerp(P, H2, cl));

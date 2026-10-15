@@ -584,3 +584,23 @@ trailing knees bent, the toy smaller ("~1.5× the still's", no longer "a beach b
 
 Next (round 13): change method for the cloth (lesson 15): fit each folded pose's skirt options to its still's dress
 mask, measured, rather than by eye; then the far hand where the stills show it.
+
+## Round 13 (2026-10-15): the folded skirts fitted to their stills, kneel-pick upright
+
+Method change (lesson 15, lesson 73): four rounds tuned the folded poses' cloth by eye and the lenses kept reading "a
+sack… a sail… a flap". This round fits the drape's few shape numbers per pose to the still's dress outline below the hip
+with `tools/cloth_fit.py` (the still mapped into rig units by the pose's fit; the drape stays procedural, nothing of the
+still is drawn). The props' colours now count as background in `cloth_fit.py` and `side_match.py`: the chair's wood and
+the orange toy had classed as dress (the squat's first score 0.39 was mostly the chair).
+
+| pose | knobs fitted | dress IoU below the hip |
+|---|---|---|
+| squat | `sq` top 0.5, bow 0.12, tail (−0.06, 0.3); `tailRound` 0 | 0.64 → 0.79 |
+| kneel-pick | `kp` pull 0, bow −0.04, drop −0.4 (new: the back corner's height) | 0.51 → 0.58 |
+| all-fours | `af` drop −0.025, back 0.6, edge 0.325, flare 0.45 | 0.74 → 0.80 |
+| sit-ball | `seatCorner` 0.125 | 0.80 → 0.82 |
+
+Each `cloth <pose> '<json>'` line sits in `refs/fit_side.sh` with its numbers; `engine/drape.js` reads `clothTry.kp`,
+`.af` and `.seated` as it already read `.sq` (defaults unchanged, so breathe-stroke and the other poses draw as before).
+Kneel-pick's trunk back upright (pelvis −84 to the chest −80), sitting back toward her heel: round 12's hinge read
+"hunched" by every lens.

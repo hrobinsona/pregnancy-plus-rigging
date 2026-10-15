@@ -8,7 +8,15 @@
  "fx": {
   "farUp": 0.162,
   "turn": 0.4,
-  "show.far.arm": 1
+  "show.far.arm": 1,
+  "clothTry": {
+   "af": {
+    "drop": -0.025,
+    "back": 0.6,
+    "edge": 0.325,
+    "flare": 0.45
+   }
+  }
  },
  "root": [
   -1.4689,
