@@ -367,8 +367,16 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
   // lampshade, a sack (side-on round 4, all three lenses)
   A_.push([...add(add(Hf, mulS(n0, 0.85 * d)), mulS(t0, 0.012)), { c: true, ti: 0.3, to: 0.6 }]);
   A_.push([...add(hem[2], mulS(n2, 1.02 * d)), { a: ang(norm(sub(hem[3], hem[1]))) }]);
+  // (a squat's TAIL, o.tailRound 0..1: the back's cloth leaves the tail's point turned from straight up the back toward
+  // level, by tailRound, so the curtain's bottom is ONE round from the back into the inside's lower edge (the character
+  // draws the inside, its point leaving level too: side.tailDir), the fold meeting it at a crisp inner corner, as the
+  // squat still draws it; with the back's own line the two met at ~40° and drew a pointed tail, "a sack with a tail")
   A_.push([...add(add(Hb, mulS(n4, 0.6 * d)), mulS(t4, -0.012)), { c: true, ti: 0.6, to: 0.3 }]);
-  A_.push([...Hb, { a: ang(sub(B[1], Hb)) }]);
+  const tr = side?.tail && side.apart > 0.5 ? (o.tailRound ?? 0) : 0;
+  if (tr > 0) {
+    const dB = norm(sub(B[1], Hb)), lv = [dB[0] < 0 ? -1 : 1, 0], dl = norm(lerp(dB, lv, tr)); side.tailDir = dl;
+    A_.push([...Hb, { a: ang(dl), t: o.tailK ?? 1.2 }]);
+  } else A_.push([...Hb, { a: ang(sub(B[1], Hb)) }]);
   for (let i = 1; i < nB - 1; i++) A_.push([...B[i]]);
   A_.push([...Wb, { c: true, ti: 0.6, to: 0.4 }]);
   // nothing of the cloth through what she sits or stands on (the hem's smile under a sitting thigh hung through the seat)

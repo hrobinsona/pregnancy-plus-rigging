@@ -129,7 +129,8 @@ function lapOver(parts, ctx) {
   if (sd?.tail && sd.apart > 0.05) {
     const lg = legs.legFor(ctx, 'near'), P1 = sd.bot, T = sd.tail, Q = lg.TB(Math.min(0.85, lg.fT)), up = mulS(norm(sub(lg.TF(0.5), lg.TB(0.5))), 0.08);
     const tq = angOf(sub(Q, T)), low = add(lerp(T, Q, 0.45), [0, 0.03 * sd.apart]);
-    const geom = loop([[...add(P1, up), { c: true }], [...P1, { c: true }], [...T, { c: true }], [...low, { a: tq }], [...Q, { c: true }], [...add(Q, up), { c: true }]]);
+    // (the skirt's tail rounded, sd.tailDir: the inside's lower edge leaves the point level, on round from the back's)
+    const geom = loop([[...add(P1, up), { c: true }], [...P1, { c: true }], [...T, sd.tailDir ? { c: true, ao: angOf([-sd.tailDir[0], -sd.tailDir[1]]), to: 0.9 } : { c: true }], [...low, { a: tq }], [...Q, { c: true }], [...add(Q, up), { c: true }]]);
     parts.push({ id: 'dress.curtain', bone: 'pelvis', z: 30.03, fill: pal.dressShade, world: true, geom, M: [1, 0, 0, 1, 0, 0] });
   } else if (sd && sd.apart > 0.05) {
     const P1 = sd.bot, P2 = dr.Hb, ch = sub(P2, P1), L = len(ch), u = mulS(ch, 1 / L), up = [u[1], -u[0]][1] < 0 ? [u[1], -u[0]] : [-u[1], u[0]];
@@ -251,7 +252,15 @@ export default {
       const xs = P.filter((q) => q[1] > floor - (shoe ? 0.12 : 0.08)).map((q) => q[0]);
       if (xs.length) spans.push({ x0: Math.min(...xs), x1: Math.max(...xs), ids: [p.id], fl: floor });
     }
-    if (!spans.length) return '';
+    // a toy LIFTED off the floor (kneel-pick: her arms are too short to reach the floor at the still's lean, fit_side.sh)
+    // casts a small soft shadow on the floor under it, fainter and smaller the higher it is: with none, a ball held at
+    // her shin read as "floating in mid-air" to every lens (rounds 7–9); the shadow says it is in her hand, off the floor
+    const toy = parts.find((p) => p.id === 'prop.toy');
+    let lift = '';
+    if (toy) { const P = low(toy), lo = Math.max(...P.map((q) => q[1])), xs = P.map((q) => q[0]), r = (Math.max(...xs) - Math.min(...xs)) / 2, h = -lo;
+      if (h > 0.04 && h < 1.5) { const k = 1 - h / 1.5, c = (Math.min(...xs) + Math.max(...xs)) / 2;
+        lift = E([c - r * (0.55 + 0.35 * k), c + r * (0.55 + 0.35 * k)], 0.045).replace('/>', ` opacity="${(0.35 + 0.5 * k).toFixed(2)}"/>`); } }
+    if (!spans.length) return lift;
     spans.sort((a, b) => a.x0 - b.x0);
     const groups = [spans[0]];
     // (a stretch on the far foot's floor line stays apart from the near ones: its shadow on that line, under the far shoe;
@@ -263,6 +272,6 @@ export default {
       const ball = parts.find((p) => p.id === 'prop.ball');
       if (ball && g.ids.includes('prop.ball')) { const xs = low(ball).map((q) => q[0]), r = (Math.max(...xs) - Math.min(...xs)) / 2, c = (x0 + x1) / 2; x0 = Math.min(x0, c - 0.7 * r); x1 = Math.max(x1, c + 0.7 * r); }
       return E([x0, x1], x1 - x0 < 0.5 ? 0.06 : 0.09, g.fl);
-    }).join('');
+    }).join('') + lift;
   },
 };

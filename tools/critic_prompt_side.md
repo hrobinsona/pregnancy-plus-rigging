@@ -106,4 +106,7 @@ her far hand and her feet (a far hand the pose hides, behind her bump, her near 
 panel saying so: there is no second hand there, and its absence is the pose's choice when the still hides it too). Judge the hands and shoes THERE: the
 client's two faults across the library were stiff hands, "fingers always pointed directly out at a specific angle,
 rather than a little curled like most people naturally hold their hands", and "one shoe always looks really thin/cut
-off" (checklist items 31 and 32).
+off" (checklist items 31 and 32). The finger DRAWING is the client's settled choice: separate, slim fingers with
+round tips (fuller, shorter fingers drawn as one mass lost blind three times at film size, and the client picked the
+separate ones). Don't ask for the drawing to change; judge a hand by its shape, its angle, where it sits and what it
+touches, and say what a real hand doing that job would do differently.

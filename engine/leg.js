@@ -59,7 +59,11 @@ export function legOutline(o) {
   // (a deep bend shrinks the radius so the arc stays within the knee's end of each bone: tangent ≤ 0.28 of the shorter)
   if (rho * Math.tan(half) > 0.28 * Math.min(Lt, Ls)) rho = Math.max(wfk * 0.6, 0.28 * Math.min(Lt, Ls) / Math.tan(half));
   const tTan = Math.max(rho * Math.tan(half), 0.02), C = add(M, mulS(norm(add(mulS(nu, -1), mulS(nv, -1))), rho / Math.max(0.2, Math.cos(half))));
-  const kA = sub(M, mulS(u, tTan)), kC = add(M, mulS(v, tTan));
+  let kA = sub(M, mulS(u, tTan)), kC = add(M, mulS(v, tTan));
+  // (o.onProfile: the fillet's ends ON the thigh's and the shin's own front lines, not on an even tube of the knee's
+  // half-width: a deep bend's fillet reaches 0.3–0.4 H along each bone, where the measured front has tapered, and its end
+  // stood proud of the line it joins, a ball of a knee with a waist under it)
+  if (o.onProfile) { kA = TF(Math.max(0.5, 1 - tTan / Lt)); kC = SF(Math.min(0.5, tTan / Ls)); }
   const kB = ph > 1e-3 ? add(C, mulS(norm(sub(M, C)), rho)) : M;   // the arc's middle (straight leg: the knee's front point)
   // ---- back: where the hamstring line meets the calf line
   const nS = 24, tb = [], sb = [];
@@ -77,7 +81,10 @@ export function legOutline(o) {
   // and bulged 0.02 H past the stations, out past the skirt's front edge under a standing bump, round 5's blind A/B)
   A_.push([...TF(0), { a: ang(u) }]); A_.push([...TF(0.5)]);
   A_.push([...kA, { a: tg(u) }]); A_.push([...kB, { a: tg(norm(lerp(u, v, 0.5))) }]); A_.push([...kC, { a: tg(v) }]);
-  A_.push([...SF(0.23)]); A_.push([...SF(0.5)]); A_.push([...SF(0.77)]);
+  // the shin's front anchors start past the fillet's end (a deep bend's fillet ends 0.3–0.4 H down the shin, past where
+  // SF(0.23) sits: the outline doubled back there, a kink under the knee); straight, they are 0.23, 0.5, 0.77
+  const fC = o.onProfile ? Math.max(0, tTan / Ls - 0.02) : 0;
+  for (const g of [0.23, 0.5, 0.77]) A_.push([...SF(g + (1 - g) * fC)]);
   for (const p of foot.instep) A_.push([...p]);
   for (const p of foot.shoe) A_.push([...p]);
   // the back of the ankle never dips more than achillesIn (H) inside the line heel → calf: a POINTED foot (kneeling, on all

@@ -411,3 +411,31 @@ The far hand hidden also costs: the natural and craft lenses ask for the still's
 squat's post and the worktop. Next (round 10): the shared shapes, one change at a time, each A/B'd blind on
 breathe-stroke where it reaches the standing shot: the leg's calf and kneecap and the folded thigh's mass; the neck;
 the folded poses' cloth; kneel-pick's reach (the toy on the floor).
+
+## Round 10 (2026-10-15): the shapes every lens names, legs, neck, folded cloth
+
+Harry's call on the finger drawing (17:26, decision card): **A, today's separate fingers**; the critic prompt now says
+so, and hands are judged on shape, angle, place and contact (lesson 70). Round 10 takes the shapes round 9's lenses
+named in every pose (lesson 71):
+
+- **Legs.** Measured station by station the depths were already the stills' (×0.97–1.03); the fault was the outline
+  where the forms meet. Bent, the knee's fillet ended proud of the tapered thigh and shin (a ball of a knee with a waist
+  under it) and the folded calf ran a straight ramp into the crease (a hinge). Now the fillet ends on each bone's own
+  front line, a bent shin's front runs straight down from the knee, and a folded calf rounds over into the crease
+  (`P.knee` onProfile, fill, calfIn; tried per pose with `side_zoom.py --try` `fx.legTry`). Standing, nothing changes.
+- **Neck.** The master's throat runs back almost level under the chin, then down (a jaw shelf); ours ended under the
+  jawbone's rising line, the white under the jaw cutting in as "a hook at the throat". The neck now runs forward under
+  the jaw to inside the chin, skinned to the head, and the nape runs on into the shoulder (a knob at the back of the neck
+  bent forward). Blind A/B on breathe-stroke, one fresh reviewer on **Fable**: **the new throat won, 6.5 vs 6** ("the
+  throat runs as one continuous curve from under the chin… X: a small white notch, a wedge chipped out of the throat",
+  the only difference it found; the knee doesn't reach the standing shot). Kept: `renders/mum3_breathe-stroke_v8.mp4`.
+  Wrong in both, for breathe-stroke's next round: the lifting hand a flat paddle at 1.5–1.9 s, the fingers a comb at
+  the stroke's top (8.9–9.5 s, a freeze not a settle), the hand drops still fanned (11.0–11.6 s).
+- **Squat's skirt tail.** The back's cloth and the inside's lower edge met at ~40°, a point ("a sack with a tail"); the
+  back now leaves the tail turned toward level and the inside continues it (`skirt` `tailRound` 0.75), one round with a
+  crisp inner fold.
+- **Kneel-pick's toy.** A deeper bend reached the floor but was the hunched, bump-hidden pose rounds 1–4 rejected
+  (written in `fit_side.sh` above that line): reverted. The toy stays lifted in her hand and casts a small soft shadow
+  under it, fainter the higher it is (with none it read "floating in mid-air", rounds 7–9).
+- Deferred: sit-ball's pouch, all-fours' bump under the hem, kneel-pick's skirt balloon, the walks' trailing knee, the
+  skirt's front slant under the bump.

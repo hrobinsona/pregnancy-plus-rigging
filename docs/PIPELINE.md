@@ -783,6 +783,30 @@ or composited.
    Rules: blind A/B any hand-drawing change on breathe-stroke before keeping it, whatever a close-up shows; pick shapes
    beside the stills with `side_zoom.py --try` (`lib` inline); place a held prop from the posed hand's contact, not its
    bounding box.
+71. **At a joint, match the CONTOUR, not the depth; and read a pose script's notes before re-trying its fix.** Side-on
+   round 10 (2026-10-15). Every lens, rounds 7–9, read the legs as "even tubes: no calf belly, no kneecap plane" and the
+   neck as "long and thin with a hook at the throat". Measured station by station (`leg_widths.py`) the legs' depths
+   were already the stills' (×0.97–1.03): the fault was the SHAPE where the forms meet. Bent, the knee's fillet reached
+   0.3–0.4 H along each bone and ended on an even tube of the knee's half-width, proud of the tapered front it joined (a
+   ball of a knee with a waist under it), and the master's shin narrows under the patella, which bent read as the same
+   waist; folded to 90° and past, the calf ran a straight ramp into a corner on the thigh's back (a hinge). Now the
+   fillet ends ON each bone's own front line (`P.knee.onProfile`, `engine/leg.js`), a bent shin's front runs straight down
+   from the knee over the tendon (`fill`, faded in from 15° to 50° of bend) and a folded calf rounds over into the crease
+   (`calfIn`, from 45° to 90°): the stills' knee dome flowing into the shin, their calf peaking a third of the way down.
+   The throat: the master's skin runs from the chin's underside back almost LEVEL to the throat, then straight down (a
+   short full neck under a jaw shelf); ours ended under the jawbone's rising line, 0.08 H higher and further back, and
+   the white under the jaw cut in as the hook. The neck now runs forward under the jaw to inside the chin, that soft
+   tissue skinned to the HEAD (a skin region), so a nod folds it and a look up stretches it; the nape runs on down into
+   the shoulder under the strap (it ended in a round corner, a knob at the back of the neck as she bent forward). The
+   squat's skirt tail: the back's cloth and the inside's lower edge met at ~40°, a point, "a sack with a tail"; the back
+   now leaves the tail turned toward level (`skirt` `tailRound`, 0.75) and the inside continues it, one round with a
+   crisp inner fold, as the still draws it. And kneel-pick's toy: a deep bend reached the floor but was the hunched,
+   bump-hidden pose rounds 1–4 had rejected, written in `fit_side.sh`'s own notes above that line; the arms are shorter
+   than the stills', so the toy stays lifted and casts a small soft shadow under it, fainter the higher it is ("floating
+   in mid-air" with none). Rules: compare a joint's outline with the still's at 1:1 before measuring widths, and try a
+   shape on one pose first (`side_zoom.py --try` with `fx.legTry` / `fx.clothTry`); draw soft tissue that moves with the
+   head on the head's bone (a skin region); a prop held off the floor gets a floor shadow; read the notes in a pose's
+   build line before trying a fix there again.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

@@ -17,7 +17,7 @@ const achillesRest = (char, side) => { const ank = char.joints[side === 'near' ?
 const heelRest = (sh) => [sh.heel[0] + 0.08, sh.heel[1] - 0.04];
 const counterX = (char, side) => { const sh = char.params.P.shoe[side], a = achillesRest(char, side), b = heelRest(sh), u = (sh.top - a[1]) / (b[1] - a[1]); return a[0] + u * (b[0] - a[0]); };
 
-export function legFor({ C: char, st, rig }, side) {
+export function legFor({ C: char, st, rig, pose }, side) {
   const J = char.joints, X = char.params.P, BONE = rig.BONE, S = side === 'near' ? 'Near' : 'Far';
   const ank = J['ankle' + S], sh = X.shoe[side], h = sh.heel, t = sh.toe, L = t[0] - h[0], LP = X.legProfile[side];
   const onFoot = (p) => carryPt(st, J, BONE, `foot.${side}`, p), onToe = (p) => carryPt(st, J, BONE, `toe.${side}`, p);
@@ -38,7 +38,24 @@ export function legFor({ C: char, st, rig }, side) {
   const H = st[`thigh.${side}`].pos, K = st[`shin.${side}`].pos, dv = [K[0] - H[0], K[1] - H[1]];
   const a = Math.acos(Math.max(-1, Math.min(1, dv[1] / Math.hypot(...dv)))) * 180 / Math.PI, s1 = Math.max(0, Math.min(1, (a - 30) / 50)), k = s1 * s1 * (3 - 2 * s1);
   const thigh = LP.thigh.P.map(([f, fr, bk]) => [f, fr * (1 + 0.1 * k * (1 - f * 0.6)), bk * (1 + 0.3 * k * (1 - f * 0.5))]);
-  return legOutline({ hip: H, knee: K, ankle: st[`foot.${side}`].pos, thigh, shin: LP.shin.P, foot, kneeRound: X.knee.round, top: 0.18 });
+  const A = st[`foot.${side}`].pos, v = [A[0] - K[0], A[1] - K[1]];
+  const bend = Math.atan2(dv[0] * v[1] - dv[1] * v[0], dv[0] * v[0] + dv[1] * v[1]) * 180 / Math.PI;
+  const T = { ...X.knee, ...(pose?.fx?.legTry || {}) }, sm = (e0, e1, x) => { const q = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return q * q * (3 - 2 * q); };
+  // THE BENT KNEE (side-on round 10, beside the stills at 1:1: every lens read our legs as "even tubes, no calf belly, no
+  // kneecap plane"; measured, their depths were already the stills' at every station, x0.97–1.03, so it is the SHAPE):
+  //  · the shin's front runs straight down from the knee's front, over the patellar tendon and the tibia's tuberosity
+  //    (P.knee.fill): the master's straight shin narrows just under the patella, and bent that narrowing read as a ball
+  //    of a knee with a waist under it (sit-chair, sit-ball, squat: the stills' knee dome flows into the shin's front)
+  //  · folded to 90° and past (kneeling, on all fours, sitting), the calf rounds over into the crease (P.knee.calfIn, its
+  //    back eased in toward the knee over the first calfInTo of the shin): the calf presses on the hamstring and flattens,
+  //    where ours ran a straight ramp up into a corner on the thigh's back, a hinge (the kneel and all-fours stills' calf
+  //    peaks a third of the way down and curves down into the crease)
+  // (pose.fx.legTry overrides P.knee for one pose: tools/side_zoom.py --try candidates)
+  const kb = (T.fill ?? 0) * sm(15, 50, bend), kd = (T.calfIn ?? 0) * sm(45, 90, bend), fz = T.fz ?? 0.45, fr0 = LP.shin.P[0][1], frz = LP.shin.at(fz).front;
+  const shin = LP.shin.P.map(([f, fr, bk]) => [f,
+    f < fz ? fr + kb * Math.max(0, fr0 + (frz - fr0) * Math.pow(f / fz, T.fp ?? 1.6) - fr) : fr,
+    bk * (1 - kd * Math.max(0, 1 - f / (T.calfInTo ?? 0.45)) ** 2)]);
+  return legOutline({ hip: H, knee: K, ankle: A, thigh, shin, foot, kneeRound: X.knee.round, top: 0.18, onProfile: T.onProfile });
 }
 
 export function build(ctx) {

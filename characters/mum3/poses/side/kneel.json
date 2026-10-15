@@ -13,7 +13,7 @@
  },
  "root": [
   0.1432,
-  1.971
+  1.9774
  ],
  "bones": {
   "pelvis": 0,
@@ -32,8 +32,8 @@
   "foreRot.near": 0,
   "hand.near": -8,
   "thigh.near": 9.6,
-  "shin.near": -92.8,
-  "foot.near": -55.1,
+  "shin.near": -93.1,
+  "foot.near": -54.9,
   "hipAbd.near": 0.5,
   "clavicle.far": -1.5,
   "shoulderAbd.far": 0,
@@ -44,8 +44,8 @@
   "foreRot.far": 0,
   "hand.far": -12,
   "thigh.far": 9.6,
-  "shin.far": -94.3,
-  "foot.far": -63.1,
+  "shin.far": -94.6,
+  "foot.far": -62.9,
   "hipAbd.far": 0.5
  },
  "_fit": {

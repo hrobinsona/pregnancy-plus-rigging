@@ -11,7 +11,7 @@ import { ensureCW } from '../../../engine/hand.js';
 import { lerp, add, sub, mulS, norm } from '../../../engine/geom.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
-export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };
+export const ANCHORS = { 'neck': 10, 'chest.skin': 7, 'dress': 24 };
 // the bodice's path inside her below the bump (rest H): within ≈ 0.3 H of the hip joint, so the skirt covers it in any pose
 // (its way up to the back waist 0.1 H inside the back line: the skirt's back now curves IN at the small of the back
 // (parts/skirt.js hug), and run up just inside the old straight back, the bodice stood out past it as two bumps on her
@@ -137,11 +137,23 @@ export function build({ P: C, C: char }) {
   // ---- neck: nape top (under the hair) → throat top (under the jaw) → throat → base (inside the chest skin) → nape
   // (the base straight down under the throat, inside the chest skin: swung 0.08 H forward it stood out past the chest skin's
   // front as a little hook at the base of the throat, every pose; side-on round 4 "a hook at the base of the throat")
+  // THE THROAT (side-on round 10, beside the master at 1:1): the master's skin runs from the chin's underside back almost
+  // level to the throat (N.throat, 0.2 H behind the chin, at the chin's height), then straight down: a short full neck
+  // under a jaw shelf. Ours ended under the jawbone's line, which rises 0.13 H from the chin to under the ear, so the
+  // throat began 0.08 H higher and further back and the white under the jaw cut in as a hook: "a long thin neck with a
+  // hook at the throat", every lens, rounds 7–9. The neck now runs forward under the jaw to the chin (inside the face, N.chinIn)
+  // and that soft tissue moves with the HEAD (a region: the corner at 0.7 of the head's turn, the chin end fully), so a
+  // nod folds it under the chin and a look up stretches the throat, as a real one does
   out.push(part('neck', 'neck', 26, C.skin, ensureCW(loop([
-    [N.napeTop[0], N.napeTop[1], { c: true, t: 0.5 }], [N.throatTop[0] - 0.12, N.napeTop[1] + 0.05], [N.throatTop[0], N.throatTop[1], { a: 95 }],
-    [N.front[0] + 0.005, N.front[1], { a: 80 }], [N.front[0] + 0.01, N.front[1] + 0.14], [N.back[0] + 0.02, N.back[1] + 0.14],
-    [N.back[0], N.back[1], { a: -80 }], [N.back[0] + 0.03, (N.back[1] + N.napeTop[1]) / 2, { a: -95 }]])),
-    { skin: { parent: 'chest', child: 'neck', zone: 0.35 } }));
+    [N.napeTop[0], N.napeTop[1], { c: true, t: 0.5 }], [N.throatTop[0] - 0.12, N.napeTop[1] + 0.05], [N.chinIn[0], N.chinIn[1], { a: 160 }],
+    [N.throat[0], N.throat[1], { a: 122, t: 0.55 }],
+    [N.front[0] + 0.005, N.front[1], { a: 80 }], [N.front[0] + 0.01, N.front[1] + 0.14], [N.back[0] + 0.12, N.back[1] + 0.13],
+    // the NAPE runs on down into the shoulder (the trapezius) under the strap, one line: it ended at the neck's base in a
+    // round corner that bulged out behind the chest skin's slope, a knob at the back of the neck in every pose, more as
+    // the neck bent forward (squat, lean-counter, kneel-pick; the stills run the nape straight into the shoulder)
+    [st.back[0] + 0.15, st.back[1] + 0.1, { a: -82, t: 0.8 }],
+    [N.back[0], N.back[1]], [N.back[0] + 0.03, (N.back[1] + N.napeTop[1]) / 2, { a: -95 }]])),
+    { skin: { parent: 'chest', child: 'neck', zone: 0.35, regions: [{ bone: 'head', c: N.chinIn, r: [0.08, 0.3] }] } }));
   // ---- chest skin: from the neck base forward and down to the neckline, back over the shoulder top behind the strap
   out.push(part('chest.skin', 'chest', 24, C.skin, ensureCW(loop([
     [N.front[0], N.front[1] - 0.02, { a: 85 }], [X.chestFront[0], X.chestFront[1], { a: 35 }], [nl.front[0] + 0.01, nl.front[1] + 0.02, { a: 60 }],

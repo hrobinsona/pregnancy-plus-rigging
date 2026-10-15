@@ -17,6 +17,8 @@ const TOP = [[0.3, -4.17], [0.55, -3.86]];
 // path now runs up 0.1 H inside her back (parts/body.js SKIRT_IN), and a pelvis-carried point behind the waist swung
 // with the hips; leaning on the counter it landed beside the bodice's hidden corner and left a white sliver there, round 6
 const IN = { fw: 0.16, up: 0.06 };
+// cloth shape options for engine/drape.js skirt() (pose.fx.clothTry overrides them for one pose: side_zoom.py --try)
+const CLOTH = { tailRound: 0.75 };
 const cache = new WeakMap(), rest0 = new WeakMap();
 // the trunk's forward pitch from standing (radians): on all fours ≈ 80°, leaning on a counter ≈ 25–30°
 const pitchOf = ({ C: char, st, rig }) => { if (!rest0.has(char)) rest0.set(char, rig.solve({}).spineLower.rot); return (st.spineLower.rot - rest0.get(char)) * Math.PI / 180; };
@@ -89,6 +91,6 @@ export function skirtPart(parts, ctx, props = { floors: [], cloth: [] }) {
   const carry = (p) => ap(st.pelvis.M, sub(p, J.pelvis));
   const g = dress.geom, iW = DRESS_AT.waist, Wb = g.P[iW], dn = norm(sub(Wb, g.hout[iW]));   // (down the bodice's back line: it runs up from the waist)
   const sk = skirt({ Wf: g.P[DRESS_AT.bot], Wb, hug: hugOf(carry, flexOf(pose), Wb, dn), hugFrom: HUG.n, tuck: norm(sub(g.P[DRESS_AT.bot], g.hin[DRESS_AT.bot])), legs: ['near', 'far'].map((s) => legFor(ctx, s)),
-    pitch: pitchOf(ctx), seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), under: underPts(dress.geom), apart: pose?.fx?.kneesApart ?? 0, swing: pose?.fx?.skirtSwing ?? 0, props: props.cloth, floors: props.floors, top: [add(Wb, add(mulS([dn[1], -dn[0]], IN.fw), mulS(dn, -IN.up))), ...TOP.map(carry)], cal: cal(ctx) });
+    pitch: pitchOf(ctx), seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), under: underPts(dress.geom), apart: pose?.fx?.kneesApart ?? 0, swing: pose?.fx?.skirtSwing ?? 0, props: props.cloth, floors: props.floors, ...CLOTH, ...(pose?.fx?.clothTry || {}), top: [add(Wb, add(mulS([dn[1], -dn[0]], IN.fw), mulS(dn, -IN.up))), ...TOP.map(carry)], cal: cal(ctx) });
   return { id: 'dress.skirt', bone: 'pelvis', z: 30.05, fill: pal.dress, world: true, geom: ensureCW(sk.geom), M: dress.M, module: 'body', anchors: sk.geom.P.length, drape: { Hf: sk.Hf, Hb: sk.Hb, pf: sk.pf, pb: sk.pb, hem: sk.hem, side: sk.side, fold: sk.fold } };
 }

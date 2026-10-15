@@ -69,7 +69,10 @@ export const P = {
   // HAIR: the cap over the skull (an egg round the skull centre) with a designed hairline, and the low bun
   hair: { c: [0.04, -6.62], rx: 0.54, rxl: 0.5, ryt: 0.52, ryb: 0.46, front: lm('hairFront'), temple: [0.1, -6.62], earTop: [-0.07, -6.6],
           nape: [-0.12, -6.22], bun: lm('bun'), bunR: L.points.bunR / Hpx },
-  neck: { back: lm('neckBack'), front: lm('neckFront'), throatTop: [0.15, -6.18], napeTop: [-0.13, -6.45] },   // tops tuck under the jaw, ear and hair
+  // tops tuck under the jaw, ear and hair; throat = the throat's corner under the jaw (master, 1:1), chinIn = the neck's
+  // front end inside the chin (parts/body.js)
+  neck: { back: lm('neckBack'), front: lm('neckFront'), throatTop: [0.15, -6.18], napeTop: [-0.13, -6.45],
+          throat: [0.185, -6.095], chinIn: [0.33, -6.165] },
   // TORSO (dress): named points + the measured front stations; the back behind the arm is designed (a straight back)
   chestFront: [0.33, -5.75], bust: [0.59, -5.3], bump,
   back: { shoulder: [-0.3, -5.72], blade: [-0.33, -5.2], waist: [-0.29, -4.55], seat: [-0.37, -3.78] },
@@ -114,7 +117,10 @@ export const P = {
     const mk = (pr) => ({ P: pr, at: (f) => { let i = pr.findIndex((q) => q[0] >= f); if (i <= 0) i = Math.max(1, i < 0 ? pr.length - 1 : 1); const a = pr[i - 1], b = pr[i], t = Math.max(0, Math.min(1, (f - a[0]) / (b[0] - a[0]))); return { front: a[1] + t * (b[1] - a[1]), back: a[2] + t * (b[2] - a[2]) }; } });
     return { near: { thigh: mk(near.thigh), shin: mk(near.shin) }, far: { thigh: mk(far.thigh), shin: mk(far.shin) } };
   })(),
-  knee: { round: 0.12 },   // extra fillet radius at a 90° bend: a broad knee (the kneeling stills), not a pin
+  // the KNEE: round = extra fillet radius at a 90° bend (a broad knee, the kneeling stills, not a pin); onProfile = the
+  // fillet's ends on the thigh's and shin's own front lines; fill, fz, fp = a bent shin's front straight from the knee
+  // (to fz of the shin, power fp); calfIn, calfInTo = a folded calf eased in toward the crease (parts/legs.js, round 10)
+  knee: { round: 0.12, onProfile: true, fill: 1, fz: 0.45, fp: 1.6, calfIn: 0.6, calfInTo: 0.45 },
   // the INSTEP: the front edge of the foot from where it leaves the shin to the shoe's opening, as offsets from the ankle
   // joint (H), measured on the master row by row (the shin's front line bends into the instep in one long curve; v4 ended
   // the shin tube in a round cap at the ankle and started the foot below it: a pinch in front, a knob behind — Harry:
