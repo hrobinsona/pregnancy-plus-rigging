@@ -90,7 +90,7 @@ function lapOver(parts, ctx) {
   // the line the cloth ends at on the leg: standing, the skirt's hem; with the thigh forward, the side's diagonal across
   // the thigh (engine/drape.js: side), blended by how far forward the thigh points
   const dr = sk.drape, sd = dr.side, hip = ctx.st['thigh.near'].pos;
-  const a = sd ? lerp(dr.hem[0], sd.top, sd.w) : dr.hem[0], b = sd ? lerp(dr.hem[dr.hem.length - 1], sd.bot, sd.w) : dr.hem[dr.hem.length - 1];
+  const a = sd ? lerp(dr.hem[0], sd.top, sd.w) : dr.hem[0], b = sd ? lerp(dr.hem[dr.hem.length - 1], sd.bot, sd.wb ?? sd.w) : dr.hem[dr.hem.length - 1];   // (sd.wb: the near thigh's own forwardness; kneeling on one knee it hangs upright and the back's hem stays put)
   const mid = sd && sd.w > 0.5 ? [] : dr.hem.slice(1, -1), t = norm(sub(a, b));
   let n = [t[1], -t[0]]; if ((hip[0] - b[0]) * n[0] + (hip[1] - b[1]) * n[1] < 0) n = [-n[0], -n[1]];
   // (the back end runs on past the seat: the thigh's root under the buttocks is under the cloth too; cut short there, it

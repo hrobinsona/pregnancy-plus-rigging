@@ -47,6 +47,10 @@ for e in kv.split(','): b, v = e.split('='); sc[b] = [float(v), 1]
 json.dump(p, open(f, 'w'), indent=1); print(f'scale {f.split("/")[-1]}: {kv}')
 PYS
 }
+onknee() {   # onknee <pose> <side> <wrist x,y in the shin's rest space> <hand dir>: that hand resting on that knee
+  want "$1" || return 0
+  node tools/contact_pose.mjs mum3 side/$1 side/$1 --side $2 --on shin.$2 --at $3 --handDir $4 --hand lay 2>/dev/null | tail -1
+}
 settle() {   # settle <pose> [floor_pose options]: a further solve on side/<pose> in place (a limb laid on a surface)
   want "$1" || return 0
   n=$1; shift
@@ -111,19 +115,22 @@ fit lean-counter s_lean_counter_1 --props counter --hand near=press,far=press
 floor lean-counter --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones shin,foot,toe
 settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperArm.far,forearm.far,hand.near,hand.far --aim forearm.near=0,forearm.far=0,hand.near=0,hand.far=0
 
-# squatting to pick up a toddler's ball ahead of her near foot. The still's arms are 20% longer than hers (shoulder to
-# fingertip 1.7 hip-to-shoulder lengths against her 1.36), so they reach the floor from its half squat and hers can't:
-# fitted to its hand she pitched over (round 1), from its half squat she held the toy at her shins (round 2), and a toy
-# under her heels with the arm hanging plumb read as wrong (round 3: "ahead of the toes, a diagonal reach, the seat over
-# the heels"). So she does what a real pregnant woman does: a DEEP squat, her seat low over her heels, the shins leaning
-# well forward (35°, the knees past the toes) with the feet flat, her knees apart round the bump (fx.kneesApart: the far
-# knee a little further forward and up, as the still draws it), the back straight and leaning 35°, the head up; the near
-# arm reaches down and forward past her knee to a small ball (11 cm: r 0.24 H, round 3 "0.65× the size") on the floor
-# ahead of her toes, a step nearer us (toy near), her fingers on its crown; the far arm hidden behind her, as in the still.
-fit bend-pick s_bend_pick_1 --far-hidden --twin legs --props toy:r=0.24:near=1 --hand near=press --fix fx.kneesApart=1
-dirs bend-pick --dir pelvis=-70,spineLower=-70,spineUpper=-71,chest=-73,neck=-75,head=-86,thigh.near=-30,shin.near=130,thigh.far=-36,shin.far=128,foot.near=59,foot.far=59,upperArm.near=78,forearm.near=74,hand.near=82
-floor bend-pick --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones foot
-settle bend-pick --fixroot --touch hand.near.palm:low@-0.43 --vars upperArm.near,forearm.near,hand.near --bones x --keep 0.3 --aim upperArm.near=78,forearm.near=74 --aimw 3
+# picking up a ball: kneeling on ONE knee, as a pregnant woman is told to (the near knee and the top of the near shoe on
+# the floor, the far foot flat ahead, its knee up), the back fairly straight, the near hand on a child's play ball (19 cm,
+# r 0.42 H) beside the far foot, the far hand resting on the far knee (s_kneel_pick_0; its front leg read as the far one:
+# --swap legs). Why not a deep squat to the floor (bend-pick, rounds 1–4, s_bend_pick_*, s_bend_low_*): her arms are
+# shorter than the stills' (shoulder to fingertip 2.7 H, theirs ~3.2; a real woman's ~3.1), so from a squat she either
+# hunched over or held the ball at her shins, and the near thigh hid the bump; kneeling on one knee with the ball big
+# enough to reach with a straight back, she reads at once. The near thigh a little forward of plumb (84°: she sits back a
+# touch), the far thigh rising to its knee (−15°: a level one put the far foot through the floor); the far foot landed by
+# turning the far thigh only (the shin left free swung it back under her), the ball reached with the arm near plumb (the
+# far knee shows ahead of it, not behind the arm)
+fit kneel-pick s_kneel_pick_0 --swap legs --props toy:r=0.42:near=1 --hand near=press
+dirs kneel-pick --dir pelvis=-64,spineLower=-62,spineUpper=-62,chest=-64,neck=-62,head=-76,thigh.near=84,shin.near=-172,thigh.far=-15,shin.far=95,upperArm.near=84,forearm.near=80,hand.near=75,upperArm.far=80,forearm.far=45,hand.far=18
+floor kneel-pick --touch leg.near:4,leg.near:7,shoe.near:2,shoe.near:4 --bones shin,foot,toe --sides near
+settle kneel-pick --fixroot --touch shoe.far:5@-0.162,shoe.far:6@-0.202 --bones thigh,foot --sides far
+settle kneel-pick --fixroot --touch hand.near.f2:low@-0.72 --vars spineLower,spineUpper,chest,clavicle.near,upperArm.near,forearm.near,hand.near --bones x --keep 0.3 --aim upperArm.near=84,forearm.near=80,spineUpper=-62,chest=-64 --aimw 2
+onknee kneel-pick far 0.05,-2.42 20
 
 # walking: the contact position (front heel down, back toe pushing off)
 # (the arms swing against the legs: the still paces, its near arm back with the near leg, critic R1 "she paces"; the far
