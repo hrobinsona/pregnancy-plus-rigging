@@ -256,3 +256,42 @@ Fixes, each against round 6's agreed faults (lesson 68):
   (6 vs 6.5, Fable: "a mitten-shaped lump"), reverted; the reviewer's notes on both, still open on the standing shot:
   8.4–9.8 s the stroking hand slides as one rigid shape; 4.0–4.8 s the breath hold is dead still; 1.05–2.3 s the hand
   hangs as a flat paddle, then curls all at once.
+
+Critics, round 7 (three fresh reviewers on **Fable**, `critic_F.py mum3 --side`, the sheets rebuilt after the finger-line
+revert and the kneeling toes):
+
+| pose | natural | body | craft | round 6 (n/b/c) |
+|---|---|---|---|---|
+| all-fours | 5.5 | 6 | 6 | 6 / 6 / 5.5 |
+| kneel | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| kneel-pick | 4.5 | 5 | 5 | 5 / 5 / 5 |
+| lean-counter | 6.5 | 6.5 | 6.5 | 6.5 / 7 / 6.5 |
+| sit-ball | 6 | 6 | 6 | 6 / 6.5 / 6 |
+| sit-chair | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| squat | 5.5 | 5 | 5.5 | 5 / 6 / 5 |
+| walk-contact | 6.5 | 6.5 | 6.5 | 6 / 7 / 6.5 |
+| walk-down | 6 | 6 | 6 | 5.5 / 6 / 6 |
+| walk-pass | 6.5 | 6.5 | 6.5 | 6 / 7 / 6.5 |
+
+All three: NOT YET. The scores are flat on round 6 (±0.5): the fixes landed (the body lens's history check lists the
+kneel hem, walks' flare, seated lap, all-fours back and head, the toy lifted, feet parted on the instep) but each pose's
+worst fault is one the round didn't touch. All three agree on:
+- **Hands** in every pose: four long stripes on a paddle; the stills' fingers together, short tip lines (the knuckle-start
+  lines lost blind on the standing shot, so the fix is the hand's shape, not its lines).
+- **The far foot** seated and squatting: behind and stacked on the near shoe (a double toe, a pale patch); the stills set
+  it ~50–60 px FORWARD and ~35–40 px up as a full second shoe. (Kneeling and on all fours the parallel-above rule reads.)
+- **Cloth in the folded poses**: the squat's measured tail still reads "a sack with a pointed tail" (the stills' cloth is
+  pulled taut over the seat, a short hem behind the thigh, a curtain between the knees); kneel-pick a balloon back with
+  nothing over the raised thigh; sit-ball's lap pouches under the thigh. Walk-down and walk-pass: the skirt front slants in
+  under the bump (body lens, new).
+- **Legs**: no kneecap corner, no calf belly, the walks' trailing knees straight, lean's knees locked; kneel-pick's and the
+  squat's thighs ~65–70 px against the stills' ~100.
+- Everywhere: the neck long and thin with a hook at the throat; the dress's concave corner between bust and bump.
+- kneel-pick's toy held ~70 px off the floor (her shorter arms): both natural and craft read it as floating.
+
+QA: every breathing loop and the walk pass (`--skip order,frames`): the near elbow's swivel limited by the limbs gate
+(kneel −30°, sit-chair −20°: at −40° the forearm and hand turned to the camera, 67–84%), and a hand ≥ 95% hidden by her
+body is excused from the handedness gate (`side_loop.mjs`: sit-ball's far hand under the legs and the lap).
+
+Harry (2026-10-15 10:57): "after this round with the critic lets do a manual review with me": round 7 goes to him with the
+critics' notes beside each pose, before round 8.
