@@ -880,7 +880,8 @@ or composited.
    own artist, and every round past the ceiling was spent on the protocol's noise. Rules: before setting or chasing a
    score bar, run `tools/critic_ceiling.py` once and read the bar against it (e.g. a pose passes when it scores at least
    its sibling still on every lens); a ceiling below the bar goes to the client as a result and a decision, not as
-   another round.
+   another round; and the test stays out of the critics' history (`critic_F.py` drops a feel-log block between
+   `<!-- not for critics -->` and `<!-- /not for critics -->`), or its numbers anchor the next round's scores.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

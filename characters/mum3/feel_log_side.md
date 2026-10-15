@@ -682,6 +682,7 @@ Landed: the honest far-hand crops (no lens asked for kneel's, sit-chair's, sit-b
 the resting fingers parallel ("parallel now, but straight to the tip at 1:1", body). Lean-counter's far hand now read as
 "0.19 H above the worktop, lying on her forearm" (natural, body): see round 15.
 
+<!-- not for critics -->
 **The critics' ceiling** (`tools/critic_ceiling.py`, lesson 75). Fourteen rounds have held at 4.5–7.5 against a bar of 8
 on every lens, so the protocol itself was measured: each pose's sheet rebuilt with a SIBLING still (another sample of the
 same prompt, no rig in it) in the "RENDER" panel beside the reference still, scored by two fresh Fable critics with the
@@ -708,6 +709,7 @@ stills' own artist. Measured against that ceiling the library is closer than the
 sibling on both lenses, kneel and lean-counter match it on craft; the gaps are kneel-pick (~1), all-fours, sit-ball and
 the squat (1.5–2 on natural), the walks (~0.5–1). The bar is Harry's (2026-10-14: "do not stop until a fresh critic scores
 at least 8/10"), so the ceiling goes to him as a decision; work continues against the gap to the sibling stills.
+<!-- /not for critics -->
 
 ## Round 15 (2026-10-15): lean-counter's far hand
 
@@ -716,3 +718,17 @@ at least 8/10"), so the ceiling goes to him as a decision; work continues agains
   hand read "above the worktop, on her forearm"; at 0.08 H it hid behind the near wrist again (round 13's "one-armed"),
   and the elbow-free solve pushed the far elbow through the worktop's edge. At 1:1 the still's far arm falls steadily to
   fingers just above the near hand, as ours now. QA passes.
+- **Sit-ball's shins** (body: "the shins cross… one wide mass that splits at the ankle in an X"): at 1:1 the still's far
+  shin stays tucked behind the near one's front edge down to the ankle, where ours opened a white gap above the ankles;
+  the far ankle 0.06 H back (`farleg sit-ball … 0.24,-0.22`) closes it, the far shoe still ahead and up.
+- **The squat's hips** (body: "the seat ~115 px behind the heels… without the chair she would fall backward"; round 14's
+  "trunk ~0.1 H forward"): tried as a move of the hips with the feet planted (the legs re-solved round it). The match
+  with the still fell at every step (silhouette 0.807 → 0.801 / 0.774 / 0.731 at 0.05 / 0.1 / 0.15 H): the still's figure
+  is drawn a little larger (its head, its bump), so its front sits ahead of ours without her hips being further forward.
+  Dropped; the balloon behind her is the drawing of the seat, not where it sits.
+- **The chair** (every lens since round 10: "spindly… a toy chair", "a thin slat"): posts 0.12 → 0.16 H, the seat
+  0.1 → 0.15 H deep, the rail 0.07 → 0.1 H, the stills' kitchen chair (sit-chair, the squat).
+- **Resting fingers** (`softrest`, body: "parallel now, but straight to the tip at 1:1"): the middle joints 20–36°
+  (index to little), the end joints 12–18°, the knuckles still one angle.
+- **The walking hands** (natural: "the wrist in line with the forearm… no flop"): each hand trails its forearm ~12°
+  against the swing (4–5° before), in all three keys and so in the walk.

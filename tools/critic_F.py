@@ -94,7 +94,9 @@ if args[1] == '--side':
              'often the legs look unnatural too - wrong posture, overlapping so they look like their on hinges rather than a real rig. '
              'These should look completely natural, like a real woman, just illustrated in 2D." (Harry). These are still poses of the '
              'side-on library; each will later be animated (breathing, blinks) and joined by moves.')
-    log = f'characters/{c}/feel_log_side.md'; hist = ('\n\nHISTORY (earlier rounds on these poses: check whether their asks landed):\n' + open(log).read()) if os.path.exists(log) else ''
+    # (a feel-log block between <!-- not for critics --> and <!-- /not for critics --> stays out of the history: the critics'
+    # own ceiling test, scores they'd anchor on, lesson 75)
+    log = f'characters/{c}/feel_log_side.md'; hist = ('\n\nHISTORY (earlier rounds on these poses: check whether their asks landed):\n' + re.sub(r'<!-- not for critics -->.*?<!-- /not for critics -->\n?', '', open(log).read(), flags=re.S)) if os.path.exists(log) else ''
     fl = '\n'.join(f'- {os.path.join(root, p)} — {d}' for p, d in files)
     for L in ['natural', 'body', 'craft']:
         open(f'out/critic_prompt_side_{L}.md', 'w').write(B['lens:' + L].replace('{FILES}', fl).replace('{BRIEF}', brief).replace('{FRAMING}', B['framing']).replace('{CHECKLIST}', eye).replace('{POSES}', ', '.join(poses)) + hist)

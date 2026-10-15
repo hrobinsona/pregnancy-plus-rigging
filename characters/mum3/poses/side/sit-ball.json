@@ -1,6 +1,6 @@
 {
  "name": "side/sit-ball",
- "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,thigh.near=13,thigh.far=13,shin.near=95,shin.far=95; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor; far_leg --set knee=0.08,-0.06,ankle=0.3,-0.24",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,thigh.near=13,thigh.far=13,shin.near=95,shin.far=95; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor; far_leg --set knee=0.08,-0.06,ankle=0.24,-0.22",
  "hands": {
   "near": "softrest",
   "far": "lay"
@@ -48,15 +48,15 @@
   "hipAbd.near": -6.2,
   "clavicle.far": -22,
   "shoulderAbd.far": 0,
-  "upperArm.far": -8.1,
-  "armAbd.far": 34.9,
-  "armRot.far": 145.1,
+  "upperArm.far": -8,
+  "armAbd.far": 36,
+  "armRot.far": 144,
   "forearm.far": 5.2,
   "foreRot.far": 70,
   "hand.far": -50,
   "thigh.far": 79.6,
-  "shin.far": -71.7,
-  "foot.far": -9.8,
+  "shin.far": -74.3,
+  "foot.far": -7.2,
   "hipAbd.far": -2.1,
   "toe.near": 7.5,
   "toe.far": 7.5
@@ -80,7 +80,7 @@
    1
   ],
   "shin.far": [
-   0.918,
+   0.929,
    1
   ]
  },

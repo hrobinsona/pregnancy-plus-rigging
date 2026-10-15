@@ -25,14 +25,16 @@ const post = (a, b, wa, wb) => ensureCW(loop([
 export function chair(o, z = 4) {
   // (the far legs only just showing: offset 0.16 H, the far front leg stood clear of the seat's end with the seat's top
   // skewed out to it, round 4 "the chair's far front leg stands off the seat's end")
-  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.06, -0.06], th = 0.1, lw = 0.12, sp = 0.07, parts = [];
+  // (round 15: posts 0.16 H and the seat 0.15 H deep, the stills' kitchen chair: at 0.12 and 0.1 every lens read "a
+  // spindly… toy chair" beside the still's sturdy one, rounds 10–14; measured on the squat's still, posts ~0.2 H)
+  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.06, -0.06], th = 0.15, lw = 0.16, sp = 0.07, parts = [];
   const bx = x0 + lw / 2, lean = -0.17, crest = 0.4;
   // far legs and far backrest stile (behind, darker)
   parts.push({ id: 'prop.chair.farleg0', z: z - 0.4, fill: WOOD.far, geom: post([bx + dx, seatY + th + dy], [bx - sp + dx, dy * 0.4], lw * 0.9, lw * 0.8) });
   parts.push({ id: 'prop.chair.farleg1', z: z - 0.4, fill: WOOD.far, geom: post([x1 - lw / 2 + dx, seatY + th + dy], [x1 - lw / 2 + sp + dx, dy * 0.4], lw * 0.9, lw * 0.8) });
   parts.push({ id: 'prop.chair.farback', z: z - 0.4, fill: WOOD.far, geom: post([bx + lean + dx, backTop + dy], [bx + dx, seatY + dy], lw * 0.9, lw * 0.9) });
   // the stretcher between the legs, the seat (its top a thin strip seen a little from above, then its edge), near legs
-  parts.push({ id: 'prop.chair.rail', z: z - 0.2, fill: WOOD.side, geom: rect(bx - sp * 0.55, seatY * 0.42 - 0.035, x1 - lw / 2 + sp * 0.55, seatY * 0.42 + 0.035, 0.01) });
+  parts.push({ id: 'prop.chair.rail', z: z - 0.2, fill: WOOD.side, geom: rect(bx - sp * 0.55, seatY * 0.42 - 0.05, x1 - lw / 2 + sp * 0.55, seatY * 0.42 + 0.05, 0.015) });
   parts.push({ id: 'prop.chair.seattop', z: z - 0.1, fill: WOOD.face, geom: ensureCW(loop([[x0 - 0.02, seatY + 0.03, { c: true }], [x0 - 0.02 + dx, seatY + dy, { c: true }],
     [x1 + 0.02 + dx, seatY + dy, { c: true }], [x1 + 0.02, seatY + 0.03, { c: true }]], 0.9)) });
   parts.push({ id: 'prop.chair.seat', z, fill: WOOD.side, geom: rect(x0 - 0.02, seatY, x1 + 0.02, seatY + th, 0.02) });

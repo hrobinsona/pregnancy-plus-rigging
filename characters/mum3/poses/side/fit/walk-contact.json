@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-contact",
- "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=63,upperArm.far=118,forearm.far=108,hand.far=104; pose_dirs: foot.far=38,foot.near=99,toe.near=4,thigh.far=82,shin.far=90,thigh.near=100,shin.near=138",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=70,upperArm.far=118,forearm.far=108,hand.far=96; pose_dirs: foot.far=38,foot.near=99,toe.near=4,thigh.far=82,shin.far=90,thigh.near=100,shin.near=138",
  "hands": {
   "near": "idle",
   "far": "idle"
@@ -30,7 +30,7 @@
   "armRot.near": 2.6,
   "forearm.near": 6.8,
   "foreRot.near": 0.5,
-  "hand.near": 3.1,
+  "hand.near": -4,
   "thigh.near": -7.1,
   "shin.near": -39.7,
   "foot.near": 6.6,
@@ -42,7 +42,7 @@
   "armRot.far": -1.6,
   "forearm.far": -1.4,
   "foreRot.far": -1.6,
-  "hand.far": 12,
+  "hand.far": 20,
   "thigh.far": 12.7,
   "shin.far": -10.6,
   "foot.far": 7.5,

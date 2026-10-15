@@ -192,8 +192,11 @@ dirs sit-ball --dir pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,t
 floor sit-ball --touch shoe.near:ball,shoe.near:heel@-0.1,shoe.far:ball@-0.162,shoe.far:heel@-0.248 --bones foot,toe
 # (round 8: the far leg where the still draws it, measured on it at 1:1: the far knee just ahead of the near one and the far
 # foot well AHEAD and up, its heel clear of the near ankle (+0.3, −0.24 H; the twin's 0.08 ahead tucked the far toe onto
-# the near one, "the feet fuse into one double-toed shoe", round 7): the ball's chair is lower, her feet set wider)
-farleg sit-ball 0.08,-0.06 0.3,-0.24
+# the near one, "the feet fuse into one double-toed shoe", round 7): the ball's chair is lower, her feet set wider.
+# Round 15: the ankle 0.06 H back (+0.24, −0.22): at +0.3 a white gap opened between the shins above the ankles and the
+# body lens read "the shins cross… one wide mass that splits at the ankle in an X"; the still's far shin stays tucked
+# behind the near one's front edge down to the ankle)
+farleg sit-ball 0.08,-0.06 0.24,-0.22
 # (both hands resting on her thighs by the knees, as the still: the fitted far hand hung in the air ahead of the knee, round 4
 # "the clearest rig tell in the library")
 onknee sit-ball far -0.5,-2.25 20
@@ -324,7 +327,9 @@ cloth kneel-pick '{"kp":{"pull":0.0,"bow":-0.04,"drop":-0.4}}'
 # (the arms swing against the legs: the still paces, its near arm back with the near leg, critic R1 "she paces"; the far
 # arm swung back far enough to show behind her, round 2 "a sliver"; the skirt trailing a little, fx.skirtSwing)
 fit walk-contact s_walk_contact_1 --hand near=idle,far=idle --fix fx.skirtSwing=0.1,fx.fingersIn=0.8
-dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=63,upperArm.far=118,forearm.far=108,hand.far=104
+# (round 15: each hand trails its forearm ~12° against the swing, the wrist soft: at 4–5° the lenses read "wrist in line
+# with the forearm… no flop", round 14)
+dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=70,upperArm.far=118,forearm.far=108,hand.far=96
 # (both feet on ONE floor line, as the still: striding, the far foot on the far floor line, 0.162 H up, read as a front
 # heel floating 20 px off the ground, critic R2–R3)
 # (the FEET of a step: the front heel striking with its toe up ~20°, the back foot up on its toes pushing off, the toes
@@ -344,14 +349,14 @@ fit walk-down s_walk_down_0 --hand near=idle,far=idle --fix fx.skirtSwing=0.1,fx
 # (the back HEEL up ~35°: a foot's ankle → ball runs 59° on screen standing flat, so 58° here drew it planted, round 6
 # "the back heel planted"; held, not solved, so the floor solve bends the shin and the toes to reach the floor. The arms
 # past the peak of their swing, the front forearm lifting and the back arm well behind: at 10–16° they hung, "arms idle")
-dirs walk-down --dir upperArm.near=74,forearm.near=50,hand.near=56,upperArm.far=118,forearm.far=110,hand.far=106,thigh.far=76,shin.far=100,thigh.near=100,shin.near=134,foot.near=95,toe.near=2
+dirs walk-down --dir upperArm.near=74,forearm.near=50,hand.near=62,upperArm.far=118,forearm.far=110,hand.far=98,thigh.far=76,shin.far=100,thigh.near=100,shin.near=134,foot.near=95,toe.near=2
 floor walk-down --touch shoe.far:ball,shoe.far:heel@-0.1,shoe.near:tip,shoe.near:ball --bones toe --sides near --vars shin.near,thigh.near,foot.far --keep 0.5
 
 # walking: the passing position (the far arm swinging forward past the bump as the still's does, round 2 "missing"; the
 # skirt still an A, trailing behind her as she walks: fx.skirtSwing) (the estimator joins the front knee to the back ankle here: the legs read off the still
 # with tools/grid_still.py and set by hand)
 fit walk-pass s_walk_pass_1 --hand near=idle,far=idle --fix fx.skirtSwing=0.2,fx.fingersIn=0.8 --set kneeR:545:1135,ankleR:560:1440,heelR:525:1480,footR:695:1495,kneeL:390:1135,ankleL:255:1325,heelL:195:1335,footL:295:1460
-dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=86,upperArm.far=62,forearm.far=57,hand.far=62,shin.near=92,thigh.far=106,shin.far=140
+dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=88,upperArm.far=62,forearm.far=57,hand.far=68,shin.near=92,thigh.far=106,shin.far=140
 floor walk-pass --touch shoe.near:low --bones foot,toe
 
 # (these stills draw ONE hand: the far one behind her bump, her thigh or the chair's post, checked at 1:1 round each
