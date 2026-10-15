@@ -27,7 +27,9 @@ It also needs Node ≥ 20, Python ≥ 3.10 and ffmpeg. Smoke test: `node tools/c
 - **Git:** the repo is `github.com/hrobinsona/pregnancy-plus-rigging`, branch `main`. Commit each finished round and push it; Harry pulls from there. No more zips.
 - **Review loop:**
   - Build the critic pack with `python3 tools/critic_F.py mum3 breathe-stroke --lens all` (three fresh reviewers: feel, Lasseter, hands).
-  - Spawn a subagent per lens: "Read out/critic_prompt.md and follow it exactly…".
+  - Spawn a subagent per lens: "Read out/critic_prompt.md and follow it exactly…". **Every critic runs on Fable**
+    (Harry, 2026-10-15): the Agent tool's `model: "fable"` (API id `claude-fable-5-1`), for every lens, the side-on pack
+    and every blind A/B reviewer. If Fable is unavailable, say so in the feel log rather than silently using another model.
   - Check each change with `tools/blind_ab.py` against the previous version (one fresh reviewer, then `--reveal`).
   - Log the round in `characters/<char>/feel_log_<anim>.md`.
 - **Taste.** The client's brief and intensity (`spec.story`, `spec.intensity`) beat the critic's taste. Explore, don't tune (`PIPELINE.md` lesson 15).
