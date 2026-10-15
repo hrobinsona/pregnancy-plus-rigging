@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-down",
- "note": "fitted to characters/mum3/refs/pose/s_walk_down_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=74,forearm.near=50,hand.near=56,upperArm.far=118,forearm.far=110,hand.far=106,thigh.far=76,shin.far=94,thigh.near=102,shin.near=120,foot.near=95,toe.near=2",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_down_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=74,forearm.near=50,hand.near=56,upperArm.far=118,forearm.far=110,hand.far=106,thigh.far=76,shin.far=100,thigh.near=100,shin.near=134,foot.near=95,toe.near=2",
  "hands": {
   "near": "idle",
   "far": "idle"
@@ -31,9 +31,9 @@
   "forearm.near": 12.5,
   "foreRot.near": 0.3,
   "hand.near": 2,
-  "thigh.near": -4,
-  "shin.near": -19.3,
-  "foot.near": -8,
+  "thigh.near": -1.9,
+  "shin.near": -35.8,
+  "foot.near": 6.4,
   "hipAbd.near": 3,
   "clavicle.far": 1.5,
   "shoulderAbd.far": -6.8,
@@ -44,7 +44,7 @@
   "foreRot.far": -0.6,
   "hand.far": 12.4,
   "thigh.far": 17.4,
-  "shin.far": -21.1,
+  "shin.far": -27.4,
   "foot.far": -6.6,
   "hipAbd.far": -2.1,
   "toe.near": 29.6

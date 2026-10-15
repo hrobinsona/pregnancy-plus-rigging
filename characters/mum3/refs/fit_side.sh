@@ -288,8 +288,12 @@ dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=63,upperArm.f
 # (the FEET of a step: the front heel striking with its toe up ~20°, the back foot up on its toes pushing off, the toes
 # bent flat on the floor at the ball, the back knee giving to reach; both shoes flat read as standing with the legs
 # apart, round 4)
-dirs walk-contact --dir foot.far=38,foot.near=99,toe.near=4
-floor walk-contact --touch shoe.far:low,shoe.near:tip,shoe.near:ball --bones toe --vars shin.near --keep 0.5
+# (the KNEES at measured gait's flexion, not the stills': the stills draw the striking knee 3° past straight and the
+# trailing knee 14–18°, which at film size every lens read as "locked straight… a stilt", rounds 9–11, though ours
+# matched them within 8°; walking, the striking knee is ~5–8° bent, the trailing one at push-off 30–40° (Winter 2009,
+# the gait table side_walk.mjs walks her by), round 12)
+dirs walk-contact --dir foot.far=38,foot.near=99,toe.near=4,thigh.far=82,shin.far=90,thigh.near=100,shin.near=138
+floor walk-contact --touch shoe.far:low,shoe.near:tip,shoe.near:ball --bones toe --vars shin.near,thigh.near --keep 0.5
 
 # walking: the down position, just after contact (the front foot flat, its knee giving ~20° under her weight, her body at
 # its lowest; the back foot up on its toes; the arms past the peak of their swing). A key of the walk cycle
@@ -298,12 +302,12 @@ fit walk-down s_walk_down_0 --hand near=idle,far=idle --fix fx.skirtSwing=0.1,fx
 # (the back HEEL up ~35°: a foot's ankle → ball runs 59° on screen standing flat, so 58° here drew it planted, round 6
 # "the back heel planted"; held, not solved, so the floor solve bends the shin and the toes to reach the floor. The arms
 # past the peak of their swing, the front forearm lifting and the back arm well behind: at 10–16° they hung, "arms idle")
-dirs walk-down --dir upperArm.near=74,forearm.near=50,hand.near=56,upperArm.far=118,forearm.far=110,hand.far=106,thigh.far=76,shin.far=94,thigh.near=102,shin.near=120,foot.near=95,toe.near=2
+dirs walk-down --dir upperArm.near=74,forearm.near=50,hand.near=56,upperArm.far=118,forearm.far=110,hand.far=106,thigh.far=76,shin.far=100,thigh.near=100,shin.near=134,foot.near=95,toe.near=2
 floor walk-down --touch shoe.far:ball,shoe.far:heel@-0.1,shoe.near:tip,shoe.near:ball --bones toe --sides near --vars shin.near,thigh.near,foot.far --keep 0.5
 
 # walking: the passing position (the far arm swinging forward past the bump as the still's does, round 2 "missing"; the
 # skirt still an A, trailing behind her as she walks: fx.skirtSwing) (the estimator joins the front knee to the back ankle here: the legs read off the still
 # with tools/grid_still.py and set by hand)
 fit walk-pass s_walk_pass_1 --hand near=idle,far=idle --fix fx.skirtSwing=0.2,fx.fingersIn=0.8 --set kneeR:545:1135,ankleR:560:1440,heelR:525:1480,footR:695:1495,kneeL:390:1135,ankleL:255:1325,heelL:195:1335,footL:295:1460
-dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=86,upperArm.far=62,forearm.far=57,hand.far=62
+dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=86,upperArm.far=62,forearm.far=57,hand.far=62,shin.near=92,thigh.far=106,shin.far=140
 floor walk-pass --touch shoe.near:low --bones foot,toe
