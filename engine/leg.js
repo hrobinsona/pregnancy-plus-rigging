@@ -72,7 +72,9 @@ export function legOutline(o) {
   // straight, the three knee anchors close up into one whose tangent is the chord thigh → shin (the old tube's knee: the
   // patella stands proud of the taper above it); bent, they spread into the fillet with its own tangents
   const chord = norm(sub(SF(0.23), TF(0.5))), fil = smooth(8, 40, bend), tg = (d) => ang(norm(lerp(chord, d, fil)));
-  A_.push([...TF(0)]); A_.push([...TF(0.5)]);
+  // (the thigh's front leaves the hip ALONG the thigh: auto-tangent from the closing point on the axis, it set off 16° outward
+  // and bulged 0.02 H past the stations, out past the skirt's front edge under a standing bump, round 5's blind A/B)
+  A_.push([...TF(0), { a: ang(u) }]); A_.push([...TF(0.5)]);
   A_.push([...kA, { a: tg(u) }]); A_.push([...kB, { a: tg(norm(lerp(u, v, 0.5))) }]); A_.push([...kC, { a: tg(v) }]);
   A_.push([...SF(0.23)]); A_.push([...SF(0.5)]); A_.push([...SF(0.77)]);
   for (const p of foot.instep) A_.push([...p]);

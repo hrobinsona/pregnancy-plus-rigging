@@ -161,6 +161,13 @@ dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=68,upperArm.f
 dirs walk-contact --dir foot.far=38,foot.near=90,toe.near=8
 floor walk-contact --touch shoe.far:6,shoe.near:4,shoe.near:5 --bones toe --vars shin.near --keep 0.5
 
+# walking: the down position, just after contact (the front foot flat, its knee giving ~20° under her weight, her body at
+# its lowest; the back foot up on its toes; the arms past the peak of their swing). A key of the walk cycle
+# (tools/side_walk.mjs); the still's near arm swings back with the near leg (pacing), set against the legs as contact's
+fit walk-down s_walk_down_0 --fix fx.skirtSwing=0.1
+dirs walk-down --dir upperArm.near=80,forearm.near=64,hand.near=72,upperArm.far=112,forearm.far=104,hand.far=106,thigh.far=76,shin.far=94,thigh.near=102,shin.near=120,foot.near=58,toe.near=6
+floor walk-down --touch shoe.far:5,shoe.far:6@-0.04,shoe.near:4,shoe.near:5 --bones toe --sides near --vars shin.near,foot.near,foot.far --keep 0.5
+
 # walking: the passing position (the far arm swinging forward past the bump as the still's does, round 2 "missing"; the
 # skirt still an A, trailing behind her as she walks: fx.skirtSwing) (the estimator joins the front knee to the back ankle here: the legs read off the still
 # with tools/grid_still.py and set by hand)

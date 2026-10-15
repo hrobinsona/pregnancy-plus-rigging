@@ -212,7 +212,10 @@ export default {
     arms: Object.fromEntries(['near', 'far'].map((s) => { const S = s === 'near' ? 'Near' : 'Far';
       return [s, { clavicle: `clavicle.${s}`, abd: `shoulderAbd.${s}`, upper: `upperArm.${s}`, fore: `forearm.${s}`, hand: `hand.${s}`, shoulder: `shoulder${S}`, elbow: `elbow${S}`, wrist: `wrist${S}` }]; })),
     legs: Object.fromEntries(['near', 'far'].map((s) => { const S = s === 'near' ? 'Near' : 'Far';
-      return [s, { abd: `hipAbd.${s}`, thigh: `thigh.${s}`, shin: `shin.${s}`, foot: `foot.${s}`, toe: `toe.${s}`, hip: `hip${S}`, knee: `knee${S}`, ankle: `ankle${S}`, ball: `ball${S}` }]; })),
+      return [s, { abd: `hipAbd.${s}`, thigh: `thigh.${s}`, shin: `shin.${s}`, foot: `foot.${s}`, toe: `toe.${s}`, hip: `hip${S}`, knee: `knee${S}`, ankle: `ankle${S}`, ball: `ball${S}`,
+        // the shoe's SOLE (rest H, parts/legs.js's anchors): the heel's round back and the heel's sole on the foot bone, the
+        // sole under the ball and the toe's tip on the toe bone: what a walk rolls over (engine/anim.js walkRoot)
+        sole: (({ heel: h, toe: t, sole: y }) => ({ foot: [[h[0] + 0.02, h[1] + 0.1], [h[0] + 0.2, y - 0.045]], toe: [[t[0] - 0.16, y], [t[0], t[1]]] }))(X.shoe[s]) }]; })),
   },
   /** flat contact shadow under whatever touches the floor (SVG string; model px): standing, one ellipse under both feet;
    *  side-on poses (kneeling, all fours, sitting, squatting), one under each group of contacts: the shins along the floor,

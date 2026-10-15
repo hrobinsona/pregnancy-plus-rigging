@@ -52,7 +52,9 @@ let ok = true; const gate = (pass, line) => { console.log(`  ${pass ? '✓' : '�
 
 if (!skip.has('order') || !skip.has('leak')) {
   const { srv, base } = await serve(), browser = await chromium.launch();
-  const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still`); await pg.waitForFunction(() => window.__ready === true); return pg; };
+  // (the shot's own framing, as char_anim.mjs renders it: spec.view.bbox; without it a framed shot never matched)
+  const VB = spec.view?.bbox ? `&bbox=${encodeURIComponent(JSON.stringify(spec.view.bbox))}` : '';
+  const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still${VB}`); await pg.waitForFunction(() => window.__ready === true); return pg; };
   const markup = (pg, pose) => pg.evaluate((p) => { window.renderPose(p); return document.querySelector('#stage svg').outerHTML; }, pose);
   if (!skip.has('order')) {
     console.log('order: frames rendered out of order match the render');
@@ -176,7 +178,9 @@ if (!skip.has('hands')) {
       ang.forEach((v, k) => { if (net * (v - ext) > 0) ext = v; else if (net * (ext - v) > worst) { worst = net * (ext - v); at = i0 - 1 + k; } });
       if (worst > 4) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
     }
-    gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
+    // (a cycle's arm swings to and fro without a stop, a walk's: its wrist turns back at each end of the swing by design)
+    if (spec.cyclic) console.log(`  · ${side} wrist angle one way: not checked, a cyclic shot (spec.cyclic) swings to and fro`);
+    else gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
   }
   if (!skip.has('alive')) {
     // a frozen hand: every point we track (wrist, middle fingertip, the hand's outline box) moves < min px in a window

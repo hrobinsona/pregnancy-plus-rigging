@@ -160,6 +160,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     return ks;
   };
   const keys = buildKeys(spec.keys, false);
+  // spec.cyclic (a loop: a walk, a rock): the main keys are ALL passed through on one smooth periodic curve (Catmull-Rom
+  // tangents, the seam's too), not eased to a stop on each: eased, a walk cycle halted on every contact and passing
+  // position, a robot's step
+  if (spec.cyclic) { if (!loop) throw new Error('spec.cyclic needs spec.loop'); keys.cyclic = true; }
   // a track is either [keys] (owns channels under its name) or {channels: [prefixes], keys: [...]}
   const groups = Object.entries(spec.tracks || {}).map(([name, tr]) => Array.isArray(tr)
     ? { prefixes: [name], keys: buildKeys(tr, true) } : { prefixes: tr.channels, keys: buildKeys(tr.keys, true) });
@@ -175,7 +179,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // a prefix ending in '*' matches raw ('bone.hand.near.*' = the fingers and thumb, not the wrist 'bone.hand.near')
     const star = (p) => p.endsWith('*') && ch.startsWith(p.slice(0, -1));
     const hit = (p) => star(p) || ch === p || ch.startsWith(p + '.') || ch === 'bone.' + p || ch.startsWith('bone.' + p + '.');
+    const cyc = ks.cyclic;
     ks = ks.filter((k) => (!k.only || k.only.some((p) => star(p) || ch === p || ch.startsWith(p + '.'))) && !(k.except && k.except.some(hit)));
+    ks.cyclic = cyc;
     keyCache.set(ch, ks);
     return ks;
   };
@@ -210,6 +216,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (loop) { t = ((t - T(ks[0])) % D + D) % D + T(ks[0]); }
     if (t <= T(ks[0])) return v(ks[0]);
     const tan = (i) => {           // Catmull-Rom tangent (value per second) at a breakdown, 0 at a key
+      if (ks.cyclic) {             // (periodic: the last entry is the first key one loop on)
+        const n = ks.length - 1, ip = i === 0 ? n - 1 : i - 1, inx = i === n ? 1 : i + 1;
+        return (v(ks[inx]) - v(ks[ip])) / (T(ks[inx]) + (i === n ? D : 0) - T(ks[ip]) + (i === 0 ? D : 0));
+      }
       if (ks[i].kind !== 'breakdown') return 0;
       const p = ks[i - 1], n = ks[i + 1];
       return (v(n) - v(p)) / (T(n) - T(p));
@@ -218,7 +228,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       const a = ks[i], b = ks[i + 1];
       if (t < T(b)) {
         const L = T(b) - T(a), u = (t - T(a)) / L;
-        if (a.kind !== 'breakdown' && b.kind !== 'breakdown') return v(a) + (v(b) - v(a)) * b.ease(u);   // eased, angle space
+        if (!ks.cyclic && a.kind !== 'breakdown' && b.kind !== 'breakdown') return v(a) + (v(b) - v(a)) * b.ease(u);   // eased, angle space
         const u2 = u * u, u3 = u2 * u;
         return (2 * u3 - 3 * u2 + 1) * v(a) + (u3 - 2 * u2 + u) * tan(i) * L + (-2 * u3 + 3 * u2) * v(b) + (u3 - u2) * tan(i + 1) * L;
       }
@@ -1004,7 +1014,52 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   };
 
   let footRest = null, footRef = null;
+  // WALK (spec.walk = {}): the feet stay planted while she walks and the camera travels with her at her mean speed, so a
+  // walk loops in place (on screen the planted foot slides back steadily, at her pace: a treadmill). The ground contact is
+  // whichever sole points are lowest (both feet's: heel strike, flat, push-off on the toe, both in double support), and
+  // the body moves so those points don't slide: a ROLLING contact, so not one fixed point (pinning the first point
+  // touched, the heel, threw the body back a foot's length as the weight rolled onto the ball). The forward travel is that
+  // no-slip condition integrated once over the loop into a table (2 samples a frame), then read per frame; vertically, the
+  // lowest sole point is on the floor, closed form. The shoe's sole points (rest H) are roles.legs[side].sole: its foot
+  // list on the foot bone, its toe list on the toe bone.
+  const walkPts = (st, sd) => { const L_ = C.roles.legs[sd], on = (b, p) => { const j = J[BONE[b].joint]; return apM(st[b].M, [p[0] - j[0], p[1] - j[1]]); };
+    return [...L_.sole.foot.map((p) => on(L_.foot, p)), ...L_.sole.toe.map((p) => on(L_.toe, p))]; };
+  const soleAll = (st) => [...walkPts(st, 'near'), ...walkPts(st, 'far')];
+  let walkTab = null;
+  // the planted travel by time t: how far her stance foot has carried her since t = 0 (H), read off the table
+  const walkX = (tt) => {
+    if (!walkTab) {
+      const n = Math.max(8, Math.round(D * fps * 2)), sg = spec.walk.sharp ?? 0.01, Ps = [];
+      for (let i = 0; i <= n; i++) Ps.push(soleAll(solve(poseRaw((i * D) / n))));
+      // (a point not moving BACKWARD in her frame at half her pace or more isn't planted, however low: a swinging foot
+      // skimming the floor (weighed by lowness alone, the swinging toe 0.02 H off the floor carried her backward, 0.4 H a
+      // step for 2.4), or a heel landing before it has stopped in the world (her travel stalled for a frame each step). Her
+      // pace is from a first pass, then the table again)
+      const pass = (v) => { const X = [0];
+        for (let i = 1; i <= n; i++) {
+          const P0 = Ps[i - 1], P1 = Ps[i], y = Math.max(...P1.map((q, k) => (q[1] + P0[k][1]) / 2));
+          const w = P1.map((q, k) => Math.exp(-(y - (q[1] + P0[k][1]) / 2) / sg - Math.max(0, q[0] - P0[k][0] + 0.5 * v) / 0.002)), W = w.reduce((a, b) => a + b, 0);
+          X.push(X[i - 1] - w.reduce((a, wk, k) => a + wk * (P1[k][0] - P0[k][0]), 0) / W);
+        }
+        return X; };
+      let X = pass(0); X = pass(X[n] / n);
+      walkTab = { X, n, S: X[n] };
+      if (!opts.quiet) console.log(`walk ${spec.name}: ${X[n].toFixed(3)} H per loop, ${(X[n] / D).toFixed(3)} H/s`);
+    }
+    const u = (wrapT(tt) / D) * walkTab.n, i = Math.min(walkTab.n - 1, Math.floor(u)), f = u - i;
+    return walkTab.X[i] + (walkTab.X[i + 1] - walkTab.X[i]) * f;
+  };
+  const walkRoot = (pose, tt) => {
+    const dx = walkX(tt) - walkTab.S * (wrapT(tt) / D);
+    const st = solve(pose), dy = -Math.max(...soleAll(st).map((p) => p[1]));
+    pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) + dy];
+  };
   function poseAt(t) {
+    const pose = poseRaw(t);
+    if (spec.walk) walkRoot(pose, wrapT(t));
+    return pose;
+  }
+  function poseRaw(t) {
     const tt = wrapT(t);
     const pose = basePose(tt);
     const bk = blinkAt(tt);
@@ -1079,5 +1134,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     }
     return pose;
   }
-  return { fps, duration: D, loop, frames: Math.round(D * fps), poseAt, basePose, breathAt, hairAt, blinkAt, phaseAt };
+  // (walk: the planted travel by time and per loop, tools/side_walk.mjs times its keys by it)
+  const walk = spec.walk ? { X: walkX, S: () => (walkX(0), walkTab.S) } : null;
+  return { fps, duration: D, loop, frames: Math.round(D * fps), poseAt, basePose, breathAt, hairAt, blinkAt, phaseAt, walk };
 }
