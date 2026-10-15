@@ -9,7 +9,8 @@
   "farUpLegs": 0.25,
   "turn": 0.4,
   "show.far.arm": 1,
-  "fingersIn": 0.5
+  "fingersIn": 0.5,
+  "stillHidesFar": 1.0
  },
  "root": [
   0.1432,

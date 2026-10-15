@@ -22,7 +22,8 @@
     ]
    },
    "tailRound": 0.25
-  }
+  },
+  "stillHidesFar": 1.0
  },
  "props": {
   "items": [

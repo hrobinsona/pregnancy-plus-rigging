@@ -79,7 +79,16 @@ for p in a.poses:
             used.add(cand[0][1]); sx, sy = sh[cand[0][1]]; off = f'   ours {cand[0][0]:.2f} H from the still\'s ({cx - sx:+.2f}, {cy - sy:+.2f})'
         else: sx, sy = cx, cy
         row = Image.new('RGB', (a.px + len(cands) * (a.px + F + 30) + 20, a.px + 28), 'white'); dr = ImageDraw.Draw(row)
-        if T: row.paste(still_crop(T, sx, sy), (0, 28))
+        # a still that draws ONE hand (its far hand behind her bump, a thigh or a post, checked at 1:1 and recorded as the
+        # pose's fx.stillHidesFar): cropped where OUR far hand would be, it showed the still's NEAR hand, and all three
+        # lenses read "the still shows the far hand; draw it" on four poses (side-on round 13, lesson 74)
+        hides = sd == 'far' and T and (json.load(open(f'characters/{a.char}/poses/{p}.json')).get('fx') or {}).get('stillHidesFar')
+        if hides:
+            im = Image.new('RGB', (a.px, a.px), '#eeeeee'); di = ImageDraw.Draw(im)
+            for j, ln in enumerate(['THE STILL HIDES ITS FAR HAND', '(behind her bump, her thigh or', 'the post: it draws one hand)', 'so ours hidden matches it']):
+                di.text((12, 12 + 18 * j), ln, fill='#333')
+            row.paste(im, (0, 28)); off = ''
+        elif T: row.paste(still_crop(T, sx, sy), (0, 28))
         elif p == 'rest': row.paste(master_crop(cx, cy), (0, 28))
         dr.text((6, 6), f'{p} {sd}: still{off}', fill='black')
         x = a.px + 20

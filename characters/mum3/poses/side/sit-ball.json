@@ -12,7 +12,8 @@
   "fingersInNear": 0.5,
   "clothTry": {
    "seatCorner": 0.125
-  }
+  },
+  "stillHidesFar": 1.0
  },
  "props": {
   "items": [

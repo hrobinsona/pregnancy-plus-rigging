@@ -853,6 +853,22 @@ or composited.
    0.75 drew a knob, 0.25 the still's soft point, `side_zoom.py --try`). Round 12
    also reached kneel-pick's toy by hinging her forward from the hips (pelvis −72): every lens read "hunched". She now
    sits back toward her heel with an upright trunk, as the still sits; a reach made with the body keeps the back long.
+74. **A review crop must show what the still shows: check the pack before trusting a request every lens repeats.** Side-on
+   round 13 (2026-10-15). All three lenses asked for "the far hand where the still shows it" on kneel, sit-chair,
+   sit-ball and the squat, as the round's second fix. Cropped at 1:1 round each still's hands, those four stills draw ONE
+   hand; the far one is behind the bump, the thigh or the post, as ours. The close-up's far row cropped the still where
+   OUR far hand would be (the still had no second hand mark, or MediaPipe's two marks sat 0.19 H apart on one hand), so it
+   showed the still's near hand beside our grey "hidden" panel, and the critics read a second hand in the still. Round 9
+   had fixed the same fault on OUR side of the row (a hidden far hand cropped as the near one, lesson 70). Only
+   lean-counter's still draws its far hand (behind the near one on the worktop, 0.3 H back, 0.16 H up), so only there was
+   the ask real: its far hand is now placed there. Rules: when every lens asks for the same thing round after round,
+   look at the pack's own crop of the still before changing the character; a pose whose still hides a hand says so
+   (`fx.stillHidesFar`, set in `fit_side.sh` after checking the still at 1:1) and the close-up shows it on the still's
+   side too; a still's hand marks closer than ~0.25 H are one hand found twice. Also round 14: a resting hand's fingers
+   bend off the palm TOGETHER, one angle at every knuckle (`softrest` 12°), with the grading at the middle joints: graded
+   at the knuckles (12–20°) they diverged from the knuckle line into what every lens called "a fan", where the stills'
+   fingers leave the hand parallel and drape over the form; level knuckles (2°) left too little curl in the picture
+   (QA `curl` 2–3°, the gate for Harry's "pointed directly out").
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

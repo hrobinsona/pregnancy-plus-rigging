@@ -604,3 +604,61 @@ Each `cloth <pose> '<json>'` line sits in `refs/fit_side.sh` with its numbers; `
 `.af` and `.seated` as it already read `.sq` (defaults unchanged, so breathe-stroke and the other poses draw as before).
 Kneel-pick's trunk back upright (pelvis −84 to the chest −80), sitting back toward her heel: round 12's hinge read
 "hunched" by every lens.
+
+Fable critics (natural / body / craft), round 12 for comparison:
+
+| pose | natural | body | craft | round 12 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 6.5 | 6.5 / 7 / 6.5 |
+| kneel-pick | 4.5 | 4.5 | 5 | 4.5 / 5 / 5 |
+| all-fours | 5.5 | 6 | 5.5 | 5.5 / 6 / 6 |
+| sit-chair | 7 | 7 | 7 | 7 / 7 / 7 |
+| sit-ball | 6 | 6.5 | 6 | 6 / 6.5 / 6.5 |
+| squat | 5 | 5.5 | 5 | 5 / 5.5 / 5.5 |
+| lean-counter | 6.5 | 6.5 | 6.5 | 6.5 / 7 / 7 |
+| walk-contact | 6 | 6.5 | 6.5 | 6.5 / 6.5 / 7 |
+| walk-down | 6 | 6.5 | 6.5 | 6 / 6.5 / 6.5 |
+| walk-pass | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 7 |
+
+Flat a fifth round. The fitted hems landed (craft: "the squat's tail is shorter"; body: "improved the hem height") but
+each lens still names the seat: the squat's and kneel-pick's skirts bulge behind the shoulder line where the stills'
+cloth is taut over the seat (the fit scored only below the hip, so the seat's protrusion was outside it), sit-ball's
+lap corner a free point, all-fours' bump cut by the hem. Kneel-pick upright still reads "sat back on her heel… slumped":
+the still kneels TALL (the kneeling thigh vertical), which her arms can't reach the floor from (lesson 72; Harry's card).
+
+A finding about the pack, not the drawing: all three lenses asked for "the far hand where the still shows it" on
+kneel, sit-chair, sit-ball and the squat. Cropped at 1:1 round each still's hands, those four stills show ONE hand: the
+far one is behind the bump, the thigh or the post, as ours. The pack's far-hand row cropped the still where OUR far hand
+would be (no second hand mark in the still), which landed on the still's near hand, so the critics saw a second hand in
+the still beside our grey "hidden" panel. Only lean-counter's still shows its far hand: on the worktop behind the near
+one, its fingertips ~0.3 H back. Fix the pack first (lesson 74), then lean-counter's far hand.
+
+Next (round 14): the pack's far-hand row says when the still hides it too; lean-counter's far hand where its still
+draws it; each hand's direction measured on its still (wrist to fingertips) rather than by eye, and the fingers
+parallel from the knuckles with the curl at the middle joints (the lenses' "a fan from the knuckle", Harry's "gaps and
+curl" both kept); the seat's cloth fitted with the seat in the scored region.
+
+## Round 14 (2026-10-15): the pack's far-hand row honest, lean-counter's far hand, parallel resting fingers
+
+- **The pack** (lesson 74): kneel, sit-chair, sit-ball and the squat carry `fx.stillHidesFar` (each still checked at 1:1
+  round its hands: one hand drawn), and the close-up's far row now shows a grey "the still hides its far hand" panel on the
+  still's side beside ours, instead of a crop of the still's near hand.
+- **Lean-counter's far hand** where its still draws it: on the worktop behind the near one (wrist 0.32 H back, 0.16 H up),
+  its fingers showing above the near forearm (the far arm's angles solved for that wrist).
+- **Resting fingers** (`softrest`: kneel, sit-chair, sit-ball, kneel-pick's knee hand): one angle at every knuckle (12°,
+  the fingers bending off the palm together, parallel), the grading at the middle joints (12–20°); at 1:1 sit-chair's
+  hand now lies level along the bump's underside as the still's. Level knuckles (2°) were tried first and failed QA
+  `curl` (2–3°: Harry's "pointed directly out"). The walking `idle` hands were tried the same way (knuckles 6–16°)
+  and changed nothing visible at 1:1, so they stay.
+- **The seat**: refitting the squat's skirt with the seat in the scored region (0.6 H above the hip) moved its IoU
+  0.790 → 0.794, so the "balloon behind the shoulder line" is not the cloth: the still's whole trunk sits ~0.1 H further
+  forward over her feet (`side_match.py`: blue along our back, red along the still's bump). A posture change for a later
+  round.
+- **The walks' arms** (natural's first ask on walk-contact and walk-down: "the near arm hangs at the bump's front… 0.49 H
+  behind the still's hand"): measured with `side_dirs.mjs`, the walk stills swing the near arm BACK with the near leg
+  back (102° and 101°) and the far arm forward: they pace. Ours swing against the legs as a walk does (near arm forward
+  76°, far back 109°, rounds 1–2), so the pack's nearest-hand pairing compares opposite arms. The still's legs don't
+  overlap, so which leg is near is the estimator's guess; read the other way (`fit_pose.mjs --swap legs`), the still
+  walks correctly and its arm layout (the near arm back over the dress, the far forearm clear in front of the bump) is
+  ours too. Not done this round: the walk film (`side_walk.mjs`) takes its hands from these keys and starts on the far
+  heel, so the swap needs the cycle checked with it.

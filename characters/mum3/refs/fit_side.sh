@@ -175,7 +175,9 @@ farleg sit-chair -0.17,-0.02 -0.25,-0.07
 # "point ~30° down", round 9 natural, craft and body: 7° (at 4° the hand turned toward the camera on the breath, drawn
 # at 84% of its length, qa_checks limbs), the curl kept for qa_checks curl, the wrist 0.035 H back so
 # the tips stay inside the bump)
-bumphands sit-chair 0.6,-4.369 7 0.63,-4.42 7 -20
+# (round 14: the near hand at 6°, not 7°: with the new resting fingers the hand-direction scan's tie at 7° went to a 10°
+# forearm twist, the hand turned toward the camera and drew at 81% of its length, QA limbs; at 6° the twist is 0)
+bumphands sit-chair 0.6,-4.369 6 0.63,-4.42 7 -20
 fxset sit-chair fingersIn=0.5   # (the fingers curving round the bump in the picture; at 0.3 they measured 4° of curl, qa_checks curl)
 
 # sitting on a birth ball, her hips a little above her knees (the thighs 13° down to the knee, as a birth ball is chosen
@@ -262,7 +264,11 @@ settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperA
 # (round 9: the far hand just BEHIND the near one on the worktop, as the still: its forearm a little more bent under the far
 # shoulder, the hand at the near one's angle (wrist 0.06 H back, level). Left where the fit put it, it lay 0.25 H AHEAD of
 # the still's, "a second row of fingertips poking out ahead of the near hand", round 8, every lens; tools/bone_signs.mjs)
-nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
+# (round 14: the still DOES draw its far hand there, unlike kneel's, sit-chair's, sit-ball's and the squat's: on the worktop
+# behind the near one, its wrist 0.32 H back and 0.16 H up (the slab's far side seen from a little above), the far
+# forearm along the near one; 0.06 H back it hid behind the near hand and every lens read "one-armed", round 13. Solved
+# for that wrist by the far arm's angles)
+nudge lean-counter upperArm.far=-25,forearm.far=45,hand.far=-20
 
 # picking up a ball: kneeling on ONE knee, as a pregnant woman is told to (the far knee, shin and the top of the far shoe
 # on the far floor line, sitting back toward that heel; the NEAR foot flat ahead, its thigh level and its knee up, the
@@ -344,3 +350,8 @@ floor walk-down --touch shoe.far:ball,shoe.far:heel@-0.1,shoe.near:tip,shoe.near
 fit walk-pass s_walk_pass_1 --hand near=idle,far=idle --fix fx.skirtSwing=0.2,fx.fingersIn=0.8 --set kneeR:545:1135,ankleR:560:1440,heelR:525:1480,footR:695:1495,kneeL:390:1135,ankleL:255:1325,heelL:195:1335,footL:295:1460
 dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=86,upperArm.far=62,forearm.far=57,hand.far=62,shin.near=92,thigh.far=106,shin.far=140
 floor walk-pass --touch shoe.near:low --bones foot,toe
+
+# (these stills draw ONE hand: the far one behind her bump, her thigh or the chair's post, checked at 1:1 round each
+# still's hands. The critic pack's far-hand row says so beside ours: cropped where our hidden far hand would be, it showed
+# the still's near hand, and every lens asked for "the far hand where the still shows it", round 13, lesson 74)
+for p in kneel sit-chair sit-ball squat; do fxset $p stillHidesFar=1; done
