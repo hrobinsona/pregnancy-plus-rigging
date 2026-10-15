@@ -19,7 +19,7 @@ export function propsFor(parts, ctx) {
     else if (it.type === 'chair') {   // in front of her: she holds its back, the top rail under her palm (not at her wrist: the hands hung past it)
       const pts = parts.filter((p) => /^hand\.near\.(palm|hypo|thenar)$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
       const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, lo = Math.max(...pts.map((q) => q[1]));
-      o = { seatY: -2.05, x0: cx + 0.06, back: 1, backTop: lo - 0.02, ...it };   // (the stile's top, leaning 0.1 back toward her, under the palm's centre)
+      o = { seatY: -1.85, x0: cx + 0.06, back: 1, backTop: lo - 0.02, ...it };   // (the stile's top, leaning 0.1 back toward her, under the palm's centre; the seat a kitchen chair's ≈ 45 cm: at 2.05 H it read as a bar stool, round 4)
     }
     else if (it.type === 'ball') {   // a birth ball as big as a real one (≈ 65 cm: r ≈ 1.35 H), she sits ON its crown (the
       // still; 0.35 r in front of it she perched on its front edge, critic R1 "the ball is behind her"): the centre 0.1 r
@@ -27,9 +27,14 @@ export function propsFor(parts, ctx) {
       const r = -seatBot / (1 + Math.sqrt(1 - 0.1 ** 2));
       o = { x: seatMid - 0.1 * r, topY: -2 * r, ...it };
     }
-    else if (it.type === 'counter') {   // under her forearms, its front face just clear of her bump (not through it)
-      const topY = Math.max(elbow[1], wrist[1]) + 0.08, body = parts.filter((p) => p.id === 'dress' || p.id === 'dress.skirt').flatMap((p) => p.geom.P.map((q) => ap(p.M, q))).filter((q) => q[1] > topY);
-      o = { x0: Math.max(elbow[0] - 0.12, Math.max(...body.map((q) => q[0])) + 0.06), topY, ...it };
+    else if (it.type === 'counter') {   // under her forearms, its front face clear of her bump (not through it)
+      // (the worktop at the forearm's drawn UNDERSIDE, from the elbow on, and the palm's: 0.08 H under the joints the
+      // forearm sank 15 px into the slab, round 4; the front face 0.16 H ahead of the bump: at 0.06 it nearly touched,
+      // the still leaves 30–40 px, a hand's breadth)
+      const under = parts.filter((p) => p.id === 'arm.near' || p.id === 'hand.near.palm').flatMap((p) => p.geom.P.map((q) => ap(p.M, q))).filter((q) => q[0] >= elbow[0] - 0.02);
+      const topY = under.length ? Math.max(...under.map((q) => q[1])) + 0.005 : Math.max(elbow[1], wrist[1]) + 0.08;
+      const body = parts.filter((p) => p.id === 'dress' || p.id === 'dress.skirt').flatMap((p) => p.geom.P.map((q) => ap(p.M, q))).filter((q) => q[1] > topY);
+      o = { x0: Math.max(elbow[0] - 0.12, Math.max(...body.map((q) => q[0])) + 0.16), topY, ...it };
     }
     else if (it.type === 'toy' && it.held) {   // in her hand: in the palm's hollow, under the fingers
       const pts = parts.filter((p) => /^hand\.near\.(palm|f[1-4])$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));

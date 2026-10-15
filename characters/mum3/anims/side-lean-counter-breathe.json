@@ -6,12 +6,12 @@
  "view": {
   "bbox": [
    [
-    -1.94,
-    -7.23
+    -1.96,
+    -7.2
    ],
    [
     2.98,
-    0.35
+    0.36
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"

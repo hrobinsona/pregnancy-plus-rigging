@@ -6,17 +6,17 @@
  "view": {
   "bbox": [
    [
-    -2.35,
-    -6.21
+    -2.3,
+    -6.18
    ],
    [
-    1.66,
-    0.37
+    2.1,
+    0.39
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
  },
- "story": "sit-ball in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays on her thigh (far), her far hand hangs free. Made by tools/side_loop.mjs.",
+ "story": "sit-ball in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays on her thigh (far), her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
  "intensity": "very gentle and calm: small, soft moves",
  "keys": [
   {
@@ -36,6 +36,18 @@
     "t": 4,
     "pose": "side/sit-ball",
     "on": "thigh.far"
+   }
+  ],
+  "far": [
+   {
+    "t": 0,
+    "pose": "side/sit-ball",
+    "on": "thigh.near"
+   },
+   {
+    "t": 4,
+    "pose": "side/sit-ball",
+    "on": "thigh.near"
    }
   ]
  },

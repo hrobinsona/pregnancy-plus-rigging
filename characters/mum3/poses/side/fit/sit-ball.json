@@ -1,6 +1,6 @@
 {
  "name": "side/fit/sit-ball",
- "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=13,thigh.far=11,shin.near=95,shin.far=97,head=-97",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,thigh.near=13,thigh.far=9,shin.near=95,shin.far=80",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -17,29 +17,29 @@
   ]
  },
  "root": [
-  -0.7633,
-  1.4827
+  -0.7608,
+  1.4822
  ],
  "bones": {
-  "pelvis": 11.3,
-  "spineLower": 0.4,
-  "spineUpper": -2.3,
-  "chest": -7.7,
-  "neck": -6,
-  "head": -2.8,
+  "pelvis": 4.3,
+  "spineLower": 4.9,
+  "spineUpper": -0.9,
+  "chest": -7.4,
+  "neck": 4.6,
+  "head": -10.6,
   "belly": 0,
-  "clavicle.near": -14.3,
-  "shoulderAbd.near": 3.8,
+  "clavicle.near": -14.5,
+  "shoulderAbd.near": 3.9,
   "upperArm.near": -2,
   "armAbd.near": 0,
   "armRot.near": 4.1,
   "forearm.near": 38.1,
   "foreRot.near": 0.2,
   "hand.near": 7,
-  "thigh.near": 87.3,
-  "shin.near": -82.3,
-  "foot.near": 11.5,
-  "hipAbd.near": -5.7,
+  "thigh.near": 81,
+  "shin.near": -83.1,
+  "foot.near": 11.6,
+  "hipAbd.near": -5.4,
   "clavicle.far": -22,
   "shoulderAbd.far": 0,
   "upperArm.far": -1.6,
@@ -48,18 +48,18 @@
   "forearm.far": 34.7,
   "foreRot.far": 0,
   "hand.far": 6.4,
-  "thigh.far": 88.4,
-  "shin.far": -88.1,
-  "foot.far": 4.2,
-  "hipAbd.far": -6
+  "thigh.far": 84.4,
+  "shin.far": -72.8,
+  "foot.far": 4.1,
+  "hipAbd.far": -5.2
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_sit_ball_0.json",
   "scale": 1.0082,
-  "rms": 0.0595,
+  "rms": 0.0596,
   "worst": [
    "shoulderL 0.206",
-   "hipL 0.131",
+   "hipL 0.130",
    "shoulderR 0.078",
    "thumbR 0.071",
    "elbowR 0.059"

@@ -53,7 +53,9 @@ const bump = { under: lm('underBust'), apex: lm('bumpApex'), bottom: lm('bumpBot
 bump.upper = frontAt(bump.under[1] + 0.55 * (bump.apex[1] - bump.under[1]));   // on the bump's upper slope
 bump.lower = frontAt(bump.apex[1] + 0.6 * (bump.bottom[1] - bump.apex[1]));    // on its lower curve
 // its weight (parts/body.js sag): at 90° of forward pitch the apex moves [toward the head, toward the floor] (H); the bust less
-bump.sag = { bump: [0.15, 0.4], bust: [0.03, 0.07] };
+// (0.4 toward the floor hung the bump's bottom 0.5 H off the floor on all fours, the still's 1.2 H: a real bump drops a few
+// cm on all fours, not a hand's breadth; side-on round 4 "bump and skirt one wedge")
+bump.sag = { bump: [0.15, 0.1], bust: [0.03, 0.07] };
 // ---------------------------------------------------------------- shape parameters
 export const P = {
   // FACE (head bone), profile: named points on the front edge (master_measure.py), the rest designed
@@ -71,7 +73,10 @@ export const P = {
   // TORSO (dress): named points + the measured front stations; the back behind the arm is designed (a straight back)
   chestFront: [0.33, -5.75], bust: [0.59, -5.3], bump,
   back: { shoulder: [-0.3, -5.72], blade: [-0.33, -5.2], waist: [-0.29, -4.55], seat: [-0.37, -3.78] },
-  hem: { back: lm('hemBack'), front: lm('hemFront'), y: (L.points.hem - G[1]) / Hpx },
+  // (the back corner 0.06 H further back than the master's, plumb under her seat: the side-on critics read the master's
+  // slight taper in to the hem as a sack, round 4, and with the measured thighs (legProfile) the near thigh's back stood out
+  // past the hem's back corner)
+  hem: { back: [lm('hemBack')[0] - 0.06, lm('hemBack')[1]], front: lm('hemFront'), y: (L.points.hem - G[1]) / Hpx },
   strap: { back: [-0.34, -5.85], top: [-0.15, -5.93], front: [0.04, -5.86], w: 0.065 },   // the dress's top edge over the shoulder (master: back silhouette → over the deltoid → into the neckline)
   neckline: { front: [0.5, -5.57], low: [0.25, -5.69] },   // a shallow curve from the shoulder down to the chest front (measured: crosses y −5.74 at x 0.12)
   // ARMS: measured half-widths (front / back of the arm) at the shoulder, mid upper arm, elbow, mid forearm, wrist
@@ -92,11 +97,20 @@ export const P = {
     // when horizontal: parts/legs.js)
     const calf = (f) => 1 + 0.05 * Math.exp(-(((f - 0.3) / 0.18) ** 2)) - 0.05 * Math.max(0, (f - 0.7) / 0.2);
     const sw = (side) => [0.1, 0.23, 0.37, 0.5, 0.63, 0.77, 0.9].map((f) => { const q = W(side === 'near' ? 'shinNear' : 'shinFar', f); return [f, q.front, q.back * (side === 'near' ? calf(f) : 1)]; });
-    const near = { thigh: [[0, 0.3, 0.4], [0.25, 0.25, 0.3], [0.5, 0.21, 0.24], [1, 0.115, 0.26]],
-                   shin: [[0, 0.115, 0.26], ...sw('near'), [1, 0.062, 0.165]] };
+    // (side-on round 4, every lens: "posts on hinges", thighs 0.6-0.7 of the stills', no calf belly) MEASURED with
+    // tools/leg_widths.py on the nine side-on stills (mapped into rig units by their fits): their shins are 1.2x ours at
+    // every station (n = 3-9 per station), the calf deepest a quarter to a third of the way down (0.49 H), the ankle 0.28;
+    // their thighs 1.1-1.25x near the knee. A real woman's are the same (calf ≈ 11 cm deep, head 22.5 cm: 0.5 H; the
+    // knee ≈ 0.45 H; mid-thigh ≈ 0.7 H). So the TOTAL depth per station is the stills', the front of the shin (the tibia
+    // under the skin) stays the master's and the calf takes the rest; the thigh keeps its front/back split. Legs are one
+    // size in every pose (a stand-to-sit move must not swell them): standing mum3 changes too (blind A/B, round 5).
+    const SHIN = [[0, 0.42], [0.1, 0.45], [0.23, 0.49], [0.37, 0.49], [0.5, 0.45], [0.63, 0.4], [0.77, 0.33], [0.9, 0.28], [1, 0.26]];
+    const tot = (f) => { const i = SHIN.findIndex((q) => q[0] >= f); const a = SHIN[Math.max(0, i - 1)], b = SHIN[i]; return a === b ? b[1] : a[1] + (b[1] - a[1]) * (f - a[0]) / (b[0] - a[0]); };
+    const near = { thigh: [[0, 0.33, 0.45], [0.25, 0.31, 0.39], [0.5, 0.28, 0.32], [0.75, 0.2, 0.32], [1, 0.13, 0.29]],
+                   shin: [[0, 0.13, 0.29], ...sw('near').map(([f, fr]) => [f, fr, tot(f) - fr]), [1, 0.062, tot(1) - 0.062]] };
     const dN = (f) => { const P = near.shin, i = P.findIndex((q) => q[0] >= f); return P[i][1] + P[i][2]; };
     const farS = sw('far').map(([f, fr]) => [f, fr, dN(f) - fr]), off = farS[0][1] - near.shin[1][1];
-    const far = { thigh: near.thigh.map(([f, fr, bk]) => [f, fr + off * f, bk - off * f]), shin: [[0, 0.115 + off, 0.26 - off], ...farS, [1, 0.138, 0.096]] };
+    const far = { thigh: near.thigh.map(([f, fr, bk]) => [f, fr + off * f, bk - off * f]), shin: [[0, 0.13 + off, 0.29 - off], ...farS, [1, 0.138, tot(1) - 0.138]] };
     const mk = (pr) => ({ P: pr, at: (f) => { let i = pr.findIndex((q) => q[0] >= f); if (i <= 0) i = Math.max(1, i < 0 ? pr.length - 1 : 1); const a = pr[i - 1], b = pr[i], t = Math.max(0, Math.min(1, (f - a[0]) / (b[0] - a[0]))); return { front: a[1] + t * (b[1] - a[1]), back: a[2] + t * (b[2] - a[2]) }; } });
     return { near: { thigh: mk(near.thigh), shin: mk(near.shin) }, far: { thigh: mk(far.thigh), shin: mk(far.shin) } };
   })(),
@@ -117,8 +131,11 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] - 0.03, joints.wristNear[1] + 0.03],   // the estimator's wrist sits near the wrist's FRONT edge (front 0.07 / back 0.12 H): the hand is centred on the wrist's width, BEHIND the joint (measured in the master: 7 px; v1 had the sign wrong and the forearm stuck out behind the hand as a shelf)
           dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
-          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, fingerK: 1.0, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
-          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0],   /* the thumb-side edge seen from the BACK: the thenar pad is on the palm side (v3's 1.2 stood up as a knob on top of the hand at the wrist when it lay on the bump) */ thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0] },
+          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0],   /* the thumb-side edge seen from the BACK: the thenar pad is on the palm side (v3's 1.2 stood up as a knob on top of the hand at the wrist when it lay on the bump) */ thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
+          // drawn like the stills' hands (mum3q's, lesson 52): thinner lines between the fingers (0.02 read as stripes, "a comb";
+          // side-on round 4, every lens: "stripe fingers on paddles"), the fingers slimmer and tapering a little more to round tips
+          fingerK: 0.9, rim: 0.012, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9, lineEnd: 0.95, lineTipGap: 0.3 },
 };
 handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03] };
 

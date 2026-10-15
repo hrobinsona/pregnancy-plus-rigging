@@ -18,12 +18,14 @@ const post = (a, b, wa, wb) => ensureCW(loop([
 
 /** A wooden side chair seen from the side, its backrest at x0 (sitting on it she faces away from the backrest; squatting
  *  she holds its top with the chair in front of her). o = {seatY (top of the seat), x0 (the backrest's edge), x1 (the
- *  front edge), backTop (top of the backrest), depth: [dx, dy] where the far legs show (a ¾ hint, default [0.16, -0.07])}
+ *  front edge), backTop (top of the backrest), depth: [dx, dy] where the far legs show (a ¾ hint, default [0.06, -0.06])}
  *  Drawn as the stills draw a kitchen chair (critic R3: "the crest a block on one post", "thin dead-vertical rods", "the
  *  seat too deep"): stout posts, the legs splaying a little to the floor, the backrest leaning back, its CREST RAIL a band
  *  across from the near stile to the far one, the seat's top a thin lit strip. */
 export function chair(o, z = 4) {
-  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.16, -0.07], th = 0.1, lw = 0.12, sp = 0.07, parts = [];
+  // (the far legs only just showing: offset 0.16 H, the far front leg stood clear of the seat's end with the seat's top
+  // skewed out to it, round 4 "the chair's far front leg stands off the seat's end")
+  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.06, -0.06], th = 0.1, lw = 0.12, sp = 0.07, parts = [];
   const bx = x0 + lw / 2, lean = -0.17, crest = 0.4;
   // far legs and far backrest stile (behind, darker)
   parts.push({ id: 'prop.chair.farleg0', z: z - 0.4, fill: WOOD.far, geom: post([bx + dx, seatY + th + dy], [bx - sp + dx, dy * 0.4], lw * 0.9, lw * 0.8) });

@@ -108,6 +108,10 @@ function lapOver(parts, ctx) {
     parts.push({ id, bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'] },
       { id: id + '.bodice', bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress'], clipAnd: [cut] });
   }
+  // kneeling on one knee with the NEAR leg forward, the back hangs down the far (kneeling) leg: the cloth from the hem's
+  // crossing on the forward thigh back to the seat runs UNDER that thigh (a hammock), so its underside on the hip's side of
+  // the line is cloth even below the skirt's own outline (left out, the background showed through as a slit)
+  if (sd?.backOff && sd.wb > 0.5) parts.push({ id: 'dress.lap.under', bone: 'pelvis', z: 30.02, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, clipGeom: [cut] });
   // BETWEEN THE KNEES (squatting, bending: fx.kneesApart): the skirt's hem spans from the near knee's side to the far one
   // and sags between them, its inside seen below the near thigh from the hem on its underside back to the seat (the squat
   // and bend stills: a darker flap hanging to about mid-shin, behind the near shin, in front of the far leg; round 2 "a
@@ -138,6 +142,17 @@ function lapOver(parts, ctx) {
   const m = run.length, wd = run.map((_, i) => 0.016 * Math.sin(Math.PI * Math.min(1, 1.6 * Math.min(i, m - 1 - i) / (m - 1))) ** 0.7);
   parts.push({ id: 'dress.lap.fold', bone: 'pelvis', z: 30.125, fill: pal.dressShade, world: true, geom: stroke(run, wd, 'point'), M: leg.M, opacity: k });
 }
+// ON ALL FOURS the skirt's side panel hangs behind the bump (engine/drape.js fold): the still draws where the bump meets it
+// as one soft darker line, from high on her side down the bump's back to the hem's front corner, so the bump reads as a
+// round form in front of the cloth (round 4: "bump and skirt one wedge"). A tapered shade stroke curving like the bump's
+// back, faded in with the panel (standing, sitting, kneeling: none)
+function skirtFold(parts, ctx) {
+  const sk = parts.find((p) => p.id === 'dress.skirt'), fd = sk?.drape?.fold;
+  if (!fd || fd.k < 0.02) return;
+  const { a, b } = fd, top = add(a, [-0.3, -0.62]), mid = add(a, [-0.07, -0.2]);
+  const pts = [top, lerp(top, mid, 0.5), mid, lerp(mid, b, 0.5), b];
+  parts.push({ id: 'dress.skirt.fold', bone: 'pelvis', z: 30.13, fill: ctx.P.dressShade, world: true, geom: stroke(pts, [0.002, 0.01, 0.016, 0.016, 0.01], 'point'), M: [1, 0, 0, 1, 0, 0], opacity: 0.85 * fd.k });
+}
 // where the near shoe overlaps the far one (kneeling, on all fours: the feet side by side behind her), a thin line of the
 // near foot's skin parts them, as the stills draw it: the same dark brown, the two merged into one shoe (round 2 "the
 // shoes merge"). An outline clipped to the far shoe: where they don't overlap (standing, walking) nothing shows
@@ -167,7 +182,7 @@ const inside = (q, poly) => { let c = false; for (let i = 0, j = poly.length - 1
 export default {
   name: 'mum3',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,
@@ -187,7 +202,7 @@ export default {
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); shoeGap(parts, ctx); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); skirtFold(parts, ctx); shoeGap(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

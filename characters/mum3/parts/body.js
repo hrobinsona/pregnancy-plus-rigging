@@ -68,12 +68,21 @@ export function rest(parts, ctx) {
  *  blades and the round of her buttocks. Drawn straight, the back ran in one line from the shoulder blade to the seat
  *  (critic R1, every pose: "a box, a tent or a cape… no lumbar curve, no buttocks under it"). The bodice's back waist
  *  (and the skirt that hangs from it) moves in along the trunk's forward normal by up to LORD.depth H, the blade a little;
- *  by the mean hip flexion (LORD.from° → LORD.to°): standing and kneeling up, unchanged. */
-export const LORD = { depth: 0.09, from: 10, to: 55, w: { 17: 0.6, 18: 1, 19: 0.35 } };
+ *  by the trunk's forward pitch (LORD.from° → LORD.to°): standing, kneeling up and sitting upright, LORD.base only. */
+// (LORD.base, every pose: a pregnant woman's lumbar curves in even standing and kneeling up, the bump's weight carried by
+// the arch; the side-on critics, round 4: "the back a ruler from the shoulder blade to the hem", the kneeling still "dips
+// in ~25 px at the waist and rounds over the seat". The master's waist sits 0.08 H in from its seat; this makes it 0.14)
+// (by the TRUNK'S PITCH, not the hips' flexion: leaning forward from the hips (a counter, a squat, picking something up)
+// the pelvis tips forward and the lumbar arches; sitting upright the hips flex as far but the pelvis rolls back and the low
+// back flattens. By the hips' flexion the seated back dipped 0.15 H in at the waist and the seat ballooned behind it, 0.1 H
+// past the ball still's, round 5)
+export const LORD = { base: 0.06, depth: 0.09, from: 5, to: 30, w: { 17: 0.6, 18: 1, 19: 0.35 } };
+const lordRest = new WeakMap();
 export function lumbar(parts, ctx) {
-  const dress = parts.find((p) => p.id === 'dress'), b = ctx.pose?.bones || {};
+  const dress = parts.find((p) => p.id === 'dress'), { C: char, st, rig } = ctx;
   if (!dress) return;
-  const flex = ((b['thigh.near'] || 0) + (b['thigh.far'] || 0)) / 2, t = Math.max(0, Math.min(1, (flex - LORD.from) / (LORD.to - LORD.from))), k = LORD.depth * t * t * (3 - 2 * t);
+  if (!lordRest.has(char)) lordRest.set(char, rig.solve({}).spineLower.rot);
+  const pitch = st.spineLower.rot - lordRest.get(char), t = Math.max(0, Math.min(1, (pitch - LORD.from) / (LORD.to - LORD.from))), k = LORD.base + LORD.depth * t * t * (3 - 2 * t);
   if (!k) return;
   const M = ctx.st.spineLower.M, n = [M[0], M[1]], l = Math.hypot(...n) || 1, g = dress.geom;   // the trunk's forward direction, posed
   for (const [i, w] of Object.entries(LORD.w)) { const d = [k * w * n[0] / l, k * w * n[1] / l]; for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]]; }
@@ -83,9 +92,11 @@ export function build({ P: C, C: char }) {
   const X = char.params.P, J = char.joints, out = [];
   const N = X.neck, b = X.bump, bk = X.back, st = X.strap, nl = X.neckline;
   // ---- neck: nape top (under the hair) → throat top (under the jaw) → throat → base (inside the chest skin) → nape
+  // (the base straight down under the throat, inside the chest skin: swung 0.08 H forward it stood out past the chest skin's
+  // front as a little hook at the base of the throat, every pose; side-on round 4 "a hook at the base of the throat")
   out.push(part('neck', 'neck', 26, C.skin, ensureCW(loop([
     [N.napeTop[0], N.napeTop[1], { c: true, t: 0.5 }], [N.throatTop[0] - 0.12, N.napeTop[1] + 0.05], [N.throatTop[0], N.throatTop[1], { a: 95 }],
-    [N.front[0] + 0.005, N.front[1], { a: 80 }], [N.front[0] + 0.08, N.front[1] + 0.12], [N.back[0] + 0.02, N.back[1] + 0.14],
+    [N.front[0] + 0.005, N.front[1], { a: 80 }], [N.front[0] + 0.01, N.front[1] + 0.14], [N.back[0] + 0.02, N.back[1] + 0.14],
     [N.back[0], N.back[1], { a: -80 }], [N.back[0] + 0.03, (N.back[1] + N.napeTop[1]) / 2, { a: -95 }]])),
     { skin: { parent: 'chest', child: 'neck', zone: 0.35 } }));
   // ---- chest skin: from the neck base forward and down to the neckline, back over the shoulder top behind the strap

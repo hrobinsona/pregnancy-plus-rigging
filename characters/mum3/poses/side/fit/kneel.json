@@ -1,6 +1,6 @@
 {
  "name": "side/fit/kneel",
- "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); pose_dirs: head=-100",
+ "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); pose_dirs: head=-100,thigh.near=86,thigh.far=74",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -30,7 +30,7 @@
   "forearm.near": 44.5,
   "foreRot.near": 0,
   "hand.near": 0.3,
-  "thigh.near": 12.9,
+  "thigh.near": 9.6,
   "shin.near": -94.9,
   "foot.near": -36.3,
   "hipAbd.near": 0.5,
@@ -42,7 +42,7 @@
   "forearm.far": 40.4,
   "foreRot.far": 0,
   "hand.far": 0.3,
-  "thigh.far": 11.7,
+  "thigh.far": 21,
   "shin.far": -85.9,
   "foot.far": -32.9,
   "hipAbd.far": 0

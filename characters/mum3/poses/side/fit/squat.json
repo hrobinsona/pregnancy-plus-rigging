@@ -1,9 +1,9 @@
 {
  "name": "side/fit/squat",
- "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18",
+ "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=35; pose_dirs: thigh.far=-4,shin.far=112",
  "hands": {
-  "near": "grip",
-  "far": "grip"
+  "near": "drape",
+  "far": "drape"
  },
  "fx": {
   "kneesApart": 1,
@@ -19,51 +19,51 @@
   ]
  },
  "root": [
-  -1.0831,
-  1.7428
+  -1.0844,
+  1.7433
  ],
  "bones": {
-  "pelvis": 22.1,
-  "spineLower": 2.6,
-  "spineUpper": -3.7,
-  "chest": -11.6,
-  "neck": -9.9,
-  "head": -0.4,
+  "pelvis": 22.6,
+  "spineLower": 2.2,
+  "spineUpper": -4,
+  "chest": -11.5,
+  "neck": -9.7,
+  "head": -0.5,
   "belly": 0,
   "clavicle.near": -22,
-  "shoulderAbd.near": -28.1,
-  "upperArm.near": 34.1,
-  "armAbd.near": -0.5,
+  "shoulderAbd.near": -28.2,
+  "upperArm.near": 33.9,
+  "armAbd.near": -0.4,
   "armRot.near": 4.1,
   "forearm.near": 25.4,
   "foreRot.near": 0.1,
-  "hand.near": 4,
-  "thigh.near": 102,
+  "hand.near": -45,
+  "thigh.near": 102.3,
   "shin.near": -118.7,
-  "foot.near": 33.8,
-  "hipAbd.near": -8.5,
+  "foot.near": 33.6,
+  "hipAbd.near": -8.7,
   "clavicle.far": -22,
-  "shoulderAbd.far": -28.1,
-  "upperArm.far": 34.1,
-  "armAbd.far": -0.5,
+  "shoulderAbd.far": -28.2,
+  "upperArm.far": 33.9,
+  "armAbd.far": -0.4,
   "armRot.far": 4.1,
   "forearm.far": 25.4,
   "foreRot.far": 0.1,
-  "hand.far": 4,
-  "thigh.far": 102,
-  "shin.far": -118.7,
-  "foot.far": 33.8,
-  "hipAbd.far": -8.5
+  "hand.far": -45,
+  "thigh.far": 111,
+  "shin.far": -117.5,
+  "foot.far": 33.6,
+  "hipAbd.far": -8.7
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_squat_0.json",
   "scale": 1.0744,
-  "rms": 0.1033,
+  "rms": 0.1034,
   "worst": [
    "wristR 0.213",
    "thumbR 0.206",
-   "hipR 0.193",
-   "hipL 0.182",
+   "hipR 0.194",
+   "hipL 0.184",
    "indexR 0.167"
   ]
  },

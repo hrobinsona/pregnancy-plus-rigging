@@ -7,7 +7,7 @@
 // held contact per hand): on her bump (pinned to the belly, riding its breath), on a thigh or shin (that bone), or on
 // the floor, a worktop, a chair or a ball ('world': the props stay put, anim.js propsAt). Found from the posed drawing: the
 // palm inside the bump's outline → belly; a hand that presses or grips → world; within 0.3 H of a thigh or shin → that bone;
-// any other hand lying flat → world; a relaxed hand away from everything hangs free. --pin overrides a side. A walk pose
+// any other hand lying flat or draped over something (a chair's back) → world; a relaxed hand away from everything hangs free. --pin overrides a side. A walk pose
 // gets no breathing loop (no one stands mid-stride): it gets a walk cycle.
 import fs from 'node:fs';
 import { createRig } from '../engine/rig.js';
@@ -42,7 +42,7 @@ const pinFor = (side) => {
   if (['press', 'grip'].includes(how)) return 'world';   // pressing on something solid: the floor, a worktop, a ball, a chair
   let best = null; for (const L of legBones) { const d = Math.min(segDist(palm, L.a, L.e), segDist(wr, L.a, L.e)); if (d < 0.3 && (!best || d < best.d)) best = { b: L.b, d }; }
   if (best) return best.b;
-  return ['lay', 'flat'].includes(how) ? 'world' : null;
+  return ['lay', 'flat', 'drape'].includes(how) ? 'world' : null;   // (drape: over a chair's back, the squat)
 };
 const over = Object.fromEntries((arg('pin') || '').split(',').filter(Boolean).map((kv) => kv.split('=')));
 const pins = Object.fromEntries(['near', 'far'].map((s) => [s, over[s] !== undefined ? (over[s] === 'free' ? null : over[s]) : pinFor(s)]));

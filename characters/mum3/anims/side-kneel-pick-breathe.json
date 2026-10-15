@@ -6,17 +6,17 @@
  "view": {
   "bbox": [
    [
-    -3.45,
-    -5.11
+    -2.84,
+    -5.07
    ],
    [
-    1.64,
-    0.4
+    1.56,
+    0.35
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
  },
- "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays put where it rests, her far hand stays on her thigh (far). Made by tools/side_loop.mjs.",
+ "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays put where it rests, her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
  "intensity": "very gentle and calm: small, soft moves",
  "keys": [
   {
@@ -42,12 +42,12 @@
    {
     "t": 0,
     "pose": "side/kneel-pick",
-    "on": "thigh.far"
+    "on": "thigh.near"
    },
    {
     "t": 4,
     "pose": "side/kneel-pick",
-    "on": "thigh.far"
+    "on": "thigh.near"
    }
   ]
  },
