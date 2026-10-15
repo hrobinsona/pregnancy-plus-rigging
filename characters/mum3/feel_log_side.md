@@ -662,3 +662,57 @@ curl" both kept); the seat's cloth fitted with the seat in the scored region.
   walks correctly and its arm layout (the near arm back over the dress, the far forearm clear in front of the bump) is
   ours too. Not done this round: the walk film (`side_walk.mjs`) takes its hands from these keys and starts on the far
   heel, so the swap needs the cycle checked with it.
+
+**Scores, round 14** (three fresh critics on Fable, the round-14 pack):
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 5.5 | 6 | 5.5 |
+| kneel | 6.5 | 7 | 7 (+0.5) |
+| kneel-pick | 4.5 | 5 (+0.5) | 4.5 (−0.5) |
+| lean-counter | 6 (−0.5) | 7 (+0.5) | 6.5 |
+| sit-ball | 6 | 6 (−0.5) | 6 |
+| sit-chair | 7 | 7 | 7 |
+| squat | 5 | 5.5 | 5 |
+| walk-contact | 6 | 6.5 | 6.5 |
+| walk-down | 6 | 6.5 | 6.5 |
+| walk-pass | 6.5 | 6.5 | 6.5 |
+
+Landed: the honest far-hand crops (no lens asked for kneel's, sit-chair's, sit-ball's or the squat's far hand this round);
+the resting fingers parallel ("parallel now, but straight to the tip at 1:1", body). Lean-counter's far hand now read as
+"0.19 H above the worktop, lying on her forearm" (natural, body): see round 15.
+
+**The critics' ceiling** (`tools/critic_ceiling.py`, lesson 75). Fourteen rounds have held at 4.5–7.5 against a bar of 8
+on every lens, so the protocol itself was measured: each pose's sheet rebuilt with a SIBLING still (another sample of the
+same prompt, no rig in it) in the "RENDER" panel beside the reference still, scored by two fresh Fable critics with the
+same prompts (natural, craft), the history and close-ups left out.
+
+| pose | sibling still: natural | craft | ours r14: natural | craft |
+|---|---|---|---|---|
+| all-fours | 7 | 6.5 | 5.5 | 5.5 |
+| kneel | 7.5 | 7 | 6.5 | 7 |
+| kneel-pick | 5.5 | 5 | 4.5 | 4.5 |
+| lean-counter | 6.5 | 6 | 6 | 6.5 |
+| sit-ball | 7.5 | 7 | 6 | 6 |
+| sit-chair | 6.5 | 6.5 | 7 | 7 |
+| squat | 7 | 6.5 | 5 | 5 |
+| walk-contact | 7 | 7 | 6 | 6.5 |
+| walk-down | 7 | 7 | 6 | 6.5 |
+| walk-pass | 7 | 6.5 | 6.5 | 6.5 |
+| mean | 6.85 | 6.55 | 6.0 | 6.15 |
+
+No sibling still reached 8, and both critics named our faults in them: "every resting hand still fans… a small rake",
+"a flat paddle with four stripes", "the far shoe a thin wedge", "the skirt balloons behind as a sack", "legs are tubes".
+So the score is the distance from ONE still through a prompt that says the image is a rig, and 8 is out of reach for the
+stills' own artist. Measured against that ceiling the library is closer than the raw scores say: sit-chair beats its
+sibling on both lenses, kneel and lean-counter match it on craft; the gaps are kneel-pick (~1), all-fours, sit-ball and
+the squat (1.5–2 on natural), the walks (~0.5–1). The bar is Harry's (2026-10-14: "do not stop until a fresh critic scores
+at least 8/10"), so the ceiling goes to him as a decision; work continues against the gap to the sibling stills.
+
+## Round 15 (2026-10-15): lean-counter's far hand
+
+- **Lean-counter's far hand** 0.04 H lower (wrist 0.32 H back, 0.12 H up from the near one), the far elbow held where it
+  was (`far_place.mjs` with the elbow kept from dropping): at 0.16 H the far forearm humped over the near one and the
+  hand read "above the worktop, on her forearm"; at 0.08 H it hid behind the near wrist again (round 13's "one-armed"),
+  and the elbow-free solve pushed the far elbow through the worktop's edge. At 1:1 the still's far arm falls steadily to
+  fingers just above the near hand, as ours now. QA passes.

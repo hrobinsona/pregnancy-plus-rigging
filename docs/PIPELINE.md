@@ -869,6 +869,18 @@ or composited.
    at the knuckles (12–20°) they diverged from the knuckle line into what every lens called "a fan", where the stills'
    fingers leave the hand parallel and drape over the form; level knuckles (2°) left too little curl in the picture
    (QA `curl` 2–3°, the gate for Harry's "pointed directly out").
+75. **Measure the critic's ceiling before chasing its bar: score a sibling still through the same protocol.** Side-on
+   round 14 (2026-10-15). Fourteen rounds held the library at 4.5–7.5 against a bar of 8 on every lens. The pack was
+   rebuilt with a SECOND still of each pose (another sample of the same prompt: an illustration with no rig in it) in the
+   "RENDER" panel beside the reference still, and two fresh critics on the same model scored it with the same prompts
+   (natural, craft; no history, no close-ups). The siblings scored 5.5–7.5 (natural mean 6.85, craft 6.55), none 8, and
+   the critics found our faults in them ("a flat paddle with four stripes", "the far shoe a thin wedge", "the skirt a
+   sack"). Ours that round: 6.0 and 6.15, sit-chair above its sibling on both lenses. A score measures distance from ONE
+   still through a prompt that says the image is a rig, not naturalness on its own; 8 was out of reach for the stills'
+   own artist, and every round past the ceiling was spent on the protocol's noise. Rules: before setting or chasing a
+   score bar, run `tools/critic_ceiling.py` once and read the bar against it (e.g. a pose passes when it scores at least
+   its sibling still on every lens); a ceiling below the bar goes to the client as a result and a decision, not as
+   another round.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

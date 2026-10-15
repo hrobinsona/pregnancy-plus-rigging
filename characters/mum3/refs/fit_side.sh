@@ -267,8 +267,11 @@ settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperA
 # (round 14: the still DOES draw its far hand there, unlike kneel's, sit-chair's, sit-ball's and the squat's: on the worktop
 # behind the near one, its wrist 0.32 H back and 0.16 H up (the slab's far side seen from a little above), the far
 # forearm along the near one; 0.06 H back it hid behind the near hand and every lens read "one-armed", round 13. Solved
-# for that wrist by the far arm's angles)
-nudge lean-counter upperArm.far=-25,forearm.far=45,hand.far=-20
+# for that wrist by the far arm's angles. Round 15: 0.04 H lower (0.32 H back, 0.12 H up), the far elbow kept where it
+# was: at 0.16 H the far forearm humped and its hand read "0.19 H above the worktop, lying on her forearm", natural and
+# body; at 0.08 H it hid behind the near wrist again. At 1:1 the still's far arm falls steadily to fingers showing just
+# above the near hand)
+nudge lean-counter upperArm.far=-25.5,forearm.far=43,hand.far=-17.5
 
 # picking up a ball: kneeling on ONE knee, as a pregnant woman is told to (the far knee, shin and the top of the far shoe
 # on the far floor line, sitting back toward that heel; the NEAR foot flat ahead, its thigh level and its knee up, the
