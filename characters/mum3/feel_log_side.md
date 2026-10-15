@@ -533,3 +533,18 @@ hand closed, and the second hand where the still shows it (lean-counter's far fi
 hem on the ball, all-fours' bump round with the hem a curtain behind it); the stacked kneeling shoes parted.
 Next (round 12): the walks' knees (pose directions, every lens), kneel-pick's reach with the body and a liftable toy,
 the stacked shoes; the arms when Harry decides.
+
+## Round 12 (2026-10-15): the walks' knees, the kneeling shoes, the arms tested
+
+- **Walks' knees** (every lens, "locked"): the poses already matched their stills' directions (`side_dirs.mjs`), so
+  they were set to measured gait flexion: contact's trailing knee 32°, the front 1°; down's front 17°, trailing 29°;
+  pass's loaded 11°, trailing 28°. The walk film's legs come from `side_walk.mjs`'s gait tables, so this changes the
+  poses only.
+- **Kneel's shoes** (stacked): the still parts the soles 0.24 H, so the far leg lifts 0.25 H (`fx.farUpLegs`).
+- **Arms 12% longer, tested on a copy** (lesson 72): the side-on stills liked it (kneel-pick's ball smaller, all-fours'
+  shoulders on the still's line, standing the same with the hand a little lower), but breathe-stroke's own still draws
+  her arm at today's length. On it at 4.0 s (skin mask, still-only + ours-only px): today 11.5k; longer with the hand on
+  the same spot 25.7k (the elbow juts out behind her back); turned toward us (dphi −55) 8.0k, but only with the forearm
+  drawn at 62–83% of its length (the `limbs` gate, Harry's "the arm shrinks"); at −45 / −32 (the stroke top) 15.6k and
+  the forearm still 75%. So longer arms can't win the standing shot without the fault Harry named, and the recommendation
+  on the review page changed to keeping her arms: the reach is made with the body. The copy is not shipped.

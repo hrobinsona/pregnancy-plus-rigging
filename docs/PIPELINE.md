@@ -826,7 +826,15 @@ or composited.
    tune props round it; a prop's size is part of the story (a ball sized to her reach changed "pick up a toy" into
    "rest on a ball"). Smaller round-11 rules: a seated hem resting on a prop takes a corner there (`seatCorner`), and
    a walking skirt's front flares by the stride (`frontWalk`), the hem's front near plumb under the bump as the
-   stills hang it.
+   stills hang it. Tested in round 12 on a copy (arms 12% longer, hand 15%): the side-on stills liked it (kneel-pick's
+   ball shrank, all-fours' shoulders rose to the still's line), but the standing shot's own still (`m3_k_bump_1`)
+   draws her arm at the master's length. Overlaid on it (`mask_overlay.py mum3 breathe-stroke@4.0 --still
+   m3_k_bump_1`), her arm today is off by 11.5k px; the longer arm, its hand on the same spot, pushed its elbow out
+   behind her back (25.7k); turned toward the camera (`dphi` −55) it matched (8.0k) only by drawing the forearm at
+   62–83% of its length, the "arm shrinks" fault the `limbs` gate keeps out; at a swivel the gate allows (−45) it was
+   still worse (15.6k). So the proportion stays and the reach is made with the body. Rule: before changing a
+   proportion, overlay every shot's keys on their own stills with the change, at a swivel the `limbs` gate passes:
+   stills from different prompts can disagree about the same limb, and the shipped shots' stills win.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and
