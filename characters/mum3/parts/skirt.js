@@ -31,6 +31,10 @@ export const seatPts = ({ st, C: char, pose }) => seatOf((p) => ap(st.pelvis.M, 
 const bumpPts = (g) => { const out = [g.P[6], g.P[7]], bz = (i, t) => { const a = g.P[i], b = g.hout[i], c = g.hin[i + 1], d = g.P[i + 1], u = 1 - t;
   return [0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]); };
   for (const t of [0.25, 0.5, 0.75]) out.push(bz(6, t), bz(7, t)); return out; };
+// the same underside IN ORDER, apex → the bodice's bottom (engine/drape.js leave(): where the front leaves the bump)
+const underPts = (g) => { const out = [], bz = (i, t) => { const a = g.P[i], b = g.hout[i], c = g.hin[i + 1], d = g.P[i + 1], u = 1 - t;
+  return [0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]); };
+  for (const i of [6, 7]) for (let k = 0; k < 12; k++) out.push(bz(i, k / 12)); out.push(g.P[8]); return out; };
 
 function cal(ctx) {
   const { C: char, rig } = ctx;
@@ -48,6 +52,6 @@ export function skirtPart(parts, ctx, props = { floors: [], cloth: [] }) {
   const dress = parts.find((p) => p.id === 'dress');
   const carry = (p) => ap(st.pelvis.M, sub(p, J.pelvis));
   const sk = skirt({ Wf: dress.geom.P[DRESS_AT.bot], Wb: dress.geom.P[DRESS_AT.waist], legs: ['near', 'far'].map((s) => legFor(ctx, s)),
-    seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), apart: pose?.fx?.kneesApart ?? 0, swing: pose?.fx?.skirtSwing ?? 0, props: props.cloth, floors: props.floors, top: TOP.map(carry), cal: cal(ctx) });
+    seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), under: underPts(dress.geom), apart: pose?.fx?.kneesApart ?? 0, swing: pose?.fx?.skirtSwing ?? 0, props: props.cloth, floors: props.floors, top: TOP.map(carry), cal: cal(ctx) });
   return { id: 'dress.skirt', bone: 'pelvis', z: 30.05, fill: pal.dress, world: true, geom: ensureCW(sk.geom), M: dress.M, module: 'body', anchors: sk.geom.P.length, drape: { Hf: sk.Hf, Hb: sk.Hb, pf: sk.pf, pb: sk.pb, hem: sk.hem, side: sk.side } };
 }

@@ -109,13 +109,35 @@ function under(legs, fmax, e) {
 }
 const fracOn = (g, p) => Math.max(0, Math.min(1, dot(sub(p, g.hip), g.u) / g.Lt));
 
+/** where the front leaves the bump: walking down its underside `u` (posed points, apex → the bodice's bottom W), the cloth
+ *  follows it while it turns back from plumb by less than LEAVE and falls from where it turns further (interpolated, so a
+ *  move slides it smoothly). Standing the underside turns back 34° at most (the master's skirt from W, unchanged); leaning
+ *  on a counter 73°, squatting 68°, on all fours over 90° (it rises again behind the bump's lowest point). Faded in over
+ *  the first LEAVE_FADE degrees past LEAVE (a pitch that just crosses doesn't jump the skirt up the bump). */
+export const LEAVE = 55, LEAVE_FADE = 10;
+export function leave(u, W) {
+  if (!u || u.length < 3) return W;
+  const a = u.map((_, k) => { const d = sub(u[Math.min(k + 1, u.length - 1)], u[Math.max(k - 1, 0)]); return Math.atan2(-d[0], d[1]) * DEG; });
+  const mx = Math.max(...a), w = smooth(0, LEAVE_FADE, mx - LEAVE);
+  if (w <= 0) return W;
+  let p = u[0];
+  if (a[0] < LEAVE) for (let k = 1; k < u.length; k++) if (a[k] >= LEAVE) { p = lerp(u[k - 1], u[k], (LEAVE - a[k - 1]) / (a[k] - a[k - 1])); break; }
+  return lerp(W, p, w);
+}
+
 /**
  * @param o {Wf, Wb, legs, seat: [p] (the buttocks, posed), bump: [p] (the bump's outline below Wf, posed), props: [p], floors: [[x0, x1, y]], top: [p] (inside her trunk,
  *   Wb → Wf), cal}   cal = {Lf, Lb, phiF, phiB, skin, hemDrop}: from calibrate() on the rest pose
  * @returns {{geom, Hf, Hb, pf, pb, hem}}   geom: a loop with 5 + nF + nB + top anchors
  */
 export function skirt(o, nF = 6, nB = 10) {
-  const { Wf, Wb, legs, cal } = o, S = supports(legs, o.seat, o.props, cal.skin), floors = [[-1e9, 1e9, 0], ...(o.floors || [])];
+  const { Wb, legs, cal } = o, S = supports(legs, o.seat, o.props, cal.skin), floors = [[-1e9, 1e9, 0], ...(o.floors || [])];
+  // where the front LEAVES the bump (leave()): standing, the cloth follows the bump's underside in to the bodice's bottom
+  // (o.Wf); with the trunk pitched forward (leaning on a counter, squatting, on all fours) that underside turns back under
+  // her, the cloth can't follow it in, and hung from the bodice's bottom the skirt tucked back under the bump: a hard
+  // inward corner (critic R3: "the front falls plumb from the bump"). The skirt drawn over the bodice covers the hollow
+  // behind that point (same cloth). The hem keeps its height: the front's cloth is longer by the height it leaves above.
+  const Wf = leave(o.under, o.Wf), Lf = cal.Lf + (o.Wf[1] - Wf[1]);
   const SF = [...S.F, ...(o.bump || [])];   // the front lies over the bump below where it leaves the bodice (on all fours the bump's lowest point)
   // the STRIDE: walking, her legs apart spread the skirt inside: its hem is a ring of fixed length round both legs, so each
   // edge leaves its support at a wider angle, the back most (it swings out behind the back leg; the stills' walks flare
@@ -124,20 +146,30 @@ export function skirt(o, nF = 6, nB = 10) {
   // her as she walks (momentum), which the stride alone can't show at the passing position (legs together, the still's
   // skirt still an A).
   const spread = legs.length > 1 ? Math.acos(Math.max(-1, Math.min(1, dot(legs[0].u, legs[1].u)))) : 0, sw = smooth(4 / DEG, 40 / DEG, spread) * spread;
-  const sg = o.swing ?? 0, phiF = cal.phiF + 0.45 * sw + 0.25 * sg, phiB = cal.phiB + 0.9 * sw + 0.8 * sg;
+  // The flare turns the cloth out only BELOW the body it hangs on: the back over the back waist and round the buttocks as
+  // standing, the front over the bump, and from where each leaves them it falls turned out by the stride, round the legs
+  // (turned out from the waist, the back cleared the buttocks and fell straight from the back waist: a cape, a lampshade,
+  // critic R3)
+  const sg = o.swing ?? 0, flF = 0.45 * sw + 0.25 * sg, flB = 0.9 * sw + 0.8 * sg, phiB = cal.phiB + flB;
+  const upB = [...(o.seat || []), ...(o.props || [])], upF = o.bump || [];
+  const drop = (W, L, up, all, out, phi, fl, climb) => {
+    if (!fl) return hang(W, L, all, out, phi, floors, climb);
+    const a = hang(W, L, up, out, phi, floors, climb), head = a.length > 2 ? a.slice(0, -1) : [W], used = pathLen(head);
+    return [...head, ...hang(head[head.length - 1], L - used, all, out, phi + fl, floors, climb).slice(1)];
+  };
   // GRAVITY: the front from the bump, the back from the back waist, each hanging over what stands out in its way
-  let pf = hang(Wf, cal.Lf, SF, 1, phiF, floors, false), Hf = pf[pf.length - 1];
-  let pb = hang(Wb, cal.Lb, S.B, -1, phiB, floors), Hb = pb[pb.length - 1];
+  let pf = drop(Wf, Lf, upF, SF, 1, cal.phiF, flF, false), Hf = pf[pf.length - 1];
+  let pb = drop(Wb, cal.Lb, upB, S.B, -1, cal.phiB, flB, true), Hb = pb[pb.length - 1];
   // the HEM is one ring: hanging, its front and back stay near one height. On all fours the back's cloth goes up over the
   // rump and ends at mid-thigh, so the front can't hang on from the bump to the floor (it did: a box); the ring holds it
   // up level with the back (the still: the hem level from the bump's bottom to the back of the thighs), the rest of the
   // front's cloth slack over the bump. Standing, the two ends are level already: unchanged.
-  const level = (W, L, pts, out, phi, climb, y) => { let lo = 0.05 * L, hi = L;
-    for (let it = 0; it < 24; it++) { const m = (lo + hi) / 2, e = hang(W, m, pts, out, phi, floors, climb); if (e[e.length - 1][1] > y) hi = m; else lo = m; }
-    return hang(W, lo, pts, out, phi, floors, climb); };
+  const level = (W, L, up, pts, out, phi, fl, climb, y) => { let lo = 0.05 * L, hi = L;
+    for (let it = 0; it < 24; it++) { const m = (lo + hi) / 2, e = drop(W, m, up, pts, out, phi, fl, climb); if (e[e.length - 1][1] > y) hi = m; else lo = m; }
+    return drop(W, lo, up, pts, out, phi, fl, climb); };
   const SLACK = 0.12;
-  if (Hf[1] > Hb[1] + SLACK) { pf = level(Wf, cal.Lf, SF, 1, phiF, false, Hb[1] + SLACK); Hf = pf[pf.length - 1]; }
-  else if (Hb[1] > Hf[1] + SLACK) { pb = level(Wb, cal.Lb, S.B, -1, phiB, true, Hf[1] + SLACK); Hb = pb[pb.length - 1]; }
+  if (Hf[1] > Hb[1] + SLACK) { pf = level(Wf, Lf, upF, SF, 1, cal.phiF, flF, false, Hb[1] + SLACK); Hf = pf[pf.length - 1]; }
+  else if (Hb[1] > Hf[1] + SLACK) { pb = level(Wb, cal.Lb, upB, S.B, -1, cal.phiB, flB, true, Hf[1] + SLACK); Hb = pb[pb.length - 1]; }
   // the TUBE: the skirt is a loop round her thighs. When they point forward (sitting, squatting, bending to the floor)
   // gravity no longer keeps the hem below them: hung free, the back fell from the waist like a cape behind a squat and the
   // front dropped over the knees and hid them (round 1: "a tent", "only the far knee comes forward"). The stills: the back
@@ -162,7 +194,7 @@ export function skirt(o, nF = 6, nB = 10) {
     // top in profile, and the cloth runs on forward from there (wrapping the thigh's top behind it, it went back to the hip)
     const f0 = fracOn(g, Wf), SFt = [...S.F.filter((p) => fracOn(g, p) >= f0), ...(o.bump || []).filter((p) => p[1] >= Wf[1] - 1e-6)];
     const fb = reach((f) => pathLen(wrap(Wb, back(f), S.B, -1)), cal.Lb, 0.05, 1);
-    const ff = reach((f) => pathLen(wrap(Wf, top(f), SFt, 1)), cal.Lf, 0.05, 0.85);
+    const ff = reach((f) => pathLen(wrap(Wf, top(f), SFt, 1)), Lf, 0.05, 0.85);
     Hb = lerp(Hb, back(fb), w); Hf = lerp(Hf, top(ff), w);
     pb = wrap(Wb, Hb, S.B, -1); pf = w > 0.5 ? wrap(Wf, Hf, SFt, 1) : wrap(Wf, Hf, SF, 1);
     // BETWEEN THE KNEES: squatting or bending, the bump settles down between the thighs, its bottom below the near thigh's
@@ -183,7 +215,7 @@ export function skirt(o, nF = 6, nB = 10) {
     // knee and the folded legs read as a dress blob, round 4)
     const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl) - 0.4 * bt, fsB = Math.max(0.05, cal.fs - dl - 0.2 * bt);
     side = { top: top(fsT), bot: back(fsB), w, apart: bt };
-    if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: cal.Lf, Lb: cal.Lb, thighL: g.Lt };
+    if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: Lf, Lb: cal.Lb, thighL: g.Lt };
   }
   // ON ALL FOURS the back's cloth climbs from the back waist up over the buttocks (they stand above it) and the hem is a
   // ring far wider than her thighs: the skirt's outline behind her is its SIDE, hanging free from the buttocks' back and

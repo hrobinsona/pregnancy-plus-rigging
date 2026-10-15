@@ -34,7 +34,7 @@ const val0 = (v) => (v.startsWith('root') ? (pose0.root || [0, 0])[+v.slice(5)] 
 const lim = (v) => (v.startsWith('root') ? [-6, 6] : [rig.BONE[v].min ?? -180, rig.BONE[v].max ?? 180]);
 // --twin legs: the far leg is the near one's twin (fit_pose --twin legs: a squat): only the near leg's bones move, the far copies them
 // --twin legs,arms: the far arm too (both hands reach for the same thing, the far one hidden behind the near)
-const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['upperArm', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
+const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['clavicle', 'shoulderAbd', 'upperArm', 'armAbd', 'armRot', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
 const TWIN = TW.includes('legs'), twin = (b) => { for (const k of TWB) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
 const poseOf = (x) => { const p = { ...pose0, bones: { ...pose0.bones }, root: [...(pose0.root || [0, 0])] }; VARS.forEach((v, i) => { if (v.startsWith('root')) p.root[+v.slice(5)] = x[i]; else p.bones[v] = x[i]; }); twin(p.bones); return p; };
 // rest-pose anchor for ':top' (which anchor is the part's highest at rest)

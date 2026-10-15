@@ -16,7 +16,7 @@ if (!char || !poseName || !arg('dir')) { console.error('usage: node tools/pose_d
 const C = (await import(`../characters/${char}/character.js`)).default, rig = createRig(C), D = `characters/${char}/`;
 const lib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`${D}poses/hands/${h}.json`))]));
 const raw = JSON.parse(fs.readFileSync(`${D}poses/${poseName}.json`)), bones = { ...raw.bones };
-const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['upperArm', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
+const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['clavicle', 'shoulderAbd', 'upperArm', 'armAbd', 'armRot', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
 const twin = (b) => { for (const k of TWB) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
 const want = Object.fromEntries(arg('dir').split(',').map((kv) => { const [b, d] = kv.split('='); if (!rig.BONE[b]) throw new Error('no bone ' + b); return [b, +d]; }));
 const order = C.bones.map((b) => b.id).filter((id) => id in want);

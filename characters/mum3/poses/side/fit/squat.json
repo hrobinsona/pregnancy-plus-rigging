@@ -1,6 +1,6 @@
 {
  "name": "side/fit/squat",
- "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest)",
+ "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18",
  "hands": {
   "near": "grip",
   "far": "grip"
@@ -32,24 +32,24 @@
   "belly": 0,
   "clavicle.near": -22,
   "shoulderAbd.near": -28.1,
-  "upperArm.near": 33.8,
+  "upperArm.near": 34.1,
   "armAbd.near": -0.5,
   "armRot.near": 4.1,
-  "forearm.near": 25.3,
+  "forearm.near": 25.4,
   "foreRot.near": 0.1,
   "hand.near": 4,
   "thigh.near": 102,
   "shin.near": -118.7,
   "foot.near": 33.8,
   "hipAbd.near": -8.5,
-  "clavicle.far": -2.9,
-  "shoulderAbd.far": 0,
-  "upperArm.far": 28.1,
-  "armAbd.far": 1.1,
-  "armRot.far": 0,
-  "forearm.far": 22.9,
-  "foreRot.far": 0,
-  "hand.far": 3.6,
+  "clavicle.far": -22,
+  "shoulderAbd.far": -28.1,
+  "upperArm.far": 34.1,
+  "armAbd.far": -0.5,
+  "armRot.far": 4.1,
+  "forearm.far": 25.4,
+  "foreRot.far": 0.1,
+  "hand.far": 4,
   "thigh.far": 102,
   "shin.far": -118.7,
   "foot.far": 33.8,
@@ -66,5 +66,6 @@
    "hipL 0.182",
    "indexR 0.167"
   ]
- }
+ },
+ "fitFrom": "side/fit/squat"
 }

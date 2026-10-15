@@ -47,7 +47,9 @@ export function build(ctx) {
     // the far shoulder's round end stays behind her back: seen a little from above (fx.farUp) it rose past her back line as a
     // skin knob over the near strap (side-on all fours, round 4); below her shoulder blades the far arm may show behind her
     // back (a walk's back swing), so only the corner above the blades and behind the back line is cut, in the chest's frame
-    const farCut = side === 'far' ? (() => {
+    // (only when raised: hanging or swinging back from a shoulder at its own height, the arm's top is behind her body
+    // anyway, and the cut drew a flat top on a walking far arm swung back past her back, round 4)
+    const farCut = side === 'far' && (ctx.pose?.fx?.farUp ?? 0) > 0 ? (() => {
       const M = st.chest.M, j = char.joints.chest, W = (v) => [...ap(M, sub(v, j)), { c: true }], xb = X.back.shoulder[0] + 0.05, ys = X.back.blade[1], B = 9;
       return [ensureCW(loop([W([xb, -B]), W([B, -B]), W([B, B]), W([-B, B]), W([-B, ys]), W([xb, ys])]))];
     })() : undefined;

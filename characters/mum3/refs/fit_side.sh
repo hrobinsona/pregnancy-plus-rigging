@@ -98,6 +98,9 @@ floor sit-ball --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:
 # (--fix fx.kneesApart=1: her knees apart round the bump, a fact the profile can't show: the skirt hangs between them as a
 # curtain, engine/drape.js)
 fit squat s_squat_0 --twin legs --props chair:back=1 --hand near=grip,far=grip --fix fx.kneesApart=1
+# (both hands on the chair's back: the far arm the near one's twin; the still hides it behind the near arm and the fit
+# left it hanging at her bump, round 4)
+dirs squat --twin legs,arms --dir upperArm.near=19,forearm.near=-18
 floor squat --touch shoe.near:low --bones foot,toe --sides near
 
 # leaning her forearms on a kitchen counter: the forearms and hands laid level on its top (the fit left them sloping down
