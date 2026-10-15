@@ -439,3 +439,40 @@ named in every pose (lesson 71):
   under it, fainter the higher it is (with none it read "floating in mid-air", rounds 7–9).
 - Deferred: sit-ball's pouch, all-fours' bump under the hem, kneel-pick's skirt balloon, the walks' trailing knee, the
   skirt's front slant under the bump.
+
+Round 10 critics (three fresh reviewers on **Fable**):
+
+| pose | natural | body | craft | round 9 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 7 | 6.5 / 7 / 6.5 |
+| kneel-pick | 4.5 | 5 | 5 | 4.5 / 5 / 4.5 |
+| all-fours | 5.5 | 6 | 6 | 5.5 / 6 / 5.5 |
+| sit-chair | 7 | 7 | 7 | 6.5 / 7 / 6.5 |
+| sit-ball | 6 | 6 | 6.5 | 6 / 6.5 / 6 |
+| squat | 5.5 | 5.5 | 5 | 5 / 5.5 / 5 |
+| lean-counter | 6.5 | 7 | 7 | 6.5 / 7 / 6.5 |
+| walk-contact | 6.5 | 6.5 | 7 | 6.5 / 6.5 / 6.5 |
+| walk-down | 6 | 6.5 | 6.5 | 6 / 6 / 6 |
+| walk-pass | 6.5 | 6.5 | 6.5 | 6.5 / 6.5 / 6.5 |
+
+Up half a point in ten cells, down half in one (sit-ball, body). Landed, every lens: the throat one curve under the chin
+(the hook gone), the squat's tail round. Not landed: the bent knees still read "a rounded ball, no kneecap plane"
+(body, natural on sit-chair); kneel-pick's toy still "held in mid-air" with its shadow. What holds the library below 8,
+in the order the lenses weigh it:
+1. **The folded poses' cloth**, "the single worst fault in the four lowest poses" (craft): the squat's skirt a sack
+   hanging behind to mid-shin (the still: taut over the seat, the hem just below the thighs, a curtain between the
+   knees); kneel-pick's balloon with nothing on the raised thigh; sit-ball's pouch under the thigh; all-fours' bump
+   below the hem with a notch where they meet.
+2. **Kneel-pick's bump reads as gone** (all three: "a stranger would not read ours as pregnant from the side"), the
+   back hunched and the head bowed, the front thigh thin. (The still's big round shape on the left is its BACK; the
+   lenses read it as the bump. Still, ours must show her bump.)
+3. **Hands**: all three still see "four fingers spread as a fan with gaps from the knuckles", the stills' "together with
+   a gap only at the tips". The drawing is Harry's settled pick (A); what the lenses ask that is SHAPE: all-fours' palms
+   flat under the shoulders, the wrist at 90° (ours slope 20° on a lifted heel); the kneel hand cupping under the dome;
+   a thumb along the index; the squat's grip with the thumb on the near side of the post.
+4. **The walks**: the skirt's front slants in under the bump (the hem's front ~25–40 px behind the bump's, the stills'
+   plumb); every loaded or trailing knee locked straight (walk-down's front knee first).
+5. Smaller: the stacked kneeling shoes' opening a hairline (one dark lump), the bust-to-bump V (kneel, sit-ball,
+   sit-chair), a strap tab at the squat and all-fours shoulders, lean-counter standing 30–40 px too close (the bump flat
+   on the cabinet), sit-ball's far shin leaving the near kneecap.
+Next (round 11): the folded cloth and kneel-pick's bump first, then the walks' front and knees.
