@@ -19,7 +19,11 @@ export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };
 export const SKIRT_IN = [[0.5, -3.55], [0.3, -3.47], [0.1, -3.44], [-0.08, -3.47], [-0.17, -3.56], [-0.17, -3.75], [-0.13, -4.0], [-0.1, -4.25], [-0.13, -4.44]];
 export const DRESS_AT = { bot: 8, waist: 18 };
 // the bodice's anchors that carry weight: the bump (under-bust notch → bottom) and the bust, with how much each moves
-const SAG_W = { 2: ['bust', 0.4], 3: ['bust', 1], 4: ['bump', 0], 5: ['bump', 0.75], 6: ['bump', 1], 7: ['bump', 0.75], 8: ['bump', 0.25] };
+// (a third entry: that anchor's own [toward the head, toward the floor] (H, at 90°). The upper front (5) swings further
+// toward her head than the apex: the all-fours still's bump hangs as a ball right under her chest, its front dropping
+// plumb from the under-bust notch; moved as the apex was, the bump slanted back from the notch to a flat bottom, "a
+// wedge", round 6)
+const SAG_W = { 2: ['bust', 0.4], 3: ['bust', 1], 4: ['bump', 0], 5: ['bump', 1, [0.3, 0.06]], 6: ['bump', 1], 7: ['bump', 0.5], 8: ['bump', 0.2] };
 const rest0 = new WeakMap();
 /** The bump and the bust HANG (Harry 2026-10-14: the bump must look like a real woman's): the master draws them standing,
  *  their weight pulling down along her body. Pitched forward (all fours, leaning on a counter, bending over), the weight
@@ -34,15 +38,30 @@ export function sag(parts, ctx) {
   const th = (st.spineLower.rot - rest0.get(char)) * Math.PI / 180, k = Math.abs(th) < 0.08 ? 0 : Math.min(1, (Math.abs(th) - 0.08) / 0.3);
   if (!k || !dress) return;
   const g = dress.geom;
-  for (const [i, [what, w]] of Object.entries(SAG_W)) {
+  for (const [i, [what, w, own]] of Object.entries(SAG_W)) {
     // gravity in the trunk's frame, relative to standing: belly-ward (the trunk's forward normal, (cos θ, sin θ)) by
     // sin θ, and toward the head (along the trunk, (sin θ, −cos θ)) by 1 − cos θ. On all fours (θ = 90°) that is fy down
     // and hx forward; leaning 30° (a bend, a squat) the bump swings out in front of her (fy · 0.43 forward), where the
     // bend still draws it past her arm. (v1 moved it [hx sin θ, fy (1 − cos θ)]: at 30° a third of that, hidden behind the arm)
-    const [hx, fy] = S[what], sn = Math.sin(th), cs = Math.cos(th), a = k * w * fy * sn, b = k * w * hx * (1 - cs);
+    const [hx, fy] = own || S[what], sn = Math.sin(th), cs = Math.cos(th), a = k * w * fy * sn, b = k * w * hx * (1 - cs);
     const d = [a * cs + b * sn, a * sn - b * cs];
     for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]];
   }
+  // (the swung anchors' handles re-aimed along their neighbours' chord, so the outline runs round through them: on their
+  // standing handles the swung upper front arrived from the side and the bump's front bulged out and hooked back in under
+  // the chest, an S)
+  for (const i of [5, 6, 7]) {
+    const t = [g.P[i + 1][0] - g.P[i - 1][0], g.P[i + 1][1] - g.P[i - 1][1]], tl = Math.hypot(...t), u = [t[0] / tl, t[1] / tl];
+    const li = Math.hypot(g.P[i][0] - g.P[i - 1][0], g.P[i][1] - g.P[i - 1][1]) / 3, lo = Math.hypot(g.P[i + 1][0] - g.P[i][0], g.P[i + 1][1] - g.P[i][1]) / 3;
+    const hin = [g.P[i][0] - u[0] * li, g.P[i][1] - u[1] * li], hout = [g.P[i][0] + u[0] * lo, g.P[i][1] + u[1] * lo];
+    g.hin[i] = [g.hin[i][0] + k * (hin[0] - g.hin[i][0]), g.hin[i][1] + k * (hin[1] - g.hin[i][1])];
+    g.hout[i] = [g.hout[i][0] + k * (hout[0] - g.hout[i][0]), g.hout[i][1] + k * (hout[1] - g.hout[i][1])];
+  }
+  // ... and from the under-bust notch the outline leaves toward the upper front turned a little toward her head, so the
+  // bump bulges out under the chest before it rounds down (the still's ball)
+  const c = [g.P[5][0] - g.P[4][0], g.P[5][1] - g.P[4][1]], cl = Math.hypot(...c), sn = Math.sin(th), cs = Math.cos(th);
+  const v = [c[0] / cl + 0.5 * sn, c[1] / cl - 0.5 * cs], vl = Math.hypot(...v), ho = [g.P[4][0] + (v[0] / vl) * cl / 3, g.P[4][1] + (v[1] / vl) * cl / 3];
+  g.hout[4] = [g.hout[4][0] + k * (ho[0] - g.hout[4][0]), g.hout[4][1] + k * (ho[1] - g.hout[4][1])];
 }   // the bodice's anchors the skirt hangs from   // the strap is in arms.js: it is built on the arm's contour
 
 /** The bump RESTS ON HER THIGHS. Squatting or bending to the floor, her thighs come up toward her trunk; the bump, swung
@@ -88,7 +107,10 @@ export function lumbar(parts, ctx) {
   const dress = parts.find((p) => p.id === 'dress'), { C: char, st, rig } = ctx;
   if (!dress) return;
   if (!lordRest.has(char)) lordRest.set(char, rig.solve({}).spineLower.rot);
-  const pitch = st.spineLower.rot - lordRest.get(char), t = Math.max(0, Math.min(1, (pitch - LORD.from) / (LORD.to - LORD.from))), k = LORD.base + LORD.depth * t * t * (3 - 2 * t);
+  // (fx.lumbar, a pose's own: how far in (H) when the back ROUNDS rather than arches. Bending down to pick something up
+  // kneeling on one knee the spine flexes: the kneel-pick still's back is one C from the shoulder blade over the seat; at
+  // the pitch's 0.1 H in the back ran from the blade to the seat as a ramp, "a cape", round 6)
+  const pitch = st.spineLower.rot - lordRest.get(char), t = Math.max(0, Math.min(1, (pitch - LORD.from) / (LORD.to - LORD.from))), k = ctx.pose?.fx?.lumbar ?? LORD.base + LORD.depth * t * t * (3 - 2 * t);
   if (!k) return;
   const M = ctx.st.spineLower.M, n = [M[0], M[1]], l = Math.hypot(...n) || 1, g = dress.geom;   // the trunk's forward direction, posed
   for (const [i, w] of Object.entries(LORD.w)) { const d = [k * w * n[0] / l, k * w * n[1] / l]; for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]]; }

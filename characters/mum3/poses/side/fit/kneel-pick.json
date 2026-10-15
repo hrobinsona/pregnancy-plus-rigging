@@ -7,6 +7,7 @@
  },
  "fx": {
   "fingersIn": 0.6,
+  "lumbar": 0,
   "turn": 0.4,
   "show.far.arm": 1
  },

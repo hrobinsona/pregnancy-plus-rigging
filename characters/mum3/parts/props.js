@@ -24,8 +24,10 @@ export function propsFor(parts, ctx) {
     else if (it.type === 'ball') {   // a birth ball as big as a real one (≈ 65 cm: r ≈ 1.35 H), she sits ON its crown (the
       // still; 0.35 r in front of it she perched on its front edge, critic R1 "the ball is behind her"): the centre 0.1 r
       // behind her seat, the surface under her seat at her seat's height
-      const r = -seatBot / (1 + Math.sqrt(1 - 0.1 ** 2));
-      o = { x: seatMid - 0.1 * r, topY: -2 * r, ...it };
+      // (her seat SINKS into it, sink H: the still's ball top stands 0.24 H above her seat's bottom; resting on its top the
+      // ball drew ~15 % small and her seat sat on it like a shelf, round 6)
+      const sink = it.sink ?? 0.2, r = (-seatBot + sink) / (1 + Math.sqrt(1 - 0.1 ** 2));
+      o = { x: seatMid - 0.1 * r, topY: -2 * r, ...it, sink: sink / r };
     }
     else if (it.type === 'counter') {   // under her forearms, its front face clear of her bump (not through it)
       // (the worktop at the forearm's drawn UNDERSIDE, from the elbow on, and the palm's: 0.08 H under the joints the

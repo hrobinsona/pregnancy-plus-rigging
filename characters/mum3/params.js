@@ -141,6 +141,9 @@ export const handSpecs = {
           // shorter thumb lost too (6 vs 6.5: "stubby", "absorbed into the hand outline") (lesson 64). The side poses' hands
           // were fixed by their SHAPES and placement instead (siderest, drape, contact_pose --inside). inFx: a palm laid down
           // side-on curls its fingers in the picture (pose fx.fingersIn, the squat's hand over the chair's back)
+          // (lineStart 1, the lines from the middle knuckles as the side-on stills draw them (round 6: "paddles with four long
+          // stripes"), lost blind on breathe-stroke, 6 vs 6.5: the hanging hand "a mitten-shaped lump" where the full lines
+          // read as four loose fingers, round 7. The lines start just past the knuckles, engine/hand.js default)
           fingerK: 0.9, rim: 0.012, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9, lineEnd: 0.95, lineTipGap: 0.3 },
 };
 handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03] };

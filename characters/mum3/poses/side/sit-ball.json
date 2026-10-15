@@ -19,7 +19,7 @@
  },
  "root": [
   -0.7548,
-  1.3421
+  1.3182
  ],
  "bones": {
   "pelvis": 4.3,
@@ -39,21 +39,21 @@
   "hand.near": 7,
   "thigh.near": 80.2,
   "shin.near": -83.1,
-  "foot.near": 12.1,
+  "foot.near": 7.2,
   "hipAbd.near": -6.2,
   "clavicle.far": -22,
   "shoulderAbd.far": 0,
-  "upperArm.far": -13.4,
-  "armAbd.far": 29.1,
-  "armRot.far": 150.9,
-  "forearm.far": 21.2,
-  "foreRot.far": 90,
+  "upperArm.far": -2.5,
+  "armAbd.far": 39.9,
+  "armRot.far": 140.1,
+  "forearm.far": 20,
+  "foreRot.far": 80,
   "hand.far": -50,
   "thigh.far": 83.6,
   "shin.far": -84.5,
-  "foot.far": -3.6,
+  "foot.far": -1.7,
   "hipAbd.far": -2.1,
-  "toe.near": -3.3,
+  "toe.near": 7.5,
   "toe.far": -20
  },
  "_fit": {
@@ -69,11 +69,5 @@
   ]
  },
  "fitFrom": "side/fit/sit-ball",
- "scale": {
-  "thigh.far": [
-   0.85,
-   1
-  ]
- },
  "_contact": "--side far --on shin.far --at -0.5,-2.25 --handDir 20 --hand lay (base side/sit-ball)"
 }

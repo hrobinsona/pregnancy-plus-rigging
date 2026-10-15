@@ -19,7 +19,7 @@
  },
  "root": [
   -0.4443,
-  1.5745
+  1.5682
  ],
  "bones": {
   "pelvis": 1.8,
@@ -31,15 +31,15 @@
   "belly": 0,
   "clavicle.near": -6.1,
   "shoulderAbd.near": 4.3,
-  "upperArm.near": -23.4,
-  "armAbd.near": -5.1,
-  "armRot.near": 5.7,
-  "forearm.near": 87.5,
+  "upperArm.near": -23.7,
+  "armAbd.near": 25.9,
+  "armRot.near": -12.4,
+  "forearm.near": 87.6,
   "foreRot.near": 0,
-  "hand.near": 8,
+  "hand.near": 10,
   "thigh.near": 86.7,
   "shin.near": -92,
-  "foot.near": 6.7,
+  "foot.near": 5.4,
   "hipAbd.near": -6.9,
   "clavicle.far": -18.7,
   "shoulderAbd.far": 3.4,
@@ -51,9 +51,9 @@
   "hand.far": 12,
   "thigh.far": 88.3,
   "shin.far": -93.4,
-  "foot.far": -2.4,
+  "foot.far": -1.9,
   "hipAbd.far": -4.6,
-  "toe.near": 7,
+  "toe.near": 9.8,
   "toe.far": -20
  },
  "_fit": {
@@ -69,11 +69,5 @@
   ]
  },
  "fitFrom": "side/fit/sit-chair",
- "scale": {
-  "thigh.far": [
-   0.85,
-   1
-  ]
- },
  "_contact": "--side far --at 0.66,-4.42 --on belly --surface bump --handDir 17 --hand siderest --back --inside 0.05 (base side/sit-chair)"
 }

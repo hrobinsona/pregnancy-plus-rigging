@@ -50,10 +50,14 @@ export function chair(o, z = 4) {
 /** A birth ball resting on the floor, its top at topY, centred at x. Flat, like the stills' balls. She sits on her skirt
  *  on it: the cloth stops where it meets the ball's top (a short floor there), it doesn't slide down its side. Her weight
  *  squashes it a touch (o.squash, default 0.04: as tall as her seat, 4% wider; at 0.12 it read as an egg, critic R3) */
+// (the floor under her is the ball's CROWN, not a line: 13 short floors on its arc, sunk o.sink of r into it, so her seat
+// and her skirt settle into its round (the still: the seat sunk in, the skirt's edge following the ball down at the back
+// and the front); on one level line the seat sat flat on a shelf, "a balloon on a ball", round 6)
 export function ball(o, z = 4) {
-  const r = -o.topY / 2, c = [o.x, -r], sq = o.squash ?? 0.04;
-  return { parts: [{ id: 'prop.ball', z, fill: o.fill || '#a9cdec', geom: ensureCW(ellipse(c, r * (1 + sq), r)) }],
-    floors: [[c[0] - 0.75 * r, c[0] + 0.75 * r, o.topY + 0.12 * r]], cloth: [] };
+  const r = -o.topY / 2, c = [o.x, -r], sq = o.squash ?? 0.04, rr = r * (1 - (o.sink ?? 0.12)), n = 13, w = 0.8 * r;
+  const floors = Array.from({ length: n }, (_, i) => { const x0 = c[0] - w + (2 * w * i) / n, x1 = x0 + (2 * w) / n, xm = (x0 + x1) / 2 - c[0];
+    return [x0, x1, c[1] - Math.sqrt(Math.max(0, rr * rr - xm * xm))]; });
+  return { parts: [{ id: 'prop.ball', z, fill: o.fill || '#a9cdec', geom: ensureCW(ellipse(c, r * (1 + sq), r)) }], floors, cloth: [] };
 }
 
 /** A kitchen counter: its front face at x0, its worktop at topY, one unit deep (o.w, default 1.95 H: a counter run seen

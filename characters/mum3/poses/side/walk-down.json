@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-down",
- "note": "fitted to characters/mum3/refs/pose/s_walk_down_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=80,forearm.near=64,hand.near=72,upperArm.far=112,forearm.far=104,hand.far=106,thigh.far=76,shin.far=94,thigh.near=102,shin.near=120,foot.near=58,toe.near=6; floor_pose: shoe.far:ball, shoe.far:heel, shoe.near:tip, shoe.near:ball on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_down_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=74,forearm.near=50,hand.near=60,upperArm.far=118,forearm.far=110,hand.far=112,thigh.far=76,shin.far=94,thigh.near=102,shin.near=120,foot.near=95,toe.near=2; floor_pose: shoe.far:ball, shoe.far:heel, shoe.near:tip, shoe.near:ball on the floor",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -12,7 +12,7 @@
  },
  "root": [
   0.0493,
-  0.2002
+  0.2005
  ],
  "bones": {
   "pelvis": 0.6,
@@ -24,29 +24,29 @@
   "belly": 0,
   "clavicle.near": 21.8,
   "shoulderAbd.near": -3.9,
-  "upperArm.near": 34.8,
+  "upperArm.near": 41,
   "armAbd.near": 0.1,
   "armRot.near": 3.3,
-  "forearm.near": 4.7,
+  "forearm.near": 12.5,
   "foreRot.near": 0.3,
-  "hand.near": 0,
-  "thigh.near": -4,
-  "shin.near": -16,
-  "foot.near": 25.4,
+  "hand.near": -1.9,
+  "thigh.near": -8,
+  "shin.near": -17.3,
+  "foot.near": -8,
   "hipAbd.near": 3,
   "clavicle.far": 1.5,
   "shoulderAbd.far": -6.8,
-  "upperArm.far": -22.2,
+  "upperArm.far": -28.2,
   "armAbd.far": 8.1,
   "armRot.far": -2.6,
-  "forearm.far": -3.4,
+  "forearm.far": -3.5,
   "foreRot.far": -0.6,
-  "hand.far": 6.2,
+  "hand.far": 6.3,
   "thigh.far": 17.4,
   "shin.far": -21.1,
   "foot.far": 0.7,
   "hipAbd.far": -2.1,
-  "toe.near": -10.6
+  "toe.near": 26.9
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_walk_down_0.json",

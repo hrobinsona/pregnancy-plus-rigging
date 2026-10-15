@@ -66,11 +66,5 @@
    "indexR 0.132"
   ]
  },
- "fitFrom": "side/fit/sit-chair",
- "scale": {
-  "thigh.far": [
-   0.85,
-   1.0
-  ]
- }
+ "fitFrom": "side/fit/sit-chair"
 }

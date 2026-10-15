@@ -710,6 +710,24 @@ or composited.
    anchors on either side; a hidden point that must stay inside a neighbour is carried in that neighbour's frame;
    clip a skin part to the cloth's POSED line, not its rest one; `corner_audit.py` and `detail_audit.py` list the
    rest across the library.
+68. **Measure where cloth meets a seat, the floor or a fold on the still, and check the posture AFTER every solve.**
+   Side-on rounds 6–7 (2026-10-15, Fable critics). Four cloth faults, each fixed by a number read off its still, not by
+   taste: squatting, the skirt hung plumb from the knees ballooned behind her ("a balloon"): it falls in a TAIL to a point
+   0.15 H behind and 0.39 H below where the thighs cross (`drape.js` `SQ.tail`), a shaded curtain between the thighs;
+   kneeling on one knee, the plumb back hem was "a cape": the free side is pulled 0.27 H forward (`KP.pull`); on a birth
+   ball the hem hung through the ball: a prop's floors follow its top (`props.js` `ball()` arc bands) and a seated hem
+   within 0.45 H of a seat rests ON it (`SEATED.drop`); on all fours the bump sagged as "a wedge": each dress anchor
+   sags by its own vector and the handles around it are re-aimed along their chords so the dome stays round
+   (`body.js` `SAG_W`). A bending back rounds: the standing lordosis is off when she leans down (`fx.lumbar=0`,
+   kneel-pick "a cape" of a back). The solves after a fit move limbs while every contact holds, so the posture drifts:
+   `side_dirs.mjs` found the seated and kneeling elbows 11–17° behind the stills' (set with the elbow's swivel, `bumphands`
+   6th argument); a foot's screen direction is 59° when flat, so "heel raised 30°" is about 89, not 58 (walk-down's
+   heel was flat for two rounds); a kneeling foot's toes left free bent 34–60° to reach the floor and curled the shoe
+   over the foot as a hook with white inside it (`floor_pose --bones shin,foot`, toes in line as every still draws them).
+   Hands: starting the finger lines at the knuckles lost blind on breathe-stroke too (6 vs 6.5, "a mitten-shaped lump"),
+   so lesson 64 holds. Rules: read a cloth fold's length and a foot's or elbow's angle off the still, in H or degrees,
+   before drawing it; run `side_dirs.mjs` and `far_leg.mjs` after every `fit_side.sh` change; zoom every foot that
+   touches the floor (`side_zoom.py --at toe.far@-0.1:0`).
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

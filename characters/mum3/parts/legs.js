@@ -46,6 +46,9 @@ export function build(ctx) {
   for (const side of ['far', 'near']) {
     const z = side === 'near' ? 20 : 16, fill = side === 'near' ? C.skin : C.skinFar;
     const sh = X.shoe[side], h = sh.heel, t = sh.toe, L = t[0] - h[0];
+    // a POINTED foot (kneeling, on all fours: 55–70° from the shin) draws the shoe's heel slimmer, its back tucked in by up
+    // to 0.045 H: the round heel stood up past the leg's line as "a dark cap", round 6; the stills taper it into the calf
+    const fr = Math.max(0, Math.min(1, ((ctx.st[`foot.${side}`].rot - ctx.st[`shin.${side}`].rot) - 25) / 35)), hk = 0.045 * fr * fr * (3 - 2 * fr);
     const lg = legFor(ctx, side);
     out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill, world: true, geom: ensureCW(lg.geom) });
     out.push({ id: `leg.${side}.crease`, bone: `shin.${side}`, z: z + 0.1, fill: C.skinLine, world: true, geom: lg.crease, opacity: lg.crease.k * (side === 'near' ? 0.9 : 0.6) });
@@ -70,9 +73,9 @@ export function build(ctx) {
       [t[0] - 0.04, sh.sole - 0.012, { a: 162 }],
       [t[0] - 0.215, sh.sole, { a: 180 }],                                               // the ball
       [h[0] + 0.433, sh.sole - 0.019, { a: 188 }],
-      [h[0] + 0.067, h[1] + 0.095, { a: 205 }],                                         // the sole rocks up to the heel
-      [h[0] + 0.006, h[1] + 0.05, { a: 250 }],
-      [h[0], h[1] - 0.02, { a: 278 }]])),                                                // the heel's round back
+      [h[0] + 0.067 + hk / 2, h[1] + 0.095, { a: 205 }],                                // the sole rocks up to the heel
+      [h[0] + 0.006 + hk, h[1] + 0.05, { a: 250 }],
+      [h[0] + hk, h[1] - 0.02, { a: 278 }]])),                                           // the heel's round back
       skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
   }
   return out;

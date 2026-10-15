@@ -41,6 +41,7 @@ function crossing(a, b) {
  *                         (inside the shoe: toe box top, toe, sole front, sole back), heel: p (inside the shoe, at the
  *                         back), achilles: p (the back of the ankle just above the shoe)}
  *   kneeRound             extra fillet radius (H) at a 90° bend: a broad knee, not a pin (default 0.12)
+ *   achillesIn            how far (H) the back of the ankle may sit inside the line heel → calf (default 0.015)
  *   top                   how far above the hip the outline closes (inside the pelvis, hidden under the dress)
  * @returns {{geom, crease, bend, X}}   geom: the loop (fixed anchor count); crease: a tapered stroke (fixed count) with
  *   its opacity in crease.k (0 when the knee is nearly straight)
@@ -79,7 +80,14 @@ export function legOutline(o) {
   A_.push([...SF(0.23)]); A_.push([...SF(0.5)]); A_.push([...SF(0.77)]);
   for (const p of foot.instep) A_.push([...p]);
   for (const p of foot.shoe) A_.push([...p]);
-  A_.push([...foot.heel]); A_.push([...foot.achilles]);
+  // the back of the ankle never dips more than achillesIn (H) inside the line heel → calf: a POINTED foot (kneeling, on all
+  // fours: the foot 55–70° from the shin) brings the heel up toward the calf, and the ankle's back, carried halfway between
+  // them, sat 0.07 H inside that line, a V-notch on the leg's top line behind the shoe ("a pale notch at the heel… foot and
+  // shoe read as a lump", side-on round 6); the stills run the calf's line straight into the shoe's heel
+  const cal = SB(fS + (0.97 - fS) * 0.93), hc = sub(cal, foot.heel), hl = len(hc) || 1, inN = mulS(nv, 1), cn = norm([-hc[1], hc[0]]), cIn = Math.sign(cn[0] * inN[0] + cn[1] * inN[1]) || 1;
+  const dep = cIn * ((foot.achilles[0] - foot.heel[0]) * cn[0] + (foot.achilles[1] - foot.heel[1]) * cn[1]), aMax = o.achillesIn ?? 0.015;
+  const ach = dep > aMax ? sub(foot.achilles, mulS(cn, cIn * (dep - aMax))) : foot.achilles;
+  A_.push([...foot.heel]); A_.push([...ach]);
   for (const g of [0.93, 0.78, 0.6, 0.4, 0.2]) A_.push([...SB(fS + (0.97 - fS) * g)]);   // calf, ankle → knee
   // the junction: a soft concave corner (a straight leg: a smooth point at the back of the knee)
   const sharp = smooth(15, 60, bend);

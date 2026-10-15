@@ -7,6 +7,7 @@
  },
  "fx": {
   "fingersIn": 0.6,
+  "lumbar": 0,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -22,7 +23,7 @@
  },
  "root": [
   -1.0219,
-  2.0733
+  2.0641
  ],
  "bones": {
   "pelvis": 35.3,
@@ -40,23 +41,22 @@
   "forearm.near": 0.7,
   "foreRot.near": 0,
   "hand.near": 6.3,
-  "thigh.near": 137.9,
+  "thigh.near": 137.5,
   "shin.near": -100.7,
-  "foot.near": -7,
+  "foot.near": -6.8,
   "hipAbd.near": -4.3,
   "clavicle.far": -6.2,
   "shoulderAbd.far": -4.2,
-  "upperArm.far": 8.3,
-  "armAbd.far": -5.7,
-  "armRot.far": 17,
-  "forearm.far": 85.9,
-  "foreRot.far": 0,
-  "hand.far": -24,
-  "thigh.far": 65.6,
-  "shin.far": -116.3,
-  "foot.far": -63.8,
-  "hipAbd.far": -0.3,
-  "toe.far": 60
+  "upperArm.far": 8.5,
+  "armAbd.far": -5.8,
+  "armRot.far": 16.9,
+  "forearm.far": 85.1,
+  "foreRot.far": -10,
+  "hand.far": -22,
+  "thigh.far": 64.4,
+  "shin.far": -115.9,
+  "foot.far": -53.5,
+  "hipAbd.far": -0.3
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_kneel_pick_0.json",

@@ -6,45 +6,44 @@
   "far": "relaxed"
  },
  "fx": {
-  "farUp": 0.12,
   "farUpLegs": 0.162,
   "turn": 0.4,
   "show.far.arm": 1
  },
  "root": [
-  0.1497,
-  1.6798
+  0.1432,
+  1.6811
  ],
  "bones": {
   "pelvis": 0,
-  "spineLower": 0.4,
-  "spineUpper": -0.4,
-  "chest": -2.7,
-  "neck": -4.5,
+  "spineLower": 0.3,
+  "spineUpper": -0.3,
+  "chest": -1.8,
+  "neck": -5.4,
   "head": -2.9,
   "belly": 0,
-  "clavicle.near": 7.1,
+  "clavicle.near": 6.2,
   "shoulderAbd.near": 0.3,
-  "upperArm.near": 0.7,
+  "upperArm.near": 0.6,
   "armAbd.near": 0,
   "armRot.near": 4.6,
-  "forearm.near": 44.5,
+  "forearm.near": 44.6,
   "foreRot.near": 0,
   "hand.near": 0.3,
   "thigh.near": 9.6,
-  "shin.near": -94.9,
+  "shin.near": -95.1,
   "foot.near": -36.3,
   "hipAbd.near": 0.5,
-  "clavicle.far": -22,
+  "clavicle.far": -1.5,
   "shoulderAbd.far": 0,
-  "upperArm.far": 0.6,
+  "upperArm.far": 0.4,
   "armAbd.far": 0,
   "armRot.far": 0,
-  "forearm.far": 40.4,
+  "forearm.far": 40.5,
   "foreRot.far": 0,
   "hand.far": 0.3,
   "thigh.far": 8.5,
-  "shin.far": -85.9,
+  "shin.far": -86.1,
   "foot.far": -32.9,
   "hipAbd.far": 0
  },
@@ -53,11 +52,11 @@
   "scale": 0.9169,
   "rms": 0.0615,
   "worst": [
-   "shoulderL 0.146",
-   "kneeR 0.112",
-   "hipL 0.095",
-   "heelR 0.086",
-   "shoulderR 0.076"
+   "shoulderL 0.153",
+   "kneeR 0.111",
+   "hipL 0.089",
+   "heelR 0.085",
+   "shoulderR 0.078"
   ]
  },
  "fitFrom": "side/fit/kneel"

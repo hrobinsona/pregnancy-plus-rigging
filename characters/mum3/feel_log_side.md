@@ -236,3 +236,23 @@ the one visible change the shoes, a lean to the old ones: the new (master-traced
 0.04 H behind the ankle, "a snag". Fixed: the counter now sits on the leg's back line (`parts/legs.js counterX`).
 QA: the alive gate measured in the standing frame, not the shot's (a side loop frames its own pose), and the side loops'
 resting hands moved ~7 px: both fixed (`qa_checks` uses `spec.view.bbox`; `side_loop.mjs` hand life 4–5°).
+
+## Round 7 (2026-10-15: the far feet apart, the folded poses' cloth measured, the bump round on all fours, elbows and heels by the stills)
+
+Fixes, each against round 6's agreed faults (lesson 68):
+- **The far foot apart from the near one**: kneeling and on all fours the far shin and shoe run parallel 0.2 H above the
+  near ones (`nudge … shin.far=-1.5,foot.far=-8`, `far_leg.mjs`); a pointed foot's shoe heel tucked in (`parts/legs.js`
+  `hk`); the far strap no longer a lobe at the throat (kneel: `fx.farUpLegs`, the far hip alone raised); the kneeling toes
+  left in line with the foot (free, the solve bent them 34–60° and the shoe curled over the foot as a hook with white
+  inside, found zooming the critic sheet before sending it).
+- **Cloth**: the squat's skirt falls in a tail 0.15 H behind and 0.39 H below the thighs' crossing (`SQ.tail`, the
+  still's), a shaded curtain between the thighs; kneel-pick's back hem pulled 0.27 H forward (`KP.pull`) and her back
+  rounded as she bends (`fx.lumbar=0`); sit-ball's hem rests on the ball (the ball's floors are arcs, `SEATED.drop`)
+  and the ball sized by her seat; sit-chair's hem on the seat.
+- **All fours**: the bump sags as a dome (per-anchor sag vectors, the handles re-aimed), not a wedge.
+- **Posture by the stills** (`side_dirs.mjs`): the seated and kneeling near elbows swung in to hang at her side (−40°);
+  walk-down's back heel raised (95°: 58° had been a flat foot), its arms swinging.
+- **Hands**: the finger lines started at the knuckles (round 6's "four long stripes") LOST blind on breathe-stroke
+  (6 vs 6.5, Fable: "a mitten-shaped lump"), reverted; the reviewer's notes on both, still open on the standing shot:
+  8.4–9.8 s the stroking hand slides as one rigid shape; 4.0–4.8 s the breath hold is dead still; 1.05–2.3 s the hand
+  hangs as a flat paddle, then curls all at once.

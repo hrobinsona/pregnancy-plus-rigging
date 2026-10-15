@@ -111,7 +111,10 @@ function lapOver(parts, ctx) {
   // with the thigh forward (sitting, squatting) the SIDE panel covers the thigh's outer face back from the side's diagonal,
   // below the skirt's own outline too (the back panel reaches less far along the underside than the side does): drawn only
   // inside the skirt, the thigh between the two lines was neither cloth nor skin, a white wedge under the lap, round 6
-  if (sd && sd.w > 0) parts.push({ id: 'dress.lap.side', bone: 'pelvis', z: 30.12, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, clipGeom: [cut], opacity: Math.min(1, 2 * sd.w) });
+  // (with a TAIL the skirt's back runs from the seat straight to the point, inside the thigh's root under the buttocks: the
+  // side panel stops at that back line, else the root stood out past it as a knob)
+  if (sd && sd.w > 0) parts.push({ id: 'dress.lap.side', bone: 'pelvis', z: 30.12, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, opacity: Math.min(1, 2 * sd.w),
+    clipGeom: [cut], ...(sd.tail ? { clipAnd: [loop([[dr.pb[0][0], dr.pb[0][1] - 5], ...dr.pb, [dr.Hb[0], dr.Hb[1] + 5], [dr.Hb[0] + 5, dr.Hb[1] + 5], [dr.Hb[0] + 5, dr.pb[0][1] - 5]].map((q) => [...q]))] } : {}) });
   // kneeling on one knee with the NEAR leg forward, the back hangs down the far (kneeling) leg: the cloth from the hem's
   // crossing on the forward thigh back to the seat runs UNDER that thigh (a hammock), so its underside on the hip's side of
   // the line is cloth even below the skirt's own outline (left out, the background showed through as a slit)
@@ -120,7 +123,15 @@ function lapOver(parts, ctx) {
   // and sags between them, its inside seen below the near thigh from the hem on its underside back to the seat (the squat
   // and bend stills: a darker flap hanging to about mid-shin, behind the near shin, in front of the far leg; round 2 "a
   // closed balloon... a curtain between the knees")
-  if (sd && sd.apart > 0.05) {
+  // With a TAIL (engine/drape.js SQ.tail: the skirt's slack hanging below the thighs to a point) the inside shows in front
+  // of the side panel's fold, from the hem's crossing on the thigh's underside down to the point and up again behind the
+  // near shin (the squat still: a dark triangle, the fold its back edge)
+  if (sd?.tail && sd.apart > 0.05) {
+    const lg = legs.legFor(ctx, 'near'), P1 = sd.bot, T = sd.tail, Q = lg.TB(Math.min(0.85, lg.fT)), up = mulS(norm(sub(lg.TF(0.5), lg.TB(0.5))), 0.08);
+    const tq = angOf(sub(Q, T)), low = add(lerp(T, Q, 0.45), [0, 0.03 * sd.apart]);
+    const geom = loop([[...add(P1, up), { c: true }], [...P1, { c: true }], [...T, { c: true }], [...low, { a: tq }], [...Q, { c: true }], [...add(Q, up), { c: true }]]);
+    parts.push({ id: 'dress.curtain', bone: 'pelvis', z: 30.03, fill: pal.dressShade, world: true, geom, M: [1, 0, 0, 1, 0, 0] });
+  } else if (sd && sd.apart > 0.05) {
     const P1 = sd.bot, P2 = dr.Hb, ch = sub(P2, P1), L = len(ch), u = mulS(ch, 1 / L), up = [u[1], -u[0]][1] < 0 ? [u[1], -u[0]] : [-u[1], u[0]];
     // a HAMMOCK: the hem slung between the thigh's underside and the seat's bottom, sagging a little in one smooth curve
     // (sagging 0.45 of the span to a point it hung below the seat as a dark pointed tail, round 3: "a balloon with a dark

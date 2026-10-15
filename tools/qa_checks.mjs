@@ -8,7 +8,7 @@
 //             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
 //     handed  each hand the right way round in every frame: its thumb drawn on the side its 3D arm puts it (tools/handed.mjs;
 //             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53); a hand out
-//             of sight is excused by spec.qa.handed [{side, why}] (side_loop.mjs: a hand on the bump's far side)
+//             of sight is excused by spec.qa.handed [{side, why}] (side_loop.mjs: a hand on the bump's far side, or ≥ 95% hidden by her body)
 //     frames  pixel jumps (a frame changing > 1.8× its neighbours, inside --box) and still stretches > 1 s
 //             (tools/qa_frames.py; the film should always be alive)
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two

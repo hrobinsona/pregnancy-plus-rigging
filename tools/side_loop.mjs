@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import { createRig } from '../engine/rig.js';
 import { expandHands } from '../engine/handlib.js';
+import { ap } from '../engine/geom.js';
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : d; };
 const [char, poseName] = argv, D = `characters/${char}/`;
 if (!char || !poseName) { console.error('usage: node tools/side_loop.mjs <char> <pose> [--pin near=belly,far=world] [--out name] [--print]'); process.exit(1); }
@@ -64,7 +65,23 @@ const life = (s, w) => [
 ];
 const fidget = Object.entries(pins).filter(([s, on]) => on && s !== back).flatMap(([s, on]) => life(s, on === 'world'));
 const still = Object.fromEntries(Object.entries(pins).filter(([s, on]) => on === 'world' && s !== back).map(([s]) => [s, [[0, 8, 'bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers']]]));
-const qa = { ...(back ? { handed: [{ side: back, why: 'the hand rests on the bump\'s far side, out of sight behind it (contact_pose --back)' }] } : {}), ...(Object.keys(still).length ? { still } : {}) };
+// a hand HIDDEN by her body in the posed drawing is out of sight too (sit-ball's far hand on the far knee, 100% under the
+// legs and the lap, round 7): sampled inside the hand's outline, the share covered by a nearer filled part
+const flat = (p) => { const g = p.geom, n = g.P.length, out = [], q = (v) => ap(p.M, v); for (let i = 0; i < n; i++) { const j = (i + 1) % n; for (let t = 0; t < 1; t += 0.125) { const u = 1 - t, a = q(g.P[i]), b = q(g.hout?.[i] ?? g.P[i]), c = q(g.hin?.[j] ?? g.P[j]), d = q(g.P[j]);
+  out.push([0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k])); } } return out; };
+const inPoly = (q, pl) => { let c = false; for (let i = 0, j = pl.length - 1; i < pl.length; j = i++) { const a = pl[i], b = pl[j]; if ((a[1] > q[1]) !== (b[1] > q[1]) && q[0] < (b[0] - a[0]) * (q[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+const hiddenShare = (side) => {
+  const parts = rig.build(pose).filter((p) => p.geom?.P?.length && !p.stroke && p.opacity !== 0), hp = parts.filter((p) => p.id.startsWith(`hand.${side}`));
+  if (!hp.length) return 1;
+  const z0 = Math.min(...hp.map((p) => p.z)), hpl = hp.map(flat), cov = parts.filter((p) => p.z > z0 && !p.id.startsWith(`hand.${side}`) && p.fill && p.fill !== 'none').map(flat), pts = hpl.flat();
+  const [x0, x1, y0, y1] = [Math.min(...pts.map((q) => q[0])), Math.max(...pts.map((q) => q[0])), Math.min(...pts.map((q) => q[1])), Math.max(...pts.map((q) => q[1]))];
+  let n = 0, h = 0; for (let x = x0; x <= x1; x += 0.01) for (let y = y0; y <= y1; y += 0.01) if (hpl.some((pl) => inPoly([x, y], pl))) { n++; if (cov.some((pl) => inPoly([x, y], pl))) h++; }
+  return n ? h / n : 1;
+};
+const hidden = ['near', 'far'].filter((s) => s !== back).map((s) => [s, hiddenShare(s)]).filter(([, k]) => k >= 0.95);
+const handed = [...(back ? [{ side: back, why: 'the hand rests on the bump\'s far side, out of sight behind it (contact_pose --back)' }] : []),
+  ...hidden.map(([side, k]) => ({ side, why: `the hand is out of sight, ${Math.round(100 * k)}% behind her body in the pose (tools/side_loop.mjs)` }))];
+const qa = { ...(handed.length ? { handed } : {}), ...(Object.keys(still).length ? { still } : {}) };
 // a resting hand is a HELD reach (engine/anim.js reachArm: the arm solved in 3D to the wrist each frame, then a damped
 // solve; two equal stops = a hold): the plain 2D pin diverged on the far arms and the straight ones (26-75 px)
 for (const [s, on] of Object.entries(pins)) if (on) reach[s] = [0, 4].map((t) => ({ t, pose: `side/${poseName}`, on }));

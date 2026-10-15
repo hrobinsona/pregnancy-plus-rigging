@@ -66,11 +66,5 @@
    "elbowR 0.059"
   ]
  },
- "fitFrom": "side/fit/sit-ball",
- "scale": {
-  "thigh.far": [
-   0.85,
-   1.0
-  ]
- }
+ "fitFrom": "side/fit/sit-ball"
 }
