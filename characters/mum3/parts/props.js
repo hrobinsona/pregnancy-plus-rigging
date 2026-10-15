@@ -59,8 +59,11 @@ export function propsFor(parts, ctx) {
       const palm = parts.filter((p) => p.id === 'hand.near.palm').flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
       // (it.reach: a big ball at least it.r, grown till its crown meets the palm's lowest point, so the hand rests ON it
       // whatever the pose's reach; at a fixed r an upright kneel left the fingers 0.25 H above the crown, round 11)
-      const pLo = Math.max(...palm.map((q) => q[1])), fit = (it.near ? 0.05 : 0) - pLo + 0.02;
-      const lo = pts.reduce((a, q) => (q[1] > a[1] ? q : a), [0, -1e9]), r = it.reach ? Math.max(it.r ?? 0.2, fit / 2) : (it.r ?? 0.2), big = r > 0.25;
+      // (it.tips: a small toy she picks up with her fingertips, its crown at their lowest point: a ball grown to the PALM
+      // read "a beach ball… rest a hand on a ball, not pick up a toy", every lens, round 11)
+      const lo = pts.reduce((a, q) => (q[1] > a[1] ? q : a), [0, -1e9]);
+      const pLo = Math.max(...palm.map((q) => q[1])), fit = it.tips ? 0.03 - lo[1] : (it.near ? 0.05 : 0) - pLo + 0.02;
+      const r = it.reach ? Math.max(it.r ?? 0.2, fit / 2) : (it.r ?? 0.2), big = r > 0.25 && !it.tips;
       const px = palm.reduce((a, q) => a + q[0], 0) / Math.max(1, palm.length);
       o = { ...it, r, x: it.x ?? (lo[1] > -(2 * r + 0.3) ? (big ? px : lo[0]) : wrist[0] + 0.25) + (it.dx ?? 0) };   // (dx: nudged back or forward from under the hand)
     }

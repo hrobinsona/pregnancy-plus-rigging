@@ -1,6 +1,6 @@
 {
  "name": "side/kneel-pick",
- "note": "fitted to characters/mum3/refs/pose/s_kneel_pick2_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-84,spineLower=-84,spineUpper=-82,chest=-80,neck=-56,head=-60,thigh.near=-8,shin.near=95,thigh.far=40,shin.far=-172,upperArm.near=92,forearm.near=88,hand.near=88,upperArm.far=70,forearm.far=20,hand.far=40; floor_pose: leg.far:4, leg.far:7, leg.far:9, shoe.far:tip, shoe.near:ball, shoe.near:heel on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_kneel_pick2_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-72,spineLower=-72,spineUpper=-70,chest=-68,neck=-62,head=-44,thigh.near=-30,shin.near=90,thigh.far=26,shin.far=-172,upperArm.near=104,forearm.near=100,hand.near=98,upperArm.far=70,forearm.far=20,hand.far=40; floor_pose: leg.far:4, leg.far:7, leg.far:9, shoe.far:tip, shoe.near:ball, shoe.near:heel on the floor",
  "hands": {
   "near": "softrest",
   "far": "softrest"
@@ -14,23 +14,24 @@
   "items": [
    {
     "type": "toy",
-    "r": 0.47,
+    "r": 0.2,
     "near": 1,
-    "reach": 1
+    "reach": 1,
+    "tips": 1
    }
   ]
  },
  "root": [
   -0.2104,
-  1.9765
+  2.3998
  ],
  "bones": {
-  "pelvis": 15.3,
+  "pelvis": 27.3,
   "spineLower": -3.1,
   "spineUpper": -1.9,
   "chest": 7,
-  "neck": 4.2,
-  "head": 8.4,
+  "neck": -13.8,
+  "head": 30.4,
   "belly": 0,
   "clavicle.near": -22,
   "shoulderAbd.near": 10.3,
@@ -39,22 +40,22 @@
   "armRot.near": 0.9,
   "forearm.near": -5,
   "foreRot.near": -0.2,
-  "hand.near": 5.8,
-  "thigh.near": 122.6,
-  "shin.near": -101.5,
-  "foot.near": -5,
+  "hand.near": 7.8,
+  "thigh.near": 149.2,
+  "shin.near": -117.9,
+  "foot.near": -3.5,
   "hipAbd.near": 1.4,
   "clavicle.far": -12.2,
   "shoulderAbd.far": -15.5,
-  "upperArm.far": 3,
-  "armAbd.far": -3.8,
-  "armRot.far": 2.1,
-  "forearm.far": 48.8,
+  "upperArm.far": -9.5,
+  "armAbd.far": -10.8,
+  "armRot.far": 11.9,
+  "forearm.far": 103.6,
   "foreRot.far": 0,
-  "hand.far": -16,
-  "thigh.far": 45.9,
-  "shin.far": -114.3,
-  "foot.far": -54.6,
+  "hand.far": -44,
+  "thigh.far": 81.4,
+  "shin.far": -138.1,
+  "foot.far": -54.1,
   "hipAbd.far": 2.2
  },
  "_fit": {

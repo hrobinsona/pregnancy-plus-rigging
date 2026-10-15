@@ -267,8 +267,14 @@ nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
 # hips for the reach, the seat swung back into a second round mass behind her and the hanging arm covered the bump's
 # front, at film size the bump read smaller than the seat, round 11; upright, her palm hangs 0.25 H above that ball's
 # crown, so the ball grows to meet it: toy reach=1, parts/props.js)
-fit kneel-pick s_kneel_pick2_1 --props toy:r=0.47:near=1:reach=1 --hand near=softrest --fix fx.fingersIn=0.6
-dirs kneel-pick --dir pelvis=-84,spineLower=-84,spineUpper=-82,chest=-80,neck=-56,head=-60,thigh.near=-8,shin.near=95,thigh.far=40,shin.far=-172,upperArm.near=92,forearm.near=88,hand.near=88,upperArm.far=70,forearm.far=20,hand.far=40
+# ROUND 12: grown to her palm the ball was r 0.68 H (~30 cm), "a beach ball… rest a hand on a ball, not pick up a toy"
+# (every lens). Her arm is the master's (lesson 72: longer arms lost on the standing still), so she reaches with her
+# BODY, as a real woman gets down to the floor: she sits back toward her kneeling heel (the kneeling thigh at 30°, the
+# front knee up, the hips ~0.5 H lower), hinges 18° from the hips with a long back, the head tipped down to the toy;
+# the arm hangs a little BACK (104°), so the bump shows in front of it; the toy sits under her FINGERTIPS (tips=1),
+# r 0.31 H (~13 cm, a toddler's ball) instead of under her palm
+fit kneel-pick s_kneel_pick2_1 --props toy:r=0.2:near=1:reach=1:tips=1 --hand near=softrest --fix fx.fingersIn=0.6
+dirs kneel-pick --dir pelvis=-72,spineLower=-72,spineUpper=-70,chest=-68,neck=-62,head=-44,thigh.near=-30,shin.near=90,thigh.far=26,shin.far=-172,upperArm.near=104,forearm.near=100,hand.near=98,upperArm.far=70,forearm.far=20,hand.far=40
 floor kneel-pick --touch leg.far:4@-0.162,leg.far:7@-0.162,leg.far:9@-0.162,shoe.far:tip@-0.162,shoe.near:ball,shoe.near:heel@-0.1 --bones shin,foot --sides far --vars thigh.far,thigh.near,foot.near
 # (round 9: 'softrest', the fingers together and the thumb along the top: 'lay' (the bump's open hand, its thumb out apart
 # from the index) stuck the thumb straight out past the kneecap, "the single worst mark in the library… a pointer", round 8)

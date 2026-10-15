@@ -548,3 +548,7 @@ the stacked shoes; the arms when Harry decides.
   drawn at 62–83% of its length (the `limbs` gate, Harry's "the arm shrinks"); at −45 / −32 (the stroke top) 15.6k and
   the forearm still 75%. So longer arms can't win the standing shot without the fault Harry named, and the recommendation
   on the review page changed to keeping her arms: the reach is made with the body. The copy is not shipped.
+- **Kneel-pick's reach, made with the body**: the ball grown to her palm was r 0.68 H (~30 cm, "a beach ball"). She now
+  sits back toward her kneeling heel (the kneeling thigh at 30°, the front knee up, the hips ~0.5 H lower), hinges 18°
+  from the hips with a long back, the head tipped down; the arm hangs a little back (104°) so the bump shows in front of
+  it, and the toy sits under her fingertips (`toy:tips=1`, parts/props.js): r 0.31 H, ~13 cm, a toddler's ball.
