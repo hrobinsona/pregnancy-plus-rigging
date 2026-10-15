@@ -1,6 +1,6 @@
 {
  "name": "side/fit/bend-pick",
- "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-63,spineLower=-63,spineUpper=-63,chest=-65,neck=-72,head=-80,thigh.near=-20,shin.near=118,upperArm.near=78,forearm.near=78,hand.near=86; floor_pose: shoe.near:5, shoe.near:6 on the floor; floor_pose: hand.near.palm:low on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-70,spineLower=-70,spineUpper=-71,chest=-73,neck=-75,head=-86,thigh.near=-30,shin.near=130,thigh.far=-36,shin.far=128,foot.near=59,foot.far=59,upperArm.near=78,forearm.near=74,hand.near=82; floor_pose: shoe.near:5, shoe.near:6, shoe.far:5, shoe.far:6 on the floor; floor_pose: hand.near.palm:low on the floor",
  "hands": {
   "near": "press",
   "far": "relaxed"
@@ -13,42 +13,39 @@
   "items": [
    {
     "type": "toy",
-    "r": 0.36,
-    "near": 1,
-    "dx": -0.12
+    "r": 0.24,
+    "near": 1
    }
   ]
  },
  "root": [
   -1.1695,
-  2.2947
+  2.8396
  ],
  "bones": {
-  "pelvis": 36.3,
+  "pelvis": 29.3,
   "spineLower": -3.1,
-  "spineUpper": -3.9,
+  "spineUpper": -4.9,
   "chest": 3,
-  "neck": -26.8,
-  "head": 4.4,
+  "neck": -21.8,
+  "head": 1.4,
   "belly": 0,
   "clavicle.near": -22,
   "shoulderAbd.near": -7,
-  "upperArm.near": 2.9,
+  "upperArm.near": 8.8,
   "armAbd.near": -3.8,
   "armRot.near": -0.1,
   "forearm.near": -5,
   "foreRot.near": 0.2,
-  "hand.near": 8.7,
-  "thigh.near": 136.5,
-  "shin.near": -126.6,
-  "foot.near": 15.3,
+  "hand.near": 34.8,
+  "thigh.near": 139.6,
+  "shin.near": -160,
+  "foot.near": 37.8,
   "hipAbd.near": -12.9,
-  "thigh.far": 136.5,
-  "shin.far": -126.6,
-  "foot.far": 15.3,
-  "hipAbd.far": -12.9,
-  "toe.near": -7.4,
-  "toe.far": -7.4
+  "thigh.far": 145.1,
+  "shin.far": -165.7,
+  "foot.far": 35.3,
+  "hipAbd.far": -12.9
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_bend_pick_1.json",

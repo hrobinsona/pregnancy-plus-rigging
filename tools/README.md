@@ -51,13 +51,27 @@ Every tool has a usage line at the top of its file; run from the repo root. ★ 
 | ★ `vtrack_apply.mjs` | Turn video tracks into timeline data (path moves, timing) in place in the anim JSON. Re-run after spec edits. |
 | ★ `pose_blend.py`, `pose_set.py` | Derive accents/in-betweens from FITTED poses (`--add/--set/--fx/--scale/--hand`). |
 | ★ `plant_feet.mjs` | Foot lock for key poses. |
-| `contact_pose.mjs` | A key whose hand rests on the body at a chosen spot (3D arm solved). |
+| `contact_pose.mjs` | A key whose hand rests on the body at a chosen spot (3D arm solved); `--on <bone>` takes the spot in that bone's rest space. |
 | `char_ik.mjs`, `pose_tool.mjs` | Author poses from IK targets (offline, numeric). |
 | `sil_fit.mjs`, `seg_ref.py`, `segment.py`, `sil_view.py` | Refine a fit against the reference's material silhouette. |
 | `fit_overlay.py`, `fit_sheet.py` | Fit vs reference overlays — check a fit by eye. |
 | `hand_fit.py`, `hand_lab.py` | Fit and audition hand shapes (build these early for a new character). `hand_fit` skips a hand the character hides by design. |
 | `face_measure.py <id> [--k 3]` | Measure a ¾ or front FACE after `master_measure.py`: MediaPipe's face landmarker on a 3× crop finds each feature, then the drawing's own blobs give its shape (eyes as ellipses with catch-lights, brows and mouth as 5 stations with widths, ear, nose tip/bridge, chin, the face's far edge row by row, the hairline in 9 columns) → `face` in `ref/landmarks.json` + `ref/face.png` (look at it). |
 | `measure_ref.py` | mum2's character-sheet measurer (its palette is wired to mum2); for a new master use `master_measure.py`. |
+
+## Side-on pose library (mum3, PIPELINE lesson 62)
+One script rebuilds every side-on pose from its still: `characters/<char>/refs/fit_side.sh [pose ...]` (no poses: all; else only those). Each pose is a few lines of the steps below; re-run after any rig change, then check with `side_match.py` and `critic_F.py --side`.
+
+| Tool | What it's for |
+|---|---|
+| ★ `fit_pose.mjs … --floor --dirs 0.5 --turn 0.4` | Fit a still off her feet: placed by the still's floor row (`--floor`), matching each segment's DIRECTION rather than the still's proportions (`--dirs`), drawn nearer a true profile (`--turn` → `fx.turn`). `--twin legs` (both knees forward in a squat), `--props chair,ball,counter,toy` (`toy:r=0.36:near=1:dx=-0.12`, `chair:back=1`), `--hand near=press,far=grip`, `--show far.arm` (else the far arm stays hidden), `--set kneeR:x:y,…` (a landmark read off the still where the estimator failed), `--fix fx.kneesApart=1,fx.skirtSwing=0.2,fx.farUp=0.12` (pose channels, below). |
+| ★ `pose_dirs.mjs <char> <pose> --dir bone=deg,…` | Write a posture as segment directions on screen (0 forward, 90 down, −90 up), parents first; `--twin legs,arms`. Where the still's proportions can't be copied (its arms 20% longer: bend-pick), or a fit went wrong (all-fours' neck). Set the feet's direction too (`foot.near=59`, flat) when the shins move a lot, or the floor solve starts from a pointed foot. `scale <pose> thigh.near=0.7` in `fit_side.sh` draws a segment foreshortened (a thigh turned out round the bump). |
+| ★ `floor_pose.mjs <char> <pose> --touch part:anchor[@y],… --bones … [--vars …] [--flat hand.near] [--aim bone=deg,…] [--aimw w] [--fixroot] [--twin legs,arms] [--keep k]` | Put the contacts on what they rest on (the floor, `@y` a worktop or the far floor line `@-0.162`), nothing through the floor (props excepted); one LM solve so a stiff contact pulls the others. Leave a joint out of `--vars` to keep it as set (all-fours' far elbow: in, it bent into a reach); `--aim` holds a segment's screen direction while the rest moves, `--aimw` how hard (all-fours' upright arms, bend-pick's diagonal reach). Feet: `--bones foot` (toes left out: with them free the solve stood her on tiptoe, the toe joint at its limit). |
+| ★ `contact_pose.mjs … --on belly --surface bump --hand lay` | A hand laid on a spot of the bump in the belly bone's rest space, so a re-fit keeps it there (`bumphands` in `fit_side.sh`). |
+| ★ `side_match.py <char> side/<pose> … [--tiles dir --ground #hex]` | A pose against its still material by material (skin, dress, dark): IoU each and an overlay; `--tiles` writes the ours/still pair the critic pack uses. |
+| ★ `critic_F.py <char> --side [p1,…]` | The side-on critic pack: one sheet per pose (render beside its still) and three prompts, `out/critic_prompt_side_{natural,body,craft}.md`, one fresh reviewer each. Log the scores in `characters/<char>/feel_log_side.md`. |
+
+Pose channels (`pose.fx`, set with `--fix`): `turn` (how far she is turned to us, 0.4 side-on); `kneesApart` (0–1: knees apart round the bump, the skirt hangs between them as a curtain); `skirtSwing` (radians: the skirt trailing as she walks); `farUp` (H: the far side seen a little from above, its hip and shoulder raised, for poses whose far knee, shoe and hand sit on the far floor line; all-fours 0.162, the line's own height: the far arm's whole depth offset is the far clavicle's, in picture space, so the far shoulder doesn't swing down with a pitched trunk, `params.js` FD). Engine pieces: `engine/drape.js` (the skirt hangs by gravity over her posed legs, seat and props: tube, stride flare, all-fours side), `engine/leg.js` (posed-space legs: a filleted knee, the calf pressing the hamstring), `engine/props.js` (chair, ball squashed under her, counter, toy; placed from her posed body by `parts/props.js`), part clipping `clip`/`clipGeom` (a union) and `clipAnd` (each one intersects) in `rig.toSVG` and `raster.js`.
 
 ## Review and audit
 | Tool | What it's for |

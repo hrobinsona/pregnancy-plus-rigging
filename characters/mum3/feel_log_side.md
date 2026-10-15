@@ -78,3 +78,40 @@ lie flat; the kneel and sit-chair hands cup the bump. Not landed, all three agre
 - **Contacts and props**: the lean forearm 15 px into the counter's band (no overhang); the all-fours far arm 20°
   forward (should be vertical), head low; the sit-ball ball ~20% small; the chair crest a knob.
 - **Hands**: stripe fingers; kneel and sit-chair fingers should run ~40° steeper along the bump, thumb along the hand.
+
+## Round 3 (2026-10-15: the lap and the curtain as cloth, walks flare and swing, all-fours skirt off the rump, the far side raised on the floor's far line, the shoes parted, a bigger ball)
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 5.5 | 5.5 | 5.5 |
+| bend-pick | 4 | 4 | 4 |
+| kneel | 6 | 5.5 | 6 |
+| lean-counter | 5.5 | 6 | 5.5 |
+| sit-ball | 6 | 6.5 | 6 |
+| sit-chair | 6 | 6.5 | 6 |
+| squat | 4.5 | 5 | 4.5 |
+| walk-contact | 5.5 | 5.5 | 5 |
+| walk-pass | 6 | 6 | 5 |
+
+All three: NOT YET. Landed: the skirt along the seated thigh with a diagonal hem, no skin scallops, the walk's far arm,
+the pacing, the bend no longer stoops, the toy on the floor, the all-fours back level and head up, the lean forearms
+on the worktop (body lens). Not landed, all three agree:
+- **One cloth rule.** The walks' flare starts at the armpit (a cape, a lampshade): the back must follow the body over
+  the waist and the seat and flare only below the hip, the hem ~210 px, tilted by the stride. The hard inward corner
+  under the bump (walks, lean, kneel, all-fours' notch): the front falls plumb from the bump's lowest point. Kneel: the
+  hem 60–80 px too long, the sides taper in (a sack); plumb sides, a straight hem, ~80 px of thigh. All fours: the back
+  a vertical cut (flare 15–20 px more, a fold), the bump a low teardrop (round, its bottom about level with the hem).
+  Squat and bend: a balloon with a dark pointed tail; the cloth stretched over the seat, the near thigh on top, a
+  curtain between the knees. The seat too full when seated (sit-ball 80 px behind the back against the still's 40).
+- **Folded legs**: squat and bend-pick show one ball knee and parallel posts: two knees apart (the far one forward and
+  up 80–120 px), the feet staggered, the knee the corner of a thick thigh, the calf pressing into the thigh.
+- **Leg anatomy** everywhere: no calf swell, no kneecap step, a knob behind the walking knee (a hollow wanted), lean's
+  knees locked (soft knees), the all-fours thigh half the still's width.
+- **Contacts**: bend-pick's toy under her heels (ahead of the toes, 0.65× the size, a diagonal reach, the seat over the
+  heels); the walk-contact front heel on the far floor line reads as floating (the still: one floor line); all-fours
+  arms 12–15° forward, the near palm's heel up; sit-chair shins rake back 15–20° (vertical, the feet ahead of the
+  chair's legs); the sit-ball ball squashed (round, 15% larger).
+- **Hands**: stripe fingers in every pose (tapered, short separations at the tips); kneel and sit-chair fingers should
+  rise 30–40° along the bump.
+- **Props**: the chair's crest a block (a slat between the posts), its seat too deep; the counter slab thin.
+- **Neck** long and thin with a hook at the base of the throat; the head pitched down in kneel and the seated poses.

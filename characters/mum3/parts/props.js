@@ -44,7 +44,8 @@ export function propsFor(parts, ctx) {
       o = { ...it, x: it.x ?? (lo[1] > -(2 * r + 0.3) ? (big ? px : lo[0]) : wrist[0] + 0.25) + (it.dx ?? 0) };   // (dx: nudged back or forward from under the hand)
     }
     else throw new Error('unknown prop ' + it.type);
-    if (it.type === 'chair') { if (o.x1 === undefined) o.x1 = o.x0 + 1.85; if (o.x0 === undefined) o.x0 = o.x1 - 1.85; if (o.backTop === undefined) o.backTop = o.seatY - 2.0; }
+    if (it.type === 'chair') { if (o.x1 === undefined) o.x1 = o.x0 + 1.35; if (o.x0 === undefined) o.x0 = o.x1 - 1.35;   // (a kitchen chair's seat ≈ 40 cm: 1.85 H read 30–80% too deep, critic R3)
+      if (o.backTop === undefined) o.backTop = o.seatY - 2.0; }
     const r = PROPS[it.type](o);
     for (const p of r.parts) out.parts.push({ ...p, bone: 'pelvis', world: true, M, module: 'props', anchors: p.geom.P.length });
     out.floors.push(...r.floors); out.cloth.push(...r.cloth);

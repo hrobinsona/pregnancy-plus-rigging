@@ -178,9 +178,29 @@ export function skirt(o, nF = 6, nB = 10) {
     // thigh as far as it does standing (cal.fs); with the thigh forward the hem crosses it on a DIAGONAL, from the thigh's top
     // ahead of that point down and back to its underside (the sitting and squatting stills: the hem from ~0.85 of the thigh
     // on top to ~0.4 below). What of the near leg the cloth covers (parts: the lap) is decided by this line.
-    const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl), fsB = Math.max(0.05, cal.fs - dl);
+    // (knees apart, squatting or bending: the cloth is drawn up round the bump and the seat and crosses the near thigh about
+    // halfway, its outer half and the knee bare, as both stills draw it; at the sitting reach the dress hid the thighs to the
+    // knee and the folded legs read as a dress blob, round 4)
+    const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl) - 0.4 * bt, fsB = Math.max(0.05, cal.fs - dl - 0.2 * bt);
     side = { top: top(fsT), bot: back(fsB), w, apart: bt };
     if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: cal.Lf, Lb: cal.Lb, thighL: g.Lt };
+  }
+  // ON ALL FOURS the back's cloth climbs from the back waist up over the buttocks (they stand above it) and the hem is a
+  // ring far wider than her thighs: the skirt's outline behind her is its SIDE, hanging free from the buttocks' back and
+  // flared a little, its hem crossing the thigh no lower than it does standing (cal.fs along it) nor than the front's end,
+  // and rising a little to the back corner (the all-fours still: the skirt flares off the rump, the hem runs from that corner across the thigh down
+  // to under the bump). Hung as the centre back, its cloth ran out at the top of the thigh and the hem ran down the
+  // thigh's back: shorts, not a skirt (round 3). Standing, kneeling, sitting: the back never climbs, unchanged.
+  const rise = Wb[1] - Math.min(...pb.map((q) => q[1])), cl = smooth(0.03, 0.15, rise) * (1 - w);
+  if (cl > 0) {
+    const g = legs[0], phi = phiB + 0.2, gv = [-Math.sin(phi), Math.cos(phi)], nb = [-gv[1], gv[0]];   // nb: out behind her, across the fall
+    let k = 0; pb.forEach((q, i) => { if (dot(q, nb) > dot(pb[k], nb) + 1e-9) k = i; });
+    const P = pb[k], yc = Math.min(g.TB(Math.min(cal.fs, g.fT))[1], Hf[1]) - 0.15, H2 = add(P, mulS(gv, Math.max(0, (yc - P[1]) / gv[1])));
+    const onLine = (q) => add(P, mulS(gv, dot(sub(q, P), gv)));
+    pb = pb.map((q, i) => (i <= k ? q : i === pb.length - 1 ? lerp(q, H2, cl) : lerp(q, onLine(q), cl)));
+    if (k === pb.length - 1) pb.push(lerp(P, H2, cl));
+    Hb = pb[pb.length - 1];
+    if (globalThis.__DRAPE_DBG) globalThis.__drape = { cl, rise, k, P, yc, fs: cal.fs, phiB };
   }
   // the hem: the front's end round under any thigh that passes through it to the back's end (only the thighs above the
   // hem's front: standing, the legs below the hem stay outside)
@@ -190,6 +210,7 @@ export function skirt(o, nF = 6, nB = 10) {
   // depth); straight down from the front's end, the cloth drew a box round the lap
   let fH = Math.max(...legs.map((g) => fracOn(g, Hf)));
   if (w > 0) { const g = legs[0], f = fracOn(g, Hf), dep = len(sub(g.TF(f), g.TB(Math.min(f, g.fT)))); fH = Math.max(0.05, fH - w * 0.95 * dep / g.Lt); }
+  fH *= 1 - cl;   // (on all fours the hem crosses the thighs: it doesn't wrap them)
   const hp = wrap(Hf, Hb, under(legs, fH, cal.skin), 1), hem = hp.length > 2 ? resample(hp, 5) : [Hf, lerp(Hf, Hb, 0.25), lerp(Hf, Hb, 0.5), lerp(Hf, Hb, 0.75), Hb];
   const F = resample(pf, nF), B = resample(pb, nB).reverse();   // F: Wf → Hf; B: Hb → Wb
   // the hem's shape: rounded corners and the smile under the skirt, on the side of the hem away from her (down at rest)

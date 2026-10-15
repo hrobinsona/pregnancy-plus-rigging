@@ -26,7 +26,13 @@ export const palette = {
 // forwardX = cos(yaw): 0.95 ≈ 18° toward the camera (shoulders and hips measured 0.3 H apart on screen)
 export const design = { facing: 'right', forwardX: 0.95, ground: '#efe0d0' };
 
-const SH = jt('shoulderNear'), EL = jt('elbowNear'), WR = jt('wristNear'), farDx = 0.18, farDy = 0.06;   // the far arm: the near one moved across and down, so it stays hidden behind her chest (a design choice: the master shows no far shoulder)
+// the far arm: the near one moved across and down (FD), so it stays hidden behind her chest (a design choice: the master
+// shows no far shoulder). The WHOLE move is the far clavicle's (a depth offset, engine/rig.js depthFrom: drawn in picture
+// space, scaled by fx.turn), the clavicle-to-shoulder vector the near one's: a part of the offset carried by the shoulder
+// turned with her trunk, so on all fours (pitched ~80°) it pointed down and dropped her far shoulder 0.14 H, its hand
+// through the floor (side-on library, round 4). FD: at fx.turn 0.4 the far shoulder sits where it did, 0.156 across and
+// 0.06 down, upright.
+const SH = jt('shoulderNear'), EL = jt('elbowNear'), WR = jt('wristNear'), FD = [0.39, 0.15], CN = [0.12, -5.82];
 // ---------------------------------------------------------------- joints (rest = the master's standing pose)
 export const joints = {
   root: [0, 0],
@@ -34,8 +40,8 @@ export const joints = {
   spineLower: [0.14, -4.25], spineUpper: [0.08, -4.8], chest: [0.06, -5.3],
   neck: [-0.02, -5.92], head: [0.06, -6.28], headTip: lm('skullTop'),
   bellyBase: [0.42, -3.95], bellyApex: lm('bumpApex'),
-  clavicleNear: [0.12, -5.82], shoulderNear: SH, elbowNear: EL, wristNear: WR,
-  clavicleFar: [0.16, -5.82], shoulderFar: [SH[0] + farDx, SH[1] + farDy], elbowFar: [EL[0] + farDx, EL[1] + farDy], wristFar: [WR[0] + farDx, WR[1] + farDy],
+  clavicleNear: CN, shoulderNear: SH, elbowNear: EL, wristNear: WR,
+  clavicleFar: [CN[0] + FD[0], CN[1] + FD[1]], shoulderFar: [SH[0] + FD[0], SH[1] + FD[1]], elbowFar: [EL[0] + FD[0], EL[1] + FD[1]], wristFar: [WR[0] + FD[0], WR[1] + FD[1]],
   hipNear: jt('hipNear'), kneeNear: jt('kneeNear'), ankleNear: jt('ankleNear'), ballNear: [0.12, -0.05], toeNear: at(L.points.shoeNear.toe),
   hipFar: jt('hipFar'), kneeFar: jt('kneeFar'), ankleFar: jt('ankleFar'), ballFar: [0.6, -0.2], toeFar: at(L.points.shoeFar.toe),
 };

@@ -12,6 +12,7 @@ import * as legs from './parts/legs.js';
 import { skirtPart } from './parts/skirt.js';
 import { propsFor } from './parts/props.js';
 import { ap, add, sub, mulS, norm, lerp, loop, stroke, len } from '../../engine/geom.js';
+const angOf = (v) => Math.atan2(v[1], v[0]) * 180 / Math.PI;
 
 
 const J = { ...params.joints };
@@ -55,7 +56,7 @@ const bones = [
     return [
       { id: `hipAbd.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, min: -20, max: 20, ...(s === 'far' ? { depthFrom: 'hipNear' } : {}) },   // (engine/rig.js depthFrom: the far hip's offset is depth, not turned by the pelvis)
       { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 165, cap: 0.3 },   // a deep squat flexes the hip ≈ 130°; with the knees out round the bump (abducted: side-on, the thigh's projection) up to ≈ 165°
-      { id: `shin.${s}`, parent: `thigh.${s}`, joint: `knee${S}`, aim: `ankle${S}`, plane: 'sagittal', restAnat: 0, min: -150, max: 5, cap: 0.26 },
+      { id: `shin.${s}`, parent: `thigh.${s}`, joint: `knee${S}`, aim: `ankle${S}`, plane: 'sagittal', restAnat: 0, min: -175, max: 5, cap: 0.26 },   // (a full squat folds the knee ~155–160°, the calf against the thigh, and with the knee turned out round the bump the thigh's foreshortened projection folds further still; at −150 she couldn't get low enough to reach the floor)
       { id: `foot.${s}`, parent: `shin.${s}`, joint: `ankle${S}`, aim: `ball${S}`, plane: 'sagittal', restAnat: 90, min: -90, max: 40, cap: 0.12 },   // − = plantarflexion: kneeling lays the foot's top on the floor, in line with the shin
       { id: `toe.${s}`, parent: `foot.${s}`, joint: `ball${S}`, aim: `toe${S}`, plane: 'sagittal', restAnat: 90, min: -20, max: 60 },
     ];
@@ -113,9 +114,12 @@ function lapOver(parts, ctx) {
   // closed balloon... a curtain between the knees")
   if (sd && sd.apart > 0.05) {
     const P1 = sd.bot, P2 = dr.Hb, ch = sub(P2, P1), L = len(ch), u = mulS(ch, 1 / L), up = [u[1], -u[0]][1] < 0 ? [u[1], -u[0]] : [-u[1], u[0]];
-    const sag = Math.min(0.55, 0.45 * L) * sd.apart, low = add(lerp(P1, P2, 0.62), [0, sag]);
-    const geom = loop([[...add(P1, mulS(up, 0.08)), { c: true }], [...add(P2, mulS(up, 0.08)), { c: true }], [...P2, { c: true }], [...add(lerp(P2, low, 0.55), [0.02, 0.03])],
-      [...low], [...add(lerp(P1, low, 0.5), [-0.02, 0.02])], [...P1, { c: true }]]);
+    // a HAMMOCK: the hem slung between the thigh's underside and the seat's bottom, sagging a little in one smooth curve
+    // (sagging 0.45 of the span to a point it hung below the seat as a dark pointed tail, round 3: "a balloon with a dark
+    // pointed tail"); the stills' curtain is a shallow dark crescent under the near thigh
+    const sag = Math.min(0.16, 0.18 * L) * sd.apart, low = add(lerp(P1, P2, 0.55), [0, sag]), tl = angOf(sub(P1, P2));
+    const geom = loop([[...add(P1, mulS(up, 0.08)), { c: true }], [...add(P2, mulS(up, 0.08)), { c: true }], [...P2, { ao: tl + 35, t: 0.8 }],
+      [...low, { a: tl }], [...P1, { ai: tl - 35, c: true, t: 0.8 }]]);
     parts.push({ id: 'dress.curtain', bone: 'pelvis', z: 30.03, fill: pal.dressShade, world: true, geom, M: [1, 0, 0, 1, 0, 0] });
   }
   // where the near thigh passes in front of the bump the cloth folds: the squatting and bending stills draw the thigh's top
@@ -133,6 +137,13 @@ function lapOver(parts, ctx) {
   if (run.length < 4) return;
   const m = run.length, wd = run.map((_, i) => 0.016 * Math.sin(Math.PI * Math.min(1, 1.6 * Math.min(i, m - 1 - i) / (m - 1))) ** 0.7);
   parts.push({ id: 'dress.lap.fold', bone: 'pelvis', z: 30.125, fill: pal.dressShade, world: true, geom: stroke(run, wd, 'point'), M: leg.M, opacity: k });
+}
+// where the near shoe overlaps the far one (kneeling, on all fours: the feet side by side behind her), a thin line of the
+// near foot's skin parts them, as the stills draw it: the same dark brown, the two merged into one shoe (round 2 "the
+// shoes merge"). An outline clipped to the far shoe: where they don't overlap (standing, walking) nothing shows
+function shoeGap(parts, ctx) {
+  const sn = parts.find((p) => p.id === 'shoe.near');
+  if (sn && parts.some((p) => p.id === 'shoe.far')) parts.push({ id: 'shoe.near.ol', bone: sn.bone, z: sn.z - 0.005, stroke: ctx.P.skin, strokeW: 0.026, world: sn.world, geom: sn.geom, M: sn.M, clip: ['shoe.far'] });
 }
 // the chest skin never shows behind the dress's back line (blade → shoulder) below the strap's top: as the arm reaches
 // forward its cap leaves the back of the shoulder, and a sliver of the skin there read as a knob behind the shoulder
@@ -176,7 +187,7 @@ export default {
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); shoeGap(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

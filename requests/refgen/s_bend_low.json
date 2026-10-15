@@ -1,0 +1,9 @@
+{
+  "char": "mum3",
+  "name": "s_bend_low",
+  "prompt_file": "docs/prompts/s_bend_low.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3
+}

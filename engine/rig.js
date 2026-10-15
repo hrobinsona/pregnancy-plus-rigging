@@ -119,8 +119,11 @@ export function createRig(C) {
         // pose.fx.turn (default 1) scales that offset: how far she is turned toward us. The side-on library is drawn nearer a
         // true profile, as its stills are (0.4: their far hip 0.12 H ahead of the near one, the master's 0.3); at 1 the far
         // knee led a squat and the far shoulder stood up behind the near one as a knob (side-on round 1)
-        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1;
-        pos = [q[0] + tn * (J[b.joint][0] - J[b.depthFrom][0]), q[1] + tn * (J[b.joint][1] - J[b.depthFrom][1])];
+        // pose.fx.farUp (H, default 0): the far side seen a little from ABOVE, its roots raised that much on screen, for a
+        // pose whose far knee, shoe and hand rest on the far floor line (0.162 H up: kneeling, on all fours): with the far
+        // hip level with the near one, the far thigh had to slant back 30° to put its knee there, the far arm 30° forward
+        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1, up = pose.fx?.farUp ?? 0;
+        pos = [q[0] + tn * (J[b.joint][0] - J[b.depthFrom][0]), q[1] + tn * (J[b.joint][1] - J[b.depthFrom][1]) - up];
       } else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
       if (b.plane === 'arm3') {
         const a3 = arm3(b, d, ps, bonesIn), parentSame = BONE[b.parent].plane === 'arm3';

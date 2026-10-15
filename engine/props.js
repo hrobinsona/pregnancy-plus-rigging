@@ -18,34 +18,39 @@ const post = (a, b, wa, wb) => ensureCW(loop([
 
 /** A wooden side chair seen from the side, its backrest at x0 (sitting on it she faces away from the backrest; squatting
  *  she holds its top with the chair in front of her). o = {seatY (top of the seat), x0 (the backrest's edge), x1 (the
- *  front edge), backTop (top of the backrest), depth: [dx, dy] where the far legs show (a ¾ hint, default [0.13, -0.07])} */
+ *  front edge), backTop (top of the backrest), depth: [dx, dy] where the far legs show (a ¾ hint, default [0.16, -0.07])}
+ *  Drawn as the stills draw a kitchen chair (critic R3: "the crest a block on one post", "thin dead-vertical rods", "the
+ *  seat too deep"): stout posts, the legs splaying a little to the floor, the backrest leaning back, its CREST RAIL a band
+ *  across from the near stile to the far one, the seat's top a thin lit strip. */
 export function chair(o, z = 4) {
-  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.24, -0.1], th = 0.11, lw = 0.085, parts = [];
-  const bx = x0 + lw / 2, lean = -0.1;
+  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.16, -0.07], th = 0.1, lw = 0.12, sp = 0.07, parts = [];
+  const bx = x0 + lw / 2, lean = -0.17, crest = 0.4;
   // far legs and far backrest stile (behind, darker)
-  for (const x of [x0 + lw / 2, x1 - lw / 2]) parts.push({ id: `prop.chair.farleg${parts.length}`, z: z - 0.4, fill: WOOD.far, geom: post([x + dx, seatY + th + dy], [x + dx, dy * 0.4], lw, lw * 0.85) });
-  parts.push({ id: 'prop.chair.farback', z: z - 0.4, fill: WOOD.far, geom: post([bx + lean + dx, backTop + dy], [bx + dx, seatY + dy], lw * 0.9, lw) });
-  // the rail between the legs, the seat (its top seen a little from above, then its edge), near legs, near stile, top slat
-  parts.push({ id: 'prop.chair.rail', z: z - 0.2, fill: WOOD.side, geom: rect(x0 + lw / 2, seatY * 0.42 - 0.03, x1 - lw / 2, seatY * 0.42 + 0.03, 0.01) });
-  // (the seat's top, seen a little from above, runs back to the far legs: a box from the near edge to the far one; cut
-  // short, the far front leg stood off the seat on its own, critic R2 "legs off the seat")
-  parts.push({ id: 'prop.chair.seattop', z: z - 0.1, fill: WOOD.face, geom: ensureCW(loop([[x0 - 0.02, seatY + 0.04, { c: true }], [x0 - 0.02 + dx, seatY + dy, { c: true }],
-    [x1 + 0.02 + dx, seatY + dy, { c: true }], [x1 + 0.02, seatY + 0.04, { c: true }]], 0.9)) });
+  parts.push({ id: 'prop.chair.farleg0', z: z - 0.4, fill: WOOD.far, geom: post([bx + dx, seatY + th + dy], [bx - sp + dx, dy * 0.4], lw * 0.9, lw * 0.8) });
+  parts.push({ id: 'prop.chair.farleg1', z: z - 0.4, fill: WOOD.far, geom: post([x1 - lw / 2 + dx, seatY + th + dy], [x1 - lw / 2 + sp + dx, dy * 0.4], lw * 0.9, lw * 0.8) });
+  parts.push({ id: 'prop.chair.farback', z: z - 0.4, fill: WOOD.far, geom: post([bx + lean + dx, backTop + dy], [bx + dx, seatY + dy], lw * 0.9, lw * 0.9) });
+  // the stretcher between the legs, the seat (its top a thin strip seen a little from above, then its edge), near legs
+  parts.push({ id: 'prop.chair.rail', z: z - 0.2, fill: WOOD.side, geom: rect(bx - sp * 0.55, seatY * 0.42 - 0.035, x1 - lw / 2 + sp * 0.55, seatY * 0.42 + 0.035, 0.01) });
+  parts.push({ id: 'prop.chair.seattop', z: z - 0.1, fill: WOOD.face, geom: ensureCW(loop([[x0 - 0.02, seatY + 0.03, { c: true }], [x0 - 0.02 + dx, seatY + dy, { c: true }],
+    [x1 + 0.02 + dx, seatY + dy, { c: true }], [x1 + 0.02, seatY + 0.03, { c: true }]], 0.9)) });
   parts.push({ id: 'prop.chair.seat', z, fill: WOOD.side, geom: rect(x0 - 0.02, seatY, x1 + 0.02, seatY + th, 0.02) });
-  for (const [i, x] of [x0 + lw / 2, x1 - lw / 2].entries()) parts.push({ id: `prop.chair.leg${i}`, z: z + 0.1, fill: WOOD.face, geom: post([x, seatY + th], [x, 0], lw, lw * 0.85) });
-  parts.push({ id: 'prop.chair.back', z: z + 0.1, fill: WOOD.face, geom: post([bx + lean, backTop], [bx, seatY], lw * 0.95, lw) });
-  // the top rail runs across from the near stile to the far one (a slat round the near stile alone read as "a knob on one
-  // post", critic R1), its far end a step darker under the near
-  parts.push({ id: 'prop.chair.slatfar', z: z - 0.3, fill: WOOD.far, geom: rect(bx + lean - lw * 0.55, backTop + dy + 0.04, bx + lean + dx + lw * 0.6, backTop + dy + 0.36, 0.03) });
-  parts.push({ id: 'prop.chair.slat', z: z + 0.05, fill: WOOD.side, geom: rect(bx + lean - lw * 0.55, backTop + 0.06, bx + lean + dx * 0.55 + lw * 0.55, backTop + 0.38, 0.03) });
+  parts.push({ id: 'prop.chair.leg0', z: z + 0.1, fill: WOOD.face, geom: post([bx, seatY + th], [bx - sp, 0], lw, lw * 0.85) });
+  parts.push({ id: 'prop.chair.leg1', z: z + 0.1, fill: WOOD.face, geom: post([x1 - lw / 2, seatY + th], [x1 - lw / 2 + sp, 0], lw, lw * 0.85) });
+  parts.push({ id: 'prop.chair.back', z: z + 0.1, fill: WOOD.face, geom: post([bx + lean, backTop], [bx, seatY], lw, lw) });
+  // the crest rail: a band across the top of the backrest from the near stile to the far one (seen end on, the rail alone
+  // read as a knob on one post), leaning with the stiles
+  const t0 = [bx + lean - lw / 2, backTop], t1 = [bx + lean + dx + lw / 2, backTop + dy], dl = lean * crest / (seatY - backTop);
+  parts.push({ id: 'prop.chair.slat', z: z + 0.15, fill: WOOD.face, geom: ensureCW(loop([[...t0, { c: true }], [...t1, { c: true }], [t1[0] - dl, t1[1] + crest, { c: true }], [t0[0] - dl, t0[1] + crest, { c: true }]], 0.9)) });
+  parts.push({ id: 'prop.chair.slatedge', z: z + 0.16, fill: WOOD.side, geom: ensureCW(loop([[t0[0] - dl, t0[1] + crest - 0.06, { c: true }], [t1[0] - dl, t1[1] + crest - 0.06, { c: true }], [t1[0] - dl, t1[1] + crest, { c: true }], [t0[0] - dl, t0[1] + crest, { c: true }]], 0.9)) });
   return { parts, floors: [[x0 - 0.05, x1 + 0.05, seatY]], cloth: [] };
 }
 
 /** A birth ball resting on the floor, its top at topY, centred at x. Flat, like the stills' balls. She sits on her skirt
- *  on it: the cloth stops where it meets the ball's top (a short floor there), it doesn't slide down its side. */
+ *  on it: the cloth stops where it meets the ball's top (a short floor there), it doesn't slide down its side. Her weight
+ *  squashes it a touch (o.squash, default 0.04: as tall as her seat, 4% wider; at 0.12 it read as an egg, critic R3) */
 export function ball(o, z = 4) {
-  const r = -o.topY / 2, c = [o.x, -r];
-  return { parts: [{ id: 'prop.ball', z, fill: o.fill || '#a9cdec', geom: ensureCW(ellipse(c, r, r)) }],
+  const r = -o.topY / 2, c = [o.x, -r], sq = o.squash ?? 0.04;
+  return { parts: [{ id: 'prop.ball', z, fill: o.fill || '#a9cdec', geom: ensureCW(ellipse(c, r * (1 + sq), r)) }],
     floors: [[c[0] - 0.75 * r, c[0] + 0.75 * r, o.topY + 0.12 * r]], cloth: [] };
 }
 

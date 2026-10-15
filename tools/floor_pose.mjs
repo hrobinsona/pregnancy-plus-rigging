@@ -9,7 +9,8 @@
 //          the part is flipped (a shoe's vamp on the floor when kneeling: its highest point at rest)
 // --bones  bone stems to move, for each of --sides (default near,far); root.1 always moves
 // --keep   weight pulling each bone back to its start (default 1; smaller lets the contacts win more)
-// --aim    hand.near=0,…: a bone's drawn direction on screen (0 = forward): fingers forward on the floor
+// --aim    hand.near=0,…: a bone's drawn direction on screen (0 = forward): fingers forward on the floor; --aimw k weights them
+//          (default 1: 10° off weighs as 3 px of contact; 20: an arm held upright while the trunk and root move instead)
 // --fixroot  keep her height (only the named bones move: a hand laid on the floor under a body already placed)
 // --flat   hand.near,…: lay that palm flat (level, fingers forward, palm down) on what it touches
 // --vars   extra bones to move by full name (wristFlex.near,hand.near,foreRot.near: a palm laid flat)
@@ -51,11 +52,11 @@ const measure = (x) => {
 };
 // --aim hand.near=0: a bone's drawn direction on screen (degrees, 0 = forward, 90 = down): a hand flat on the floor points
 // its fingers forward, as every all-fours still draws them (without it a palm laid flat could point back at her knees)
-const AIM = (arg('aim', '') || '').split(',').filter(Boolean).map((kv) => { const [b, d] = kv.split('='); return { b, d: +d }; });
+const AIM = (arg('aim', '') || '').split(',').filter(Boolean).map((kv) => { const [b, d] = kv.split('='); return { b, d: +d }; }), AW = +(arg('aimw', '1'));   // --aimw: the aims' weight (1: 10° off weighs as 3 px of contact)
 const aimErr = (x) => { if (!AIM.length) return 0; const st = rig.solve(poseOf(x)); let e = 0;
   for (const { b, d } of AIM) { const B = rig.BONE[b], q = ap(st[b].M, [rig.J[B.aim][0] - rig.J[B.joint][0], rig.J[B.aim][1] - rig.J[B.joint][1]]), p = st[b].pos;
     const a = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI; e += (((a - d + 540) % 360) - 180) ** 2; }
-  return 2e-6 * e; };
+  return AW * AW * 2e-6 * e; };
 const err = (x) => { const m = measure(x); return m.t.reduce((a, y, i) => a + (y - touch[i].lv) ** 2, 0) + 4 * m.pen + aimErr(x) + keep * 2e-8 * VARS.reduce((a, v, i) => a + (v.startsWith('root') ? 0 : (x[i] - val0(v)) ** 2), 0); };
 let x = VARS.map(val0);
 const before = measure(x).t;
@@ -66,7 +67,7 @@ const resid = (x) => {
   const m = measure(x), r = m.t.map((y, i) => y - touch[i].lv);
   r.push(2 * Math.sqrt(m.pen));
   if (AIM.length) { const st = rig.solve(poseOf(x)); for (const { b, d } of AIM) { const B = rig.BONE[b], q = ap(st[b].M, [rig.J[B.aim][0] - rig.J[B.joint][0], rig.J[B.aim][1] - rig.J[B.joint][1]]), p = st[b].pos;
-    r.push(Math.sqrt(2e-6) * ((((Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI - d) + 540) % 360) - 180)); } }
+    r.push(AW * Math.sqrt(2e-6) * ((((Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI - d) + 540) % 360) - 180)); } }
   if (FLAT.length) { const st = rig.solve(poseOf(x)); for (const b of FLAT) r.push(...flatRes(st, b)); }
   VARS.forEach((v, i) => { if (!v.startsWith('root')) r.push(Math.sqrt(keep * 2e-8) * (x[i] - val0(v))); });
   return r;

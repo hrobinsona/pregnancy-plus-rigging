@@ -42,6 +42,27 @@ export function sag(parts, ctx) {
   }
 }   // the bodice's anchors the skirt hangs from   // the strap is in arms.js: it is built on the arm's contour
 
+/** The bump RESTS ON HER THIGHS. Squatting or bending to the floor, her thighs come up toward her trunk; the bump, swung
+ *  out and down by its weight (sag, above), would hang below them in front of her shins (round 4: the dress a blob where
+ *  her knees should be). It can't: it sits between her spread thighs, on them, its lower half lifted and squashed against
+ *  them. So no bump anchor of the bodice lies more than REST.sink below the near thigh's axis (hip → knee) where the
+ *  thigh points forward; seated (the bump above the lap) and standing (the thighs down) nothing moves. */
+export const REST = { sink: 0.22, idx: [5, 6, 7, 8] };
+export function rest(parts, ctx) {
+  const dress = parts.find((p) => p.id === 'dress'), st = ctx.st;
+  if (!dress || !st['shin.near']) return;
+  const H = st['thigh.near'].pos, K = st['shin.near'].pos, L = Math.hypot(K[0] - H[0], K[1] - H[1]), u = [(K[0] - H[0]) / L, (K[1] - H[1]) / L];
+  const fw = Math.max(0, Math.min(1, (u[0] - 0.3) / 0.4));   // the thigh forward of straight down (cos 72° → 46°)
+  if (!fw) return;
+  const n = [u[1], -u[0]], g = dress.geom;   // n: up off the thigh's axis (the thigh points forward: u[0] > 0)
+  for (const i of REST.idx) {
+    const q = g.P[i], t = (q[0] - H[0]) * u[0] + (q[1] - H[1]) * u[1], h = (q[0] - H[0]) * n[0] + (q[1] - H[1]) * n[1];
+    if (t < 0 || t > 0.95 * L || h > -REST.sink) continue;   // (past the knee the bump hangs free between the knees)
+    const d = (-REST.sink - h) * fw, m = [n[0] * d, n[1] * d];
+    for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + m[0], A[i][1] + m[1]];
+  }
+}
+
 /** The small of her back CURVES IN as her hips flex (leaning on a counter, sitting, squatting, bending): the pelvis tips
  *  forward under the trunk and the lumbar arches, so the back of a stretch dress dips in at the waist between her shoulder
  *  blades and the round of her buttocks. Drawn straight, the back ran in one line from the shoulder blade to the seat
