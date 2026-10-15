@@ -123,14 +123,17 @@ export const LEAVE = 55, LEAVE_FADE = 10;
 export const AF = { drop: 0.25, back: 0.62, edge: 0.35, flare: 0.3 };
 // KNEES APART (squatting): how much less of the near thigh the side's hem covers than sitting, top and underside (as a
 // fraction of the thigh). 0.4 / 0.2 left the thigh bare from its root, "a balloon, the whole near thigh bare back to the
-// seat", round 6, every lens: the squat still's hem crosses the thigh's top ~0.75 along and its underside ~0.5
-export const SQ = { top: 0.1, bot: 0.05, bow: 0.08 };
+// seat", round 6, every lens: the squat still's hem crosses the thigh's top ~0.75 along and its underside ~0.5; at 0.1
+// the hem covered the thigh nearly to the knee, round 10: 0.2 picked beside the still at film size)
+export const SQ = { top: 0.2, bot: 0.05, bow: 0.08 };
 // ... and the TAIL: the skirt's slack hangs below the thighs as a point, the back falling from the seat's fullest point
 // to it and the side panel's front edge a fold from the hem's crossing on the thigh's underside down to it (the squat
 // still: 0.15 H behind that crossing and 0.39 H below it, the inside of the skirt dark in front of the fold). Wrapped round
 // the seat's bottom to the thigh's underside, the back drew the buttocks as a round bag with a knob at its corner, "a
-// balloon", round 6. (H, screen axes: back, down)
-SQ.tail = [-0.15, 0.39];
+// balloon", round 6. (H, screen axes: back, down.) At 0.15 behind and 0.39 below the tail hung to mid-shin, "a sack with
+// a tail… the still's cloth taut over the seat, the hem just below the thighs" (round 10, every lens): 0.05 and 0.22
+// picked beside the still at film size (side_zoom --try, clothTry.sq)
+SQ.tail = [-0.05, 0.22];
 export const KP = { pull: 0.27, bow: 0.06 };
 export const SEATED = { drop: 0.45 };
 // the back's cloth from its fullest point (screen back) to a hem point T below: a cubic leaving the seat straight down and
@@ -200,7 +203,13 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
   // critic R3)
   // (0.9·sw + 0.8·sg flared the back 22° from plumb in walk-pass and the front 6°: an A-line lampshade with no seat under
   // it; the walk stills hang the back ~10° from her seat's round and the front about plumb from the bump, round 6)
-  const sg = o.swing ?? 0, flF = 0.15 * sw + 0.1 * sg, flB = 0.4 * sw + 0.5 * sg, phiB = cal.phiB + flB;
+  // WALKING the front flares too (o.frontWalk, radians, by the stride or the swing): the forward thigh and the swing carry
+  // the front out, and below where it leaves the bump it falls turned forward, the hem's front nearly under the bump's
+  // (the walk stills: 3–20 px behind it at film size); at 0.15·sw + 0.1·sg it fell plumb from the tuck, 35–40 px behind,
+  // "the front slants in under the bump" (side-on round 10, every lens; 0.2 picked beside the stills with side_zoom --try).
+  // Standing: no stride, no swing, unchanged
+  const walk = Math.max(smooth(4 / DEG, 25 / DEG, spread) * (1 - w), smooth(0, 0.1, o.swing ?? 0));
+  const sg = o.swing ?? 0, flF = 0.15 * sw + 0.1 * sg + (o.frontWalk ?? 0) * walk, flB = 0.4 * sw + 0.5 * sg, phiB = cal.phiB + flB;
   const upB = [...(o.seat || []), ...(o.props || [])], upF = o.bump || [];
   const drop = (W, L, up, all, out, phi, fl, climb) => {
     if (!fl) return hang(W, L, all, out, phi, floors, climb);
@@ -274,7 +283,8 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
     // (knees apart, squatting or bending: the cloth is drawn up round the bump and the seat and crosses the near thigh about
     // halfway, its outer half and the knee bare, as both stills draw it; at the sitting reach the dress hid the thighs to the
     // knee and the folded legs read as a dress blob, round 4)
-    const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl) - SQ.top * bt, fsB = Math.max(0.05, cal.fs - dl - SQ.bot * bt);
+    const sq = { ...SQ, ...(o.sq || {}) };   // (o.sq: one pose's or one character's squat shape, e.g. pose.fx.clothTry)
+    const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl) - sq.top * bt, fsB = Math.max(0.05, cal.fs - dl - sq.bot * bt);
     // (bot: where the hem crosses the NEAR thigh's underside, what parts draw the lap from; kneeling on one knee with the
     // near leg forward the back hangs down the far one, and a hem end on the far leg cut a wedge out of the near thigh)
     let g0 = legs[0], bot = iB === 0 ? back(fsB) : sub(g0.TB(Math.min(fsB, g0.fT)), mulS(front(g0.u), cal.skin));
@@ -286,7 +296,7 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
     const rest = fl.length ? [bot[0], Math.min(...fl.map((f) => f[2]))] : null;
     if (rest && w > 0.5) bot = rest;
     side = { top: top(fsT), bot, w, wb: wl[0], apart: bt, backOff: iB !== 0, rest: rest && w > 0.5 ? rest : null };
-    if (bt > 0) { const T = lerp(Hb, add(bot, SQ.tail), bt); pb = toward(pb, T, SQ.bow); Hb = T; side.tail = T; }
+    if (bt > 0) { const T = lerp(Hb, add(bot, sq.tail), bt); pb = toward(pb, T, sq.bow); Hb = T; side.tail = T; }
     // kneeling on ONE knee with the near thigh forward (the back on the kneeling far leg, iB 1): the forward thigh lifts the
     // tube's front and pulls its back in under the seat, the hem's back corner KP.pull ahead of the seat's fullest point
     // (the kneel-pick still: 0.27 H; hung plumb from the seat the back read as "a cape", round 6)
@@ -366,7 +376,12 @@ export function skirt(o, nF = 6, nB = 16) {   // (nB: the back runs over the hug
   // corner; the stills' too): rounded off over 0.04 H, with the tangent already along the hem, they read as a bowl, a
   // lampshade, a sack (side-on round 4, all three lenses)
   A_.push([...add(add(Hf, mulS(n0, 0.85 * d)), mulS(t0, 0.012)), { c: true, ti: 0.3, to: 0.6 }]);
-  A_.push([...add(hem[2], mulS(n2, 1.02 * d)), { a: ang(norm(sub(hem[3], hem[1]))) }]);
+  // (RESTING ON A SEAT, o.seatCorner 0..1: the panel's corner where it meets the seat is a corner too, the hem running
+  // straight from the thigh down to it and straight back along the seat (the sit-ball still: a V under the thigh); one
+  // smooth point midway drew a U, "a pouch under the thigh", round 10)
+  const sc = side?.rest ? (o.seatCorner ?? 0) : 0;
+  if (sc > 0) A_.push([...lerp(add(hem[2], mulS(n2, 1.02 * d)), side.rest, sc), { c: true, ti: 0.6 - 0.3 * sc, to: 0.6 - 0.3 * sc }]);
+  else A_.push([...add(hem[2], mulS(n2, 1.02 * d)), { a: ang(norm(sub(hem[3], hem[1]))) }]);
   // (a squat's TAIL, o.tailRound 0..1: the back's cloth leaves the tail's point turned from straight up the back toward
   // level, by tailRound, so the curtain's bottom is ONE round from the back into the inside's lower edge (the character
   // draws the inside, its point leaving level too: side.tailDir), the fold meeting it at a crisp inner corner, as the

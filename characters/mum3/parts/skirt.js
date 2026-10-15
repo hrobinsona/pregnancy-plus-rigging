@@ -18,7 +18,7 @@ const TOP = [[0.3, -4.17], [0.55, -3.86]];
 // with the hips; leaning on the counter it landed beside the bodice's hidden corner and left a white sliver there, round 6
 const IN = { fw: 0.16, up: 0.06 };
 // cloth shape options for engine/drape.js skirt() (pose.fx.clothTry overrides them for one pose: side_zoom.py --try)
-const CLOTH = { tailRound: 0.75 };
+const CLOTH = { tailRound: 0.75, frontWalk: 0.2, seatCorner: 0.6 };
 const cache = new WeakMap(), rest0 = new WeakMap();
 // the trunk's forward pitch from standing (radians): on all fours ≈ 80°, leaning on a counter ≈ 25–30°
 const pitchOf = ({ C: char, st, rig }) => { if (!rest0.has(char)) rest0.set(char, rig.solve({}).spineLower.rot); return (st.spineLower.rot - rest0.get(char)) * Math.PI / 180; };

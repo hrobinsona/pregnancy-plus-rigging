@@ -6,17 +6,17 @@
  "view": {
   "bbox": [
    [
-    -2.81,
-    -5.09
+    -2.03,
+    -5.42
    ],
    [
-    1.55,
-    0.36
+    2.29,
+    0.4
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
  },
- "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand hangs free, her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
+ "story": "kneel-pick in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays on her thigh (far), her far hand stays on her thigh (near). Made by tools/side_loop.mjs.",
  "intensity": "very gentle and calm: small, soft moves",
  "keys": [
   {
@@ -26,6 +26,29 @@
   }
  ],
  "reach": {
+  "near": [
+   {
+    "t": 0,
+    "pose": "side/kneel-pick",
+    "on": "thigh.far"
+   },
+   {
+    "t": 4.6,
+    "pose": "side/kneel-pick",
+    "on": "thigh.far",
+    "dp": [
+     -0.03,
+     -0.006
+    ],
+    "slide": true
+   },
+   {
+    "t": 7.9,
+    "pose": "side/kneel-pick",
+    "on": "thigh.far",
+    "slide": true
+   }
+  ],
   "far": [
    {
     "t": 0,
@@ -60,7 +83,7 @@
     "hand.near.f2a": 3,
     "hand.near.f3a": 3,
     "hand.near.f4a": 3,
-    "hand.near": 10
+    "hand.near": 5
    },
    "note": "near: the fingers settle onto what they rest on (the easy breath)"
   },
@@ -73,7 +96,7 @@
     "hand.near.f3s": 1.5,
     "hand.near.f4s": 4,
     "hand.near.t0": 4,
-    "hand.near": -9
+    "hand.near": -4.5
    },
    "note": "near: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
   },
@@ -90,7 +113,7 @@
     "hand.near.f3b": -2,
     "hand.near.f4a": -3,
     "hand.near.f4b": -2,
-    "hand.near": 8
+    "hand.near": 4
    },
    "note": "near: the breath out: the fingers ease long"
   },
@@ -141,6 +164,7 @@
  "qa": {
   "curl": {
    "sides": [
+    "near",
     "far"
    ]
   }

@@ -255,8 +255,17 @@ nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
 # over the kneecap: its fingers curl down the knee's front, in the picture: fx.fingersIn, round 5, lesson 64)
 # (bending down she ROUNDS her back, the still one C from the shoulder blade over the seat: fx.lumbar 0, no hollow at the
 # waist; at the pitch's 0.1 H in it ran from the blade to the seat as a ramp, "a cape", round 6)
-fit kneel-pick s_kneel_pick_0 --props toy:r=0.24:near=1:held=1 --hand near=ball --fix fx.fingersIn=0.6,fx.lumbar=0
-dirs kneel-pick --dir pelvis=-64,spineLower=-62,spineUpper=-62,chest=-64,neck=-52,head=-58,thigh.near=-8,shin.near=95,thigh.far=58,shin.far=-172,upperArm.near=96,forearm.near=84,hand.near=86,upperArm.far=70,forearm.far=20,hand.far=40
+# ROUND 11: all three s_kneel_pick stills round her BACK like a second bump and hide the front one behind the hanging arm;
+# fitted to them, every lens read ours as "the bump has gone… a stranger would not read her as pregnant", the back
+# hunched (round 10). s_kneel_pick2_1 (asked for the bump in front and a straight back) shows it: the trunk ~15° forward
+# with a long straight back, the head down to the ball, the arm hanging past the bump's side. Her shorter arm can't reach
+# an orange-sized ball on the floor from there, so the ball is a child's play ball (r 0.47 H, ~21 cm) ON the floor under
+# her palm: lifted at her fingertips the small one read "floating in mid-air", shadow or not (rounds 7–10)
+# (the trunk nearly UPRIGHT, ~6° forward, the hips sitting back on the kneeling thigh for the reach: leaned 20° from the
+# hips for the reach, the seat swung back into a second round mass behind her and the hanging arm covered the bump's
+# front, at film size the bump read smaller than the seat, round 11)
+fit kneel-pick s_kneel_pick2_1 --props toy:r=0.47:near=1 --hand near=softrest --fix fx.fingersIn=0.6
+dirs kneel-pick --dir pelvis=-84,spineLower=-84,spineUpper=-82,chest=-80,neck=-56,head=-60,thigh.near=-8,shin.near=95,thigh.far=40,shin.far=-172,upperArm.near=92,forearm.near=88,hand.near=88,upperArm.far=70,forearm.far=20,hand.far=40
 floor kneel-pick --touch leg.far:4@-0.162,leg.far:7@-0.162,leg.far:9@-0.162,shoe.far:tip@-0.162,shoe.near:ball,shoe.near:heel@-0.1 --bones shin,foot --sides far --vars thigh.far,thigh.near,foot.near
 # (round 9: 'softrest', the fingers together and the thumb along the top: 'lay' (the bump's open hand, its thumb out apart
 # from the index) stuck the thumb straight out past the kneecap, "the single worst mark in the library… a pointer", round 8)
