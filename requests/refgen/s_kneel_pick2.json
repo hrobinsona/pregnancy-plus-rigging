@@ -1,9 +1,0 @@
-{
-  "char": "mum3",
-  "name": "s_kneel_pick2",
-  "prompt_file": "docs/prompts/s_kneel_pick2.txt",
-  "refs": [
-    "characters/mum3/ref/master.png"
-  ],
-  "n": 3
-}
