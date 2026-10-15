@@ -2,13 +2,14 @@
  "name": "side/kneel",
  "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); pose_dirs: head=-100,thigh.near=86,thigh.far=86; floor_pose: leg.near:4, leg.near:7, leg.near:9, shoe.near:tip on the floor",
  "hands": {
-  "near": "siderest",
-  "far": "siderest"
+  "near": "softrest",
+  "far": "softrest"
  },
  "fx": {
   "farUpLegs": 0.162,
   "turn": 0.4,
-  "show.far.arm": 1
+  "show.far.arm": 1,
+  "fingersIn": 0.5
  },
  "root": [
   0.1432,
@@ -60,5 +61,5 @@
   ]
  },
  "fitFrom": "side/fit/kneel",
- "_contact": "--side far --at 0.40,-4.36 --on belly --surface bump --handDir 43 --hand siderest --back --inside 0.05 (base side/kneel)"
+ "_contact": "--side far --at 0.40,-4.36 --on belly --surface bump --handDir 43 --hand softrest --back --inside 0.05 (base side/kneel)"
 }

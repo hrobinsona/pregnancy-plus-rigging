@@ -1,12 +1,13 @@
 {
  "name": "side/fit/walk-pass",
- "note": "fitted to characters/mum3/refs/pose/s_walk_pass_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=95,forearm.near=82,hand.near=88,upperArm.far=62,forearm.far=57,hand.far=85",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_pass_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=95,forearm.near=82,hand.near=86,upperArm.far=62,forearm.far=57,hand.far=62",
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": "idle",
+  "far": "idle"
  },
  "fx": {
   "skirtSwing": 0.2,
+  "fingersIn": 0.8,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -29,7 +30,7 @@
   "armRot.near": 0.5,
   "forearm.near": 1.7,
   "foreRot.near": 0.1,
-  "hand.near": 2.2,
+  "hand.near": 4.3,
   "thigh.near": 14.5,
   "shin.near": -5.7,
   "foot.near": -0.1,
@@ -41,7 +42,7 @@
   "armRot.far": -0.2,
   "forearm.far": -5,
   "foreRot.far": -0.1,
-  "hand.far": -22.6,
+  "hand.far": 1.5,
   "thigh.far": -14.7,
   "shin.far": -21.7,
   "foot.far": -3.6,

@@ -1,9 +1,9 @@
 {
  "name": "side/fit/squat",
- "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=22",
+ "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=-12",
  "hands": {
-  "near": "drape",
-  "far": "drape"
+  "near": "hold",
+  "far": "hold"
  },
  "fx": {
   "kneesApart": 1,
@@ -39,7 +39,7 @@
   "armRot.near": 4.1,
   "forearm.near": 25.4,
   "foreRot.near": 0.1,
-  "hand.near": -31.7,
+  "hand.near": 2,
   "thigh.near": 102.3,
   "shin.near": -118.7,
   "foot.near": 33.6,
@@ -51,7 +51,7 @@
   "armRot.far": 4.1,
   "forearm.far": 25.4,
   "foreRot.far": 0.1,
-  "hand.far": -31.7,
+  "hand.far": 2,
   "thigh.far": 102.3,
   "shin.far": -118.7,
   "foot.far": 33.6,

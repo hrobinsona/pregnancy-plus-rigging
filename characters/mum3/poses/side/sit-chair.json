@@ -1,14 +1,15 @@
 {
  "name": "side/sit-chair",
- "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=3,thigh.far=3,shin.near=94,shin.far=94,head=-97; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=3,thigh.far=3,shin.near=94,shin.far=94,head=-97; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor; far_leg --set knee=-0.17,-0.02,ankle=-0.25,-0.07",
  "hands": {
-  "near": "siderest",
-  "far": "siderest"
+  "near": "softrest",
+  "far": "softrest"
  },
  "fx": {
   "farUpLegs": 0.162,
   "turn": 0.4,
-  "show.far.arm": 1
+  "show.far.arm": 1,
+  "fingersIn": 0.5
  },
  "props": {
   "items": [
@@ -31,11 +32,11 @@
   "belly": 0,
   "clavicle.near": -6.1,
   "shoulderAbd.near": 4.3,
-  "upperArm.near": -23.7,
-  "armAbd.near": 25.9,
+  "upperArm.near": -22.3,
+  "armAbd.near": 27.8,
   "armRot.near": -12.4,
-  "forearm.near": 87.6,
-  "foreRot.near": 0,
+  "forearm.near": 86.2,
+  "foreRot.near": -10,
   "hand.near": 10,
   "thigh.near": 86.7,
   "shin.near": -92,
@@ -43,18 +44,18 @@
   "hipAbd.near": -6.9,
   "clavicle.far": -18.7,
   "shoulderAbd.far": 3.4,
-  "upperArm.far": -33.3,
-  "armAbd.far": -53.4,
-  "armRot.far": 53.6,
-  "forearm.far": 101.8,
-  "foreRot.far": 10,
-  "hand.far": 12,
-  "thigh.far": 88.3,
-  "shin.far": -93.4,
-  "foot.far": -1.9,
+  "upperArm.far": -33,
+  "armAbd.far": -51.5,
+  "armRot.far": 51.7,
+  "forearm.far": 101,
+  "foreRot.far": 0,
+  "hand.far": 10,
+  "thigh.far": 81.4,
+  "shin.far": -89.8,
+  "foot.far": 0.6,
   "hipAbd.far": -4.6,
   "toe.near": 9.8,
-  "toe.far": -20
+  "toe.far": 9.8
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_sit_chair_1.json",
@@ -69,5 +70,15 @@
   ]
  },
  "fitFrom": "side/fit/sit-chair",
- "_contact": "--side far --at 0.66,-4.42 --on belly --surface bump --handDir 17 --hand siderest --back --inside 0.05 (base side/sit-chair)"
+ "scale": {
+  "thigh.far": [
+   0.845,
+   1
+  ],
+  "shin.far": [
+   1.01,
+   1
+  ]
+ },
+ "_contact": "--side far --at 0.66,-4.42 --on belly --surface bump --handDir 17 --hand softrest --back --inside 0.05 (base side/sit-chair)"
 }

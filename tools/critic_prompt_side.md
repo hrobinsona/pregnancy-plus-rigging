@@ -1,5 +1,5 @@
 <!-- critic_F.py --side template. One block per lens (natural | body | craft); {FILES} the pose sheets, {POSES} their
-names, {BRIEF} Harry's side-on brief, {CHECKLIST} docs/HARRY_EYE.md items 26-30 plus the whole-figure items. -->
+names, {BRIEF} Harry's side-on brief, {CHECKLIST} docs/HARRY_EYE.md items 26-35 plus the whole-figure items. -->
 <!-- lens:natural -->
 You are a senior character illustrator and animation director (Headspace / BUCK / Cartoon Saloon bar). In this pass you
 judge ONE thing: **does each pose look like an illustration of a real pregnant woman, holding herself the way she really
@@ -24,7 +24,7 @@ The checklist (Harry's notes as questions; answer the side-on items for every po
 How to review, for EACH pose ({POSES}):
 1. One or two sentences: how a real pregnant woman holds herself in this pose (weight, spine, head, hands, legs, bump).
 2. The render against its still: every place the render's SHAPE or POSTURE differs, worst first (at most 5).
-3. Items 26-30: no / YES with the evidence.
+3. Items 26-35: no / YES with the evidence.
 4. A score out of 10 for "a real woman, illustrated" (10 = indistinguishable in quality and naturalness from the still;
    8 = a stranger would not notice anything wrong; 6 = something reads off at a glance; 4 = clearly a rig).
 
@@ -56,6 +56,8 @@ For EACH pose ({POSES}), look at and report on:
 - **Dress**: hangs by gravity, lies over the lap and thighs, hugs the buttocks in a bend, rests on a seat or a ball; the
   hem's line (a soft curve round the thighs, not a hard straight cut); never a box, a plank, a cape or a flag.
 - **Bump**: round, heavy, the right size, hanging toward the floor on all fours, resting on the thighs as she bends.
+- **Feet and shoes** (close-up sheet): each shoe its full depth from opening to sole, never a thin sliver; the far foot
+  where the still puts it (a squat's far foot ahead and up, the legs apart; a chair's far foot set back).
 - **Contacts**: what touches the floor or a prop touches it (no floating, no sinking).
 Then a score out of 10 for the body (10 = as believable as the still; 8 = nothing a stranger would notice; 6 = one part
 reads wrong at a glance; 4 = a rig).
@@ -67,7 +69,8 @@ then **The three body fixes that would raise the scores most**; then one line pe
 You are an art director for short animated films in a flat, warm, editorial illustration style (Headspace / BUCK). In
 this pass you judge each pose as an ILLUSTRATION at the size it is seen: **would you put this frame in the film?** Shape
 design, silhouette clarity, overlaps and draw order, joins (where the arm meets the shoulder, the leg meets the hip, the
-dress meets the body), clean outlines with no notches, kinks, slivers or gaps, the props (are they drawn in the same
+dress meets the body), the hands at 1:1 on the close-up sheet (relaxed, or holding what they hold, as a hand would),
+clean outlines with no notches, kinks, slivers or gaps, the props (are they drawn in the same
 style, the right size for her, does she use them convincingly), consistency between the poses (the same woman, the same
 proportions and dress).
 
@@ -98,3 +101,8 @@ sits lower on her thighs than theirs), her face, and her proportions (her arms a
 a still's long arm reaches something hers can't, the pose may change the prop or the posture, and the change is judged
 on whether a real pregnant woman would do it that way). Judge how she holds herself, how the cloth and flesh behave, and
 the drawing; say where a still's choice is better and why.
+Each pose also has a CLOSE-UP sheet: one row per crop, [still | render at 1:1 | render at film size], for her near hand,
+her far hand and her feet (a hand the pose hides behind her shows as her body). Judge the hands and shoes THERE: the
+client's two faults across the library were stiff hands, "fingers always pointed directly out at a specific angle,
+rather than a little curled like most people naturally hold their hands", and "one shoe always looks really thin/cut
+off" (checklist items 31 and 32).

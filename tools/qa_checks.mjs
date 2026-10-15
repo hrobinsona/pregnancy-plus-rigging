@@ -1,6 +1,6 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs,fingers] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs,fingers,shoes,curl] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
@@ -29,6 +29,15 @@
 //             fan: {every: 0.5, tol: 3} also the fan's SHAPE all shot (finger_angles --fan: a whole-hand turn passes,
 //             a change of shape doesn't): a fidget between the key frames bent the cradling fingers at the knuckles into "a
 //             rake", and the top hand's spreads, still the right hand's, closed its fan into "a paw" (lesson 59)
+//     shoes   each drawn shoe's side, from its opening to its sole across the middle of the foot, ≥ 0.75 of the near shoe's at
+//             rest in every frame (tools/shoe_gauge.mjs): the far shoe had been drawn 36% deep, "cut off at the bottom making the
+//             foot look very thin", in every side-on pose (Harry, round 8, lesson 69)
+//     curl    spec.qa.curl {sides, min (°, default 4)}: a RESTING hand's fingers curl in the picture: the four fingers' mean
+//             angle off the hand's own line (wrist → middle knuckle) ≥ min on every 3rd frame. The straight shapes ('relaxed',
+//             'siderest': a fan about −3°) read "stiff… fingers always pointed directly out at a specific angle, rather than a
+//             little curled like most people naturally hold their hands" (Harry, side-on round 8, lesson 69); 'idle',
+//             'softrest', 'palmdown' with fx.fingersIn measure 9–25°. side_loop.mjs and side_walk.mjs ask it of every hand
+//             that rests or swings free (not one pressing or gripping, nor one out of sight)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -38,6 +47,7 @@ import { createRig } from '../engine/rig.js';
 import { makeAnim } from '../engine/anim.js';
 import { expandHands } from '../engine/handlib.js';
 import { ap } from '../engine/geom.js';
+import { shoeDepth, restDepth } from './shoe_gauge.mjs';
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const char = arg('char', 'mum2'), name = arg('anim', 'nausea-to-belly'), D = `characters/${char}/`, skip = new Set((arg('skip', '')).split(','));
 const C = (await import(`../${D}character.js`)).default, rig = createRig(C);
@@ -270,5 +280,28 @@ if (!skip.has('fingers') && spec.qa?.fingers?.length) {
       gate(p2, `${f.side} fingers' fan every ${f.fan.every ?? 0.5} s within ${ft}° of the still's: ${o2.trim().split('\n').pop()}${p2 ? '' : ` at ${bad.join(', ')} s — a fidget or a spread changes the hand's shape there: move the fingers together (the fan kept), check spread signs on a mirrored hand`}`);
     }
   }
+}
+if (!skip.has('shoes')) {
+  const ref = restDepth(rig);
+  if (ref) {
+    console.log(`shoes: each shoe's side at mid-foot ≥ 0.75 of the near shoe's at rest (${ref.toFixed(3)} H) every frame (tools/shoe_gauge.mjs)`);
+    const A = fresh(), lo = {};
+    for (let i = 0; i <= ALL; i += 3) for (const p of rig.build(A.poseAt(i / spec.fps))) if (/^shoe\.(near|far)$/.test(p.id)) { const d = shoeDepth(p).depth / ref; if (!(p.id in lo) || d < lo[p.id][0]) lo[p.id] = [d, i / spec.fps]; }
+    for (const [id, [d, t]] of Object.entries(lo)) gate(d >= 0.75, `${id}: slimmest ${(100 * d).toFixed(0)}% at ${t.toFixed(2)} s${d < 0.75 ? ' — the shoe reads cut off, the foot thin: trace its opening on the master (params P.shoe.<side>.open), or ease the toe bend that squashes it' : ''}`);
+  }
+}
+if (!skip.has('curl') && spec.qa?.curl) {
+  const q = spec.qa.curl, min = q.min ?? 4, J = C.joints, A = fresh(), lo = {};
+  const dg = (v) => Math.atan2(v[1], v[0]) * 180 / Math.PI, wr = (d) => ((d + 540) % 360) - 180;
+  console.log(`curl: each resting hand's fingers curl in the picture, their mean angle off the hand's line ≥ ${min}° every 3rd frame`);
+  for (let i = 0; i <= ALL; i += 3) {
+    const st = rig.solve(A.poseAt(i / spec.fps));
+    for (const s of q.sides || []) {
+      const id = `hand.${s}`, W = st[id].pos, k2 = st[`${id}.f2a`].pos, hd = dg([k2[0] - W[0], k2[1] - W[1]]);
+      const m = ['f1', 'f2', 'f3', 'f4'].map((f) => { const a = st[`${id}.${f}a`].pos, d = J[`${id}.${f}d`], t = ap(st[`${id}.${f}c`].M, [J[`${id}.${f}t`][0] - d[0], J[`${id}.${f}t`][1] - d[1]]); return wr(dg([t[0] - a[0], t[1] - a[1]]) - hd); }).reduce((x, y) => x + y, 0) / 4;
+      if (!(s in lo) || m < lo[s][0]) lo[s] = [m, i / spec.fps];
+    }
+  }
+  for (const [s, [m, t]] of Object.entries(lo)) gate(m >= min, `${s} hand: least curl ${m.toFixed(0)}° at ${t.toFixed(2)} s${m < min ? ' — the fingers point straight out: a resting shape (idle, softrest, palmdown) and fx.fingersIn (the curl in the picture)' : ''}`);
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

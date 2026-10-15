@@ -5,7 +5,8 @@
 // shot to anims/<out>.json: a loop that walks in place (spec.walk, engine/anim.js: the lowest sole points stay planted, a
 // rolling heel → ball → toe contact, the camera travels with her), every pose passed through on one smooth periodic curve
 // (spec.cyclic), with her breath, blinks and the spine's drift.
-//   node tools/side_walk.mjs <char> [--step 0.6] [--loops 4] [--samples 12] [--stride 0.9] [--tilt 10] [--even 0.85] [--clear 0.05] [--out side-walk]
+//   node tools/side_walk.mjs <char> [--step 0.6] [--loops 4] [--samples 12] [--stride 0.9] [--tilt 10] [--even 0.85] [--clear 0.05] [--lag 0.06] [--out side-walk]
+// --lag      how far behind its forearm's swing each hand turns (cycles; 0 = rigid with it)
 // --step     seconds a step (0.6: 100 steps a minute, an easy pregnant pace)
 // --samples  poses a step (12: one every 0.05 s at --step 0.6; the curve between them is smooth)
 // --stride   the hip's swing about its mean (1 = the measured adult's; pregnant women walk with a shorter stride)
@@ -120,9 +121,20 @@ const gap = (c) => { const u = ((c % 1) + 1) % 1, r = (a, b) => Math.max(0, Math
   return u > 0.6 ? gClear * e(r(0.6, 0.68)) * (1 - e(r(0.82, 0.97))) : 0; };
 // the arms swing against the legs, at their widest a little after each heel strike
 const armW = (c) => (1 - Math.cos(2 * Math.PI * (c - 0.05))) / 2;
-const poseAtC = (c) => {
-  const w = armW(c), bones = { ...base.bones, ...trunk };
+// the HANDS TRAIL THE SWING (overlapping action): a loose hand doesn't turn with its forearm, it follows it --lag cycles
+// later (0.06: ~2 frames at --step 0.6), so it drags behind as the arm swings forward, flops past as it turns back. Rigid
+// with the forearm, the hands read stiff, "when a person is walking they don't have stiffness in their arms" (Harry, round 8)
+const lag = +arg('lag', 0.06);
+const armBones = (c) => { const w = armW(c), bones = { ...base.bones, ...trunk };
   for (const sd of ['near', 'far']) for (const b of ARM) { const k = `${b}.${sd}`; if (k in base.bones || k in mirrored.bones) bones[k] = +((1 - w) * (base.bones[k] ?? 0) + w * (mirrored.bones[k] ?? 0)).toFixed(2); }
+  return bones; };
+const handGain = Object.fromEntries(['near', 'far'].map((sd) => { const k = `hand.${sd}`, b0 = base.bones[k] ?? 0, d = (v) => dirOf(solve({ ...base, bones: { ...base.bones, [k]: v } }), k);
+  return [sd, 1 / (((d(b0 + 1) - d(b0 - 1) + 540) % 360 - 180) / 2 || 1)]; }));   // bone degrees per drawn degree (signs differ per side)
+const trail = (c) => { if (!lag) return {}; const now = solve({ ...base, bones: armBones(c) }), then = solve({ ...base, bones: armBones(c - lag) });
+  return Object.fromEntries(['near', 'far'].map((sd) => [`hand.${sd}`, handGain[sd] * (((dirOf(then, `forearm.${sd}`) - dirOf(now, `forearm.${sd}`) + 540) % 360) - 180)])); };
+const poseAtC = (c) => {
+  const bones = armBones(c), tr = trail(c);
+  for (const [k, v] of Object.entries(tr)) bones[k] = +((bones[k] ?? 0) + v).toFixed(2);
   const pv = bones.pelvis ?? 0, ph = { [front]: c, [back]: c + 0.5 };
   const make = (bend) => { const b = { ...bones }; for (const sd of ['near', 'far']) Object.assign(b, legBones(sd, ph[sd], pv, bend[sd] || 0));
     for (const k of Object.keys(b)) if (/^(thigh|shin|foot|toe)\./.test(k)) b[k] = +b[k].toFixed(2);
@@ -174,6 +186,9 @@ const spec = {
   blink: { close: 3, hold: 1, open: 5 },
   events: [{ type: 'blink', t: +(0.35 * Dur).toFixed(2) }, { type: 'blink', t: +(0.82 * Dur).toFixed(2) }],
   drift: { amp: 0.6, seed: 11, harmonics: [1, 2, 3], chain: { bones: ['spineLower', 'spineUpper', 'chest', 'neck', 'head'], lagFrames: 3, deg: [0.1, 0.15, 0.2, 0.25, 0.35] }, bones: { head: 0.3 } },
+  // (both swinging hands keep their curl in the picture through the swing: qa_checks 'curl'; straight they read "stiff",
+  // Harry, side-on round 8, lesson 69)
+  qa: { curl: { sides: ['near', 'far'], min: 8 } },
 };
 // the walk's numbers: her step and pace, how even it is, the hips' bob, and the swinging foot's clearance as it passes the
 // standing one (a toe scuffing the floor reads at once)

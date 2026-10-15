@@ -295,3 +295,36 @@ body is excused from the handedness gate (`side_loop.mjs`: sit-ball's far hand u
 
 Harry (2026-10-15 10:57): "after this round with the critic lets do a manual review with me": round 7 goes to him with the
 critics' notes beside each pose, before round 8.
+
+## Round 8 (2026-10-15): Harry's review of round 7
+
+Harry reviewed round 7 on the review page (one comment per note) and in the thread (14:38): "Two really key takeaways that
+came across across many poses, 1. the hands often look stiff and not relaxed. Fingers always pointed directly out at a
+specific angle. rather than a little curled like most people naturally hold their hands when walking, sitting etc. 2. One
+shoe always looks really thin/cut off that then looks odd". Per pose: walk-pass "stiff hands… the close hand pointed very
+down… the far thumb in the wrong position… follow the arm with a slight flop" and "the shoe 'cut off' at the bottom, the
+foot very thin"; lean-counter "Hands are the wrong way around on the counter and the top of the arm isn't connected
+smoothly to the shoulder"; squat "the blend between the top arm and shoulder looks jagged and rough where as the reference
+still is small and clean" and "Shoes again look cut off… the legs aren't separated enough which means the knee then forms
+at a wierd place/angle. As always wrist/hands look odd and not holding the chair"; sit-ball "hands stiff vs relaxed on the
+leg"; sit-chair "Far away knee/leg at the wrong position. Hence lands awkwardly - esp compared to the ref image".
+
+What changed (lesson 69, HARRY_EYE 31–35):
+- **The thin shoe**: the far shoe had the near one's opening from its own lower counter, 36% as deep at mid-foot; each shoe
+  now has its own traced opening, 81–83% in every pose (`shoe_gauge.mjs`, gate `shoes`).
+- **Hands**: new library shapes picked beside the stills at 1:1: `idle` (walking, a graded curl, the thumb along the index,
+  fx.fingersIn 0.8, trailing the swing with `side_walk.mjs --lag 0.06`), `softrest` (on the bump, kneeling and seated; on
+  sit-ball's near thigh, palm down by the knee), `palmdown` (lean-counter: palms down, the backs a low dome), `hold`
+  (squat: the chair's back gripped, the wrist in line with the forearm). Gate `curl` (a resting or swinging hand's fingers
+  curl in the picture; round 7's measured −3° and fail).
+- **Shoulder**: lifted, the strap is one even band on the arm's contour, over its top and down its front, tapering out; the
+  bodice's shoulder points and the trapezius' end are tucked under it (no ear, sliver or skin wedge).
+- **Far leg** read off each still at 1:1 (`far_leg.mjs --set`): squat's feet wide (far ankle +0.3, −0.4 H, the shins in a V);
+  sit-chair's far foot set back behind the near heel (−0.25, −0.07; round 7's "ahead and up" came from landmarks that
+  confuse the far toe with the near one); sit-ball's far foot ahead and up (+0.3, −0.24).
+- The critic pack now shows each pose's hands and feet at 1:1 beside the still's (Harry's two faults were invisible at
+  film size for seven rounds).
+
+Blind A/B on breathe-stroke (one fresh reviewer on **Fable**, the shared shoe and shoulder changes, whole figure in frame):
+no clear difference, 6.5 vs 6.5; kept (the standing far shoe is mostly behind the near one; the shoulder points move
+≤ 0.0055 H). Both: the breath lives in the chin more than the body; the stroke's fingers comb-like at 8.8–9.5 s.

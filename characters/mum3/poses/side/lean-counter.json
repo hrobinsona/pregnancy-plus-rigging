@@ -2,10 +2,11 @@
  "name": "side/fit/lean-counter",
  "note": "fitted to characters/mum3/refs/pose/s_lean_counter_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=94,shin.near=108,thigh.far=80,shin.far=95; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor; floor_pose:  on the floor",
  "hands": {
-  "near": "press",
-  "far": "press"
+  "near": "palmdown",
+  "far": "palmdown"
  },
  "fx": {
+  "fingersIn": 0.7,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -30,12 +31,12 @@
   "belly": 0,
   "clavicle.near": -22,
   "shoulderAbd.near": -4.8,
-  "upperArm.near": 19.6,
+  "upperArm.near": 19.5,
   "armAbd.near": 3.2,
   "armRot.near": 3.5,
   "forearm.near": 55.3,
   "foreRot.near": 0,
-  "hand.near": 7.5,
+  "hand.near": -2,
   "thigh.near": 21.4,
   "shin.near": -14.1,
   "foot.near": 11.6,
@@ -47,7 +48,7 @@
   "armRot.far": -1.2,
   "forearm.far": 53.3,
   "foreRot.far": 0,
-  "hand.far": 7.5,
+  "hand.far": -1.9,
   "thigh.far": 46.2,
   "shin.far": -16,
   "foot.far": -0.4,

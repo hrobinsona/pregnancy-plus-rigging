@@ -728,6 +728,41 @@ or composited.
    so lesson 64 holds. Rules: read a cloth fold's length and a foot's or elbow's angle off the still, in H or degrees,
    before drawing it; run `side_dirs.mjs` and `far_leg.mjs` after every `fit_side.sh` change; zoom every foot that
    touches the floor (`side_zoom.py --at toe.far@-0.1:0`).
+69. **Show every pose's hands and feet at 1:1 beside the still's, and read the far leg off the still, not off a rule.**
+   Side-on round 8 (2026-10-15): Harry's first look at the library, notes on seven poses and "two really key takeaways…
+   across many poses": "the hands often look stiff and not relaxed. Fingers always pointed directly out at a specific
+   angle… rather than a little curled like most people naturally hold their hands when walking, sitting etc." and "One
+   shoe always looks really thin/cut off". Seven rounds of three critics at film size had named neither: a whole figure
+   at 225 px/H draws a hand at 30 px and a shoe at 25. The thin shoe: the far shoe was drawn with the near one's opening
+   from its own, lower counter, 0.064 H deep at mid-foot where the master's is 0.11 (36%), in every pose, as the library
+   shows the far foot whole; each shoe now has its own traced opening (`params.shoe.near/far.open`, `skin`), 81–83%
+   everywhere, measured on the posed outline by `tools/shoe_gauge.mjs` and gated by `qa_checks` `shoes` (≥ 75%). The stiff
+   hands: every pose used straight library shapes (one angle for every finger, the curl drawn out of the picture). New
+   shapes picked beside the stills at 1:1 (`side_zoom.py --try`): `idle` (hanging or walking: a graded curl, index to
+   little finger, the thumb along the index), `softrest` (on the bump or a thigh), `palmdown` (on a worktop: the backs a
+   low dome, the thumbs under; drawn thumb up with straight fingers they were "the wrong way around on the counter"),
+   `hold` (a chair's back gripped, the wrist in line; draped off the post it was "not holding the chair"); `fx.fingersIn`,
+   now per hand (`fingersInNear`/`Far`), turns the curl into the picture: 0.8 for a walking hand (0.5 still read straight,
+   more curl hooked the tips like claws), and a walking hand trails its forearm's swing (`side_walk.mjs --lag 0.06`, "the
+   hand should follow the arm with a slight flop"). The shoulder: lifted past 30°, the strap lay exactly on the arm's round
+   end, hooked into the neckline in front of the arm, and the bodice's shoulder points and the trapezius' end (carried by
+   the clavicle and the chest) stood out past it as an ear, a sliver and a skin wedge, "jagged and rough where as the
+   reference still is small and clean". Raised, the strap is the armhole's edge, one even band on the arm's own contour
+   from its back over the round end and down its front, tapering out (`arms.js` strap); `arms.strapDress` pulls a
+   bodice shoulder point that pokes past the strap onto it in any pose and, raised, tucks them and the trapezius' end
+   inside the band (each found by its anchors, lesson 67); the standing shots move ≤ 0.0055 H, A/B'd blind. The far leg:
+   lesson 65's twin is right standing and kneeling, but round 7 had put every seated far foot "ahead and up" from
+   landmarks that take a hidden far toe for the near one. Read by eye at 1:1: a squat stands its feet wide (the far
+   ankle +0.3, −0.4 H, the shins parting in a V under a far knee hidden behind the near one: "the legs aren't separated
+   enough which means the knee then forms at a wierd place/angle"); a chair's far foot is set back (−0.25, −0.07, its
+   heel behind the near heel: "far away knee/leg at the wrong position"); a ball's ahead and up (+0.3, −0.24).
+   `far_leg.mjs --set knee=…,ankle=…` places them by direction and drawn length (`farleg` in `fit_side.sh`; the drawn
+   length isn't rest × scale, the profile turn foreshortens it, so it corrects over passes). Rules: every side pack shows
+   each pose's hands and feet at 1:1 beside the still's (`critic_F.py --side` close-up sheets); a resting hand is curled
+   and a working one grips or presses (HARRY_EYE 31, 35; gate `qa_checks` curl: the fingers' mean curl in the picture
+   ≥ 4°, 8° swinging, where the straight shapes measured −3°); measure a part's VOLUME as well as its outline (`shoe_gauge`);
+   read the far knee and ankle off the still for every pose (HARRY_EYE 33); a lifted arm's shoulder is checked at 1:1
+   with the anchors marked (HARRY_EYE 34).
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

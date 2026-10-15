@@ -120,8 +120,15 @@ export const P = {
   // the shin tube in a round cap at the ankle and started the foot below it: a pinch in front, a knob behind — Harry:
   // "ankles are a super weird shape")
   instep: { near: [[0.091, 0.094], [0.157, 0.174], [0.257, 0.254]], far: [[0.162, 0.099], [0.243, 0.179], [0.371, 0.259]] },
-  shoe: { near: { heel: at(L.points.shoeNear.heel), toe: at(L.points.shoeNear.toe), top: (L.points.shoeNear.top - G[1]) / Hpx, sole: (L.points.shoeNear.sole - G[1]) / Hpx },
-          far: { heel: at(L.points.shoeFar.heel), toe: at(L.points.shoeFar.toe), top: (L.points.shoeFar.top - G[1]) / Hpx, sole: (L.points.shoeFar.sole - G[1]) / Hpx } },
+  // each shoe's OPENING, traced on the master: how far below the heel counter's top it runs at 0.137, 0.313, 0.53, 0.7 and
+  // 0.758 (the vamp) of the way from heel to toe (H), and where the skin of the foot meets it (`skin`). The far shoe had
+  // been drawn with the near one's drops from its own, lower counter: its opening ran 0.055 H too low, so its side was
+  // 0.064 H tall at mid-foot where the master's is 0.11, and its toe box stood up past the vamp as a knob. Every side-on
+  // pose shows the far foot whole, and it read as "cut off at the bottom… the foot very thin" (Harry 2026-10-15, round 8)
+  shoe: { near: { heel: at(L.points.shoeNear.heel), toe: at(L.points.shoeNear.toe), top: (L.points.shoeNear.top - G[1]) / Hpx, sole: (L.points.shoeNear.sole - G[1]) / Hpx,
+                  open: [0.081, 0.167, 0.222, 0.205, 0.172], skin: 0.177 },
+          far: { heel: at(L.points.shoeFar.heel), toe: at(L.points.shoeFar.toe), top: (L.points.shoeFar.top - G[1]) / Hpx, sole: (L.points.shoeFar.sole - G[1]) / Hpx,
+                 open: [0.062, 0.124, 0.167, 0.148, 0.124], skin: 0.13 } },
 };
 
 // ---------------------------------------------------------------- hands (engine/hand.js), measured from the master's hand

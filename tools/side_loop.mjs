@@ -40,7 +40,7 @@ const pinFor = (side) => {
   const tip = rig.carry(st, 'hand.' + side, side === 'near' ? 'handNearTip' : 'handFarTip'), wr = st['hand.' + side].pos, palm = [(tip[0] + wr[0]) / 2, (tip[1] + wr[1]) / 2];
   if (inBump(palm)) return C.roles?.belly || 'belly';
   const how = typeof states[side] === 'string' ? states[side] : states[side]?.pose;
-  if (['press', 'grip'].includes(how)) return 'world';   // pressing on something solid: the floor, a worktop, a ball, a chair
+  if (['press', 'grip', 'palmdown', 'hold'].includes(how)) return 'world';   // pressing on something solid or holding it: the floor, a worktop, a ball, a chair
   let best = null; for (const L of legBones) { const d = Math.min(segDist(palm, L.a, L.e), segDist(wr, L.a, L.e)); if (d < 0.3 && (!best || d < best.d)) best = { b: L.b, d }; }
   if (best) return best.b;
   return ['lay', 'flat', 'drape'].includes(how) ? 'world' : null;   // (drape: over a chair's back, the squat)
@@ -81,7 +81,10 @@ const hiddenShare = (side) => {
 const hidden = ['near', 'far'].filter((s) => s !== back).map((s) => [s, hiddenShare(s)]).filter(([, k]) => k >= 0.95);
 const handed = [...(back ? [{ side: back, why: 'the hand rests on the bump\'s far side, out of sight behind it (contact_pose --back)' }] : []),
   ...hidden.map(([side, k]) => ({ side, why: `the hand is out of sight, ${Math.round(100 * k)}% behind her body in the pose (tools/side_loop.mjs)` }))];
-const qa = { ...(handed.length ? { handed } : {}), ...(Object.keys(still).length ? { still } : {}) };
+// (a hand that rests or hangs free keeps a little curl in the picture, qa_checks 'curl': straight fingers read "stiff",
+// Harry, side-on round 8; not one bearing her weight or gripping, nor one out of sight)
+const curlSides = ['near', 'far'].filter((s) => s !== back && !hidden.some(([h]) => h === s) && pins[s] !== 'world' && !['press', 'grip', 'hold', 'drape'].includes(typeof states[s] === 'string' ? states[s] : states[s]?.pose));
+const qa = { ...(handed.length ? { handed } : {}), ...(Object.keys(still).length ? { still } : {}), ...(curlSides.length ? { curl: { sides: curlSides } } : {}) };
 // a resting hand is a HELD reach (engine/anim.js reachArm: the arm solved in 3D to the wrist each frame, then a damped
 // solve; two equal stops = a hold): the plain 2D pin diverged on the far arms and the straight ones (26-75 px)
 for (const [s, on] of Object.entries(pins)) if (on) reach[s] = [0, 4].map((t) => ({ t, pose: `side/${poseName}`, on }));

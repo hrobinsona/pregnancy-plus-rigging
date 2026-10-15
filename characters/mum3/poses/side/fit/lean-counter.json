@@ -2,10 +2,11 @@
  "name": "side/fit/lean-counter",
  "note": "fitted to characters/mum3/refs/pose/s_lean_counter_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=94,shin.near=108,thigh.far=80,shin.far=95",
  "hands": {
-  "near": "press",
-  "far": "press"
+  "near": "palmdown",
+  "far": "palmdown"
  },
  "fx": {
+  "fingersIn": 0.7,
   "turn": 0.4,
   "show.far.arm": 1
  },

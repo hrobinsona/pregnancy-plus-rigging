@@ -163,8 +163,12 @@ export function createRig(C) {
         // the fingers curl IN the picture. A palm laid DOWN and seen side-on (a hand draped over a chair's back) curls them
         // in the picture plane, which mum3's fixed out-of-plane fx (0.1, right for the standing shot's back-of-hand view)
         // can only shorten: the squat's draped hand hovered past the post "like a paddle" (side-on round 5, lesson 64). A
-        // blend weight, not a switch, so an anim crossing poses with and without it never pops.
-        const qIn = C.design.planesIn?.[b.plane], wIn = qIn !== undefined ? Math.max(0, Math.min(1, pose.fx?.fingersIn ?? 0)) : 0;
+        // blend weight, not a switch, so an anim crossing poses with and without it never pops. Per hand: fx.fingersInNear /
+        // fx.fingersInFar (a hand plane '<…>.near.flex' or '.far.flex') over fx.fingersIn: a relaxed hand hanging or
+        // swinging curls its fingers half in the picture (its palm turned back), "a little curled… gaps, curling" (Harry,
+        // side-on round 8), while the other hand lies flat on a worktop
+        const sideIn = /\.(near|far)\./.exec(b.plane)?.[1], fIn = pose.fx?.[`fingersIn${sideIn === 'near' ? 'Near' : sideIn === 'far' ? 'Far' : ''}`] ?? pose.fx?.fingersIn ?? 0;
+        const qIn = C.design.planesIn?.[b.plane], wIn = qIn !== undefined ? Math.max(0, Math.min(1, fIn)) : 0;
         if (wIn > 0) { const [d3, l3] = viaPlane(qIn); dr += wIn * wrap(d3 - dr); al += wIn * (l3 - al); }
         rot = base + dr; along = al;
         st[b.id] = { baseRot: base };

@@ -102,7 +102,12 @@
     "side": "far",
     "why": "the hand rests on the bump's far side, out of sight behind it (contact_pose --back)"
    }
-  ]
+  ],
+  "curl": {
+   "sides": [
+    "near"
+   ]
+  }
  },
  "tracks": {
   "face": {

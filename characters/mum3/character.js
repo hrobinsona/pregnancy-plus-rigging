@@ -199,7 +199,7 @@ const inside = (q, poly) => { let c = false; for (let i = 0, j = poly.length - 1
 export default {
   name: 'mum3',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape', 'siderest'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape', 'siderest', 'idle', 'softrest', 'palmdown', 'hold'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,
@@ -219,7 +219,7 @@ export default {
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.strapBack(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); skirtFold(parts, ctx); shoeGap(parts, ctx); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.strapBack(parts, ctx); arms.strapDress(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); skirtFold(parts, ctx); shoeGap(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

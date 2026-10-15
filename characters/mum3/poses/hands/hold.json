@@ -1,0 +1,36 @@
+{
+ "name": "hold",
+ "f1": [
+  50,
+  60,
+  30
+ ],
+ "f2": [
+  53,
+  63,
+  30
+ ],
+ "f3": [
+  53,
+  62,
+  30
+ ],
+ "f4": [
+  50,
+  60,
+  28
+ ],
+ "s": [
+  -1,
+  0,
+  1,
+  2
+ ],
+ "t": [
+  35,
+  35
+ ],
+ "to": 25,
+ "ts": -25,
+ "_note": "a hand HOLDING a rail or a chair's top for balance, seen side-on: the palm on top, the wrist in line with the forearm, the fingers wrapped over and down its far side, the thumb round the near side out of sight. With fx.fingersIn 1. 'drape' (the wrist dropped, the fingers dangling past the post) read 'not holding the chair' (Harry, round 8)"
+}

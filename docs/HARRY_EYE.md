@@ -153,6 +153,42 @@ posture, overlapping so they look like their on hinges rather than a real rig…
 like a real woman, just illustrated in 2D". The critic lenses for poses are in `tools/critic_prompt_side.md`
 (`critic_F.py mum3 --side`); each pose is judged next to the still it was fitted to, at film size.
 
+Harry's round 8 review (2026-10-15) named two faults "across many poses", so they come first: relaxed hands (31) and a
+shoe with its volume (32). The critic pack shows every pose's hands and feet at 1:1 beside the still's for them.
+
+31. **Are the hands relaxed?** Harry, round 8, across many poses: "the hands often look stiff and not relaxed. Fingers
+    always pointed directly out at a specific angle. rather than a little curled like most people naturally hold their
+    hands when walking, sitting etc."; walk-pass: "stiff hands… the hand should follow the arm with a slight flop"; sit-ball:
+    "hands stiff vs relaxed on the leg". A hand at rest (hanging, swinging as she walks, lying on a thigh or the bump)
+    curls a little, more toward the little finger, the fingers softly together with small gaps near the tips, the thumb
+    resting along the index; a walking hand trails its forearm a little and flops as the swing turns. Only a hand doing
+    work grips (35) or presses. Never one straight angle for every finger, a flat paddle, a hand pointing at the floor, a
+    thumb sticking out. · gate `qa_checks` curl (a resting or swinging hand's fingers curl in the picture: their mean
+    angle off the hand's line ≥ 4°, 8° walking; the straight shapes measured −3°) + the library's `idle`, `softrest`,
+    `palmdown`, `hold` (poses/hands/) drawn with `fx.fingersIn`, `side_walk.mjs --lag` + eye at 1:1 (`side_zoom.py`) · 69
+32. **Does every shoe keep its volume, at every angle?** Harry, round 8: "One shoe always looks really thin/cut off that
+    then looks odd"; walk-pass "the shoe 'cut off' at the bottom, the foot very thin"; squat "particularly the foot in the
+    background". The far shoe had been drawn with the near one's opening from its own, lower counter: 36% as deep at
+    mid-foot. A shoe as deep as the master's from its opening to its sole whichever way the foot turns. · gate
+    `qa_checks` shoes (each shoe's mid-foot depth ≥ 75% of the master's, every 3rd frame; `tools/shoe_gauge.mjs`) · 69
+33. **Is the far leg where the still draws it, the legs apart where the pose stands them apart?** Harry, round 8, squat:
+    "the legs aren't separated enough which means the knee then forms at a wierd place/angle"; sit-chair: "Far away
+    knee/leg at the wrong position. Hence lands awkwardly - esp compared to the ref image". A squat's feet stand wide (the
+    far foot well ahead and up, the shins parting in a V under a far knee hidden behind the near one); a chair's far foot
+    is set back behind the near heel, its shin a strip behind; a ball's far foot ahead and up. Read the far knee and ankle
+    off the still and place them (`far_leg.mjs --set`, `farleg` in `fit_side.sh`); the twin leg is right only standing and
+    kneeling. · `far_leg.mjs` offsets against the still's + eye · 65, 69
+34. **Does the arm come out of the shoulder in one clean line at every height?** Harry, round 8, lean-counter: "the top of
+    the arm isn't connected smoothly to the shoulder"; squat: "the blend between the top arm and shoulder looks jagged and
+    rough where as the reference still is small and clean". The strap is the armhole's edge: one band of even width round
+    the arm's root, over its top and on down its front, with no ear of dress, sliver or skin wedge beside it. · eye at
+    1:1 (`side_zoom.py <char> side/<pose> --at upperArm.near`, `--marks dress,dress.strap,chest.skin`) · 69
+35. **Does a hand on a support hold it the way a hand would?** Harry, round 8, lean-counter: "Hands are the wrong way
+    around on the counter"; squat: "wrist/hands look odd and not holding the chair"; walk-pass: "the far thumb in the wrong
+    position". Palms down on a worktop (the backs of the hands a low dome, the fingertips just over its edge, the thumbs
+    under); a chair's back gripped (the palm on the top, the fingers wrapped over and down, the wrist in line with the
+    forearm); the thumb where the still shows it. · eye at 1:1 beside the still · 69
+
 26. **Do the legs look like a real woman's legs in this pose?** A thigh that is thick at the hip and tapers to the knee,
     a knee that is a joint (kneecap in front, the crease behind, the calf pressed under the thigh when it folds), a calf
     with its swell, a slim ankle into the foot. Never two tubes pinned at a pivot ("on hinges"), never one leg's outline

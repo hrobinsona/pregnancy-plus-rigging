@@ -504,5 +504,14 @@
   "bones": {
    "head": 0.3
   }
+ },
+ "qa": {
+  "curl": {
+   "sides": [
+    "near",
+    "far"
+   ],
+   "min": 8
+  }
  }
 }

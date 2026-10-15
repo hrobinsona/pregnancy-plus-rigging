@@ -1,9 +1,9 @@
 {
  "name": "side/fit/squat",
- "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=22; floor_pose: shoe.near:ball, shoe.near:heel on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=-12; floor_pose: shoe.near:ball, shoe.near:heel on the floor; far_leg --set knee=-0.05,-0.2,ankle=0.3,-0.4",
  "hands": {
-  "near": "drape",
-  "far": "drape"
+  "near": "hold",
+  "far": "hold"
  },
  "fx": {
   "kneesApart": 1,
@@ -39,7 +39,7 @@
   "armRot.near": 4.1,
   "forearm.near": 25.4,
   "foreRot.near": 0.1,
-  "hand.near": -31.7,
+  "hand.near": 2,
   "thigh.near": 102.3,
   "shin.near": -118.7,
   "foot.near": 30.4,
@@ -51,10 +51,10 @@
   "armRot.far": 4.1,
   "forearm.far": 25.4,
   "foreRot.far": 0.1,
-  "hand.far": -31.7,
-  "thigh.far": 102.3,
-  "shin.far": -118.7,
-  "foot.far": 30.4,
+  "hand.far": 2,
+  "thigh.far": 102.5,
+  "shin.far": -112.4,
+  "foot.far": 13.8,
   "hipAbd.far": -8.7,
   "toe.near": -4.7,
   "toe.far": -4.7
@@ -80,6 +80,14 @@
   "hand.far": [
    1,
    0.6
+  ],
+  "thigh.far": [
+   0.913,
+   1
+  ],
+  "shin.far": [
+   0.807,
+   1
   ]
  }
 }

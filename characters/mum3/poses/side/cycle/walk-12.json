@@ -2,11 +2,12 @@
  "name": "walk-12",
  "note": "tools/side_walk.mjs: 51.7% of the gait cycle from the far heel strike, at 50.0% of the loop's time (measured gait angles, the hip's swing ×0.9, pelvis tilt 10°, timed by travel ×0.85); trunk, head and hands from side/walk-contact, side/walk-down, side/walk-pass; the far leg at the near one's length",
  "hands": {
-  "near": "relaxed",
-  "far": "relaxed"
+  "near": "idle",
+  "far": "idle"
  },
  "fx": {
   "skirtSwing": 0.15,
+  "fingersIn": 0.8,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -29,7 +30,7 @@
   "armRot.near": 2.6,
   "forearm.near": -1.41,
   "foreRot.near": 0.5,
-  "hand.near": 6.21,
+  "hand.near": 16.11,
   "thigh.near": 19.15,
   "shin.near": -6.71,
   "foot.near": 3.67,
@@ -41,7 +42,7 @@
   "armRot.far": -1.6,
   "forearm.far": 6.91,
   "foreRot.far": -1.6,
-  "hand.far": -1.92,
+  "hand.far": -0.2,
   "thigh.far": -11.83,
   "shin.far": -18.12,
   "foot.far": -3.91,

@@ -25,7 +25,7 @@ export function legFor({ C: char, st, rig }, side) {
   // box, the sole and the heel; the instep and the back of the ankle blend between the shin and the foot (they bend)
   const back = achillesRest(char, side);
   const foot = {
-    instep: [...X.instep[side].map(([dx, dy], i) => carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, [ank[0] + dx, ank[1] + dy], [0.35, 0.65, 0.9][i])), onFoot([h[0] + 0.75 * L + 0.01, sh.top + 0.177])],
+    instep: [...X.instep[side].map(([dx, dy], i) => carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, [ank[0] + dx, ank[1] + dy], [0.35, 0.65, 0.9][i])), onFoot([h[0] + 0.75 * L + 0.01, sh.top + sh.skin])],
     shoe: [onToe([t[0] - 0.14, sh.sole - 0.06]), onFoot([h[0] + 0.2, sh.sole - 0.1])],
     heel: onFoot(heelRest(sh)),
     achilles: carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, back, 0.5),
@@ -62,11 +62,11 @@ export function build(ctx) {
     const N = { vamp: 5, tip: 8, ball: 10, heel: 12 };
     out.push({ id: `shoe.${side}`, bone: `toe.${side}`, z: z + 0.6, fill: C.shoe, names: N, geom: ensureCW(loop([
       [counterX(char, side), sh.top, { c: true, ai: 112, ao: 48, ti: 0.5, to: 0.6 }],    // the heel counter's top, ON the leg's back line (0.04 H behind it, it stood up behind the ankle as a pointed tab, "a snag", round 6 blind A/B)
-      [h[0] + 0.137 * L, sh.top + 0.081, { a: 40 }],                                    // the opening falls steeply…
-      [h[0] + 0.313 * L, sh.top + 0.167, { a: 24 }],
-      [h[0] + 0.53 * L, sh.top + 0.222, { a: 2 }],                                      // …and runs low along the foot
-      [h[0] + 0.7 * L, sh.top + 0.205, { a: -24 }],
-      [h[0] + 0.758 * L, sh.top + 0.172, { c: true, ai: 140, ao: 21, ti: 0.6, to: 0.6 }],   // the vamp
+      [h[0] + 0.137 * L, sh.top + sh.open[0], { a: 40 }],                              // the opening falls steeply…
+      [h[0] + 0.313 * L, sh.top + sh.open[1], { a: 24 }],
+      [h[0] + 0.53 * L, sh.top + sh.open[2], { a: 2 }],                                // …and runs low along the foot (P.shoe.*.open, each shoe its own)
+      [h[0] + 0.7 * L, sh.top + sh.open[3], { a: -24 }],
+      [h[0] + 0.758 * L, sh.top + sh.open[4], { c: true, ai: 140, ao: 21, ti: 0.6, to: 0.6 }],   // the vamp
       [t[0] - 0.086, t[1] - 0.081, { a: 30 }],                                          // the toe box's top
       [t[0] - 0.006, t[1] - 0.03, { a: 72 }],
       [t[0] + 0.002, t[1] + 0.01, { a: 100 }],                                          // the tip
