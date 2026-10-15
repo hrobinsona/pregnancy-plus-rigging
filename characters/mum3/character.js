@@ -11,7 +11,8 @@ import * as arms from './parts/arms.js';
 import * as legs from './parts/legs.js';
 import { skirtPart } from './parts/skirt.js';
 import { propsFor } from './parts/props.js';
-import { ap } from '../../engine/geom.js';
+import { ap, add, sub, mulS, norm, lerp, loop, stroke } from '../../engine/geom.js';
+
 
 const J = { ...params.joints };
 const hands = { near: makeHand(params.handSpecs.near), far: makeHand(params.handSpecs.far) };
@@ -53,7 +54,7 @@ const bones = [
     const S = s === 'near' ? 'Near' : 'Far';
     return [
       { id: `hipAbd.${s}`, parent: 'pelvis', joint: `hip${S}`, aim: `knee${S}`, min: -20, max: 20, ...(s === 'far' ? { depthFrom: 'hipNear' } : {}) },   // (engine/rig.js depthFrom: the far hip's offset is depth, not turned by the pelvis)
-      { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 135, cap: 0.3 },   // a deep squat flexes the hip ≈ 130°
+      { id: `thigh.${s}`, parent: `hipAbd.${s}`, joint: `hip${S}`, aim: `knee${S}`, plane: 'sagittal', restAnat: 0, min: -35, max: 165, cap: 0.3 },   // a deep squat flexes the hip ≈ 130°; with the knees out round the bump (abducted: side-on, the thigh's projection) up to ≈ 165°
       { id: `shin.${s}`, parent: `thigh.${s}`, joint: `knee${S}`, aim: `ankle${S}`, plane: 'sagittal', restAnat: 0, min: -150, max: 5, cap: 0.26 },
       { id: `foot.${s}`, parent: `shin.${s}`, joint: `ankle${S}`, aim: `ball${S}`, plane: 'sagittal', restAnat: 90, min: -90, max: 40, cap: 0.12 },   // − = plantarflexion: kneeling lays the foot's top on the floor, in line with the shin
       { id: `toe.${s}`, parent: `foot.${s}`, joint: `ball${S}`, aim: `toe${S}`, plane: 'sagittal', restAnat: 90, min: -20, max: 60 },
@@ -63,6 +64,59 @@ const bones = [
 
 const merge = (mod, ...extra) => ({ ANCHORS: Object.assign({}, mod.ANCHORS, ...extra), build: mod.build });
 const X = params.P;
+
+// a thigh SITTING on something flattens on it: its underside (full where it hangs, parts/legs.js) is pressed level with
+// the chair's seat or the ball's top instead of passing through it (sit-chair: the thigh's root bulged 0.1 H under the seat)
+function seatFlat(parts, floors) {
+  if (!floors.length) return;
+  for (const p of parts) if (/^leg\.(near|far)$/.test(p.id) && p.world) for (const A of [p.geom.P, p.geom.hin, p.geom.hout]) for (const q of A)
+    for (const [x0, x1, y] of floors) if (q[0] >= x0 && q[0] <= x1 && q[1] > y && q[1] - y < 0.35) q[1] = y;
+}
+
+// the NEAR THIGH passes in FRONT of the bump: sitting, squatting or bending, the bump settles between her thighs and the near
+// one is nearer us than its lower half (the stills: the near knee and thigh drawn over the bump, the dress lying on the
+// thigh; under the dress, round 2 hid both thighs in "a balloon"). So the near leg is drawn over the dress, and the cloth
+// lying on it (the skirt where it covers the leg) over the leg, edged in the dress's colour so the leg's anti-aliased rim
+// never shows through. Standing, that is the old picture to the pixel: the skirt over the thigh, the leg below the hem.
+// The cloth on the leg is the leg's own outline clipped to the skirt AND to everything on the hip's side of the hem (where
+// the bump's bottom sinks below the thigh's top, the skirt's outline cuts across the thigh: a triangle of bare skin showed
+// inside the dress).
+function lapOver(parts, ctx) {
+  const pal = ctx.P;
+  const leg = parts.find((p) => p.id === 'leg.near'), sk = parts.find((p) => p.id === 'dress.skirt');
+  if (!leg || !sk) return;
+  for (const p of parts) if (/^(leg\.near(\.crease)?|shoe\.near)$/.test(p.id)) p.z += 10.1;   // 20 → 30.1: over the dress (30)
+  // the line the cloth ends at on the leg: standing, the skirt's hem; with the thigh forward, the side's diagonal across
+  // the thigh (engine/drape.js: side), blended by how far forward the thigh points
+  const dr = sk.drape, sd = dr.side, hip = ctx.st['thigh.near'].pos;
+  const a = sd ? lerp(dr.hem[0], sd.top, sd.w) : dr.hem[0], b = sd ? lerp(dr.hem[dr.hem.length - 1], sd.bot, sd.w) : dr.hem[dr.hem.length - 1];
+  const mid = sd && sd.w > 0.5 ? [] : dr.hem.slice(1, -1), t = norm(sub(a, b));
+  let n = [t[1], -t[0]]; if ((hip[0] - b[0]) * n[0] + (hip[1] - b[1]) * n[1] < 0) n = [-n[0], -n[1]];
+  const D = 2.5, e = 0.3, A = add(a, mulS(t, e)), B = sub(b, mulS(t, e));
+  const cut = loop([A, a, ...mid, b, B, add(B, mulS(n, D)), add(A, mulS(n, D))].map((q) => [...q]));
+  parts.push({ id: 'dress.lap', bone: 'pelvis', z: 30.12, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'], clipGeom: [cut] },
+    { id: 'dress.lap.edge', bone: 'pelvis', z: 30.121, fill: 'none', stroke: pal.dress, strokeW: 0.012, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'], clipGeom: [cut] });
+  // where the near thigh passes in front of the bump the cloth folds: the squatting and bending stills draw the thigh's top
+  // under the bump as a darker line, so the thigh reads as a form under the dress (dress on dress, it vanished: round 2's
+  // "the thighs hidden in a balloon"). The thigh's top, where it lies over the bodice, as a tapered shade line; faded in
+  // as the thigh comes forward (standing, the thigh's top is under the skirt, not the bump)
+  const lg = legs.legFor(ctx, 'near'), bod = parts.find((p) => p.id === 'dress');
+  const ang = Math.acos(Math.max(-1, Math.min(1, lg.u[1]))) * 180 / Math.PI, k = Math.max(0, Math.min(1, (ang - 40) / 30));
+  if (!bod || k <= 0.01) return;
+  const poly = flat(bod.geom), top = [];
+  for (let f = 0; f <= 1.0001; f += 0.025) top.push(lg.TF(f));
+  let run = [], cur = [];
+  for (const q of top) { if (inside(q, poly)) cur.push(q); else { if (cur.length > run.length) run = cur; cur = []; } }
+  if (cur.length > run.length) run = cur;
+  if (run.length < 4) return;
+  const m = run.length, wd = run.map((_, i) => 0.016 * Math.sin(Math.PI * Math.min(1, 1.6 * Math.min(i, m - 1 - i) / (m - 1))) ** 0.7);
+  parts.push({ id: 'dress.lap.fold', bone: 'pelvis', z: 30.125, fill: pal.dressShade, world: true, geom: stroke(run, wd, 'point'), M: leg.M, opacity: k });
+}
+// a cubic loop flattened (8 samples a span), and an even-odd point-in-polygon test
+const flat = (g) => { const out = [], n = g.P.length; for (let i = 0; i < n; i++) { const j = (i + 1) % n; for (let t = 0; t < 1; t += 0.125) { const u = 1 - t;
+  out.push([0, 1].map((c) => u * u * u * g.P[i][c] + 3 * u * u * t * g.hout[i][c] + 3 * u * t * t * g.hin[j][c] + t * t * t * g.P[j][c])); } } return out; };
+const inside = (q, poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j];
+  if ((a[1] > q[1]) !== (b[1] > q[1]) && q[0] < (b[0] - a[0]) * (q[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
 
 export default {
   name: 'mum3',
@@ -81,13 +135,13 @@ export default {
   ],
   // a hand on her casts a faint near-hard shadow onto her dress and skin (reels: ~12 %, a few px, no blur)
   contactShadow: { opacity: 0.12, offset: [4, 6], color: '#5a1f12', groups: [{ match: '^hand\\.near\\.', gate: 'contact.near' }],   // pose.fx['contact.near']: the hanging hand casts none
-    on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|chest\\.skin)$' },
+    on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|dress\\.lap|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); const pr = propsFor(parts, ctx); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

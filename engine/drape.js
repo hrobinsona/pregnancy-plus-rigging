@@ -117,9 +117,15 @@ const fracOn = (g, p) => Math.max(0, Math.min(1, dot(sub(p, g.hip), g.u) / g.Lt)
 export function skirt(o, nF = 6, nB = 10) {
   const { Wf, Wb, legs, cal } = o, S = supports(legs, o.seat, o.props, cal.skin), floors = [[-1e9, 1e9, 0], ...(o.floors || [])];
   const SF = [...S.F, ...(o.bump || [])];   // the front lies over the bump below where it leaves the bodice (on all fours the bump's lowest point)
+  // the STRIDE: walking, her legs apart spread the skirt inside: its hem is a ring of fixed length round both legs, so each
+  // edge leaves its support at a wider angle, the back most (it swings out behind the back leg; the stills' walks flare
+  // into an A, ours hung straight as a tube, critic R1 "no A-line flare or swing in the walks"). By the angle between the
+  // thighs, standing (and folded poses, below) unchanged.
+  const spread = legs.length > 1 ? Math.acos(Math.max(-1, Math.min(1, dot(legs[0].u, legs[1].u)))) : 0, sw = smooth(4 / DEG, 40 / DEG, spread) * spread;
+  const phiF = cal.phiF + 0.12 * sw, phiB = cal.phiB + 0.35 * sw;
   // GRAVITY: the front from the bump, the back from the back waist, each hanging over what stands out in its way
-  let pf = hang(Wf, cal.Lf, SF, 1, cal.phiF, floors, false), Hf = pf[pf.length - 1];
-  let pb = hang(Wb, cal.Lb, S.B, -1, cal.phiB, floors), Hb = pb[pb.length - 1];
+  let pf = hang(Wf, cal.Lf, SF, 1, phiF, floors, false), Hf = pf[pf.length - 1];
+  let pb = hang(Wb, cal.Lb, S.B, -1, phiB, floors), Hb = pb[pb.length - 1];
   // the HEM is one ring: hanging, its front and back stay near one height. On all fours the back's cloth goes up over the
   // rump and ends at mid-thigh, so the front can't hang on from the bump to the floor (it did: a box); the ring holds it
   // up level with the back (the still: the hem level from the bump's bottom to the back of the thighs), the rest of the
@@ -128,8 +134,8 @@ export function skirt(o, nF = 6, nB = 10) {
     for (let it = 0; it < 24; it++) { const m = (lo + hi) / 2, e = hang(W, m, pts, out, phi, floors, climb); if (e[e.length - 1][1] > y) hi = m; else lo = m; }
     return hang(W, lo, pts, out, phi, floors, climb); };
   const SLACK = 0.12;
-  if (Hf[1] > Hb[1] + SLACK) { pf = level(Wf, cal.Lf, SF, 1, cal.phiF, false, Hb[1] + SLACK); Hf = pf[pf.length - 1]; }
-  else if (Hb[1] > Hf[1] + SLACK) { pb = level(Wb, cal.Lb, S.B, -1, cal.phiB, true, Hf[1] + SLACK); Hb = pb[pb.length - 1]; }
+  if (Hf[1] > Hb[1] + SLACK) { pf = level(Wf, cal.Lf, SF, 1, phiF, false, Hb[1] + SLACK); Hf = pf[pf.length - 1]; }
+  else if (Hb[1] > Hf[1] + SLACK) { pb = level(Wb, cal.Lb, S.B, -1, phiB, true, Hf[1] + SLACK); Hb = pb[pb.length - 1]; }
   // the TUBE: the skirt is a loop round her thighs. When they point forward (sitting, squatting, bending to the floor)
   // gravity no longer keeps the hem below them: hung free, the back fell from the waist like a cape behind a squat and the
   // front dropped over the knees and hid them (round 1: "a tent", "only the far knee comes forward"). The stills: the back
@@ -139,20 +145,47 @@ export function skirt(o, nF = 6, nB = 10) {
   // Blended in by how far the thighs point forward of straight down (40° → 70°), so a sit-down move passes through it
   // smoothly; standing, kneeling, on all fours: unchanged.
   const w = Math.max(...legs.map((g) => smooth(40, 70, Math.acos(Math.max(-1, Math.min(1, g.u[1]))) * DEG)));
+  let side = null;
   if (w > 0) {
     const g = legs[0], nu = front(g.u), back = (f) => sub(g.TB(Math.min(f, g.fT)), mulS(nu, cal.skin)), top = (f) => add(g.TF(f), mulS(nu, cal.skin));
     const reach = (Lfn, L, f0, f1) => { let a = f0, b = f1;   // how far along the thigh a panel of length L reaches (taut)
       if (Lfn(b) <= L) return b; if (Lfn(a) >= L) return a;
       for (let it = 0; it < 30; it++) { const m = (a + b) / 2; if (Lfn(m) < L) a = m; else b = m; }
       return (a + b) / 2; };
+    // the front lies over the bump only BELOW where it leaves the bodice (above, the bodice is the bump): sitting, the bump's
+    // bottom sinks into the lap and the taut front went back up over the bump's front to reach the thigh, so its cloth ran
+    // out at the hip (round 2: "the skirt stops at the hip crease, the whole thigh bare"; the stills: it lies along the thigh
+    // to 40–60 px short of the knee)
+    // and on the thigh only AHEAD of where the bump meets it: the bump's bottom sits down in the lap, below the near thigh's
+    // top in profile, and the cloth runs on forward from there (wrapping the thigh's top behind it, it went back to the hip)
+    const f0 = fracOn(g, Wf), SFt = [...S.F.filter((p) => fracOn(g, p) >= f0), ...(o.bump || []).filter((p) => p[1] >= Wf[1] - 1e-6)];
     const fb = reach((f) => pathLen(wrap(Wb, back(f), S.B, -1)), cal.Lb, 0.05, 1);
-    const ff = reach((f) => pathLen(wrap(Wf, top(f), SF, 1)), cal.Lf, 0.05, 0.92);
+    const ff = reach((f) => pathLen(wrap(Wf, top(f), SFt, 1)), cal.Lf, 0.05, 0.85);
     Hb = lerp(Hb, back(fb), w); Hf = lerp(Hf, top(ff), w);
-    pb = wrap(Wb, Hb, S.B, -1); pf = wrap(Wf, Hf, SF, 1);
+    pb = wrap(Wb, Hb, S.B, -1); pf = w > 0.5 ? wrap(Wf, Hf, SFt, 1) : wrap(Wf, Hf, SF, 1);
+    // BETWEEN THE KNEES: squatting or bending, the bump settles down between the thighs, its bottom below the near thigh's
+    // top; the front's cloth can't lie on a lap there (it went back to the hip: bend-pick's skirt a box round the seat), it
+    // spans from knee to knee as a curtain just under the bump (the stills: the dark inside of the skirt between the knees)
+    // (knees together, sitting, the bump rests on the lap and the front lies along it: o.apart, the knees' spread, is a 3D
+    // fact the profile can't show, set by the pose: fx.kneesApart)
+    const dn = dot(sub(Wf, top(f0)), mulS(nu, -1)), bt = smooth(0.05, 0.3, dn) * w * (o.apart ?? 0);
+    if (bt > 0) { const C = add(Wf, [0, 0.15]); Hf = lerp(Hf, C, bt); pf = bt > 0.5 ? [Wf, Hf] : pf.map((q, i) => (i === pf.length - 1 ? Hf : q)); }
+    // the SIDE: the cloth on the near thigh's outer face hangs from her side (her waist above the hip) and reaches along the
+    // thigh as far as it does standing (cal.fs); with the thigh forward the hem crosses it on a DIAGONAL, from the thigh's top
+    // ahead of that point down and back to its underside (the sitting and squatting stills: the hem from ~0.85 of the thigh
+    // on top to ~0.4 below). What of the near leg the cloth covers (parts: the lap) is decided by this line.
+    const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl), fsB = Math.max(0.05, cal.fs - dl);
+    side = { top: top(fsT), bot: back(fsB), w };
+    if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: cal.Lf, Lb: cal.Lb, thighL: g.Lt };
   }
   // the hem: the front's end round under any thigh that passes through it to the back's end (only the thighs above the
   // hem's front: standing, the legs below the hem stay outside)
-  const fH = Math.max(...legs.map((g) => fracOn(g, Hf)));
+  // ... and in the TUBE the hem crosses the thigh on a DIAGONAL: the skirt's side hangs from the hip down the thigh's outer
+  // face, shorter along the thigh than its front, so the hem runs from the front's end on the thigh's top down and back to
+  // its underside about a thigh's depth behind (the sitting and squatting stills: ~0.6 H back over the thigh's ~0.6 H
+  // depth); straight down from the front's end, the cloth drew a box round the lap
+  let fH = Math.max(...legs.map((g) => fracOn(g, Hf)));
+  if (w > 0) { const g = legs[0], f = fracOn(g, Hf), dep = len(sub(g.TF(f), g.TB(Math.min(f, g.fT)))); fH = Math.max(0.05, fH - w * 0.95 * dep / g.Lt); }
   const hp = wrap(Hf, Hb, under(legs, fH, cal.skin), 1), hem = hp.length > 2 ? resample(hp, 5) : [Hf, lerp(Hf, Hb, 0.25), lerp(Hf, Hb, 0.5), lerp(Hf, Hb, 0.75), Hb];
   const F = resample(pf, nF), B = resample(pb, nB).reverse();   // F: Wf → Hf; B: Hb → Wb
   // the hem's shape: rounded corners and the smile under the skirt, on the side of the hem away from her (down at rest)
@@ -171,7 +204,7 @@ export function skirt(o, nF = 6, nB = 10) {
   // nothing of the cloth through what she sits or stands on (the hem's smile under a sitting thigh hung through the seat)
   for (const q of A_) for (const [x0, x1, y] of floors) if (q[0] >= x0 && q[0] <= x1 && q[1] > y && q[1] - y < 0.4) q[1] = y;
   for (const p of o.top) A_.push([...p]);
-  return { geom: loop(A_), Hf, Hb, pf, pb, hem };
+  return { geom: loop(A_), Hf, Hb, pf, pb, hem, side };
 }
 
 /** Rest calibration: each edge's cloth length and the angle it leaves its last support at (the taut cloth from where it
@@ -180,5 +213,7 @@ export function calibrate(o, { hemFront, hemBack, hemY, skin = 0.02 }) {
   const S = supports(o.legs, o.seat, [], skin);
   const edge = (W, H, side) => { const pw = wrap(W, H, side > 0 ? S.F : S.B, side), T = pw[pw.length - 2]; return { L: pathLen(pw), phi: Math.atan2(side * (H[0] - T[0]), H[1] - T[1]) }; };
   const ef = edge(o.Wf, hemFront, 1), eb = edge(o.Wb, hemBack, -1);
-  return { Lf: ef.L, phiF: ef.phi, Lb: eb.L, phiB: eb.phi, skin, hemDrop: hemY - (hemFront[1] + hemBack[1]) / 2 };
+  // the side's reach: how far along the near thigh the hem crosses it standing
+  const g = o.legs[0], fs = Math.max(0.1, Math.min(0.9, (hemY - g.hip[1]) / (g.u[1] * g.Lt)));
+  return { Lf: ef.L, phiF: ef.phi, Lb: eb.L, phiB: eb.phi, skin, hemDrop: hemY - (hemFront[1] + hemBack[1]) / 2, fs };
 }

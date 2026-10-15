@@ -3,7 +3,7 @@
 // Angle in degrees on screen from the bone's joint to its aim joint: 0 = forward (she faces right), 90 = straight down,
 // -90 = straight up. Each named bone is set in parent-before-child order, by a 1D search over its range (so parents
 // moved first carry their children), everything else is kept. --twin legs copies the near leg's angles to the far leg
-// (fit_pose --twin legs). A pose's contacts are put back on the floor afterwards (tools/floor_pose.mjs).
+// (fit_pose --twin legs; --twin legs,arms the far arm too: both hands reach for one thing). A pose's contacts are put back on the floor afterwards (tools/floor_pose.mjs).
 // Why: the stills draw her with their own proportions, so a fit to their landmarks is a compromise (the bend still's
 // longer arms reach the floor from a squat ours can't); where the posture matters more than the still's points, the
 // posture is written down as segment directions and the contacts solved after.
@@ -16,7 +16,8 @@ if (!char || !poseName || !arg('dir')) { console.error('usage: node tools/pose_d
 const C = (await import(`../characters/${char}/character.js`)).default, rig = createRig(C), D = `characters/${char}/`;
 const lib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`${D}poses/hands/${h}.json`))]));
 const raw = JSON.parse(fs.readFileSync(`${D}poses/${poseName}.json`)), bones = { ...raw.bones };
-const TWIN = arg('twin') === 'legs', twin = (b) => { if (TWIN) for (const k of ['thigh', 'shin', 'foot', 'toe', 'hipAbd']) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
+const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['upperArm', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
+const twin = (b) => { for (const k of TWB) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
 const want = Object.fromEntries(arg('dir').split(',').map((kv) => { const [b, d] = kv.split('='); if (!rig.BONE[b]) throw new Error('no bone ' + b); return [b, +d]; }));
 const order = C.bones.map((b) => b.id).filter((id) => id in want);
 const drawn = (bs, id) => { const st = rig.solve(expandHands({ ...raw, bones: twin({ ...bs }) }, lib, C.handSides)), B = rig.BONE[id];

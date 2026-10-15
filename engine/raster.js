@@ -26,7 +26,7 @@ export function makeRaster(rig, C, { box, res }) {
     for (const p of parts) {
       if (p.stroke || !p.fill || p.fill === 'none' || (p.opacity !== undefined && p.opacity < 0.5)) continue;
       const c = p.id.startsWith('prop.') ? 7 : cls[p.fill.toLowerCase()]; if (c === undefined) continue;   // a prop (a chair, a counter): drawn as 'ignore', it hides her where the still's does
-      const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
+      const clips = [...(Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean), ...(p.clipGeom || []).map((geom) => ({ geom, M: p.M }))];
       ctx.save();
       if (clips.length) {
         const U = new Path2D();

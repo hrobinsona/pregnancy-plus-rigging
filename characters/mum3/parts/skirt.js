@@ -48,6 +48,6 @@ export function skirtPart(parts, ctx, props = { floors: [], cloth: [] }) {
   const dress = parts.find((p) => p.id === 'dress');
   const carry = (p) => ap(st.pelvis.M, sub(p, J.pelvis));
   const sk = skirt({ Wf: dress.geom.P[DRESS_AT.bot], Wb: dress.geom.P[DRESS_AT.waist], legs: ['near', 'far'].map((s) => legFor(ctx, s)),
-    seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), props: props.cloth, floors: props.floors, top: TOP.map(carry), cal: cal(ctx) });
-  return { id: 'dress.skirt', bone: 'pelvis', z: 30.05, fill: pal.dress, world: true, geom: ensureCW(sk.geom), M: dress.M, module: 'body', anchors: sk.geom.P.length, drape: { Hf: sk.Hf, Hb: sk.Hb, pf: sk.pf, pb: sk.pb, hem: sk.hem } };
+    seat: seatOf(carry, flexOf(pose)), bump: bumpPts(dress.geom), apart: pose?.fx?.kneesApart ?? 0, props: props.cloth, floors: props.floors, top: TOP.map(carry), cal: cal(ctx) });
+  return { id: 'dress.skirt', bone: 'pelvis', z: 30.05, fill: pal.dress, world: true, geom: ensureCW(sk.geom), M: dress.M, module: 'body', anchors: sk.geom.P.length, drape: { Hf: sk.Hf, Hb: sk.Hb, pf: sk.pf, pb: sk.pb, hem: sk.hem, side: sk.side } };
 }

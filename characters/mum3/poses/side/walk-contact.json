@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-contact",
- "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:low, shoe.far:low on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=104,forearm.far=98,hand.far=100; floor_pose: shoe.near:low, shoe.far:low on the floor",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"

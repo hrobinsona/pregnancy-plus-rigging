@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-pass",
- "note": "fitted to characters/mum3/refs/pose/s_walk_pass_1.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:low on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_pass_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=95,forearm.near=82,hand.near=88,upperArm.far=95,forearm.far=88,hand.far=92; floor_pose: shoe.near:low on the floor",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"

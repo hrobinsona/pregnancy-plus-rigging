@@ -6,18 +6,9 @@
   "far": "grip"
  },
  "fx": {
+  "kneesApart": 1,
   "turn": 0.4,
   "show.far.arm": 1
- },
- "scale": {
-  "thigh.near": [
-   0.8,
-   1
-  ],
-  "thigh.far": [
-   0.8,
-   1
-  ]
  },
  "props": {
   "items": [
@@ -28,52 +19,52 @@
   ]
  },
  "root": [
-  -0.9151,
-  1.752
+  -1.0756,
+  1.7293
  ],
  "bones": {
-  "pelvis": 16.5,
-  "spineLower": 1.3,
-  "spineUpper": -3.2,
-  "chest": -8.1,
-  "neck": -3.3,
-  "head": -0.4,
+  "pelvis": 20.3,
+  "spineLower": 2.1,
+  "spineUpper": -3.6,
+  "chest": -9.2,
+  "neck": -5.6,
+  "head": -2,
   "belly": 0,
   "clavicle.near": -22,
-  "shoulderAbd.near": -26.8,
-  "upperArm.near": 31.5,
-  "armAbd.near": -1.6,
-  "armRot.near": 4.4,
+  "shoulderAbd.near": -28.7,
+  "upperArm.near": 32.9,
+  "armAbd.near": -2.4,
+  "armRot.near": 4.5,
   "forearm.near": 25.6,
   "foreRot.near": 0.1,
   "hand.near": 4.1,
-  "thigh.near": 104.6,
-  "shin.near": -116.2,
-  "foot.near": 29.9,
-  "hipAbd.near": -2.9,
-  "clavicle.far": 17.5,
+  "thigh.near": 101.7,
+  "shin.near": -118.4,
+  "foot.near": 33.8,
+  "hipAbd.near": -6.6,
+  "clavicle.far": 19.4,
   "shoulderAbd.far": 0,
-  "upperArm.far": 26.1,
-  "armAbd.far": 0.1,
+  "upperArm.far": 27.3,
+  "armAbd.far": -0.4,
   "armRot.far": 0,
   "forearm.far": 23.3,
   "foreRot.far": 0,
-  "hand.far": 3.7,
-  "thigh.far": 104.6,
-  "shin.far": -116.2,
-  "foot.far": 29.9,
-  "hipAbd.far": -2.9
+  "hand.far": 3.8,
+  "thigh.far": 101.7,
+  "shin.far": -118.4,
+  "foot.far": 33.8,
+  "hipAbd.far": -6.6
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_squat_0.json",
   "scale": 1.0744,
-  "rms": 0.1081,
+  "rms": 0.1182,
   "worst": [
-   "wristR 0.231",
-   "thumbR 0.228",
-   "hipL 0.224",
-   "indexR 0.187",
-   "pinkyR 0.173"
+   "wristR 0.252",
+   "thumbR 0.249",
+   "indexR 0.208",
+   "hipR 0.194",
+   "pinkyR 0.193"
   ]
  }
 }

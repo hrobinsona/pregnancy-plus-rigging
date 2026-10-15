@@ -20,7 +20,7 @@ const post = (a, b, wa, wb) => ensureCW(loop([
  *  she holds its top with the chair in front of her). o = {seatY (top of the seat), x0 (the backrest's edge), x1 (the
  *  front edge), backTop (top of the backrest), depth: [dx, dy] where the far legs show (a ¾ hint, default [0.13, -0.07])} */
 export function chair(o, z = 4) {
-  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.13, -0.07], th = 0.11, lw = 0.085, parts = [];
+  const { seatY, x0, x1, backTop } = o, [dx, dy] = o.depth || [0.24, -0.1], th = 0.11, lw = 0.085, parts = [];
   const bx = x0 + lw / 2, lean = -0.1;
   // far legs and far backrest stile (behind, darker)
   for (const x of [x0 + lw / 2, x1 - lw / 2]) parts.push({ id: `prop.chair.farleg${parts.length}`, z: z - 0.4, fill: WOOD.far, geom: post([x + dx, seatY + th + dy], [x + dx, dy * 0.4], lw, lw * 0.85) });
@@ -31,7 +31,10 @@ export function chair(o, z = 4) {
   parts.push({ id: 'prop.chair.seat', z, fill: WOOD.side, geom: rect(x0 - 0.02, seatY, x1 + 0.02, seatY + th, 0.02) });
   for (const [i, x] of [x0 + lw / 2, x1 - lw / 2].entries()) parts.push({ id: `prop.chair.leg${i}`, z: z + 0.1, fill: WOOD.face, geom: post([x, seatY + th], [x, 0], lw, lw * 0.85) });
   parts.push({ id: 'prop.chair.back', z: z + 0.1, fill: WOOD.face, geom: post([bx + lean, backTop], [bx, seatY], lw * 0.95, lw) });
-  parts.push({ id: 'prop.chair.slat', z: z + 0.05, fill: WOOD.side, geom: rect(bx + lean - lw * 0.55, backTop + 0.06, bx + lw * 0.55, backTop + 0.42, 0.03) });
+  // the top rail runs across from the near stile to the far one (a slat round the near stile alone read as "a knob on one
+  // post", critic R1), its far end a step darker under the near
+  parts.push({ id: 'prop.chair.slatfar', z: z - 0.3, fill: WOOD.far, geom: rect(bx + lean - lw * 0.55, backTop + dy + 0.04, bx + lean + dx + lw * 0.6, backTop + dy + 0.36, 0.03) });
+  parts.push({ id: 'prop.chair.slat', z: z + 0.05, fill: WOOD.side, geom: rect(bx + lean - lw * 0.55, backTop + 0.06, bx + lean + dx * 0.55 + lw * 0.55, backTop + 0.38, 0.03) });
   return { parts, floors: [[x0 - 0.05, x1 + 0.05, seatY]], cloth: [] };
 }
 
@@ -56,7 +59,9 @@ export function counter(o, z = 4) {
 
 /** A small toy ball on the floor at x (something to pick up), or at y in her hand (held). */
 export function toy(o, z = 4) {
-  const r = o.r ?? 0.2, y = o.y ?? -r, zz = o.held ? 55.52 : z;   // (held: over her palm, under her fingers: they close round it)
+  // (held: over her palm, under her fingers: they close round it; o.near: on the floor on her near side, beside her near
+  // foot where her near hand picks it up: in front of her near leg, behind her near arm)
+  const r = o.r ?? 0.2, y = o.y ?? (o.near ? 0.05 - r : -r), zz = o.held ? 55.52 : o.near ? 30.8 : z;   // (near: a step nearer us, so a little lower)
   return { parts: [
     { id: 'prop.toy', z: zz, fill: o.fill || '#f2b134', geom: ensureCW(ellipse([o.x, y], r, r)) },
     { id: 'prop.toy.band', z: zz + 0.05, fill: o.band || '#e8873a', geom: ensureCW(loop([[o.x - r * 0.96, y - r * 0.25, { a: 70 }], [o.x - r * 0.3, y + r * 0.95, { a: 0 }], [o.x + r * 0.5, y + r * 0.8, { a: -40 }], [o.x - r * 0.1, y, { a: 200 }]])) },

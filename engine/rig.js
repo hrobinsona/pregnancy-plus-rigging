@@ -387,7 +387,8 @@ export function createRig(C) {
       const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" ${paint} transform="${tfOf(p.M)}"${op}/>`;
       // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
       // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
-      const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
+      // p.clipGeom: extra clip shapes that are not parts (posed like the part itself): a region a part may also show in
+      const clips = [...(Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean), ...(p.clipGeom || []).map((geom) => ({ geom, M: p.M }))];
       if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;

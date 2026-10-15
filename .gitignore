@@ -16,3 +16,6 @@ characters/*/poses/_t/
 .secrets/
 *.key
 .env
+
+# scratch poses from fitting trials
+characters/*/poses/_trial/

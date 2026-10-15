@@ -1,79 +1,63 @@
 {
  "name": "side/fit/bend-pick",
- "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-52,spineLower=-52,spineUpper=-53,chest=-60,neck=-35,thigh.near=-10,shin.near=128",
+ "note": "fitted to characters/mum3/refs/pose/s_bend_pick_1.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-63,spineLower=-63,spineUpper=-63,chest=-65,neck=-72,head=-80,thigh.near=-20,shin.near=118,upperArm.near=78,forearm.near=78,hand.near=86",
  "hands": {
-  "near": "grip",
+  "near": "press",
   "far": "relaxed"
  },
  "fx": {
-  "turn": 0.4,
-  "show.far.arm": 1
- },
- "scale": {
-  "thigh.near": [
-   0.879,
-   1
-  ],
-  "thigh.far": [
-   0.879,
-   1
-  ]
+  "kneesApart": 1,
+  "turn": 0.4
  },
  "props": {
   "items": [
    {
     "type": "toy",
-    "held": 1
+    "r": 0.36,
+    "near": 1,
+    "dx": -0.12
    }
   ]
  },
  "root": [
-  -1.0662,
-  1.9492
+  -1.1695,
+  1.9196
  ],
  "bones": {
-  "pelvis": 47.3,
+  "pelvis": 36.3,
   "spineLower": -3.1,
-  "spineUpper": -4.9,
-  "chest": -2,
-  "neck": 5.2,
-  "head": -8,
+  "spineUpper": -3.9,
+  "chest": 3,
+  "neck": -26.8,
+  "head": 4.4,
   "belly": 0,
   "clavicle.near": -22,
-  "shoulderAbd.near": -4.6,
-  "upperArm.near": 8.5,
-  "armAbd.near": -2.8,
-  "armRot.near": 0,
-  "forearm.near": -3.1,
+  "shoulderAbd.near": -7,
+  "upperArm.near": 18.3,
+  "armAbd.near": -3.8,
+  "armRot.near": -0.1,
+  "forearm.near": -5,
   "foreRot.near": 0.2,
-  "hand.near": -5.6,
-  "thigh.near": 135,
-  "shin.near": -130.4,
-  "foot.near": 39.6,
-  "hipAbd.near": -9,
-  "clavicle.far": -1,
-  "shoulderAbd.far": -3.7,
-  "upperArm.far": 21.4,
-  "armAbd.far": 5.3,
-  "armRot.far": -0.4,
-  "forearm.far": 2,
-  "foreRot.far": -0.6,
-  "hand.far": -10.9,
-  "thigh.far": 135,
-  "shin.far": -130.4,
-  "foot.far": 39.6,
-  "hipAbd.far": -9
+  "hand.near": -7.6,
+  "thigh.near": 136.5,
+  "shin.near": -137,
+  "foot.near": 40,
+  "hipAbd.near": -12.9,
+  "thigh.far": 136.5,
+  "shin.far": -137,
+  "foot.far": 40,
+  "hipAbd.far": -12.9
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_bend_pick_1.json",
   "scale": 1.0478,
-  "rms": 0.3178,
+  "rms": 0.3485,
   "worst": [
-   "indexR 0.835",
-   "thumbR 0.813",
-   "pinkyR 0.813",
-   "wristR 0.714",
-   "elbowR 0.391"
+   "indexR 0.826",
+   "thumbR 0.805",
+   "pinkyR 0.804",
+   "wristR 0.705",
+   "elbowR 0.382"
   ]
  },
  "fitFrom": "side/fit/bend-pick"

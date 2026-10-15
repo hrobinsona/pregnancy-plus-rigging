@@ -35,10 +35,13 @@ export function propsFor(parts, ctx) {
       const pts = parts.filter((p) => /^hand\.near\.(palm|f[1-4])$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
       const r = it.r ?? 0.2, cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, lo = Math.max(...pts.map((q) => q[1]));
       o = { x: cx, y: lo - r * 0.55, r, ...it };
-    } else if (it.type === 'toy') {   // on the floor: under her fingers when her hand reaches down to it, else just ahead of her wrist
+    } else if (it.type === 'toy') {   // on the floor: under her hand when it reaches down to it (a big ball under her palm's
+      // centre, its crown at the palm: she rests her hand on it), else just ahead of her wrist
       const pts = parts.filter((p) => /^hand\.near\.(palm|f[1-4])$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
-      const lo = pts.reduce((a, q) => (q[1] > a[1] ? q : a), [0, -1e9]), r = it.r ?? 0.2;
-      o = { x: lo[1] > -0.7 ? lo[0] : wrist[0] + 0.25, ...it };
+      const palm = parts.filter((p) => p.id === 'hand.near.palm').flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
+      const lo = pts.reduce((a, q) => (q[1] > a[1] ? q : a), [0, -1e9]), r = it.r ?? 0.2, big = r > 0.25;
+      const px = palm.reduce((a, q) => a + q[0], 0) / Math.max(1, palm.length);
+      o = { ...it, x: it.x ?? (lo[1] > -(2 * r + 0.3) ? (big ? px : lo[0]) : wrist[0] + 0.25) + (it.dx ?? 0) };   // (dx: nudged back or forward from under the hand)
     }
     else throw new Error('unknown prop ' + it.type);
     if (it.type === 'chair') { if (o.x1 === undefined) o.x1 = o.x0 + 1.85; if (o.x0 === undefined) o.x0 = o.x1 - 1.85; if (o.backTop === undefined) o.backTop = o.seatY - 2.0; }

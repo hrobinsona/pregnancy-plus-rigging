@@ -10,10 +10,10 @@
 set -e
 cd "$(dirname "$0")/../../.."
 R=characters/mum3/refs
-fit() {   # fit <pose> <still> [fit_pose options]
-  n=$1; s=$2; shift 2
+fit() {   # fit <pose> <still> [--far-hidden] [fit_pose options]   (--far-hidden: the far arm hidden behind her, as the still hides it)
+  n=$1; s=$2; shift 2; show="--show far.arm"; if [ "$1" = "--far-hidden" ]; then show=""; shift; fi
   [ -f $R/pose/$s.json ] || python3 tools/pose_est.py $R/images/$s.png --out $R/pose/$s.json --hands
-  node tools/fit_pose.mjs mum3 $R/pose/$s.json side/fit/$n --base rest --floor --show far.arm --dirs 0.5 --turn 0.4 "$@" | tail -1
+  node tools/fit_pose.mjs mum3 $R/pose/$s.json side/fit/$n --base rest --floor $show --dirs 0.5 --turn 0.4 "$@" | tail -1
 }
 floor() {   # floor <pose> [floor_pose options]: side/fit/<pose> → side/<pose>
   n=$1; shift
@@ -56,9 +56,13 @@ bumphands sit-chair
 fit sit-ball s_sit_ball_0 --props ball
 floor sit-ball --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones shin,foot,toe
 
-# supported squat, holding a chair's back in front of her; knees turned out (the thighs foreshortened: --splay), both feet
-# flat and both knees forward (--twin legs: the far leg the near one's twin, just behind it)
-fit squat s_squat_0 --twin legs --splay --props chair:back=1 --hand near=grip,far=grip
+# supported squat, holding a chair's back in front of her; both feet flat and both knees forward (--twin legs: the far leg
+# the near one's twin, just behind it). The thighs at full length: the stills draw the near thigh long and level from the
+# seat to the knee in front of the bump (foreshortened by --splay, the knee stayed under the bump: round 2 "the thighs
+# missing, only the knees peek out")
+# (--fix fx.kneesApart=1: her knees apart round the bump, a fact the profile can't show: the skirt hangs between them as a
+# curtain, engine/drape.js)
+fit squat s_squat_0 --twin legs --props chair:back=1 --hand near=grip,far=grip --fix fx.kneesApart=1
 floor squat --touch shoe.near:low --bones foot,toe --sides near
 
 # leaning her forearms on a kitchen counter: the forearms and hands laid level on its top (the fit left them sloping down
@@ -69,14 +73,17 @@ fit lean-counter s_lean_counter_1 --props counter --hand near=press,far=press
 floor lean-counter --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones shin,foot,toe
 settle lean-counter --fixroot --bones x --vars upperArm.near,forearm.near,upperArm.far,forearm.far,hand.near,hand.far --aim forearm.near=0,forearm.far=0,hand.near=0,hand.far=0
 
-# squatting, knees apart round the bump, picking up a toy: the still's longer arms reach the floor from a squat ours
-# can't (fitted to its hand she pitched over, head to the floor), so the posture is written as segment directions read off
-# the still (tools/pose_dirs.mjs: the trunk leaning 38°, the head up to the toy, the knees forward and up), the feet put
-# flat, then the hand let down as far as it reaches: the toy just lifted off the floor, at her shins
-fit bend-pick s_bend_pick_1 --twin legs --splay --props toy:held=1 --hand near=grip
-dirs bend-pick --twin legs --dir pelvis=-52,spineLower=-52,spineUpper=-53,chest=-60,neck=-35,thigh.near=-10,shin.near=128
+# squatting to pick up a toddler's ball beside her near foot. The still's arms are 20% longer than hers (shoulder to
+# fingertip 1.7 hip-to-shoulder lengths against her 1.36), so they reach the floor from its half squat and hers can't:
+# fitted to its hand she pitched over (round 1), and from its half squat she held the toy at her shins (round 2 "the toy
+# 170 px up"). So she does what a real pregnant woman does: squats lower, the knees apart round the bump (fx.kneesApart),
+# the back straight and leaning 27° (the still's 24-31°), the head up; the near arm hangs straight down outside her knee
+# to a ball (16 cm: r 0.36 H) on the floor beside her foot, a step nearer us (toy near: in front of her leg, a little
+# lower), her fingers on its crown; the far arm hidden behind her, as in the still.
+fit bend-pick s_bend_pick_1 --far-hidden --twin legs --props toy:r=0.36:near=1:dx=-0.12 --hand near=press --fix fx.kneesApart=1
+dirs bend-pick --twin legs --dir pelvis=-63,spineLower=-63,spineUpper=-63,chest=-65,neck=-72,head=-80,thigh.near=-20,shin.near=118,upperArm.near=78,forearm.near=78,hand.near=86
 floor bend-pick --twin legs --touch shoe.near:5,shoe.near:6@-0.04 --bones shin,foot,toe
-settle bend-pick --fixroot --touch hand.near.f2:low@-0.3 --vars upperArm.near,forearm.near,hand.near,armAbd.near --bones x --keep 0.3
+settle bend-pick --twin legs --fixroot --touch hand.near.palm:low@-0.67 --vars upperArm.near,forearm.near,hand.near --bones x --keep 0.3
 
 # walking: the contact position (front heel down, back toe pushing off)
 # (the arms swing against the legs: the still paces, its near arm back with the near leg, critic R1 "she paces")

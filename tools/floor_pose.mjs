@@ -13,7 +13,7 @@
 // --fixroot  keep her height (only the named bones move: a hand laid on the floor under a body already placed)
 // --flat   hand.near,…: lay that palm flat (level, fingers forward, palm down) on what it touches
 // --vars   extra bones to move by full name (wristFlex.near,hand.near,foreRot.near: a palm laid flat)
-// --twin legs  the far leg copies the near one (a squat fitted with fit_pose --twin legs)
+// --twin legs  the far leg copies the near one (a squat fitted with fit_pose --twin legs); --twin legs,arms the far arm too
 // Writes the pose (default: in place) and prints each contact's height before and after (film px).
 import fs from 'node:fs';
 import { createRig } from '../engine/rig.js';
@@ -26,13 +26,15 @@ const C = (await import(`../characters/${char}/character.js`)).default, rig = cr
 const lib = Object.fromEntries((C.handLibrary || []).map((h) => [h, JSON.parse(fs.readFileSync(`${D}poses/hands/${h}.json`))]));
 const raw = JSON.parse(fs.readFileSync(`${D}poses/${poseName}.json`)), pose0 = expandHands(raw, lib, C.handSides);
 const touch = arg('touch', '').split(',').filter(Boolean).map((s) => { const [pw, lv = '0'] = s.split('@'), [part, w = 'low'] = pw.split(':'); return { part, w, lv: +lv }; });   // @y: a surface at height y (H; a counter top), not the floor
-const sides = arg('sides', arg('twin') === 'legs' ? 'near' : 'near,far').split(','), stems = arg('bones', 'shin,foot').split(',');
+const sides = arg('sides', (arg('twin') || '').split(',').includes('legs') ? 'near' : 'near,far').split(','), stems = arg('bones', 'shin,foot').split(',');
 const VARS = [...(argv.includes('--fixroot') ? [] : ['root.1']), ...(arg('free', '') ? arg('free').split(',') : []), ...(arg('vars', '') ? arg('vars').split(',') : []), ...stems.flatMap((b) => sides.map((s) => `${b}.${s}`)).filter((b) => rig.BONE[b])];
 const keep = +arg('keep', 1), PX = 225;
 const val0 = (v) => (v.startsWith('root') ? (pose0.root || [0, 0])[+v.slice(5)] : pose0.bones?.[v] ?? 0);
 const lim = (v) => (v.startsWith('root') ? [-6, 6] : [rig.BONE[v].min ?? -180, rig.BONE[v].max ?? 180]);
 // --twin legs: the far leg is the near one's twin (fit_pose --twin legs: a squat): only the near leg's bones move, the far copies them
-const TWIN = arg('twin') === 'legs', twin = (b) => { if (TWIN) for (const k of ['thigh', 'shin', 'foot', 'toe', 'hipAbd']) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
+// --twin legs,arms: the far arm too (both hands reach for the same thing, the far one hidden behind the near)
+const TW = (arg('twin') || '').split(','), TWB = [...(TW.includes('legs') ? ['thigh', 'shin', 'foot', 'toe', 'hipAbd'] : []), ...(TW.includes('arms') ? ['upperArm', 'forearm', 'hand', 'wristFlex', 'foreRot'] : [])];
+const TWIN = TW.includes('legs'), twin = (b) => { for (const k of TWB) if (`${k}.near` in b) b[`${k}.far`] = b[`${k}.near`]; return b; };
 const poseOf = (x) => { const p = { ...pose0, bones: { ...pose0.bones }, root: [...(pose0.root || [0, 0])] }; VARS.forEach((v, i) => { if (v.startsWith('root')) p.root[+v.slice(5)] = x[i]; else p.bones[v] = x[i]; }); twin(p.bones); return p; };
 // rest-pose anchor for ':top' (which anchor is the part's highest at rest)
 const rest = Object.fromEntries(rig.build({ ...pose0, bones: {} }).map((p) => [p.id, p.geom.P.map((q) => ap(p.M, q))]));
@@ -44,7 +46,7 @@ const pick = (pts, t) => {
 const measure = (x) => {
   const parts = rig.build(poseOf(x)), by = Object.fromEntries(parts.map((p) => [p.id, p.geom.P.map((q) => ap(p.M, q))]));
   const t = touch.map((tt) => { if (!by[tt.part]) throw new Error('no part ' + tt.part); return pick(by[tt.part], tt); });
-  let pen = 0; for (const p of parts) if (!p.stroke && !(p.opacity <= 0.002)) for (const q of by[p.id]) if (q[1] > 0) pen += q[1] ** 2;
+  let pen = 0; for (const p of parts) if (!p.stroke && !(p.opacity <= 0.002) && !/^prop\./.test(p.id)) for (const q of by[p.id]) if (q[1] > 0) pen += q[1] ** 2;   // (props aren't her body: a toy nearer us sits a little lower)
   return { t, pen };
 };
 // --aim hand.near=0: a bone's drawn direction on screen (degrees, 0 = forward, 90 = down): a hand flat on the floor points
@@ -121,6 +123,6 @@ out.fitFrom = raw.fitFrom || poseName;   // the still's mapping (out/fit_<pose>_
 const outName = arg('out', poseName);
 fs.writeFileSync(`${D}poses/${outName}.json`, JSON.stringify(out, null, 1));
 console.log(`floor_pose ${outName}: ` + touch.map((t, i) => `${t.part}:${t.w} ${((t.lv - before[i]) * PX).toFixed(1)} → ${((t.lv - after.t[i]) * PX).toFixed(1)} px above`).join(', ') + `; below the floor ${Math.sqrt(after.pen) * PX < 0.5 ? 'none' : (Math.sqrt(after.pen) * PX).toFixed(1) + ' px (rms)'}`);
-{ const parts = rig.build(poseOf(x)), deep = parts.filter((p) => !p.stroke && !(p.opacity <= 0.002)).map((p) => [p.id, Math.max(...p.geom.P.map((q) => ap(p.M, q)[1]))]).filter(([, y]) => y > 0.002).sort((a, b) => b[1] - a[1]);
+{ const parts = rig.build(poseOf(x)), deep = parts.filter((p) => !p.stroke && !(p.opacity <= 0.002) && !/^prop\./.test(p.id)).map((p) => [p.id, Math.max(...p.geom.P.map((q) => ap(p.M, q)[1]))]).filter(([, y]) => y > 0.002).sort((a, b) => b[1] - a[1]);
   if (deep.length) console.log('through the floor: ' + deep.slice(0, 6).map(([id, y]) => `${id} ${(y * PX).toFixed(1)} px`).join(', ')); }
 console.log('moved: ' + VARS.map((v, i) => `${v} ${val0(v).toFixed?.(2) ?? val0(v)} → ${x[i].toFixed(2)}`).join(', '));

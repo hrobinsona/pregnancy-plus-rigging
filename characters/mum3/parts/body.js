@@ -42,6 +42,22 @@ export function sag(parts, ctx) {
   }
 }   // the bodice's anchors the skirt hangs from   // the strap is in arms.js: it is built on the arm's contour
 
+/** The small of her back CURVES IN as her hips flex (leaning on a counter, sitting, squatting, bending): the pelvis tips
+ *  forward under the trunk and the lumbar arches, so the back of a stretch dress dips in at the waist between her shoulder
+ *  blades and the round of her buttocks. Drawn straight, the back ran in one line from the shoulder blade to the seat
+ *  (critic R1, every pose: "a box, a tent or a cape… no lumbar curve, no buttocks under it"). The bodice's back waist
+ *  (and the skirt that hangs from it) moves in along the trunk's forward normal by up to LORD.depth H, the blade a little;
+ *  by the mean hip flexion (LORD.from° → LORD.to°): standing and kneeling up, unchanged. */
+export const LORD = { depth: 0.09, from: 10, to: 55, w: { 17: 0.6, 18: 1, 19: 0.35 } };
+export function lumbar(parts, ctx) {
+  const dress = parts.find((p) => p.id === 'dress'), b = ctx.pose?.bones || {};
+  if (!dress) return;
+  const flex = ((b['thigh.near'] || 0) + (b['thigh.far'] || 0)) / 2, t = Math.max(0, Math.min(1, (flex - LORD.from) / (LORD.to - LORD.from))), k = LORD.depth * t * t * (3 - 2 * t);
+  if (!k) return;
+  const M = ctx.st.spineLower.M, n = [M[0], M[1]], l = Math.hypot(...n) || 1, g = dress.geom;   // the trunk's forward direction, posed
+  for (const [i, w] of Object.entries(LORD.w)) { const d = [k * w * n[0] / l, k * w * n[1] / l]; for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]]; }
+}
+
 export function build({ P: C, C: char }) {
   const X = char.params.P, J = char.joints, out = [];
   const N = X.neck, b = X.bump, bk = X.back, st = X.strap, nl = X.neckline;
