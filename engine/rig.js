@@ -388,9 +388,20 @@ export function createRig(C) {
       // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
       // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
       // p.clipGeom: extra clip shapes that are not parts (posed like the part itself): a region a part may also show in
+      // p.clipAnd: shapes (posed like the part) it must ALSO lie inside: each one intersects (clip and clipGeom are a union)
       const clips = [...(Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean), ...(p.clipGeom || []).map((geom) => ({ geom, M: p.M }))];
-      if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
+      if (p.clipAnd?.length) {
+        const pre = out.length; let tail = '';
+        p.clipAnd.forEach((g, i) => { out += `<clipPath id="${cid}-and${i}"><path d="${pathD(g, Hpx)}" transform="${tfOf(p.M)}"/></clipPath><g clip-path="url(#${cid}-and${i})">`; tail += '</g>'; });
+        const mid = out.length; emitClipped(p, path, clips, cid, op);
+        if (out.length === mid) out = out.slice(0, pre); else out += tail;
+        return;
+      }
+      emitClipped(p, path, clips, cid, op);
+    }
+    function emitClipped(p, path, clips, cid, op) {
+      if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
       let mk = '';
       if (p.clipOcc && !p.fade) {   // visible-region mask: the material parts white, the parts covering them black, in z order

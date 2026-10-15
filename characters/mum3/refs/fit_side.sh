@@ -7,19 +7,25 @@
 # Re-run after any rig change (all of them, in order), then check them against their stills: tools/side_match.py, and
 # the critic pack (tools/critic_F.py mum3 --side). New pose: generate stills (docs/REF_PROMPTS.md, side-on), pick the
 # best by side_match, add two lines here. Side-on library, PIPELINE lesson 62. The stills are measurement only.
+#   sh characters/mum3/refs/fit_side.sh [pose ...]   (no poses: all of them; else only those, e.g. walk-contact walk-pass)
 set -e
 cd "$(dirname "$0")/../../.."
 R=characters/mum3/refs
+ONLY=" $* "
+want() { [ "$ONLY" = "  " ] || case "$ONLY" in *" $1 "*) return 0;; *) return 1;; esac; }
 fit() {   # fit <pose> <still> [--far-hidden] [fit_pose options]   (--far-hidden: the far arm hidden behind her, as the still hides it)
+  want "$1" || return 0
   n=$1; s=$2; shift 2; show="--show far.arm"; if [ "$1" = "--far-hidden" ]; then show=""; shift; fi
   [ -f $R/pose/$s.json ] || python3 tools/pose_est.py $R/images/$s.png --out $R/pose/$s.json --hands
   node tools/fit_pose.mjs mum3 $R/pose/$s.json side/fit/$n --base rest --floor $show --dirs 0.5 --turn 0.4 "$@" | tail -1
 }
 floor() {   # floor <pose> [floor_pose options]: side/fit/<pose> → side/<pose>
+  want "$1" || return 0
   n=$1; shift
   node tools/floor_pose.mjs mum3 side/fit/$n --out side/$n "$@" | head -2
 }
 bumphands() {   # bumphands <pose>: both hands cradling the bump's underside (a spot on the bump, in the belly bone's rest
+  want "$1" || return 0
   # space, so a new fit keeps them there): the fit put the still's wrists where its smaller bump is, and ours floated in
   # front of hers (critic R1 "the hands float past the bump")
   n=$1
@@ -27,10 +33,12 @@ bumphands() {   # bumphands <pose>: both hands cradling the bump's underside (a 
   node tools/contact_pose.mjs mum3 side/$n side/$n --side far --at 0.53,-3.85 --on belly --surface bump --handDir -20 --hand lay 2>/dev/null | tail -1
 }
 dirs() {   # dirs <pose> [pose_dirs options]: a posture written as segment directions, on side/fit/<pose> in place
+  want "$1" || return 0
   n=$1; shift
   node tools/pose_dirs.mjs mum3 side/fit/$n "$@"
 }
 settle() {   # settle <pose> [floor_pose options]: a further solve on side/<pose> in place (a limb laid on a surface)
+  want "$1" || return 0
   n=$1; shift
   node tools/floor_pose.mjs mum3 side/$n "$@" | head -2
 }
@@ -86,13 +94,15 @@ floor bend-pick --twin legs --touch shoe.near:5,shoe.near:6@-0.04 --bones shin,f
 settle bend-pick --twin legs --fixroot --touch hand.near.palm:low@-0.67 --vars upperArm.near,forearm.near,hand.near --bones x --keep 0.3
 
 # walking: the contact position (front heel down, back toe pushing off)
-# (the arms swing against the legs: the still paces, its near arm back with the near leg, critic R1 "she paces")
-fit walk-contact s_walk_contact_1
-dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=104,forearm.far=98,hand.far=100
+# (the arms swing against the legs: the still paces, its near arm back with the near leg, critic R1 "she paces"; the far
+# arm swung back far enough to show behind her, round 2 "a sliver"; the skirt trailing a little, fx.skirtSwing)
+fit walk-contact s_walk_contact_1 --fix fx.skirtSwing=0.1
+dirs walk-contact --dir upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=118,forearm.far=108,hand.far=110
 floor walk-contact --touch shoe.near:low,shoe.far:low@-0.162 --bones foot,toe
 
-# walking: the passing position (the estimator joins the front knee to the back ankle here: the legs read off the still
+# walking: the passing position (the far arm swinging forward past the bump as the still's does, round 2 "missing"; the
+# skirt still an A, trailing behind her as she walks: fx.skirtSwing) (the estimator joins the front knee to the back ankle here: the legs read off the still
 # with tools/grid_still.py and set by hand)
-fit walk-pass s_walk_pass_1 --set kneeR:545:1135,ankleR:560:1440,heelR:525:1480,footR:695:1495,kneeL:390:1135,ankleL:255:1325,heelL:195:1335,footL:295:1460
-dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=88,upperArm.far=95,forearm.far=88,hand.far=92
+fit walk-pass s_walk_pass_1 --fix fx.skirtSwing=0.2 --set kneeR:545:1135,ankleR:560:1440,heelR:525:1480,footR:695:1495,kneeL:390:1135,ankleL:255:1325,heelL:195:1335,footL:295:1460
+dirs walk-pass --dir upperArm.near=95,forearm.near=82,hand.near=88,upperArm.far=68,forearm.far=55,hand.far=62
 floor walk-pass --touch shoe.near:low --bones foot,toe

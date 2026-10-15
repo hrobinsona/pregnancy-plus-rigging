@@ -120,9 +120,11 @@ export function skirt(o, nF = 6, nB = 10) {
   // the STRIDE: walking, her legs apart spread the skirt inside: its hem is a ring of fixed length round both legs, so each
   // edge leaves its support at a wider angle, the back most (it swings out behind the back leg; the stills' walks flare
   // into an A, ours hung straight as a tube, critic R1 "no A-line flare or swing in the walks"). By the angle between the
-  // thighs, standing (and folded poses, below) unchanged.
+  // thighs, standing (and folded poses, below) unchanged. o.swing (pose fx.skirtSwing, radians): the skirt trailing behind
+  // her as she walks (momentum), which the stride alone can't show at the passing position (legs together, the still's
+  // skirt still an A).
   const spread = legs.length > 1 ? Math.acos(Math.max(-1, Math.min(1, dot(legs[0].u, legs[1].u)))) : 0, sw = smooth(4 / DEG, 40 / DEG, spread) * spread;
-  const phiF = cal.phiF + 0.12 * sw, phiB = cal.phiB + 0.35 * sw;
+  const sg = o.swing ?? 0, phiF = cal.phiF + 0.45 * sw + 0.25 * sg, phiB = cal.phiB + 0.9 * sw + 0.8 * sg;
   // GRAVITY: the front from the bump, the back from the back waist, each hanging over what stands out in its way
   let pf = hang(Wf, cal.Lf, SF, 1, phiF, floors, false), Hf = pf[pf.length - 1];
   let pb = hang(Wb, cal.Lb, S.B, -1, phiB, floors), Hb = pb[pb.length - 1];
@@ -169,13 +171,15 @@ export function skirt(o, nF = 6, nB = 10) {
     // (knees together, sitting, the bump rests on the lap and the front lies along it: o.apart, the knees' spread, is a 3D
     // fact the profile can't show, set by the pose: fx.kneesApart)
     const dn = dot(sub(Wf, top(f0)), mulS(nu, -1)), bt = smooth(0.05, 0.3, dn) * w * (o.apart ?? 0);
-    if (bt > 0) { const C = add(Wf, [0, 0.15]); Hf = lerp(Hf, C, bt); pf = bt > 0.5 ? [Wf, Hf] : pf.map((q, i) => (i === pf.length - 1 ? Hf : q)); }
+    // (the curtain itself is drawn by the character, from side.apart: the dark inside of the skirt hanging below the near
+    // thigh between the knees; dropped 0.15 here, the front stuck out below the bump as a little flap, round 3)
+    if (bt > 0) { const C = add(Wf, [0, 0.02]); Hf = lerp(Hf, C, bt); pf = bt > 0.5 ? [Wf, Hf] : pf.map((q, i) => (i === pf.length - 1 ? Hf : q)); }
     // the SIDE: the cloth on the near thigh's outer face hangs from her side (her waist above the hip) and reaches along the
     // thigh as far as it does standing (cal.fs); with the thigh forward the hem crosses it on a DIAGONAL, from the thigh's top
     // ahead of that point down and back to its underside (the sitting and squatting stills: the hem from ~0.85 of the thigh
     // on top to ~0.4 below). What of the near leg the cloth covers (parts: the lap) is decided by this line.
     const dl = 0.25 * w, fsT = Math.min(0.92, cal.fs + dl), fsB = Math.max(0.05, cal.fs - dl);
-    side = { top: top(fsT), bot: back(fsB), w };
+    side = { top: top(fsT), bot: back(fsB), w, apart: bt };
     if (globalThis.__DRAPE_DBG) globalThis.__drape = { w, fb, ff, f0, dn, bt, fs: cal.fs, Lf: cal.Lf, Lb: cal.Lb, thighL: g.Lt };
   }
   // the hem: the front's end round under any thigh that passes through it to the back's end (only the thighs above the

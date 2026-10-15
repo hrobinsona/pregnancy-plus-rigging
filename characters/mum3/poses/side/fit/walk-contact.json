@@ -1,11 +1,12 @@
 {
  "name": "side/fit/walk-contact",
- "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=104,forearm.far=98,hand.far=100",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=118,forearm.far=108,hand.far=110",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
  },
  "fx": {
+  "skirtSwing": 0.1,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -35,12 +36,12 @@
   "hipAbd.near": -4.1,
   "clavicle.far": -18.4,
   "shoulderAbd.far": 1.2,
-  "upperArm.far": -30.7,
+  "upperArm.far": -44.9,
   "armAbd.far": 0.1,
   "armRot.far": -2,
-  "forearm.far": -5,
+  "forearm.far": -1.4,
   "foreRot.far": -1.2,
-  "hand.far": 5,
+  "hand.far": 5.4,
   "thigh.far": 18.3,
   "shin.far": -4.1,
   "foot.far": 4.6,

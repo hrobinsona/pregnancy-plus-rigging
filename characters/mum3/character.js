@@ -11,7 +11,7 @@ import * as arms from './parts/arms.js';
 import * as legs from './parts/legs.js';
 import { skirtPart } from './parts/skirt.js';
 import { propsFor } from './parts/props.js';
-import { ap, add, sub, mulS, norm, lerp, loop, stroke } from '../../engine/geom.js';
+import { ap, add, sub, mulS, norm, lerp, loop, stroke, len } from '../../engine/geom.js';
 
 
 const J = { ...params.joints };
@@ -92,10 +92,32 @@ function lapOver(parts, ctx) {
   const a = sd ? lerp(dr.hem[0], sd.top, sd.w) : dr.hem[0], b = sd ? lerp(dr.hem[dr.hem.length - 1], sd.bot, sd.w) : dr.hem[dr.hem.length - 1];
   const mid = sd && sd.w > 0.5 ? [] : dr.hem.slice(1, -1), t = norm(sub(a, b));
   let n = [t[1], -t[0]]; if ((hip[0] - b[0]) * n[0] + (hip[1] - b[1]) * n[1] < 0) n = [-n[0], -n[1]];
-  const D = 2.5, e = 0.3, A = add(a, mulS(t, e)), B = sub(b, mulS(t, e));
+  // (the back end runs on past the seat: the thigh's root under the buttocks is under the cloth too; cut short there, it
+  // showed below the seat as skin nubs, round 2)
+  const D = 2.5, e = 0.3, A = add(a, mulS(t, e)), B = sub(b, mulS(t, 1.2));
   const cut = loop([A, a, ...mid, b, B, add(B, mulS(n, D)), add(A, mulS(n, D))].map((q) => [...q]));
-  parts.push({ id: 'dress.lap', bone: 'pelvis', z: 30.12, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'], clipGeom: [cut] },
-    { id: 'dress.lap.edge', bone: 'pelvis', z: 30.121, fill: 'none', stroke: pal.dress, strokeW: 0.012, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'], clipGeom: [cut] });
+  // the knee's side of the line, as far as the leg can reach: the leg shows there as skin
+  const A2 = add(a, mulS(t, 5)), B2 = sub(b, mulS(t, 5)), knee = loop([A2, a, ...mid, b, B2, sub(B2, mulS(n, 5)), sub(A2, mulS(n, 5))].map((q) => [...q]));
+  // On the hip's side the thigh is under the cloth: drawn as dress where it lies over the skirt or the bodice (the thigh
+  // coming out over the bump), and not at all past them (its root showed below the seat as skin nubs, round 2: the cloth's
+  // outline there is the skirt's, round the seat)
+  leg.clip = ['dress.skirt', 'dress']; leg.clipGeom = [knee];
+  // (inside the skirt it is cloth whatever side: the hem's rounded corners hang below the line)
+  for (const [id, z, paint] of [['dress.lap', 30.12, { fill: pal.dress }], ['dress.lap.edge', 30.121, { fill: 'none', stroke: pal.dress, strokeW: 0.012 }]]) {
+    parts.push({ id, bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'] },
+      { id: id + '.bodice', bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress'], clipAnd: [cut] });
+  }
+  // BETWEEN THE KNEES (squatting, bending: fx.kneesApart): the skirt's hem spans from the near knee's side to the far one
+  // and sags between them, its inside seen below the near thigh from the hem on its underside back to the seat (the squat
+  // and bend stills: a darker flap hanging to about mid-shin, behind the near shin, in front of the far leg; round 2 "a
+  // closed balloon... a curtain between the knees")
+  if (sd && sd.apart > 0.05) {
+    const P1 = sd.bot, P2 = dr.Hb, ch = sub(P2, P1), L = len(ch), u = mulS(ch, 1 / L), up = [u[1], -u[0]][1] < 0 ? [u[1], -u[0]] : [-u[1], u[0]];
+    const sag = Math.min(0.55, 0.45 * L) * sd.apart, low = add(lerp(P1, P2, 0.62), [0, sag]);
+    const geom = loop([[...add(P1, mulS(up, 0.08)), { c: true }], [...add(P2, mulS(up, 0.08)), { c: true }], [...P2, { c: true }], [...add(lerp(P2, low, 0.55), [0.02, 0.03])],
+      [...low], [...add(lerp(P1, low, 0.5), [-0.02, 0.02])], [...P1, { c: true }]]);
+    parts.push({ id: 'dress.curtain', bone: 'pelvis', z: 30.03, fill: pal.dressShade, world: true, geom, M: [1, 0, 0, 1, 0, 0] });
+  }
   // where the near thigh passes in front of the bump the cloth folds: the squatting and bending stills draw the thigh's top
   // under the bump as a darker line, so the thigh reads as a form under the dress (dress on dress, it vanished: round 2's
   // "the thighs hidden in a balloon"). The thigh's top, where it lies over the bodice, as a tapered shade line; faded in
@@ -111,6 +133,19 @@ function lapOver(parts, ctx) {
   if (run.length < 4) return;
   const m = run.length, wd = run.map((_, i) => 0.016 * Math.sin(Math.PI * Math.min(1, 1.6 * Math.min(i, m - 1 - i) / (m - 1))) ** 0.7);
   parts.push({ id: 'dress.lap.fold', bone: 'pelvis', z: 30.125, fill: pal.dressShade, world: true, geom: stroke(run, wd, 'point'), M: leg.M, opacity: k });
+}
+// the chest skin never shows behind the dress's back line (blade → shoulder) below the strap's top: as the arm reaches
+// forward its cap leaves the back of the shoulder, and a sliver of the skin there read as a knob behind the shoulder
+// (side-on rounds 1–2). Above the strap it is the slope from the neck onto the shoulder and stays (cut there, the neck
+// stood on the shoulders like a bottle's)
+function backLine(parts, ctx) {
+  const sk = parts.find((p) => p.id === 'chest.skin'), X = ctx.C.params.P, bk = X.back, M = ctx.st.chest.M, J0 = ctx.C.joints.chest;
+  if (!sk) return;
+  const pose = (q) => ap(M, sub(q, J0));   // (a rest-space point on the chest, posed)
+  const lvY = X.strap.back[1], lvX = bk.shoulder[0] + (lvY - bk.shoulder[1]) * (bk.shoulder[0] - bk.blade[0]) / (bk.shoulder[1] - bk.blade[1]);
+  const A = pose([bk.blade[0] - (bk.shoulder[0] - bk.blade[0]) * 4, bk.blade[1] + 2]), L = pose([lvX, lvY]);
+  const fw = norm([M[0], M[1]]), up = norm([-M[2], -M[3]]);
+  sk.clipGeom = [loop([A, L, sub(L, mulS(fw, 4)), add(sub(L, mulS(fw, 4)), mulS(up, 4)), add(add(L, mulS(fw, 4)), mulS(up, 4)), add(A, mulS(fw, 4))].map((q) => [...q, { c: true }]))];
 }
 // a cubic loop flattened (8 samples a span), and an even-odd point-in-polygon test
 const flat = (g) => { const out = [], n = g.P.length; for (let i = 0; i < n; i++) { const j = (i + 1) % n; for (let t = 0; t < 1; t += 0.125) { const u = 1 - t;
@@ -135,13 +170,13 @@ export default {
   ],
   // a hand on her casts a faint near-hard shadow onto her dress and skin (reels: ~12 %, a few px, no blur)
   contactShadow: { opacity: 0.12, offset: [4, 6], color: '#5a1f12', groups: [{ match: '^hand\\.near\\.', gate: 'contact.near' }],   // pose.fx['contact.near']: the hanging hand casts none
-    on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|dress\\.lap|chest\\.skin)$' },
+    on: '^(dress|dress\\.bump|dress\\.shade|dress\\.skirt|dress\\.lap(\\.bodice)?|chest\\.skin)$' },
   // skin on skin (a hand over the face or over its own arm) reads only through a line where it overlaps
   outlineGroups: [
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,
@@ -158,7 +193,7 @@ export default {
    *  each palm, each chair leg, the ball (a pose off its feet with the standing ellipse under empty floor reads as floating) */
   ground(pose, fill, Hpx, parts) {
     const flip = (pose.facing || 'right') === 'left' ? -1 : 1, rest = [X.shoe.near.heel[0] - 0.1, X.shoe.far.toe[0] + 0.1];
-    const E = ([x0, x1], ry = 0.09) => `<ellipse cx="${(flip * (x0 + x1) / 2 * Hpx).toFixed(2)}" cy="${(-0.05 * Hpx).toFixed(2)}" rx="${((x1 - x0) / 2 * Hpx).toFixed(2)}" ry="${(ry * Hpx).toFixed(2)}" fill="${fill}"/>`;
+    const E = ([x0, x1], ry = 0.09, fl = 0) => `<ellipse cx="${(flip * (x0 + x1) / 2 * Hpx).toFixed(2)}" cy="${((fl - 0.05) * Hpx).toFixed(2)}" rx="${((x1 - x0) / 2 * Hpx).toFixed(2)}" ry="${(ry * Hpx).toFixed(2)}" fill="${fill}"/>`;
     if (!parts) return E(rest);
     // each part's stretch of floor (the x-span of its outline within a hair of the floor; a shoe's sole lifts at the heel),
     // then the stretches that touch or nearly touch merged into one shadow each
@@ -168,18 +203,20 @@ export default {
       const P = low(p), lo = Math.max(...P.map((q) => q[1])), shoe = p.id.startsWith('shoe.');
       const floor = p.id === 'shoe.far' && Math.abs(lo - X.shoe.far.sole) < 0.04 ? X.shoe.far.sole : 0;   // the far foot on its own floor line (she is turned a little toward us)
       const xs = P.filter((q) => q[1] > floor - (shoe ? 0.12 : 0.08)).map((q) => q[0]);
-      if (xs.length) spans.push({ x0: Math.min(...xs), x1: Math.max(...xs), ids: [p.id] });
+      if (xs.length) spans.push({ x0: Math.min(...xs), x1: Math.max(...xs), ids: [p.id], fl: floor });
     }
     if (!spans.length) return '';
     spans.sort((a, b) => a.x0 - b.x0);
     const groups = [spans[0]];
-    for (const q of spans.slice(1)) { const g = groups[groups.length - 1]; if (q.x0 - g.x1 > 0.25) groups.push({ ...q }); else { g.x1 = Math.max(g.x1, q.x1); g.ids.push(...q.ids); } }
+    // (a stretch on the far foot's floor line stays apart from the near ones: its shadow on that line, under the far shoe;
+    // on the near floor it hung 0.16 H below a stepping far foot, which read as floating, critic R2 "the front heel up")
+    for (const q of spans.slice(1)) { const g = groups[groups.length - 1]; if (q.x0 - g.x1 > 0.25 || (q.fl !== g.fl && q.x0 > g.x1 - 0.05)) groups.push({ ...q, ids: [...q.ids] }); else { g.x1 = Math.max(g.x1, q.x1); g.ids.push(...q.ids); g.fl = Math.max(g.fl, q.fl); } }
     return groups.map((g) => {
       let x0 = g.x0 - 0.1, x1 = g.x1 + 0.1;
       if (g.ids.every((id) => /^(shoe|leg)\./.test(id)) && Math.abs(x0 - rest[0]) < 0.12 && Math.abs(x1 - rest[1]) < 0.12) return E(rest);   // standing: the shadow it always had
       const ball = parts.find((p) => p.id === 'prop.ball');
       if (ball && g.ids.includes('prop.ball')) { const xs = low(ball).map((q) => q[0]), r = (Math.max(...xs) - Math.min(...xs)) / 2, c = (x0 + x1) / 2; x0 = Math.min(x0, c - 0.7 * r); x1 = Math.max(x1, c + 0.7 * r); }
-      return E([x0, x1], x1 - x0 < 0.5 ? 0.06 : 0.09);
+      return E([x0, x1], x1 - x0 < 0.5 ? 0.06 : 0.09, g.fl);
     }).join('');
   },
 };

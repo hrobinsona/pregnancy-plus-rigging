@@ -33,6 +33,7 @@ export function makeRaster(rig, C, { box, res }) {
         for (const q of clips) { const m = q.M; U.addPath(P2(q), new DOMMatrix([m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx])); }
         setM([1, 0, 0, 1, 0, 0]); ctx.clip(U);
       }
+      for (const g of p.clipAnd || []) { setM(p.M); ctx.clip(P2({ geom: g })); }   // (each one intersects)
       setM(p.M); const col = code(c); ctx.fillStyle = `rgb(${col[0]},${col[1]},${col[2]})`; ctx.fill(P2(p));
       ctx.restore();
     }

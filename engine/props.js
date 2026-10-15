@@ -27,7 +27,10 @@ export function chair(o, z = 4) {
   parts.push({ id: 'prop.chair.farback', z: z - 0.4, fill: WOOD.far, geom: post([bx + lean + dx, backTop + dy], [bx + dx, seatY + dy], lw * 0.9, lw) });
   // the rail between the legs, the seat (its top seen a little from above, then its edge), near legs, near stile, top slat
   parts.push({ id: 'prop.chair.rail', z: z - 0.2, fill: WOOD.side, geom: rect(x0 + lw / 2, seatY * 0.42 - 0.03, x1 - lw / 2, seatY * 0.42 + 0.03, 0.01) });
-  parts.push({ id: 'prop.chair.seattop', z: z - 0.1, fill: WOOD.face, geom: rect(x0 - 0.02 + dx * 0.3, seatY + dy, x1 + 0.02 + dx * 0.3, seatY + 0.04, 0.02) });
+  // (the seat's top, seen a little from above, runs back to the far legs: a box from the near edge to the far one; cut
+  // short, the far front leg stood off the seat on its own, critic R2 "legs off the seat")
+  parts.push({ id: 'prop.chair.seattop', z: z - 0.1, fill: WOOD.face, geom: ensureCW(loop([[x0 - 0.02, seatY + 0.04, { c: true }], [x0 - 0.02 + dx, seatY + dy, { c: true }],
+    [x1 + 0.02 + dx, seatY + dy, { c: true }], [x1 + 0.02, seatY + 0.04, { c: true }]], 0.9)) });
   parts.push({ id: 'prop.chair.seat', z, fill: WOOD.side, geom: rect(x0 - 0.02, seatY, x1 + 0.02, seatY + th, 0.02) });
   for (const [i, x] of [x0 + lw / 2, x1 - lw / 2].entries()) parts.push({ id: `prop.chair.leg${i}`, z: z + 0.1, fill: WOOD.face, geom: post([x, seatY + th], [x, 0], lw, lw * 0.85) });
   parts.push({ id: 'prop.chair.back', z: z + 0.1, fill: WOOD.face, geom: post([bx + lean, backTop], [bx, seatY], lw * 0.95, lw) });
