@@ -1,6 +1,6 @@
 {
  "name": "side/fit/sit-chair",
- "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=3,thigh.far=3,shin.near=94,shin.far=96",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_chair_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=3,thigh.far=3,shin.near=94,shin.far=96,head=-97",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -26,7 +26,7 @@
   "spineUpper": 0.9,
   "chest": -3.7,
   "neck": -4.6,
-  "head": 3.7,
+  "head": -4.8,
   "belly": 0,
   "clavicle.near": -6.9,
   "shoulderAbd.near": 5.6,

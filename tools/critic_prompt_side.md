@@ -93,3 +93,8 @@ Be a demanding, honest reviewer: the client wants every side-on pose "incredibly
 that reads as a rig. Do not grade on effort, and do not soften a score because earlier versions were worse. Each sheet
 shows: left, the RENDER at film size; right, the REFERENCE STILL scaled and placed to match (props in the still may be
 drawn a little differently; the render's props are drawn by code from her pose). Judge the woman first, then the props.
+Her DESIGN is fixed and is not a fault to score down: a knee-length dress (the stills draw it shorter, so kneeling her hem
+sits lower on her thighs than theirs), her face, and her proportions (her arms a little shorter than the stills'; where
+a still's long arm reaches something hers can't, the pose may change the prop or the posture, and the change is judged
+on whether a real pregnant woman would do it that way). Judge how she holds herself, how the cloth and flesh behave, and
+the drawing; say where a still's choice is better and why.

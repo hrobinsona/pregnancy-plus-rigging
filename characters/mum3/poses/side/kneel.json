@@ -1,6 +1,6 @@
 {
  "name": "side/kneel",
- "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); floor_pose: leg.near:4, leg.near:7, leg.far:4, leg.far:7, shoe.near:2, shoe.near:4, shoe.far:2, shoe.far:4 on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); pose_dirs: head=-100; floor_pose: leg.near:4, leg.near:7, leg.far:4, leg.far:7, shoe.near:2, shoe.near:4, shoe.far:2, shoe.far:4 on the floor",
  "hands": {
   "near": "lay",
   "far": "lay"
@@ -20,7 +20,7 @@
   "spineUpper": -0.4,
   "chest": -2.7,
   "neck": -4.5,
-  "head": 3.4,
+  "head": -2.9,
   "belly": 0,
   "clavicle.near": 7.1,
   "shoulderAbd.near": 0.3,

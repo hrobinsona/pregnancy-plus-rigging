@@ -54,10 +54,11 @@ export function ball(o, z = 4) {
     floors: [[c[0] - 0.75 * r, c[0] + 0.75 * r, o.topY + 0.12 * r]], cloth: [] };
 }
 
-/** A kitchen counter: its front face at x0, its worktop at topY, one unit deep (o.w, default 2.2 H: a counter run seen end
- *  on; at 4 H it read as a wall, critic R1 "twice the still's width"), the worktop slab overhanging both faces. */
+/** A kitchen counter: its front face at x0, its worktop at topY, one unit deep (o.w, default 1.95 H: a counter run seen
+ *  end on; at 4 H it read as a wall, critic R1 "twice the still's width"; 2.2 still 0.3 H wider than the still's), the
+ *  worktop slab overhanging both faces (0.19 H thick as the still draws it; 0.13 read as a thin board, critic R3). */
 export function counter(o, z = 4) {
-  const { x0, topY } = o, x1 = x0 + (o.w ?? 2.2), slab = 0.13;
+  const { x0, topY } = o, x1 = x0 + (o.w ?? 1.95), slab = 0.19;
   return { parts: [
     { id: 'prop.counter', z, fill: o.fill || '#ebe4da', geom: rect(x0, topY + slab, x1, 0, 0.01) },
     { id: 'prop.counter.plinth', z: z + 0.05, fill: o.plinth || '#d9d0c4', geom: rect(x0 + 0.1, -0.22, x1, 0, 0.005) },

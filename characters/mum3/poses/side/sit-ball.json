@@ -1,6 +1,6 @@
 {
  "name": "side/fit/sit-ball",
- "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=13,thigh.far=11,shin.near=95,shin.far=97; floor_pose: shoe.near:5, shoe.near:6, shoe.far:5, shoe.far:6 on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=13,thigh.far=11,shin.near=95,shin.far=97,head=-97; floor_pose: shoe.near:5, shoe.near:6, shoe.far:5, shoe.far:6 on the floor",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -26,7 +26,7 @@
   "spineUpper": -2.3,
   "chest": -7.7,
   "neck": -6,
-  "head": 5.8,
+  "head": -2.8,
   "belly": 0,
   "clavicle.near": -14.3,
   "shoulderAbd.near": 3.8,

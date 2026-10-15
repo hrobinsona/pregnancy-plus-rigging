@@ -62,6 +62,9 @@ settle() {   # settle <pose> [floor_pose options]: a further solve on side/<pose
 # far shoe hid behind the near one, the still draws both; the far side seen from a little above, fx.farUp, so the far
 # thigh stays upright to reach it)
 fit kneel s_kneel_up_1 --fix fx.farUp=0.12
+# (the chin up a touch, the head drawn 10° back of plumb, as the still holds it: fitted, her face looked down at the floor
+# ahead, round 3 "the head pitched down in kneel and the seated poses")
+dirs kneel --dir head=-100
 floor kneel --touch leg.near:4,leg.near:7,leg.far:4@-0.162,leg.far:7@-0.162,shoe.near:2,shoe.near:4,shoe.far:2@-0.162,shoe.far:4@-0.162 --bones shin,foot,toe
 bumphands kneel
 
@@ -81,7 +84,7 @@ floor all-fours --touch leg.near:4,leg.near:7,leg.far:4@-0.162,leg.far:7@-0.162,
 # (the shins upright, the feet clear in front of the chair's front legs, her height found from her feet: with the shins
 # free the floor solve raked them 15–20° back under the seat, critic R2–R3)
 fit sit-chair s_sit_chair_1 --props chair
-dirs sit-chair --dir thigh.near=3,thigh.far=3,shin.near=94,shin.far=96
+dirs sit-chair --dir thigh.near=3,thigh.far=3,shin.near=94,shin.far=96,head=-97
 floor sit-chair --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones foot,toe
 # (the near hand at the bump's widest point, the forearm near level, as the still rests it; under the bump, the forearm
 # hung steeply down to her lap, critic R3)
@@ -92,7 +95,7 @@ bumphands sit-chair 0.5,-4.32 -8
 # her): the ball's top is her seat, so the higher seat gives the still's big ball (level thighs drew it ~20% small,
 # critic R2)
 fit sit-ball s_sit_ball_0 --props ball
-dirs sit-ball --dir thigh.near=13,thigh.far=11,shin.near=95,shin.far=97
+dirs sit-ball --dir thigh.near=13,thigh.far=11,shin.near=95,shin.far=97,head=-97
 floor sit-ball --touch shoe.near:5,shoe.near:6@-0.04,shoe.far:5@-0.162,shoe.far:6@-0.202 --bones foot,toe
 
 # supported squat, holding a chair's back in front of her; both feet flat and both knees forward (--twin legs: the far leg

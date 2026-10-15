@@ -1,6 +1,6 @@
 {
  "name": "side/fit/kneel",
- "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest)",
+ "note": "fitted to characters/mum3/refs/pose/s_kneel_up_1.json (MediaPipe landmarks, base rest); pose_dirs: head=-100",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -20,7 +20,7 @@
   "spineUpper": -0.4,
   "chest": -2.7,
   "neck": -4.5,
-  "head": 3.4,
+  "head": -2.9,
   "belly": 0,
   "clavicle.near": 7.1,
   "shoulderAbd.near": 0.3,
@@ -58,5 +58,6 @@
    "heelR 0.086",
    "shoulderR 0.076"
   ]
- }
+ },
+ "fitFrom": "side/fit/kneel"
 }
