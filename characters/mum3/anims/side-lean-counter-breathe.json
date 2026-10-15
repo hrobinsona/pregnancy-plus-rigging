@@ -1,0 +1,207 @@
+{
+ "name": "side-lean-counter-breathe",
+ "fps": 30,
+ "duration": 8,
+ "loop": true,
+ "view": {
+  "bbox": [
+   [
+    -1.94,
+    -7.23
+   ],
+   [
+    2.98,
+    0.35
+   ]
+  ],
+  "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
+ },
+ "story": "lean-counter in profile (the side-on library pose), breathing: an easy breath, then a deeper one, her eyes drifting shut on the breath in and her lips parting on the breath out, then her eyes open again, calm; her near hand stays put where it rests, her far hand stays put where it rests. Made by tools/side_loop.mjs.",
+ "intensity": "very gentle and calm: small, soft moves",
+ "keys": [
+  {
+   "t": 0,
+   "pose": "side/lean-counter",
+   "note": "the library pose, held; a hand resting on something stays there (spec.reach)"
+  }
+ ],
+ "reach": {
+  "near": [
+   {
+    "t": 0,
+    "pose": "side/lean-counter",
+    "on": "world"
+   },
+   {
+    "t": 4,
+    "pose": "side/lean-counter",
+    "on": "world"
+   }
+  ],
+  "far": [
+   {
+    "t": 0,
+    "pose": "side/lean-counter",
+    "on": "world"
+   },
+   {
+    "t": 4,
+    "pose": "side/lean-counter",
+    "on": "world"
+   }
+  ]
+ },
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.brow"
+   ],
+   "keys": [
+    {
+     "t": 0,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 3.5,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 4.3,
+     "pose": "face-in",
+     "ease": "inOut",
+     "note": "the eyes drift shut WITH the deep breath in"
+    },
+    {
+     "t": 5.6,
+     "pose": "face-in",
+     "ease": "inOut"
+    },
+    {
+     "t": 6.2,
+     "pose": "face-out",
+     "ease": "inOut",
+     "note": "lips part on the breath out"
+    },
+    {
+     "t": 6.7,
+     "pose": "face-release",
+     "ease": "inOut"
+    },
+    {
+     "t": 7,
+     "pose": "face-release",
+     "ease": "inOut"
+    },
+    {
+     "t": 7.6,
+     "pose": "face-calm",
+     "ease": "inOut",
+     "note": "the eyes open at the bottom of the breath"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 4,
+  "phase0": 0.15,
+  "amp": [
+   {
+    "t": 0,
+    "amp": 0.75
+   },
+   {
+    "t": 3,
+    "amp": 0.75
+   },
+   {
+    "t": 3.4,
+    "amp": 1.3
+   },
+   {
+    "t": 7,
+    "amp": 1.3
+   },
+   {
+    "t": 7.4,
+    "amp": 0.75
+   }
+  ],
+  "ampNote": "the deep breath is 3.4-7.0 s; the amplitude changes only in the pauses at the bottom of a breath (3.0-3.4 s, 7.0-7.4 s), where the wave is 0",
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.032,
+   "chestAcross": 0.03,
+   "chestDeg": -1,
+   "shoulderDeg": 0.8,
+   "headDeg": -1.2,
+   "belly": 0.012
+  }
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 1.9
+  }
+ ],
+ "drift": {
+  "amp": 1,
+  "seed": 7,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.4
+  }
+ }
+}

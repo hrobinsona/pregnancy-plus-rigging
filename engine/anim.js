@@ -132,15 +132,29 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const opts = { quiet };
   if (!rig || !C) throw new Error('makeAnim(spec, lib, { rig, C }): the rig and character are required');
   const solve = rig.solve, J = C.joints, BONE = rig.BONE;
+  const WORLD = { M: [1, 0, 0, 1, 0, 0], rot: 0, pos: [0, 0] };   // the frame of a contact 'on' the world (pins, reach)
   const fps = spec.fps, D = spec.duration, loop = !!spec.loop;
   const wrapT = (t) => (loop ? ((t % D) + D) % D : t);
+  // PROPS stay put in the WORLD through a shot: a character places its furniture from her posed body (a chair's seat under
+  // her buttocks, a worktop under her forearms), so placed per frame a counter rose and fell with her breath and a chair
+  // would follow her as she sat down. They are placed ONCE, from spec.propsFrom (a pose; default the first key whose pose
+  // has props), each item pinned where that pose put it (the parts carry their placement: part.place), and held all shot.
+  const propsAt = (() => {
+    const nm = spec.propsFrom ?? spec.keys.map((k) => k.pose).find((n) => lib[n]?.props?.items?.length);
+    if (!nm || spec.propsFrom === null) return null;
+    const seen = new Set(), items = [];
+    for (const p of rig.build(lib[nm])) if (p.place && !seen.has(p.place)) { seen.add(p.place); items.push({ ...p.place }); }
+    return items.length ? { items } : null;
+  })();
   // key lists: the main pose track (spec.keys) plus optional channel-group tracks (spec.tracks, e.g. {"face": [...]})
   // that own every channel under their prefix — so the eyes can be keyed on their own timing.
   // key.kind "breakdown": the curve passes THROUGH it (Catmull-Rom tangent, cubic Hermite in angle space) instead of
   // stopping on it, so a move can travel a different path out and back without a hitch.
   const buildKeys = (arr, raw) => {
     for (const k of arr) if (!lib[k.pose]) throw new Error(`missing pose ${k.pose}`);
-    const ks = arr.map((k) => ({ ...k, ch: raw ? flattenRaw(lib[k.pose]) : flatten(lib[k.pose]), ease: easeFn(k.ease) }));
+    // key.set = {channel: value}: sets channels on top of the key's pose (a contact pin, fx.pinNear: 1, without editing a
+    // fitted pose that refs/fit_side.sh rewrites)
+    const ks = arr.map((k) => ({ ...k, ch: { ...(raw ? flattenRaw(lib[k.pose]) : flatten(lib[k.pose])), ...(k.set || {}) }, ease: easeFn(k.ease) }));
     if (loop) ks.push({ ...ks[0], kind: undefined, t: ks[0].t + D, ease: easeFn(spec.wrapEase || 'inOut') });
     for (let i = 1; i < ks.length; i++) if (ks[i].t <= ks[i - 1].t) throw new Error(`keys out of order at ${ks[i].t}`);
     return ks;
@@ -291,6 +305,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // discrete properties held from the active key (swaps land ON keys)
     const act = (() => { let k = keys[0]; for (const kk of keys) if (kk.t <= tt + 1e-9) k = kk; return lib[k.pose]; })();
     for (const prop of ['handView', 'zBias']) if (act?.[prop] !== undefined) pose[prop] = act[prop];
+    if (propsAt) pose.props = propsAt;
     // SWAPS (spec.swaps = [{t, handView, zBias}]): drawing swaps timed on their own — when a limb is clear of the body
     // (a far hand passing the bump's edge), not on whichever body key happens to be active. The latest one ≤ t holds.
     { let sw = null; for (const s of spec.swaps || []) if (s.t <= tt + 1e-9) sw = s; if (!sw && loop && spec.swaps?.length) sw = spec.swaps[spec.swaps.length - 1];
@@ -385,21 +400,23 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     return { z: fr.depthOf(A.wr), phi: swivelOf(A.el, A.wr), straight }; })());
   function contact(st, side, e, P_) {
     const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
-    let loc = apM(inv(ref[on].M), ref[ha].pos);
+    // on 'world': the hand stays where the pose put it on the floor, a worktop, a chair or a ball (props stay put: propsAt)
+    const F = (S_) => (on === 'world' ? WORLD : S_[on]);
+    let loc = apM(inv(F(ref).M), ref[ha].pos);
     // a contact on a WARPED bone (C.warps: the nodding head) moves with the warped drawing: carry the point by the
     // difference between the warp now and the warp in the contact's own pose
     if (C.warps?.[on] && P_) { const j = J[BONE[on].joint], v = [loc[0] + j[0], loc[1] + j[1]], a = C.warps[on](P_)(v), b = C.warps[on](lib[e.pose])(v); loc = [loc[0] + a[0] - b[0], loc[1] + a[1] - b[1]]; }
-    const c = { p: apM(st[on].M, loc), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    const c = { p: apM(F(st).M, loc), rot: F(st).rot + (ref[ha].rot - F(ref).rot) };
     if (e.keyedArm) c.keyedArm = true;   // see reachArm: the arm stays the keys', only the damped solve moves the wrist
     if (is3(side)) {
       // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
       // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
-      const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(S_[on].pos)); };
+      const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(F(S_).pos)); };
       c.z = (e.z ?? i3.z) + dMid(st) - dMid(ref); c.phi = e.phi !== undefined ? e.phi * Math.PI / 180 : i3.phi; c.straight = e.phi === undefined && i3.straight;
     }
     // an OFFSET via (e.dp screen H, e.dz depth H, e.dphi deg): a waypoint defined from a key's contact — e.g. LIFT-OFF: the
     // hand first comes away from the surface it rested on (round the bump's silhouette edge, never through the bump)
-    if (e.dp) { const r = (st[on].rot - ref[on].rot) * Math.PI / 180; c.p = [c.p[0] + Math.cos(r) * e.dp[0] - Math.sin(r) * e.dp[1], c.p[1] + Math.sin(r) * e.dp[0] + Math.cos(r) * e.dp[1]]; }
+    if (e.dp) { const r = (F(st).rot - F(ref).rot) * Math.PI / 180; c.p = [c.p[0] + Math.cos(r) * e.dp[0] - Math.sin(r) * e.dp[1], c.p[1] + Math.sin(r) * e.dp[0] + Math.cos(r) * e.dp[1]]; }
     if (e.dz !== undefined && c.z !== undefined) c.z += e.dz;
     // e.surface: the hand LIES ON that body proxy's near surface at this point of the screen (sliding round the front of
     // the bump instead of passing through it): depth = where the camera ray through the point enters the proxy, + e.gap
@@ -885,16 +902,18 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   };
   function pinArm(pose, keyed, side, w, P) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side, on = P.on;
+    // on 'world': the hand is planted on the floor, a worktop, a chair (the props stay put in the world: propsAt)
+    const F = (S_) => (on === 'world' ? WORLD : S_[on]);
     // the contact comes from the PLANT pose when the pin names one (P.plant): the hand stays where it was put on the surface
     // while the torso keys change under it (gag, hunch, breaths); otherwise from the reference (keyed) pose itself.
     const kst = solve({ ...pose, bones: { ...pose.bones, ...keyed.bones }, scale: keyed.scale }), ref = plantRef(P) || kst, cur = solve(pose);
     if (ref !== kst && P.release) {   // optional: a plant holds only while the KEYED hand is at it (lets go as the keys lift it off)
-      const a = apM(inv(kst[on].M), kst[ha].pos), b = apM(inv(ref[on].M), ref[ha].pos), [d0, d1] = P.release;
+      const a = apM(inv(F(kst).M), kst[ha].pos), b = apM(inv(F(ref).M), ref[ha].pos), [d0, d1] = P.release;
       w *= 1 - smooth01((Math.hypot(a[0] - b[0], a[1] - b[1]) - d0) / (d1 - d0));
       if (w <= 0) return;
     }
-    const L0 = apM(inv(ref[on].M), ref[ha].pos), sx = pose.fx['slide.' + side + '.x'] ?? 0, sy = pose.fx['slide.' + side + '.y'] ?? 0;
-    const T = apM(cur[on].M, [L0[0] + sx, L0[1] + sy]);          // planted wrist, carried with the surface (+ a stroke's slide)
+    const L0 = apM(inv(F(ref).M), ref[ha].pos), sx = pose.fx['slide.' + side + '.x'] ?? 0, sy = pose.fx['slide.' + side + '.y'] ?? 0;
+    const T = apM(F(cur).M, [L0[0] + sx, L0[1] + sy]);          // planted wrist, carried with the surface (+ a stroke's slide)
     const h = 0.5, at = (b, d, P) => { const p = { ...P, bones: { ...P.bones, [b]: (P.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
     const target = { ...pose, bones: { ...pose.bones } };
     for (let it = 0; it < 3; it++) {                                        // three Newton steps: a fixed cost, no state
@@ -909,7 +928,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       pose.bones[ua] = (pose.bones[ua] || 0) + w * du; pose.bones[fa] = (pose.bones[fa] || 0) + w * df;
     }
     // hand: restore its keyed world angle relative to the surface (one secant step on the hand bone)
-    const c2 = solve(pose), want = ref[ha].rot + (cur[on].rot - ref[on].rot), e0 = ((want - c2[ha].rot + 540) % 360) - 180;
+    const c2 = solve(pose), want = ref[ha].rot + (F(cur).rot - F(ref).rot), e0 = ((want - c2[ha].rot + 540) % 360) - 180;
     const hp = { ...pose, bones: { ...pose.bones, [ha]: (pose.bones[ha] || 0) + h } }, slope = (((solve(hp)[ha].rot - c2[ha].rot) + 540) % 360 - 180) / h;
     if (Math.abs(slope) > 1e-6) pose.bones[ha] = (pose.bones[ha] || 0) + w * Math.max(-20, Math.min(20, e0 / slope));
   }

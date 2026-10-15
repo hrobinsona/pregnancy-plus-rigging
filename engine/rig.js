@@ -302,8 +302,9 @@ export function createRig(C) {
       return { W: rw, Ht: rh, vb: [-g[0], -g[1], rw, rh] };
     }
     const W = opts.width || 1080, Ht = opts.height || 1920;
-    const [[x0, y0], [x1, y1]] = C.frame.bbox;
-    const s = (opts.fill || C.frame.fill || 0.8) * Ht / ((y1 - y0) * Hpx);
+    // opts.bbox (H): a shot's own framing (spec.view.bbox: all fours is wider than she is tall), fitted inside the frame
+    const [[x0, y0], [x1, y1]] = opts.bbox || C.frame.bbox, fl = opts.fill || C.frame.fill || 0.8;
+    const s = opts.bbox ? fl * Math.min(Ht / ((y1 - y0) * Hpx), W / ((x1 - x0) * Hpx)) : fl * Ht / ((y1 - y0) * Hpx);
     const cx = (x0 + x1) / 2 * Hpx, cy = (y0 + y1) / 2 * Hpx + (C.frame.dy || 0) * Hpx;
     return { W, Ht, vb: [cx - W / s / 2, cy - Ht / s / 2, W / s, Ht / s] };
   }

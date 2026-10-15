@@ -21,7 +21,7 @@ for (const h of C.handLibrary || []) lib[h] = await (await fetch(`../characters/
 window.handLib = lib;
 pose = expandHands(pose, lib, C.handSides);
 const opts = { frame: q.get('frame') || 'still', silhouette: q.get('sil') === '1', bg: q.get('bg') || '#ffffff', ground: q.get('ground') || undefined,
-               box: q.get('box') ? JSON.parse(q.get('box')) : undefined, width: q.get('width') ? +q.get('width') : undefined };
+               box: q.get('box') ? JSON.parse(q.get('box')) : undefined, bbox: q.get('bbox') ? JSON.parse(q.get('bbox')) : undefined, width: q.get('width') ? +q.get('width') : undefined };
 const stage = document.getElementById('stage');
 window.renderPose = (p) => { stage.innerHTML = rig.toSVG(expandHands(p, lib, C.handSides), opts); };
 window.rig = rig;

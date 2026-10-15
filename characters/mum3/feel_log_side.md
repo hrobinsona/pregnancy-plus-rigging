@@ -115,3 +115,43 @@ on the worktop (body lens). Not landed, all three agree:
   rise 30–40° along the bump.
 - **Props**: the chair's crest a block (a slat between the posts), its seat too deep; the counter slab thin.
 - **Neck** long and thin with a hook at the base of the throat; the head pitched down in kneel and the seated poses.
+
+
+## Round 4 (2026-10-15: kneel-pick replaces bend-pick, the skirt leaves the bump where it turns back, the walks flare below the seat, the chin up kneeling and seated, a thicker worktop)
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 5 | 5 | 5 |
+| kneel | 6 | 6 | 6 |
+| kneel-pick | 4.5 | 4.5 | 4.5 |
+| lean-counter | 6 | 5.5 | 5.5 |
+| sit-ball | 5.5 | 6 | 6 |
+| sit-chair | 6.5 | 6.5 | 6 |
+| squat | 5.5 | 5 | 5 |
+| walk-contact | 6 | 5.5 | 5.5 |
+| walk-pass | 6.5 | 6 | 5.5 |
+
+All three: NOT YET. Landed: the walks flare from the hip (the hem ~200 px, the still's 215), the front falls plumb from
+the bump (lean), the walk-contact front foot on one floor line, the sit-ball ball round and near size, the toy on the
+floor ahead of the knee, the counter's slab. Not landed, all three agree:
+- **Legs are posts on hinges** (every pose, every lens's first or third fix). Thighs 0.6–0.7 of the stills' in the
+  folded poses (all-fours 55 vs 90 px, kneel-pick 65 vs 100, squat 62 vs 97); no calf belly (it should peak a third
+  of the way down the shin, the ankle ~45% of it); no kneecap step on a straight leg; lean's knees locked.
+- **Twin legs**: the far leg hides behind the near one, the shoes merge into one double-toed shoe (squat, sit-ball,
+  sit-chair, kneel, all-fours). The stills set the far foot ~50–60 px forward and ~30–40 px up, the squat's far knee
+  forward and higher.
+- **kneel-pick has no front thigh**: a knee pops out beside the bump on a post. The still's front thigh runs nearly
+  level from the hip to a knee ~110 px ahead of the bump, the skirt draped over it; the far arm shows from the
+  shoulder and its hand drapes over the kneecap; the toy is small (~65 px) and the fingers curl round it.
+- **The dress back is a ruler or a ramp** (kneel, lean, walks, kneel-pick): a rounded upper back, a lumbar hollow, the
+  seat, then the flare. Hems are bowls with rounded corners (kneel, walks, lean): near-straight with crisp corners.
+- **All fours**: bump and skirt are one wedge. A round bump hanging under the ribs, its lowest point ~100–120 px off
+  the floor (~50 px higher), the skirt falling behind it as a curtain, its back flaring ~20 px with a fold.
+- **Hands**: stripe fingers on paddles everywhere. Kneel and sit-chair: the fingers along the bump's underside (lens
+  disagree on up or down: check the still), the thumb along the hand, not up. Sit-ball: the far hand floats (rest it
+  on the far thigh by the knee). Squat: two fists on the crest (an open hand over the post). Lean: the forearm 15 px
+  into the slab, the bump 8 px from the cabinet (leave 30–40).
+- **Neck**: long and thin, a hook at the base of the throat, strap tabs (all poses).
+- **Walk-contact** feet nearly flat (heel strike, toe up 20°; back foot up on its toe); walk-pass's far forearm
+  sprouts from under the bump (swing it forward so the upper arm shows).
+- **Props**: the chair's far front leg stands off the seat's end; the squat chair seat too high (a bar stool).

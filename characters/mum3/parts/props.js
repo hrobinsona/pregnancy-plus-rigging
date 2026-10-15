@@ -47,7 +47,8 @@ export function propsFor(parts, ctx) {
     if (it.type === 'chair') { if (o.x1 === undefined) o.x1 = o.x0 + 1.35; if (o.x0 === undefined) o.x0 = o.x1 - 1.35;   // (a kitchen chair's seat ≈ 40 cm: 1.85 H read 30–80% too deep, critic R3)
       if (o.backTop === undefined) o.backTop = o.seatY - 2.0; }
     const r = PROPS[it.type](o);
-    for (const p of r.parts) out.parts.push({ ...p, bone: 'pelvis', world: true, M, module: 'props', anchors: p.geom.P.length });
+    // (each part carries where it was placed: a shot holds its props there, engine/anim.js propsAt)
+    for (const p of r.parts) out.parts.push({ ...p, bone: 'pelvis', world: true, M, module: 'props', anchors: p.geom.P.length, place: o });
     out.floors.push(...r.floors); out.cloth.push(...r.cloth);
   }
   return out;
