@@ -104,7 +104,9 @@ farleg() {   # farleg <pose> <knee dx,dy> <ankle dx,dy>: the far knee and ankle 
 # thigh stays upright to reach it)
 # (the far HIP alone raised (fx.farUpLegs), not the far shoulder: with fx.farUp 0.12 the far strap stood up past her throat
 # as a dark lobe, "a hook at the base of the throat", round 6; the far hand rests hidden behind the bump either way)
-fit kneel s_kneel_up_1 --fix fx.farUpLegs=0.162
+# (the far legs raised 0.25 H, the still's offset between the two kneeling shoes (0.24 H up): at the far floor line's
+# 0.162 the far shoe still sat a stripe above the near one, its opening a hairline, "one dark lump", rounds 6–11)
+fit kneel s_kneel_up_1 --fix fx.farUpLegs=0.25
 # (the chin up a touch, the head drawn 10° back of plumb, as the still holds it: fitted, her face looked down at the floor
 # ahead, round 3 "the head pitched down in kneel and the seated poses")
 # (the legs PARALLEL, the far one the near one's twin raised onto the far floor line (fx.farUpLegs): fitted 12° apart the far

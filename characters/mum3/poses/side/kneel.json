@@ -6,7 +6,7 @@
   "far": "softrest"
  },
  "fx": {
-  "farUpLegs": 0.162,
+  "farUpLegs": 0.25,
   "turn": 0.4,
   "show.far.arm": 1,
   "fingersIn": 0.5
