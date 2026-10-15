@@ -552,3 +552,35 @@ the stacked shoes; the arms when Harry decides.
   sits back toward her kneeling heel (the kneeling thigh at 30°, the front knee up, the hips ~0.5 H lower), hinges 18°
   from the hips with a long back, the head tipped down; the arm hangs a little back (104°) so the bump shows in front of
   it, and the toy sits under her fingertips (`toy:tips=1`, parts/props.js): r 0.31 H, ~13 cm, a toddler's ball.
+
+Round 12 critics (three fresh reviewers on **Fable**):
+
+| pose | natural | body | craft | round 11 |
+|---|---|---|---|---|
+| kneel | 6.5 | 7 | 6.5 | 6.5 / 7 / 7 |
+| kneel-pick | 4.5 | 5 | 5 | 4.5 / 5 / 5 |
+| all-fours | 5.5 | 6 | 6 | 5.5 / 6 / 6 |
+| sit-chair | 7 | 7 | 7 | 7 / 7 / 7 |
+| sit-ball | 6 | 6.5 | 6 | 6 / 6.5 / 6.5 |
+| squat | 5 | 5.5 | 5.5 | 5 / 5.5 / 5.5 |
+| lean-counter | 6.5 | 6.5 | 6.5 | 6.5 / 7 / 7 |
+| walk-contact | 6 | 6.5 | 6.5 | 6.5 / 6.5 / 7 |
+| walk-down | 6 | 6.5 | 6.5 | 6 / 6.5 / 6.5 |
+| walk-pass | 6.5 | 7 | 6.5 | 6.5 / 6.5 / 7 |
+
+Flat a fourth round (within half a point everywhere). Landed, by every lens: the kneeling shoes parted, the walks'
+trailing knees bent, the toy smaller ("~1.5× the still's", no longer "a beach ball"). Not landed:
+- **Kneel-pick's posture** (every lens, worst pose): the hinge reads "hunched… head bowed", the bump "small, half-hidden
+  behind the hanging arm"; all three want the still's: upright, head level, the bump ahead of the arm. Upright, her arm
+  can't reach a toy on the floor (round 11: the ball grew to her palm), so with the master's arms this pose is caught
+  between two faults; the cloth behind her reads "a sail… a balloon to the floor".
+- **The folded cloth** (body's first fix, craft's third): the squat's sack, kneel-pick's sail, sit-ball's flap under the
+  thigh, all-fours' bump hanging below the hem with a notch. Rounds 3–11 tuned these by hand per pose.
+- **Hands** (craft's first, natural's third): fingers spread "a comb… a claw"; each hand shaped to what it touches; the
+  far hand drawn where the still shows it (kneel, sit-chair, sit-ball, lean-counter, squat). Harry asked for "relaxed
+  fingers with gaps and curl" (round 7), so the gaps are his taste and stay; the shape per contact and the far hand
+  don't conflict with it.
+- **Legs**: a kneecap plane and a calf belly on every bent or loaded leg; the folded thighs thin against the stills'.
+
+Next (round 13): change method for the cloth (lesson 15): fit each folded pose's skirt options to its still's dress
+mask, measured, rather than by eye; then the far hand where the stills show it.
