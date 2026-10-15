@@ -815,8 +815,8 @@ or composited.
    arm covered the bump; a floor ball grown to meet the palm (`toy reach=1`) read "a beach ball… rest a hand on a
    ball, not pick up a toy" (every lens). The same shortfall ran through the squat (a level rod of an arm to the
    chair), lean-counter (the forearm resting where the still presses on a straight arm) and all-fours (vertical
-   posts). Measured against a real arm: in the master her fingertips hang at 41% of her height (a real woman's ~38%,
-   so ~0.2 H, 5 cm, higher): her arm is ~90% of a real one, her hand (wrist to fingertip 0.63 H) ~80% of a real
+   posts). Measured against a real arm: in the master her fingertips hang at 43% of her height (a real woman's ~38%,
+   so ~0.4 H, 9 cm, higher): her arm is ~90% of a real one, her hand (wrist to fingertip 0.63 H) ~80% of a real
    hand's 0.108 × stature; the stills draw the arm ~105% of real, 0.5 H beyond hers. The master draws her so, and the
    critic prompt excluded "her arms" from scoring, but the lenses scored everything they forced. Three rounds of
    cloth and prop changes left the scores flat (lesson 15: explore, don't tune). Rules: before working round a reach,

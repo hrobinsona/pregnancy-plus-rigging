@@ -516,8 +516,8 @@ hand on a ball', not 'pick up a toy'"; every lens: make the reach with the body 
 hips with a long back, the head tipped not bowed) and keep the toy liftable, and they still read the bowed head and neck
 as a hunch.
 
-**What the reach faults have in common: her arms.** In the master her fingertips hang at 41% of her height (the
-pixels, crown to sole); a real woman's hang at ~38%, so hers end ~0.2 H (~5 cm) higher: her arm is ~90% of a real one
+**What the reach faults have in common: her arms.** In the master her fingertips hang at 43% of her height (the
+pixels, crown to sole); a real woman's hang at ~38%, so hers end ~0.4 H (~9 cm) higher: her arm is ~90% of a real one
 (the rig, joint to joint: shoulder to fingertip 2.68 H, the hand 0.63, about 80% of a real hand's 0.108 × stature). The
 stills draw the arm longer still (3.2 H joint to fingertip, ~105% of real), so every still's reach is ~0.5 H beyond hers.
 Every reach the library asks of her runs out of arm: kneel-pick's ball (grown or lifted), the squat's arm a level rod
