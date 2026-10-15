@@ -263,8 +263,9 @@ nudge lean-counter upperArm.far=-14,forearm.far=22,hand.far=-8
 # her palm: lifted at her fingertips the small one read "floating in mid-air", shadow or not (rounds 7–10)
 # (the trunk nearly UPRIGHT, ~6° forward, the hips sitting back on the kneeling thigh for the reach: leaned 20° from the
 # hips for the reach, the seat swung back into a second round mass behind her and the hanging arm covered the bump's
-# front, at film size the bump read smaller than the seat, round 11)
-fit kneel-pick s_kneel_pick2_1 --props toy:r=0.47:near=1 --hand near=softrest --fix fx.fingersIn=0.6
+# front, at film size the bump read smaller than the seat, round 11; upright, her palm hangs 0.25 H above that ball's
+# crown, so the ball grows to meet it: toy reach=1, parts/props.js)
+fit kneel-pick s_kneel_pick2_1 --props toy:r=0.47:near=1:reach=1 --hand near=softrest --fix fx.fingersIn=0.6
 dirs kneel-pick --dir pelvis=-84,spineLower=-84,spineUpper=-82,chest=-80,neck=-56,head=-60,thigh.near=-8,shin.near=95,thigh.far=40,shin.far=-172,upperArm.near=92,forearm.near=88,hand.near=88,upperArm.far=70,forearm.far=20,hand.far=40
 floor kneel-pick --touch leg.far:4@-0.162,leg.far:7@-0.162,leg.far:9@-0.162,shoe.far:tip@-0.162,shoe.near:ball,shoe.near:heel@-0.1 --bones shin,foot --sides far --vars thigh.far,thigh.near,foot.near
 # (round 9: 'softrest', the fingers together and the thumb along the top: 'lay' (the bump's open hand, its thumb out apart
