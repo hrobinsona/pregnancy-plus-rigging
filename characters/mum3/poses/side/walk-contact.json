@@ -1,6 +1,6 @@
 {
  "name": "side/fit/walk-contact",
- "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=118,forearm.far=108,hand.far=110; pose_dirs: foot.far=38,foot.near=90,toe.near=8; floor_pose: shoe.far:6, shoe.near:4, shoe.near:5 on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=68,upperArm.far=118,forearm.far=108,hand.far=110; pose_dirs: foot.far=38,foot.near=90,toe.near=8; floor_pose: shoe.far:low, shoe.near:tip, shoe.near:ball on the floor",
  "hands": {
   "near": "relaxed",
   "far": "relaxed"
@@ -12,7 +12,7 @@
  },
  "root": [
   0.0502,
-  0.2966
+  0.3112
  ],
  "bones": {
   "pelvis": 0,
@@ -31,7 +31,7 @@
   "foreRot.near": 0.5,
   "hand.near": -1.9,
   "thigh.near": -11.1,
-  "shin.near": -27.1,
+  "shin.near": -26.6,
   "foot.near": -0.7,
   "hipAbd.near": -1.4,
   "clavicle.far": -22,
@@ -46,8 +46,8 @@
   "shin.far": -3.7,
   "foot.far": -4.5,
   "hipAbd.far": 0,
-  "toe.near": 16.1,
-  "toe.far": 0
+  "toe.near": 27.5,
+  "toe.far": 0.4
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_walk_contact_1.json",

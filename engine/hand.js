@@ -47,7 +47,8 @@ export const HAND_DEFAULTS = {                // anatomical defaults (override p
 };
 
 /** spec: { id, parentBone, wrist:[x,y], dir:deg (wrist→middle tip), length, palmFrac, wristW, palmW, thumbSide:+1|-1,
- *          flexFx, thumbFx?, order:[back→front finger indices], z?, thumbZ?, thumbBehind?, + any key of HAND_DEFAULTS }
+ *          flexFx, thumbFx?, inFx? (the fx a pose's fx.fingersIn blends to), order:[back→front finger indices], z?, thumbZ?,
+ *          thumbBehind?, + any key of HAND_DEFAULTS }
  *  across: knuckle offsets as fractions of palmW (+ = thumb side); thumb.cmc/mcp: [× palmL, × palmW/2] */
 export function makeHand(spec0) {
   // globalThis.HAND_STYLE_TRY: drawing-style overrides ({key: value}, thumb merged) set ONLY by tools/hand_shapes.py --try
@@ -98,6 +99,7 @@ export function makeHand(spec0) {
   bones.push({ id: `${id}.t1`, parent: `${id}.t0`, joint: `${id}.tb`, aim: `${id}.tm`, plane: tplane, restAnat: 0, min: -30, max: 70 });
   bones.push({ id: `${id}.t2`, parent: `${id}.t1`, joint: `${id}.tm`, aim: `${id}.tt`, plane: tplane, restAnat: 0, min: -25, max: 90 });
   const planes = { [plane]: S.flexFx, [tplane]: S.thumbFx ?? S.flexFx };
+  const planesIn = S.inFx !== undefined ? { [plane]: S.inFx } : {};   // a pose's fx.fingersIn blends the fingers to this (rig.js): curling in the picture
 
   const ANCHORS = { [`${id}.palm`]: 12, [`${id}.thenar`]: 6, [`${id}.thumb`]: 8 };
   for (let i = 1; i <= 4; i++) ANCHORS[`${id}.f${i}`] = 11;   // tube: 5 stations (root, MCP, PIP, mid, visible end) × 2 + tip cap (root flat, sunk in the palm)
@@ -204,7 +206,12 @@ export function makeHand(spec0) {
         const lineEndC = S.lineEnd * (1 - clamp01((curlOf(i) - 25) / 45)), s0 = S.lineStart ?? (S.view === 'palm' ? 0.14 : 0.15);   // palm: the round start cap sits inside the digital crease's width (no knob at the T)   // palm view: from the digital crease; back view: just below the knuckle
         // R12: the line runs INTO the distal segment (to lineEnd of it), ending just above the notch between the fingertips
         // as in the reference — stopping at the DIP made the hand a slab with slits (and the far palm comb an "E")
-        const pts = [off(lerp(f.k, f.p, s0), lerp([f.r[0]], [f.r[1]], s0)[0]), off(f.p, f.r[1]), off(f.q, f.r[2]), off(lerp(f.q, f.t, lineEndC), rAt(Lb + lineEndC * Lc))];
+        // S.lineStart past 1 starts the line on the MIDDLE phalanx (1.5: halfway from the PIP to the DIP): the side-on stills
+        // draw a short line near the tips only, fingers held together above it; from the knuckle the lines read as
+        // "stripes on a paddle" (side-on rounds 1–6, every lens)
+        const m0 = Math.max(0, s0 - 1), pS = s0 <= 1 ? [lerp(f.k, f.p, s0), lerp([f.r[0]], [f.r[1]], s0)[0]] : [lerp(f.p, f.q, m0), lerp([f.r[1]], [f.r[2]], m0)[0]];
+        const pM = s0 <= 1 ? [f.p, f.r[1]] : [lerp(f.p, f.q, (1 + m0) / 2), lerp([f.r[1]], [f.r[2]], (1 + m0) / 2)[0]];
+        const pts = [off(...pS), off(...pM), off(f.q, f.r[2]), off(lerp(f.q, f.t, lineEndC), rAt(Lb + lineEndC * Lc))];
         rimStart[i] = pts[0]; rimStartP[i] = null;
         // never past the TIP of the finger behind (a shorter finger, e.g. the pinky behind the ring): the line would cross its
         // tip outline and leave a crescent sliver — lines stop short of the tips, as in the reference
@@ -318,7 +325,7 @@ export function makeHand(spec0) {
   }
   // library spread values are 'away from the thumb'; this sign maps them onto screen rotation for this hand
   const spreadSign = S.thumbSide;
-  return { joints, bones, planes, ANCHORS, parts, spreadSign, id, view: S.view, thumbSide: S.thumbSide };
+  return { joints, bones, planes, planesIn, ANCHORS, parts, spreadSign, id, view: S.view, thumbSide: S.thumbSide };
 }
 
 /** keep every loop clockwise on screen (y down) so offsets/outsets behave; deterministic for a given construction */

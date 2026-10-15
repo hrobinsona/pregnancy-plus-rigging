@@ -48,6 +48,23 @@ const over = Object.fromEntries((arg('pin') || '').split(',').filter(Boolean).ma
 const pins = Object.fromEntries(['near', 'far'].map((s) => [s, over[s] !== undefined ? (over[s] === 'free' ? null : over[s]) : pinFor(s)]));
 
 const name = arg('out', `side-${poseName}-breathe`), reach = {};
+// a hand on the bump's FAR side (fit_side.sh's contact_pose --back) is out of sight behind it: its 3D arm sees its palm
+// through the bump, so the handedness gate would call the back-view drawing mirrored (side kneel, round 5)
+const back = /--back/.test(raw._contact || '') ? (raw._contact.match(/--side (near|far)/)?.[1] ?? 'far') : null;
+// LIFE in a resting hand (qa_checks 'alive': a hand only carried by her body reads stuck on): the fingers settle onto what
+// they rest on with the easy breath (the wrist eases them down), fan a little and the thumb eases out on the deep breath in,
+// then ease long on the breath out. Seen side-on the fingers' curl is mostly out of the picture (flexFx 0.1), so the
+// visible life is the wrist's and the fan. ±3° moved the tips ~7 px at 225 px/H and read FROZEN on the kneeling and seated
+// loops (qa_checks alive: under 5 px in any 2 s on her); 4–5° moves them 10–12 px, the SKILL's 10–20 px of a resting hand. A hand bearing her weight (the floor, a worktop:
+// 'world') keeps its wrist (it is planted) and only fans: a deliberate hold (spec.qa.still)
+const life = (s, w) => [
+  { t0: 0.5, t1: 2.7, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].map((i) => [`hand.${s}.f${i}a`, 3])), ...(w ? {} : { [`hand.${s}`]: 5 }) }, note: `${s}: the fingers settle onto what they rest on (the easy breath)` },
+  { t0: 3.2, t1: 5.6, cycles: 1, bones: { [`hand.${s}.f1s`]: -3, [`hand.${s}.f3s`]: 1.5, [`hand.${s}.f4s`]: 4, [`hand.${s}.t0`]: 4, ...(w ? {} : { [`hand.${s}`]: -4.5 }) }, note: `${s}: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch` },
+  { t0: 5.4, t1: 7.8, cycles: 1, bones: { ...Object.fromEntries([1, 2, 3, 4].flatMap((i) => [[`hand.${s}.f${i}a`, -3], [`hand.${s}.f${i}b`, -2]])), ...(w ? {} : { [`hand.${s}`]: 4 }) }, note: `${s}: the breath out: the fingers ease long` },
+];
+const fidget = Object.entries(pins).filter(([s, on]) => on && s !== back).flatMap(([s, on]) => life(s, on === 'world'));
+const still = Object.fromEntries(Object.entries(pins).filter(([s, on]) => on === 'world' && s !== back).map(([s]) => [s, [[0, 8, 'bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers']]]));
+const qa = { ...(back ? { handed: [{ side: back, why: 'the hand rests on the bump\'s far side, out of sight behind it (contact_pose --back)' }] } : {}), ...(Object.keys(still).length ? { still } : {}) };
 // a resting hand is a HELD reach (engine/anim.js reachArm: the arm solved in 3D to the wrist each frame, then a damped
 // solve; two equal stops = a hold): the plain 2D pin diverged on the far arms and the straight ones (26-75 px)
 for (const [s, on] of Object.entries(pins)) if (on) reach[s] = [0, 4].map((t) => ({ t, pose: `side/${poseName}`, on }));
@@ -62,6 +79,8 @@ const spec = {
   intensity: 'very gentle and calm: small, soft moves',
   keys: [{ t: 0, pose: `side/${poseName}`, note: 'the library pose, held; a hand resting on something stays there (spec.reach)' }],
   ...(Object.keys(reach).length ? { reach } : {}),
+  ...(fidget.length ? { fidget } : {}),
+  ...(Object.keys(qa).length ? { qa } : {}),
   tracks: { face: { channels: ['face.gaze', 'face.lid', 'face.mouth', 'face.brow'], keys: [
     { t: 0.0, pose: 'face-calm', ease: 'inOut' },
     { t: 3.5, pose: 'face-calm', ease: 'inOut' },

@@ -65,5 +65,15 @@
    "shoulderL 0.117"
   ]
  },
+ "scale": {
+  "hand.near": [
+   1,
+   0.6
+  ],
+  "hand.far": [
+   1,
+   0.6
+  ]
+ },
  "fitFrom": "side/fit/lean-counter"
 }

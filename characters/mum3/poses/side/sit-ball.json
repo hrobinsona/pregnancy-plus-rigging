@@ -1,11 +1,12 @@
 {
  "name": "side/sit-ball",
- "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,thigh.near=13,thigh.far=9,shin.near=95,shin.far=80; floor_pose: shoe.near:5, shoe.near:6, shoe.far:5, shoe.far:6 on the floor",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_ball_0.json (MediaPipe landmarks, base rest); pose_dirs: pelvis=-95,spineLower=-87,spineUpper=-84,neck=-72,head=-95,thigh.near=13,thigh.far=13,shin.near=95,shin.far=95; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor",
  "hands": {
   "near": "relaxed",
   "far": "lay"
  },
  "fx": {
+  "farUpLegs": 0.162,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -17,56 +18,62 @@
   ]
  },
  "root": [
-  -0.7608,
-  1.314
+  -0.7548,
+  1.3421
  ],
  "bones": {
   "pelvis": 4.3,
   "spineLower": 4.9,
   "spineUpper": -0.9,
-  "chest": -7.4,
-  "neck": 4.6,
+  "chest": -7.7,
+  "neck": 4.9,
   "head": -10.6,
   "belly": 0,
-  "clavicle.near": -14.5,
-  "shoulderAbd.near": 3.9,
-  "upperArm.near": -2,
+  "clavicle.near": -14.2,
+  "shoulderAbd.near": 3.8,
+  "upperArm.near": -1.8,
   "armAbd.near": 0,
   "armRot.near": 4.1,
   "forearm.near": 38.1,
   "foreRot.near": 0.2,
   "hand.near": 7,
-  "thigh.near": 81,
+  "thigh.near": 80.2,
   "shin.near": -83.1,
-  "foot.near": 12.8,
-  "hipAbd.near": -5.4,
+  "foot.near": 12.1,
+  "hipAbd.near": -6.2,
   "clavicle.far": -22,
   "shoulderAbd.far": 0,
-  "upperArm.far": -7.6,
-  "armAbd.far": 35,
-  "armRot.far": 145,
-  "forearm.far": 5.2,
-  "foreRot.far": 70,
+  "upperArm.far": -13.4,
+  "armAbd.far": 29.1,
+  "armRot.far": 150.9,
+  "forearm.far": 21.2,
+  "foreRot.far": 90,
   "hand.far": -50,
-  "thigh.far": 84.4,
-  "shin.far": -72.8,
-  "foot.far": -19.8,
-  "hipAbd.far": -5.2,
-  "toe.near": -20,
-  "toe.far": 12.9
+  "thigh.far": 83.6,
+  "shin.far": -84.5,
+  "foot.far": -3.6,
+  "hipAbd.far": -2.1,
+  "toe.near": -3.3,
+  "toe.far": -20
  },
  "_fit": {
   "ref": "characters/mum3/refs/pose/s_sit_ball_0.json",
   "scale": 1.0082,
-  "rms": 0.0596,
+  "rms": 0.0595,
   "worst": [
-   "shoulderL 0.206",
-   "hipL 0.130",
+   "shoulderL 0.207",
+   "hipL 0.127",
    "shoulderR 0.078",
    "thumbR 0.071",
    "elbowR 0.059"
   ]
  },
  "fitFrom": "side/fit/sit-ball",
+ "scale": {
+  "thigh.far": [
+   0.85,
+   1
+  ]
+ },
  "_contact": "--side far --on shin.far --at -0.5,-2.25 --handDir 20 --hand lay (base side/sit-ball)"
 }

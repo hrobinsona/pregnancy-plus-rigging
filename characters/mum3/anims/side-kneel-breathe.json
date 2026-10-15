@@ -6,12 +6,12 @@
  "view": {
   "bbox": [
    [
-    -2.33,
+    -2.16,
     -5.53
    ],
    [
     1.47,
-    0.37
+    0.35
    ]
   ],
   "note": "the pose's bounds + 0.35 H (tools/side_loop.mjs), fitted in the frame"
@@ -48,6 +48,59 @@
     "t": 4,
     "pose": "side/kneel",
     "on": "belly"
+   }
+  ]
+ },
+ "fidget": [
+  {
+   "t0": 0.5,
+   "t1": 2.7,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": 3,
+    "hand.near.f2a": 3,
+    "hand.near.f3a": 3,
+    "hand.near.f4a": 3,
+    "hand.near": 5
+   },
+   "note": "near: the fingers settle onto what they rest on (the easy breath)"
+  },
+  {
+   "t0": 3.2,
+   "t1": 5.6,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1s": -3,
+    "hand.near.f3s": 1.5,
+    "hand.near.f4s": 4,
+    "hand.near.t0": 4,
+    "hand.near": -4.5
+   },
+   "note": "near: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
+  },
+  {
+   "t0": 5.4,
+   "t1": 7.8,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": -3,
+    "hand.near.f1b": -2,
+    "hand.near.f2a": -3,
+    "hand.near.f2b": -2,
+    "hand.near.f3a": -3,
+    "hand.near.f3b": -2,
+    "hand.near.f4a": -3,
+    "hand.near.f4b": -2,
+    "hand.near": 4
+   },
+   "note": "near: the breath out: the fingers ease long"
+  }
+ ],
+ "qa": {
+  "handed": [
+   {
+    "side": "far",
+    "why": "the hand rests on the bump's far side, out of sight behind it (contact_pose --back)"
    }
   ]
  },

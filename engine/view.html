@@ -4,7 +4,7 @@
 <body><div id="stage"></div>
 <script type="module">
 // Generic viewer: ?char=<name>&pose=<pose json name>&frame=still|ref&sil=1&bg=#hex&ground=#hex&bones={json}&handStyle={json}
-// window.renderPose(pose) is pure: same pose -> same SVG.
+// window.renderPose(pose[, opts]) is pure: same pose -> same SVG.
 import { createRig } from './rig.js';
 const q = new URLSearchParams(location.search);
 if (q.get('handStyle')) globalThis.HAND_STYLE_TRY = JSON.parse(q.get('handStyle'));   // a hand drawing style to try (tools/hand_shapes.py)
@@ -23,7 +23,7 @@ pose = expandHands(pose, lib, C.handSides);
 const opts = { frame: q.get('frame') || 'still', silhouette: q.get('sil') === '1', bg: q.get('bg') || '#ffffff', ground: q.get('ground') || undefined,
                box: q.get('box') ? JSON.parse(q.get('box')) : undefined, bbox: q.get('bbox') ? JSON.parse(q.get('bbox')) : undefined, width: q.get('width') ? +q.get('width') : undefined };
 const stage = document.getElementById('stage');
-window.renderPose = (p) => { stage.innerHTML = rig.toSVG(expandHands(p, lib, C.handSides), opts); };
+window.renderPose = (p, o = {}) => { stage.innerHTML = rig.toSVG(expandHands(p, lib, C.handSides), { ...opts, ...o }); };   // o: per-render opts (box, width: tools/side_zoom.mjs)
 window.rig = rig;
 window.renderPose(pose);
 window.__ready = true;

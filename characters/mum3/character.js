@@ -108,6 +108,10 @@ function lapOver(parts, ctx) {
     parts.push({ id, bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress.skirt'] },
       { id: id + '.bodice', bone: 'pelvis', z, ...paint, world: true, geom: leg.geom, M: leg.M, clip: ['dress'], clipAnd: [cut] });
   }
+  // with the thigh forward (sitting, squatting) the SIDE panel covers the thigh's outer face back from the side's diagonal,
+  // below the skirt's own outline too (the back panel reaches less far along the underside than the side does): drawn only
+  // inside the skirt, the thigh between the two lines was neither cloth nor skin, a white wedge under the lap, round 6
+  if (sd && sd.w > 0) parts.push({ id: 'dress.lap.side', bone: 'pelvis', z: 30.12, fill: pal.dress, world: true, geom: leg.geom, M: leg.M, clipGeom: [cut], opacity: Math.min(1, 2 * sd.w) });
   // kneeling on one knee with the NEAR leg forward, the back hangs down the far (kneeling) leg: the cloth from the hem's
   // crossing on the forward thigh back to the seat runs UNDER that thigh (a hammock), so its underside on the hip's side of
   // the line is cloth even below the skirt's own outline (left out, the background showed through as a slit)
@@ -165,11 +169,13 @@ function shoeGap(parts, ctx) {
 // (side-on rounds 1–2). Above the strap it is the slope from the neck onto the shoulder and stays (cut there, the neck
 // stood on the shoulders like a bottle's)
 function backLine(parts, ctx) {
-  const sk = parts.find((p) => p.id === 'chest.skin'), X = ctx.C.params.P, bk = X.back, M = ctx.st.chest.M, J0 = ctx.C.joints.chest;
-  if (!sk) return;
-  const pose = (q) => ap(M, sub(q, J0));   // (a rest-space point on the chest, posed)
-  const lvY = X.strap.back[1], lvX = bk.shoulder[0] + (lvY - bk.shoulder[1]) * (bk.shoulder[0] - bk.blade[0]) / (bk.shoulder[1] - bk.blade[1]);
-  const A = pose([bk.blade[0] - (bk.shoulder[0] - bk.blade[0]) * 4, bk.blade[1] + 2]), L = pose([lvX, lvY]);
+  const sk = parts.find((p) => p.id === 'chest.skin'), dr = parts.find((p) => p.id === 'dress'), X = ctx.C.params.P, bk = X.back, M = ctx.st.chest.M;
+  if (!sk || !dr) return;
+  // (the line through the DRESS's posed blade and shoulder (anchors 19, 20), after the lumbar curve moved them in: from the
+  // rest points carried by the chest, leaning on a counter, squatting or picking up a toy, the chest skin stood 0.04 H out
+  // past the dress's back as a pale tab behind the shoulder, round 5 "the far-shoulder knob, the strap tabs")
+  const b = ap(dr.M, dr.geom.P[19]), s = ap(dr.M, dr.geom.P[20]), r = (X.strap.back[1] - bk.shoulder[1]) / (bk.shoulder[1] - bk.blade[1]);
+  const A = add(b, mulS(sub(b, s), 4 + 2 / Math.max(0.1, len(sub(b, s))))), L = add(s, mulS(sub(s, b), r));
   const fw = norm([M[0], M[1]]), up = norm([-M[2], -M[3]]);
   sk.clipGeom = [loop([A, L, sub(L, mulS(fw, 4)), add(sub(L, mulS(fw, 4)), mulS(up, 4)), add(add(L, mulS(fw, 4)), mulS(up, 4)), add(A, mulS(fw, 4))].map((q) => [...q, { c: true }]))];
 }
@@ -182,12 +188,12 @@ const inside = (q, poly) => { let c = false; for (let i = 0, j = poly.length - 1
 export default {
   name: 'mum3',
   params, hands,
-  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape'],
+  handLibrary: ['relaxed', 'open', 'cup', 'press', 'grip', 'fist', 'point', 'cover', 'limp', 'lay', 'hang', 'wrap', 'flat', 'crest', 'rest', 'drape', 'siderest'],
   handSides: { near: { prefix: 'hand.near', spreadSign: hands.near.spreadSign }, far: { prefix: 'hand.far', spreadSign: hands.far.spreadSign } },
   joints: J,
   bones,
   palette: params.palette,
-  design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes } },
+  design: { ...params.design, planes: { ...hands.near.planes, ...hands.far.planes }, planesIn: { ...hands.near.planesIn, ...hands.far.planesIn } },
   modules: { hair: merge(hair), legs: merge(legs), body: merge(body), head: merge(head), arms: merge(arms, hands.near.ANCHORS, hands.far.ANCHORS) },
   // shoulder rhythm: past ~30° of arm flexion the clavicle lifts ≈ 1° per 5°
   drivers: [
@@ -202,7 +208,7 @@ export default {
     { match: /^hand\.near\./, behind: /^(face|neck|chest\.skin|leg\.near)$/, material: params.palette.skin, line: params.palette.skinLine, w: 0.01 },   // not against its own arm (that drew a line round the wrist)
   ],
   // the bump and bust hang by their weight (parts/body.js sag); the props go under her (parts/props.js); then the SKIRT hangs from the posed bodice over the posed legs (parts/skirt.js, engine/drape.js)
-  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); skirtFold(parts, ctx); shoeGap(parts, ctx); },
+  postBuild(parts, ctx) { body.sag(parts, ctx); body.lumbar(parts, ctx); body.strapBack(parts, ctx); body.rest(parts, ctx); backLine(parts, ctx); const pr = propsFor(parts, ctx); seatFlat(parts, pr.floors); parts.push(...pr.parts, skirtPart(parts, ctx, pr)); lapOver(parts, ctx); skirtFold(parts, ctx); shoeGap(parts, ctx); },
   // fitting (tools/fit_pose.mjs): the far arm is hidden behind her by design; the estimator's guesses for it are skipped
   fit: { hidden: ['far.arm'] },
   frame: params.frame,

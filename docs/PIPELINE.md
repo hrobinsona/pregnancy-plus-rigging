@@ -643,6 +643,73 @@ or composited.
    the lower shoulder, so the frames stay and the recipe now says what +2 does. Rules: run an edge or overlay at every key of the shot,
    not only the still's frame; a far limb's path from the body (shoulder → arm → hand) must stay readable in every
    pose; before writing `--add bone=…` with a direction, run `node tools/bone_signs.mjs <char> <pose> --bones <bone>`.
+62. **A side-on library is fitted by POSTURE, put on the floor, and drawn in posed space: the still's proportions are its
+   own.** mum3 side-on, rounds 1–5 (2026-10-14/15). Harry: every side-on pose "incredibly high quality and natural",
+   legs, dress and bump like a real woman, not "on hinges". Fitting a still's landmark POSITIONS bent the rig to make up
+   the still's own proportions (a bigger head, a trunk 15% shorter on the bend still): fit each segment's DIRECTION
+   (`fit_pose.mjs --dirs 0.5`), place her by the still's floor row (`--floor`), a truer profile (`--turn 0.4`: at 1 the
+   far knee led a squat and the far shoulder stood up as a knob), then put every contact on what it rests on with one
+   solve (`floor_pose.mjs --touch shoe.near:vamp,…`; feet as `--bones foot`, the toes left out or she stands on tiptoe).
+   Where the still can't be copied, write the posture as screen directions (`pose_dirs.mjs`). One script rebuilds all
+   of it (`refs/fit_side.sh`): re-run after any rig change. A side pose bends the body far past the standing shot, so
+   the soft forms are drawn in POSED space from the posed skeleton, not skinned from rest: the leg as one outline with a
+   filleted knee and the calf pressing the hamstring (`engine/leg.js`), its widths MEASURED on the stills
+   (`leg_widths.py`: their shins were 1.2× ours, round 5), both knees forward in a fold, the near one on top (a hidden
+   near thigh read as one ball knee on a post); the skirt as cloth hung by gravity over the posed legs, seat and props
+   (`engine/drape.js`); the furniture placed from her posed body (`parts/props.js`). Scores went 3–7 (round 1) to
+   4.5–6.5 (round 5) with the critics agreeing every round on the same few faults: the dress as an outline, legs as
+   posts, stripe hands. Rules: fit directions, not positions; measure a form on the stills before reshaping it;
+   draw what folds in posed space; check every pose against its still (`side_match.py`) and with three fresh critics
+   (`critic_F.py <char> --side`), then fix the fault they agree on across poses, not one pose at a time.
+63. **A walk is measured gait, not the stills keyed in a row.** mum3 side-walk (2026-10-15). Keyed from the walk stills,
+   each still drew its own stride and leg lengths: the back toe slid 0.5 H along the floor between contact and down,
+   the swinging leg had no pose between push-off and heel strike, and three "passing" prompts came back as contacts.
+   `side_walk.mjs` drives the legs by published adult gait angles (hip, knee, the sole to the floor, the toes, every 5%
+   of the cycle; the other leg half a cycle behind), a shorter stride for a pregnant pace, the trunk, head and arm swing
+   from the stills, the lowest sole points planted (`spec.walk`) on one smooth periodic curve (`spec.cyclic`). It prints
+   the step, pace, hip bob and toe clearance: check them, not only the frames. Rules: for a cyclic move take the TIMING
+   and joint angles from measured human motion and the posture from the stills.
+64. **Fix a hand by its SHAPE and PLACE on each pose, and test a drawing change on the standing shot too.** Side-on
+   rounds 1–5: every lens called the hands "stripe paddles", 4.5–6 five rounds running. `side_zoom.py` put each pose's
+   hand beside its still's at 1:1 and at film size (a whole-figure sheet draws a hand at 30 px). Redrawn fuller,
+   shorter and joined (short lines only near the tips), the fingers matched one still and LOST blind on breathe-stroke
+   (5.5 vs 6.5: "a knobbly clump gripping the bump's edge"); a shorter thumb lost too (6 vs 6.5, "stubby"). The faults
+   were shape and place: on the bump the still's spot ran our fingers 0.26 H past our smaller bump into the air
+   (`contact_pose.mjs --inside`: the wrist slides back until every tip is over the surface); a far hand cupped under the
+   bump curled into a row of knobs at its edge (hide it behind the bump, as the stills do: `--back`); a palm laid down
+   side-on curls its fingers IN the picture (`fx.fingersIn`, the squat's hand over a chair's back). Rules: a drawing
+   setting is shared by every shot, so A/B it on the standing shot before keeping it; fix a side pose's hand with a
+   library shape (`poses/hands/`), its spot and `--inside`, judged beside the still at film size.
+65. **The far leg is the near one's TWIN: parallel, offset, its knee a sliver.** Side-on round 5, every lens: "a second
+   full knee beside the near one", the seated shins an X. The stills keep the thighs and the shins parallel (within
+   ~4°), the far knee showing only as a 15–30 px sliver past the near one; seated the far leg a little behind, kneeling
+   and on all fours up on the far floor line and a little forward. `far_leg.mjs <char> side/<pose>` prints the offsets
+   and the angles between the legs; `fx.farUpLegs` raises the far HIP alone (raising the whole far side with `farUp`
+   stood the far shoulder up behind her back as a knob when seated). Rules: set the far leg from the near one's angles,
+   gate it with `far_leg.mjs` (thighs and shins within 2–4°), and lift the far side only where its contact is.
+66. **Cloth fitted to the body hangs only below where the body stops holding it.** Side-on rounds 5–6 (2026-10-15). Hung
+   from the back waist, the taut skirt ran straight to the seat's tangent: "a ruler from the waist to the hem" in every
+   pose, and the walks flared from the armpit (22° against the stills' ~10°). The cloth now HUGS her (`parts/skirt.js`
+   `hugOf`, `engine/drape.js` `hug`): a cubic from the waist, in at the small of the back, into the buttocks' outline and
+   round it while it still turns out, then free; the rest pose's back meets the master's within 0.01 H. Its upper seat
+   outline must be the master's (ry 0.6): on the support ellipse the cubic dived in, a wasp waist. On all fours a thigh
+   standing out past the seat cut a notch in the hug, so the hug tautens past any support it would fold into
+   (`hugFrom`). The same rule placed four more pieces: kneeling, each thigh wraps the hem by its own reach (one shared
+   reach bowled the hem round the near thigh); seated, the cloth tucked under the bump into the lap isn't spent along
+   the thigh (the skirt reaches near the knee) and a side panel covers the thigh back from the lap's diagonal (else a
+   white wedge, neither cloth nor skin); where the bump meets the skirt the cloth runs on along the bump's underside (a
+   soft tuck, not a hard inner corner); the back of the shoulder moves with the clavicle (`body.strapBack`: else a
+   spike behind the strap when the arm lifts). Rules: fit cloth to the body where the body holds it and hang it from
+   where it leaves; measure the result against the master standing before judging any pose.
+67. **Find an outline fault by its ANCHORS, and carry a hidden point by the frame of the edge beside it.** Side-on round
+   6. A white sliver at the waist when leaning, a pale tab behind the shoulder, spikes at the strap, a notch on all
+   fours: each was two parts' outlines meeting where their anchors came from different bones. `side_zoom.py <char>
+   <pose> --at <bone>@dx:dy --marks dress,dress.skirt` draws the parts' anchors numbered over the crop, so the fault
+   names the anchor (the skirt's hidden top point carried by the pelvis beside the bodice's corner carried by the
+   chest: the hips swung and the gap opened). Rules: before tuning a shape, zoom the fault with `--marks` and name the
+   anchors on either side; a hidden point that must stay inside a neighbour is carried in that neighbour's frame;
+   clip a skin part to the cloth's POSED line, not its rest one; `corner_audit.py` and `detail_audit.py` list the
+   rest across the library.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

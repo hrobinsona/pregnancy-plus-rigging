@@ -6,6 +6,7 @@
   "far": "relaxed"
  },
  "fx": {
+  "fingersIn": 0.6,
   "turn": 0.4,
   "show.far.arm": 1
  },

@@ -1,12 +1,14 @@
 {
  "name": "side/fit/squat",
- "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=35; pose_dirs: thigh.far=-4,shin.far=112",
+ "note": "fitted to characters/mum3/refs/pose/s_squat_0.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=19,forearm.near=-18,hand.near=22",
  "hands": {
   "near": "drape",
   "far": "drape"
  },
  "fx": {
   "kneesApart": 1,
+  "fingersIn": 1,
+  "farUpLegs": 0.162,
   "turn": 0.4,
   "show.far.arm": 1
  },
@@ -37,7 +39,7 @@
   "armRot.near": 4.1,
   "forearm.near": 25.4,
   "foreRot.near": 0.1,
-  "hand.near": -45,
+  "hand.near": -31.7,
   "thigh.near": 102.3,
   "shin.near": -118.7,
   "foot.near": 33.6,
@@ -49,9 +51,9 @@
   "armRot.far": 4.1,
   "forearm.far": 25.4,
   "foreRot.far": 0.1,
-  "hand.far": -45,
-  "thigh.far": 111,
-  "shin.far": -117.5,
+  "hand.far": -31.7,
+  "thigh.far": 102.3,
+  "shin.far": -118.7,
   "foot.far": 33.6,
   "hipAbd.far": -8.7
  },
@@ -67,5 +69,15 @@
    "indexR 0.167"
   ]
  },
- "fitFrom": "side/fit/squat"
+ "fitFrom": "side/fit/squat",
+ "scale": {
+  "hand.near": [
+   1.0,
+   0.6
+  ],
+  "hand.far": [
+   1.0,
+   0.6
+  ]
+ }
 }

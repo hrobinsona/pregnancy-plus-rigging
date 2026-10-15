@@ -36,10 +36,12 @@ export function propsFor(parts, ctx) {
       const body = parts.filter((p) => p.id === 'dress' || p.id === 'dress.skirt').flatMap((p) => p.geom.P.map((q) => ap(p.M, q))).filter((q) => q[1] > topY);
       o = { x0: Math.max(elbow[0] - 0.12, Math.max(...body.map((q) => q[0])) + 0.16), topY, ...it };
     }
-    else if (it.type === 'toy' && it.held) {   // in her hand: in the palm's hollow, under the fingers
-      const pts = parts.filter((p) => /^hand\.near\.(palm|f[1-4])$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
-      const r = it.r ?? 0.2, cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, lo = Math.max(...pts.map((q) => q[1]));
-      o = { x: cx, y: lo - r * 0.55, r, ...it };
+    else if (it.type === 'toy' && it.held) {   // in her hand: UNDER it, the palm on its crown and the fingers curling over its
+      // front, as the still picks it up (in the palm's hollow under the fingers, the ball hid the palm and the fingertips
+      // sat on it as blobs, side-on round 5)
+      const palm = parts.filter((p) => p.id === 'hand.near.palm').flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));
+      const r = it.r ?? 0.2, cx = palm.reduce((a, q) => a + q[0], 0) / palm.length, lo = Math.max(...palm.map((q) => q[1]));
+      o = { x: cx + r * 0.15, y: lo + r * 0.85, r, ...it };
     } else if (it.type === 'toy') {   // on the floor: under her hand when it reaches down to it (a big ball under her palm's
       // centre, its crown at the palm: she rests her hand on it), else just ahead of her wrist
       const pts = parts.filter((p) => /^hand\.near\.(palm|f[1-4])$/.test(p.id)).flatMap((p) => p.geom.P.map((q) => ap(p.M, q)));

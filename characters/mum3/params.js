@@ -131,10 +131,16 @@ const dirTo = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
 export const handSpecs = {
   near: { id: 'hand.near', parentBone: 'hand.near', wrist: [joints.wristNear[0] - 0.03, joints.wristNear[1] + 0.03],   // the estimator's wrist sits near the wrist's FRONT edge (front 0.07 / back 0.12 H): the hand is centred on the wrist's width, BEHIND the joint (measured in the master: 7 px; v1 had the sign wrong and the forearm stuck out behind the hand as a shelf)
           dir: dirTo(joints.wristNear, lm('handTip')), view: 'back',
-          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1,
+          length: 0.6, palmFrac: 0.5, wristW: 0.2, palmW: 0.3, thumbSide: 1, across: [0.3, 0.08, -0.15, -0.37], flexFx: 0.1, inFx: -0.9,
           thumbFx: -0.15, thumb: { mcp: [0.4, 1.0], dir: 7, w: 0.95, taper: [1, 0.88, 0.76] }, thenarEdge: [1.08, 1.0],   /* the thumb-side edge seen from the BACK: the thenar pad is on the palm side (v3's 1.2 stood up as a knob on top of the hand at the wrist when it lay on the bump) */ thumbWeb: [0.88, 0.86], fingerLen: [0.9, 1.0, 0.94, 0.8], fingerW: [1.0, 1.0, 0.95, 0.82], hypo: 0, thumbLine: false, order: [3, 2, 1, 0],
           // drawn like the stills' hands (mum3q's, lesson 52): thinner lines between the fingers (0.02 read as stripes, "a comb";
-          // side-on round 4, every lens: "stripe fingers on paddles"), the fingers slimmer and tapering a little more to round tips
+          // side-on round 4, every lens: "stripe fingers on paddles"), the fingers slimmer and tapering a little more to round tips.
+          // Side-on round 5 tried the fingers fuller, shorter and joined (short lines near the tips): they matched one still at
+          // 1:1 and lost blind on breathe-stroke (5.5 vs 6.5, "a knobbly clump gripping the bump's edge"); beside ALL the stills
+          // at film size (tools/side_zoom.py, poses and breathe-stroke@t) the slim fingers with full lines are closer, and a
+          // shorter thumb lost too (6 vs 6.5: "stubby", "absorbed into the hand outline") (lesson 64). The side poses' hands
+          // were fixed by their SHAPES and placement instead (siderest, drape, contact_pose --inside). inFx: a palm laid down
+          // side-on curls its fingers in the picture (pose fx.fingersIn, the squat's hand over the chair's back)
           fingerK: 0.9, rim: 0.012, taper: [1, 0.9, 0.78, 0.66], tipK: 0.9, lineEnd: 0.95, lineTipGap: 0.3 },
 };
 handSpecs.far = { ...handSpecs.near, id: 'hand.far', parentBone: 'hand.far', wrist: [joints.wristFar[0] - 0.03, joints.wristFar[1] + 0.03] };

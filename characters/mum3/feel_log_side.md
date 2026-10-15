@@ -155,3 +155,84 @@ floor ahead of the knee, the counter's slab. Not landed, all three agree:
 - **Walk-contact** feet nearly flat (heel strike, toe up 20°; back foot up on its toe); walk-pass's far forearm
   sprouts from under the bump (swing it forward so the upper arm shows).
 - **Props**: the chair's far front leg stands off the seat's end; the squat chair seat too high (a bar stool).
+
+## Round 5 (2026-10-15: measured legs, the all-fours bump and skirt, walking heel strike, hands drawn finer)
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 6 | 6 | 5.5 |
+| kneel | 6 | 5.5 | 6 |
+| kneel-pick | 4.5 | 5 | 4.5 |
+| lean-counter | 6 | 6.5 | 5.5 |
+| sit-ball | 6 | 6 | 6 |
+| sit-chair | 6.5 | 6.5 | 6 |
+| squat | 6 | 5.5 | 5 |
+| walk-contact | 6 | 6.5 | 6 |
+| walk-pass | 6.5 | 6.5 | 6 |
+
+All three: NOT YET. Their top fixes, all three agreeing:
+- **Hands** (craft and natural #1): stripe paddles; the tips should step, the thumb lie along the hand, each hand lie on
+  what it touches with its tips inside the silhouette; kneel-pick's grip a decal on the toy.
+- **The far leg** (body #1): a second full knee beside the near one, an X in the seated shins. One rule: the far leg
+  the near one's twin, offset up and forward as the still offsets it, the far knee a sliver past the near one.
+- **The dress back and hems** (all three): a ruler or a ramp from the waist to the hem; hems bowls with kicked back
+  corners; the walks an A-line lampshade from the armpit (22° against the stills' ~7–10°).
+- **Knees and feet**: hinge kinks and dents at the knee, no calf belly; kneeling feet stood on their toes like boots;
+  thick high-backed clogs where the master draws thin ballet flats.
+- **Kneel-pick**: no front thigh, the toy not picked up. Squat: no curtain, a hem notch, the hand not over the post.
+  Sit-ball: a skin spike, the seat not moulded to the ball. The far-shoulder knob and strap tabs (all-fours, kneel,
+  kneel-pick, lean, squat).
+
+What round 6 changed (before its critics):
+- Hands: the drawing stays (fuller fingers lost blind on breathe-stroke 5.5 vs 6.5, a shorter thumb 6 vs 6.5, lesson
+  64); the side hands fixed by shape and place (siderest, drape, `contact_pose --inside`); the wrist settles in the
+  loops (`tools/side_loop.mjs`), a weight-bearing hand excused with `qa.still`.
+- Far leg: twins, the far hip raised alone (`fx.farUpLegs`), thighs and shins within 2° (`tools/far_leg.mjs`, lesson 65).
+- Shoes: the master's ballet flat, traced as anchors with names (`shoe:tip`, `shoe:ball`, `shoe:heel`); kneeling feet
+  on the instep.
+- Dress back: the cloth fitted to her back (`parts/skirt.js` hug): in at the waist, round the seat to its fullest
+  point, hanging from there. Standing it matches the master's back to 0.01 H (it was a chord from the waist). The walk
+  flare cut to ~10° (`engine/drape.js` flB). Kneeling, the hem wraps each thigh by its own reach (no bowl). Seated,
+  the cloth tucked under the bump in the lap isn't spent along the thigh (the skirt reaches near the knee), and the
+  side panel covers the thigh back from its diagonal (no white wedge). A soft tuck where the bump meets the skirt.
+- Shoulder: the chest skin clipped to the dress's posed back line (no pale tab); the back of the shoulder moves with
+  the clavicle (no spike behind the strap).
+
+## Round 6 (2026-10-15: the dress fitted to her back, flat hems, seated skirts to the knee, the shoulder line; critics on Fable)
+
+From this round every reviewer runs on **Fable** (Harry, 2026-10-15 09:45: "Use Fable as the critic"), so the scores are
+not comparable with rounds 1–5 (other models). Same pack and prompts (`critic_F.py mum3 --side`), ten poses (walk-down added).
+
+| pose | natural | body | craft |
+|---|---|---|---|
+| all-fours | 6 | 6 | 5.5 |
+| kneel | 6.5 | 7 | 6.5 |
+| kneel-pick | 5 | 5 | 5 |
+| lean-counter | 6.5 | 7 | 6.5 |
+| sit-ball | 6 | 6.5 | 6 |
+| sit-chair | 6.5 | 7 | 6.5 |
+| squat | 5 | 6 | 5 |
+| walk-contact | 6 | 7 | 6.5 |
+| walk-down | 5.5 | 6 | 6 |
+| walk-pass | 6 | 7 | 6.5 |
+
+All three: NOT YET. Landed (body lens's history check): the walks' flare cut, near-straight hems with corners, the lumbar
+hollow and seat standing and leaning, two knees and a curtain in the squat, kneeling feet on the instep, heel strike, the
+seated lap and diagonal hem, the toy picked up, the pale shoulder tab and the sit-ball skin spike gone. All three agree:
+- **The far foot is fused with the near one** (kneel, all-fours, sit-chair, sit-ball, squat, kneel-pick): "one lumpy
+  shoe", a pale instep patch between, a cuff round the heel. Measured (`fit_side` targets): sit-ball's far ankle sits
+  +43, −34 px from the near one in the still, ours −31, −63 (behind): the far thigh's 0.85 scale pulls it back.
+- **The cloth in the folded poses**: squat a sack with a pointed tail and no hem; kneel-pick a cape (a ramp from the
+  shoulder to a hem corner in the air) with nothing over the raised thigh; sit-ball's seat a balloon; all-fours' hem
+  notching into the bump, the bump hung below the hem.
+- **Hands**: paddles with four long stripes, the far hand a second fan; the stills' lines are short, from the middle
+  joint to near the tip, the fingers together (`side_zoom.py`: the lines start at the knuckles in ours).
+- **Legs**: no kneecap plane, no calf belly; kneel-pick's front thigh a thin post; the walks' trailing leg straight,
+  walk-down's back heel planted and its arms idle.
+- **The neck** long and thin with a hook (kneel: the far strap shows past the throat); the bust-to-bump concave corner.
+
+Standing regression (blind A/B on breathe-stroke, Fable): round 6 vs HEAD 67c62c8, **no clear difference** (6.5 vs 6.5);
+the one visible change the shoes, a lean to the old ones: the new (master-traced) heel counter stood up as a pointed tab
+0.04 H behind the ankle, "a snag". Fixed: the counter now sits on the leg's back line (`parts/legs.js counterX`).
+QA: the alive gate measured in the standing frame, not the shot's (a side loop frames its own pose), and the side loops'
+resting hands moved ~7 px: both fixed (`qa_checks` uses `spec.view.bbox`; `side_loop.mjs` hand life 4–5°).

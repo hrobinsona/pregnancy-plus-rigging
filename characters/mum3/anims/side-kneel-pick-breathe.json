@@ -6,8 +6,8 @@
  "view": {
   "bbox": [
    [
-    -2.84,
-    -5.07
+    -2.61,
+    -5.08
    ],
    [
     1.56,
@@ -50,6 +50,102 @@
     "on": "thigh.near"
    }
   ]
+ },
+ "fidget": [
+  {
+   "t0": 0.5,
+   "t1": 2.7,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": 3,
+    "hand.near.f2a": 3,
+    "hand.near.f3a": 3,
+    "hand.near.f4a": 3
+   },
+   "note": "near: the fingers settle onto what they rest on (the easy breath)"
+  },
+  {
+   "t0": 3.2,
+   "t1": 5.6,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1s": -3,
+    "hand.near.f3s": 1.5,
+    "hand.near.f4s": 4,
+    "hand.near.t0": 4
+   },
+   "note": "near: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
+  },
+  {
+   "t0": 5.4,
+   "t1": 7.8,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": -3,
+    "hand.near.f1b": -2,
+    "hand.near.f2a": -3,
+    "hand.near.f2b": -2,
+    "hand.near.f3a": -3,
+    "hand.near.f3b": -2,
+    "hand.near.f4a": -3,
+    "hand.near.f4b": -2
+   },
+   "note": "near: the breath out: the fingers ease long"
+  },
+  {
+   "t0": 0.5,
+   "t1": 2.7,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1a": 3,
+    "hand.far.f2a": 3,
+    "hand.far.f3a": 3,
+    "hand.far.f4a": 3,
+    "hand.far": 5
+   },
+   "note": "far: the fingers settle onto what they rest on (the easy breath)"
+  },
+  {
+   "t0": 3.2,
+   "t1": 5.6,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1s": -3,
+    "hand.far.f3s": 1.5,
+    "hand.far.f4s": 4,
+    "hand.far.t0": 4,
+    "hand.far": -4.5
+   },
+   "note": "far: the deep breath in: the fingers fan a little, the thumb eases out, the fingers lift a touch"
+  },
+  {
+   "t0": 5.4,
+   "t1": 7.8,
+   "cycles": 1,
+   "bones": {
+    "hand.far.f1a": -3,
+    "hand.far.f1b": -2,
+    "hand.far.f2a": -3,
+    "hand.far.f2b": -2,
+    "hand.far.f3a": -3,
+    "hand.far.f3b": -2,
+    "hand.far.f4a": -3,
+    "hand.far.f4b": -2,
+    "hand.far": 4
+   },
+   "note": "far: the breath out: the fingers ease long"
+  }
+ ],
+ "qa": {
+  "still": {
+   "near": [
+    [
+     0,
+     8,
+     "bears her weight (the floor, a worktop, a chair): planted, it only fans its fingers"
+    ]
+   ]
+  }
  },
  "tracks": {
   "face": {

@@ -7,7 +7,8 @@
 //     channels every channel a track keys reaches the pose under its whole name, and a contact shadow gated on a keyed
 //             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
 //     handed  each hand the right way round in every frame: its thumb drawn on the side its 3D arm puts it (tools/handed.mjs;
-//             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53)
+//             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53); a hand out
+//             of sight is excused by spec.qa.handed [{side, why}] (side_loop.mjs: a hand on the bump's far side)
 //     frames  pixel jumps (a frame changing > 1.8× its neighbours, inside --box) and still stretches > 1 s
 //             (tools/qa_frames.py; the film should always be alive)
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
@@ -113,14 +114,16 @@ if (!skip.has('handed')) {
   // tuned its curl, wrist and lines before Harry saw "it looks like it's the wrong way round"
   console.log('handed: each hand the right way round (thumb where its 3D arm puts it)');
   const { handedness, excuse, explain } = await import('./handed.mjs');
+  // excuses: the character's (C.qa.handed) and the shot's (spec.qa.handed: a hand out of sight, e.g. on the bump's far side)
+  const EX = { qa: { handed: [...(C.qa?.handed || []), ...(spec.qa?.handed || [])] } };
   const A = fresh(), bad = {}, exc = {};
   for (let i = 0; i <= ALL; i++) {
     const pose = A.poseAt(i / spec.fps);
-    for (const r of handedness(C, rig.solve(pose), expandHands(pose, lib, C.handSides))) if (!r.ok) ((excuse(C, r) ? exc : bad)[r.side] ??= []).push([i, r]);
+    for (const r of handedness(C, rig.solve(pose), expandHands(pose, lib, C.handSides))) if (!r.ok) ((excuse(EX, r) ? exc : bad)[r.side] ??= []).push([i, r]);
   }
   for (const side of ['near', 'far']) {
     const b = bad[side] || [], e = exc[side] || [];
-    if (e.length) console.log(`  · ${side}: ${e.length} frames excused by C.qa.handed (${excuse(C, e[0][1]).why})`);
+    if (e.length) console.log(`  · ${side}: ${e.length} frames excused by qa.handed (${excuse(EX, e[0][1]).why})`);
     gate(!b.length, `${side} hand the right way round${b.length ? `: wrong in ${b.length} frames from ${(b[0][0] / spec.fps).toFixed(2)} s — ${explain(b[0][1])}` : ''}`);
   }
 }
@@ -134,7 +137,9 @@ if (!skip.has('frames')) {
 
 if (!skip.has('hands')) {
   console.log('hands: size, gap, one-way wrist turn');
-  const A = fresh(), sc = (p) => rig.toScreen(p, { frame: 'still' });
+  // film px of THIS shot: a side-on loop frames its own pose (spec.view.bbox), so its hands are drawn larger or smaller
+  // than in the standing frame; measured in the standing frame a kneeling hand moving 10 px on the film read as frozen
+  const A = fresh(), sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox });
   const area = (P) => Math.abs(P.reduce((a, v, i) => { const w = P[(i + 1) % P.length]; return a + v[0] * w[1] - w[0] * v[1]; }, 0)) / 2;
   const hull = (pts) => { const s = [...pts].sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = [];
     for (const p of s) { while (lo.length > 1 && cr(lo.at(-2), lo.at(-1), p) <= 0) lo.pop(); lo.push(p); }
@@ -217,7 +222,7 @@ if (!skip.has('limbs')) {
   if (segs.length) {
     console.log(`limbs: drawn length of each 3D arm segment (want ≥ ${lim} of its length all shot)`);
     const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]])), hi = Object.fromEntries(segs.map((b) => [b, 0]));
-    const sc = (p) => rig.toScreen(p, { frame: 'still' }), sides = [...new Set(segs.map((b) => b.split('.')[1]))], EW = Object.fromEntries(sides.map((s_) => [s_, []]));
+    const sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox }), sides = [...new Set(segs.map((b) => b.split('.')[1]))], EW = Object.fromEntries(sides.map((s_) => [s_, []]));
     for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) { if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; hi[b] = Math.max(hi[b], st[b].a3.len); }
       for (const s_ of sides) EW[s_].push([sc(st[`forearm.${s_}`].pos), sc(st[`hand.${s_}`].pos)]); }
     // ELBOW POPS: the elbow jumps while its wrist stays put — the arm solve hopped to another arm that puts the hand in the

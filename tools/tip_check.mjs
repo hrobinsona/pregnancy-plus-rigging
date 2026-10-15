@@ -26,7 +26,7 @@ const { srv, base } = await serve();
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
 await page.goto(`${base}/engine/view.html?char=${char}&frame=still`); await page.waitForFunction(() => window.__ready === true);
-const sc = (p) => rig.toScreen(p, { frame: 'still' }), pre = `hand.${side}`;
+const sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox }), pre = `hand.${side}`;
 let worst = Infinity, worstC = Infinity;
 for (const t of ts) {
   const pose = A.poseAt(t), st = rig.solve(pose);

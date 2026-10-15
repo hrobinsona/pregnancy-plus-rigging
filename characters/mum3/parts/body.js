@@ -8,12 +8,15 @@
 //  · the bump and the bust have WEIGHT (sag(), from postBuild): as she leans forward they hang toward the floor
 import { loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { lerp } from '../../../engine/geom.js';
+import { lerp, add, sub, mulS, norm } from '../../../engine/geom.js';
 
 const part = (id, bone, z, fill, geom, extra = {}) => ({ id, bone, z, fill, geom, ...extra });
 export const ANCHORS = { 'neck': 8, 'chest.skin': 7, 'dress': 24 };
 // the bodice's path inside her below the bump (rest H): within ≈ 0.3 H of the hip joint, so the skirt covers it in any pose
-export const SKIRT_IN = [[0.5, -3.55], [0.3, -3.47], [0.1, -3.44], [-0.08, -3.47], [-0.2, -3.56], [-0.25, -3.75], [-0.24, -4.0], [-0.23, -4.25], [-0.26, -4.42]];
+// (its way up to the back waist 0.1 H inside the back line: the skirt's back now curves IN at the small of the back
+// (parts/skirt.js hug), and run up just inside the old straight back, the bodice stood out past it as two bumps on her
+// back, leaning and on all fours, round 6)
+export const SKIRT_IN = [[0.5, -3.55], [0.3, -3.47], [0.1, -3.44], [-0.08, -3.47], [-0.17, -3.56], [-0.17, -3.75], [-0.13, -4.0], [-0.1, -4.25], [-0.13, -4.44]];
 export const DRESS_AT = { bot: 8, waist: 18 };
 // the bodice's anchors that carry weight: the bump (under-bust notch → bottom) and the bust, with how much each moves
 const SAG_W = { 2: ['bust', 0.4], 3: ['bust', 1], 4: ['bump', 0], 5: ['bump', 0.75], 6: ['bump', 1], 7: ['bump', 0.75], 8: ['bump', 0.25] };
@@ -72,11 +75,14 @@ export function rest(parts, ctx) {
 // (LORD.base, every pose: a pregnant woman's lumbar curves in even standing and kneeling up, the bump's weight carried by
 // the arch; the side-on critics, round 4: "the back a ruler from the shoulder blade to the hem", the kneeling still "dips
 // in ~25 px at the waist and rounds over the seat". The master's waist sits 0.08 H in from its seat; this makes it 0.14)
+// (0.06 → 0.02, round 6: the seat's round now comes from the skirt fitted over it (parts/skirt.js hug), and upright the
+// stills show no hollow below the arm, the back running straight down from the waist and rounding out over the seat as the
+// master's does; at 0.06 the waist pinched in under a kneeling or seated arm, a wasp waist)
 // (by the TRUNK'S PITCH, not the hips' flexion: leaning forward from the hips (a counter, a squat, picking something up)
 // the pelvis tips forward and the lumbar arches; sitting upright the hips flex as far but the pelvis rolls back and the low
 // back flattens. By the hips' flexion the seated back dipped 0.15 H in at the waist and the seat ballooned behind it, 0.1 H
 // past the ball still's, round 5)
-export const LORD = { base: 0.06, depth: 0.09, from: 5, to: 30, w: { 17: 0.6, 18: 1, 19: 0.35 } };
+export const LORD = { base: 0.02, depth: 0.09, from: 5, to: 30, w: { 17: 0.6, 18: 1, 19: 0.35 } };
 const lordRest = new WeakMap();
 export function lumbar(parts, ctx) {
   const dress = parts.find((p) => p.id === 'dress'), { C: char, st, rig } = ctx;
@@ -86,6 +92,21 @@ export function lumbar(parts, ctx) {
   if (!k) return;
   const M = ctx.st.spineLower.M, n = [M[0], M[1]], l = Math.hypot(...n) || 1, g = dress.geom;   // the trunk's forward direction, posed
   for (const [i, w] of Object.entries(LORD.w)) { const d = [k * w * n[0] / l, k * w * n[1] / l]; for (const A of [g.P, g.hin, g.hout]) A[i] = [A[i][0] + d[0], A[i][1] + d[1]]; }
+}
+
+/** The dress turns from her back over the shoulder (anchors 20 → 21 → 22): 21, the strap's end, follows the clavicle and
+ *  20, the back, the chest. Reaching forward (a counter, a squat, a toy, on all fours) the clavicle carried 21 down past 20
+ *  and the outline doubled back on itself: a spike behind the shoulder (side-on round 5 "strap tabs and hooks"). The back
+ *  of the shoulder goes with the shoulder (the blade slides round the ribs as the arm reaches): 20 takes STRAP_W of the
+ *  clavicle's move at 21 (kept where the chest carries it, 21 then rose above the strap and hooked over it, round 6). */
+const STRAP_W = 0.9;
+export function strapBack(parts, ctx) {
+  const g = parts.find((p) => p.id === 'dress')?.geom, { st, C: char } = ctx, X = char.params.P;
+  if (!g) return;
+  const r21 = [X.strap.back[0] + 0.04, X.strap.back[1] + 0.05], M = st.chest.M, J = char.joints.chest;
+  const onChest = [M[0] * (r21[0] - J[0]) + M[2] * (r21[1] - J[1]) + M[4], M[1] * (r21[0] - J[0]) + M[3] * (r21[1] - J[1]) + M[5]];
+  const d = mulS(sub(g.P[21], onChest), STRAP_W);
+  for (const A of [g.P, g.hin, g.hout]) A[20] = add(A[20], d);
 }
 
 export function build({ P: C, C: char }) {

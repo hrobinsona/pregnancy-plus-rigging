@@ -4,8 +4,9 @@
 // into it (the estimator can't see where a shin rests); a reader sees that at once.
 //   node tools/floor_pose.mjs <char> <pose> [--out <pose>] --touch leg.near:4,leg.near:7,shoe.near:top [--bones shin,foot,toe]
 //        [--sides near,far] [--free root.0] [--keep 1]
-// --touch  part[:anchor | :low | :top][@y]: (@y: on a surface at height y, H: a counter top; default the floor) an anchor index of a posed outline (engine/leg.js: 4 = the knee's front, 7 = the
-//          shin's front above the ankle), :low (default) the part's lowest anchor, :top the anchor that is lowest when
+// --touch  part[:anchor | :name | :low | :top][@y]: (@y: on a surface at height y, H: a counter top; default the floor) an anchor index of a posed outline (engine/leg.js: 4 = the knee's front, 7 = the
+//          shin's front above the ankle) or a name the part gives one (part.names: a shoe's vamp, tip, ball, heel), :low
+//          (default) the part's lowest anchor, :top the anchor that is lowest when
 //          the part is flipped (a shoe's vamp on the floor when kneeling: its highest point at rest)
 // --bones  bone stems to move, for each of --sides (default near,far); root.1 always moves
 // --keep   weight pulling each bone back to its start (default 1; smaller lets the contacts win more)
@@ -39,8 +40,11 @@ const TWIN = TW.includes('legs'), twin = (b) => { for (const k of TWB) if (`${k}
 const poseOf = (x) => { const p = { ...pose0, bones: { ...pose0.bones }, root: [...(pose0.root || [0, 0])] }; VARS.forEach((v, i) => { if (v.startsWith('root')) p.root[+v.slice(5)] = x[i]; else p.bones[v] = x[i]; }); twin(p.bones); return p; };
 // rest-pose anchor for ':top' (which anchor is the part's highest at rest)
 const rest = Object.fromEntries(rig.build({ ...pose0, bones: {} }).map((p) => [p.id, p.geom.P.map((q) => ap(p.M, q))]));
+// a NAMED anchor (part.names, e.g. a shoe's vamp, tip, ball, heel: parts/legs.js), so a redrawn outline keeps its contacts
+const named = Object.fromEntries(rig.build({ ...pose0, bones: {} }).filter((p) => p.names).map((p) => [p.id, p.names]));
 const pick = (pts, t) => {
   if (/^\d+$/.test(t.w)) return pts[+t.w][1];
+  if (named[t.part]?.[t.w] !== undefined) return pts[named[t.part][t.w]][1];
   if (t.w === 'top') { const r = rest[t.part], i = r.reduce((b, q, k) => (q[1] < r[b][1] ? k : b), 0); return pts[i][1]; }
   return Math.max(...pts.map((q) => q[1]));                                    // lowest = largest y
 };

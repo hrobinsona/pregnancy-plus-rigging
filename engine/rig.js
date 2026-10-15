@@ -122,7 +122,11 @@ export function createRig(C) {
         // pose.fx.farUp (H, default 0): the far side seen a little from ABOVE, its roots raised that much on screen, for a
         // pose whose far knee, shoe and hand rest on the far floor line (0.162 H up: kneeling, on all fours): with the far
         // hip level with the near one, the far thigh had to slant back 30° to put its knee there, the far arm 30° forward
-        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1, up = pose.fx?.farUp ?? 0;
+        // pose.fx.farUpLegs (H): the far HIP's own lift, when the far foot stands on the far floor line but the far arm
+        // should not rise with it (seated, squatting: the far leg parallel to the near one, both shoes on their lines; the
+        // far shoulder raised as well stood up behind her back as a knob, side-on round 5, lesson 65)
+        const legUp = b.id.startsWith('hipAbd') ? pose.fx?.farUpLegs : undefined;
+        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1, up = legUp ?? pose.fx?.farUp ?? 0;
         pos = [q[0] + tn * (J[b.joint][0] - J[b.depthFrom][0]), q[1] + tn * (J[b.joint][1] - J[b.depthFrom][1]) - up];
       } else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
       if (b.plane === 'arm3') {
@@ -138,23 +142,31 @@ export function createRig(C) {
         const parentSame = ps && BONE[b.parent].plane === b.plane;
         anat = parentSame ? ps.anat + (r0 - (BONE[b.parent].restAnat ?? 0)) + d : r0 + d;
         const base = parentSame ? ps.baseRot : (ps ? ps.rot : 0);
-        const H3 = pl && typeof pl === 'object' && st[pl.from]?.a3;
-        if (H3?.ncam) {
-          // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
-          // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
-          // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
-          // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
-          // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
-          // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
-          const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
-          const dA = dir(anat), d0 = dir(r0), ang = (q) => Math.atan2(q[1], q[0]) / DEG;
-          rot = base + wrap(ang(dA) - ang(d0));
-          along = Math.max(0.05, Math.hypot(dA[0], dA[1]));
-        } else {
-          const f = planeFx(b);
-          rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
-          along = projLen(anat, f) / projLen(r0, f);
-        }
+        const viaPlane = (q) => {   // → [screen turn from rest, drawn length factor] of this bone in plane q
+          const H3 = q && typeof q === 'object' && st[q.from]?.a3;
+          if (H3?.ncam) {
+            // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
+            // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
+            // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
+            // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
+            // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
+            // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
+            const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
+            const dA = dir(anat), d0 = dir(r0), ang = (u) => Math.atan2(u[1], u[0]) / DEG;
+            return [wrap(ang(dA) - ang(d0)), Math.max(0.05, Math.hypot(dA[0], dA[1]))];
+          }
+          const f = typeof q === 'number' ? q : (b.plane === 'sagittal' ? fx : (b.fx ?? fx));
+          return [wrap(scrAng(anat, f) - scrAng(r0, f)), projLen(anat, f) / projLen(r0, f)];
+        };
+        let [dr, al] = viaPlane(pl);
+        // pose.fx.fingersIn (0..1): blend to C.design.planesIn[plane] (an fx, or {from} for 3D fingers) for this pose only:
+        // the fingers curl IN the picture. A palm laid DOWN and seen side-on (a hand draped over a chair's back) curls them
+        // in the picture plane, which mum3's fixed out-of-plane fx (0.1, right for the standing shot's back-of-hand view)
+        // can only shorten: the squat's draped hand hovered past the post "like a paddle" (side-on round 5, lesson 64). A
+        // blend weight, not a switch, so an anim crossing poses with and without it never pops.
+        const qIn = C.design.planesIn?.[b.plane], wIn = qIn !== undefined ? Math.max(0, Math.min(1, pose.fx?.fingersIn ?? 0)) : 0;
+        if (wIn > 0) { const [d3, l3] = viaPlane(qIn); dr += wIn * wrap(d3 - dr); al += wIn * (l3 - al); }
+        rot = base + dr; along = al;
         st[b.id] = { baseRot: base };
       } else {
         rot = (ps ? ps.rot : 0) + d;

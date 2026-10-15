@@ -59,5 +59,15 @@
    "pinkyR 0.243"
   ]
  },
+ "scale": {
+  "hand.near": [
+   1,
+   0.6
+  ],
+  "hand.far": [
+   1,
+   0.6
+  ]
+ },
  "fitFrom": "side/fit/all-fours"
 }
