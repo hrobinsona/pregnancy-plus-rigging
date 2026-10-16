@@ -32,8 +32,11 @@ $B n-mid n-base fit-q_k_mid 1 --keep $STILL --from B --hands near=cradle,far=hol
 python3 tools/pose_set.py mum3q n-mid --fx headPitch=8 >/dev/null   # half way from n-down's 14 to n-up's 1.6
 # eye contact: the chest opens and the shoulders lift with the breath in (the body joins the look up)
 # the body joins the look up (v17): the chest lifts and opens 3° more than the still's fit, half of it by the half-way key;
+# the NEAR shoulder rises; clavicle.far +2 LOWERS the far one 2.4 px (+ lowers the far clavicle: tools/bone_signs.mjs).
+# Written as "shoulders up" in v17 by mistake; raising the far one too (−2, v28) was a blind tie leaning to it lowered,
+# "a touch less hunched behind the strap", so it stays (lesson 61)
 # with only the head moving, "a head turning on a static body" (both blind A/Bs and the natural lens on v14–v16)
-$B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest lifted and open and the shoulders up a touch, both hands holding the bump as in still q_k4_down_0"
+$B n-up n-base fit-q_k_up 1 --keep $STILL --from B --hands near=cradle,far=hold --add chest=-3,spineUpper=-1,clavicle.far=2 --set clavicle.near=4.5 --note "head up, eye contact (still q_k_up_1), the chest lifted and open and the near shoulder up a touch, both hands holding the bump as in still q_k4_down_0"
 python3 tools/pose_set.py mum3q n-up --scale chest=1.02:1.01 >/dev/null
 # the lift's anticipation: before the head comes up it sinks a touch deeper into the nod (and the shoulders settle)
 $B n-dip n-down --hands near=cradle --add neck=1.5,clavicle.near=-1.5 --note "anticipation before the look up: a touch deeper into the nod"

@@ -1,0 +1,517 @@
+{
+ "name": "side-walk",
+ "fps": 30,
+ "duration": 4.8,
+ "loop": true,
+ "cyclic": true,
+ "view": {
+  "bbox": [
+   [
+    -1.88,
+    -7.4
+   ],
+   [
+    1.68,
+    0.5
+   ]
+  ],
+  "note": "the walk-contact pose's bounds + 0.5 H (tools/side_walk.mjs)"
+ },
+ "story": "She walks along in profile, at an easy pregnant pace (100 steps a minute): heel, roll, push off, her arms swinging gently against her legs, the skirt swinging; calm, a soft smile. Made by tools/side_walk.mjs.",
+ "intensity": "gentle: an easy, unhurried walk",
+ "walk": {
+  "note": "engine/anim.js walkRoot: the lowest sole points stay planted (a rolling contact), the camera travels with her at her mean speed; measured gait (tools/side_walk.mjs): 2.24 H a step, 3.74 H/s, her pace within 0.142 H of even, the hips bob 0.147 H"
+ },
+ "keys": [
+  {
+   "t": 0,
+   "pose": "side/cycle/walk-00"
+  },
+  {
+   "t": 0.05,
+   "pose": "side/cycle/walk-01"
+  },
+  {
+   "t": 0.1,
+   "pose": "side/cycle/walk-02"
+  },
+  {
+   "t": 0.15,
+   "pose": "side/cycle/walk-03"
+  },
+  {
+   "t": 0.2,
+   "pose": "side/cycle/walk-04"
+  },
+  {
+   "t": 0.25,
+   "pose": "side/cycle/walk-05"
+  },
+  {
+   "t": 0.3,
+   "pose": "side/cycle/walk-06"
+  },
+  {
+   "t": 0.35,
+   "pose": "side/cycle/walk-07"
+  },
+  {
+   "t": 0.4,
+   "pose": "side/cycle/walk-08"
+  },
+  {
+   "t": 0.45,
+   "pose": "side/cycle/walk-09"
+  },
+  {
+   "t": 0.5,
+   "pose": "side/cycle/walk-10"
+  },
+  {
+   "t": 0.55,
+   "pose": "side/cycle/walk-11"
+  },
+  {
+   "t": 0.6,
+   "pose": "side/cycle/walk-12"
+  },
+  {
+   "t": 0.65,
+   "pose": "side/cycle/walk-13"
+  },
+  {
+   "t": 0.7,
+   "pose": "side/cycle/walk-14"
+  },
+  {
+   "t": 0.75,
+   "pose": "side/cycle/walk-15"
+  },
+  {
+   "t": 0.8,
+   "pose": "side/cycle/walk-16"
+  },
+  {
+   "t": 0.85,
+   "pose": "side/cycle/walk-17"
+  },
+  {
+   "t": 0.9,
+   "pose": "side/cycle/walk-18"
+  },
+  {
+   "t": 0.95,
+   "pose": "side/cycle/walk-19"
+  },
+  {
+   "t": 1,
+   "pose": "side/cycle/walk-20"
+  },
+  {
+   "t": 1.05,
+   "pose": "side/cycle/walk-21"
+  },
+  {
+   "t": 1.1,
+   "pose": "side/cycle/walk-22"
+  },
+  {
+   "t": 1.15,
+   "pose": "side/cycle/walk-23"
+  },
+  {
+   "t": 1.2,
+   "pose": "side/cycle/walk-00"
+  },
+  {
+   "t": 1.25,
+   "pose": "side/cycle/walk-01"
+  },
+  {
+   "t": 1.3,
+   "pose": "side/cycle/walk-02"
+  },
+  {
+   "t": 1.35,
+   "pose": "side/cycle/walk-03"
+  },
+  {
+   "t": 1.4,
+   "pose": "side/cycle/walk-04"
+  },
+  {
+   "t": 1.45,
+   "pose": "side/cycle/walk-05"
+  },
+  {
+   "t": 1.5,
+   "pose": "side/cycle/walk-06"
+  },
+  {
+   "t": 1.55,
+   "pose": "side/cycle/walk-07"
+  },
+  {
+   "t": 1.6,
+   "pose": "side/cycle/walk-08"
+  },
+  {
+   "t": 1.65,
+   "pose": "side/cycle/walk-09"
+  },
+  {
+   "t": 1.7,
+   "pose": "side/cycle/walk-10"
+  },
+  {
+   "t": 1.75,
+   "pose": "side/cycle/walk-11"
+  },
+  {
+   "t": 1.8,
+   "pose": "side/cycle/walk-12"
+  },
+  {
+   "t": 1.85,
+   "pose": "side/cycle/walk-13"
+  },
+  {
+   "t": 1.9,
+   "pose": "side/cycle/walk-14"
+  },
+  {
+   "t": 1.95,
+   "pose": "side/cycle/walk-15"
+  },
+  {
+   "t": 2,
+   "pose": "side/cycle/walk-16"
+  },
+  {
+   "t": 2.05,
+   "pose": "side/cycle/walk-17"
+  },
+  {
+   "t": 2.1,
+   "pose": "side/cycle/walk-18"
+  },
+  {
+   "t": 2.15,
+   "pose": "side/cycle/walk-19"
+  },
+  {
+   "t": 2.2,
+   "pose": "side/cycle/walk-20"
+  },
+  {
+   "t": 2.25,
+   "pose": "side/cycle/walk-21"
+  },
+  {
+   "t": 2.3,
+   "pose": "side/cycle/walk-22"
+  },
+  {
+   "t": 2.35,
+   "pose": "side/cycle/walk-23"
+  },
+  {
+   "t": 2.4,
+   "pose": "side/cycle/walk-00"
+  },
+  {
+   "t": 2.45,
+   "pose": "side/cycle/walk-01"
+  },
+  {
+   "t": 2.5,
+   "pose": "side/cycle/walk-02"
+  },
+  {
+   "t": 2.55,
+   "pose": "side/cycle/walk-03"
+  },
+  {
+   "t": 2.6,
+   "pose": "side/cycle/walk-04"
+  },
+  {
+   "t": 2.65,
+   "pose": "side/cycle/walk-05"
+  },
+  {
+   "t": 2.7,
+   "pose": "side/cycle/walk-06"
+  },
+  {
+   "t": 2.75,
+   "pose": "side/cycle/walk-07"
+  },
+  {
+   "t": 2.8,
+   "pose": "side/cycle/walk-08"
+  },
+  {
+   "t": 2.85,
+   "pose": "side/cycle/walk-09"
+  },
+  {
+   "t": 2.9,
+   "pose": "side/cycle/walk-10"
+  },
+  {
+   "t": 2.95,
+   "pose": "side/cycle/walk-11"
+  },
+  {
+   "t": 3,
+   "pose": "side/cycle/walk-12"
+  },
+  {
+   "t": 3.05,
+   "pose": "side/cycle/walk-13"
+  },
+  {
+   "t": 3.1,
+   "pose": "side/cycle/walk-14"
+  },
+  {
+   "t": 3.15,
+   "pose": "side/cycle/walk-15"
+  },
+  {
+   "t": 3.2,
+   "pose": "side/cycle/walk-16"
+  },
+  {
+   "t": 3.25,
+   "pose": "side/cycle/walk-17"
+  },
+  {
+   "t": 3.3,
+   "pose": "side/cycle/walk-18"
+  },
+  {
+   "t": 3.35,
+   "pose": "side/cycle/walk-19"
+  },
+  {
+   "t": 3.4,
+   "pose": "side/cycle/walk-20"
+  },
+  {
+   "t": 3.45,
+   "pose": "side/cycle/walk-21"
+  },
+  {
+   "t": 3.5,
+   "pose": "side/cycle/walk-22"
+  },
+  {
+   "t": 3.55,
+   "pose": "side/cycle/walk-23"
+  },
+  {
+   "t": 3.6,
+   "pose": "side/cycle/walk-00"
+  },
+  {
+   "t": 3.65,
+   "pose": "side/cycle/walk-01"
+  },
+  {
+   "t": 3.7,
+   "pose": "side/cycle/walk-02"
+  },
+  {
+   "t": 3.75,
+   "pose": "side/cycle/walk-03"
+  },
+  {
+   "t": 3.8,
+   "pose": "side/cycle/walk-04"
+  },
+  {
+   "t": 3.85,
+   "pose": "side/cycle/walk-05"
+  },
+  {
+   "t": 3.9,
+   "pose": "side/cycle/walk-06"
+  },
+  {
+   "t": 3.95,
+   "pose": "side/cycle/walk-07"
+  },
+  {
+   "t": 4,
+   "pose": "side/cycle/walk-08"
+  },
+  {
+   "t": 4.05,
+   "pose": "side/cycle/walk-09"
+  },
+  {
+   "t": 4.1,
+   "pose": "side/cycle/walk-10"
+  },
+  {
+   "t": 4.15,
+   "pose": "side/cycle/walk-11"
+  },
+  {
+   "t": 4.2,
+   "pose": "side/cycle/walk-12"
+  },
+  {
+   "t": 4.25,
+   "pose": "side/cycle/walk-13"
+  },
+  {
+   "t": 4.3,
+   "pose": "side/cycle/walk-14"
+  },
+  {
+   "t": 4.35,
+   "pose": "side/cycle/walk-15"
+  },
+  {
+   "t": 4.4,
+   "pose": "side/cycle/walk-16"
+  },
+  {
+   "t": 4.45,
+   "pose": "side/cycle/walk-17"
+  },
+  {
+   "t": 4.5,
+   "pose": "side/cycle/walk-18"
+  },
+  {
+   "t": 4.55,
+   "pose": "side/cycle/walk-19"
+  },
+  {
+   "t": 4.6,
+   "pose": "side/cycle/walk-20"
+  },
+  {
+   "t": 4.65,
+   "pose": "side/cycle/walk-21"
+  },
+  {
+   "t": 4.7,
+   "pose": "side/cycle/walk-22"
+  },
+  {
+   "t": 4.75,
+   "pose": "side/cycle/walk-23"
+  }
+ ],
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.brow"
+   ],
+   "keys": [
+    {
+     "t": 0,
+     "pose": "face-calm",
+     "ease": "inOut"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "phase0": 0.15,
+  "amp": 0.7,
+  "shape": {
+   "inhale": 0.5,
+   "exhale": 0.4,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.025,
+   "chestAcross": 0.02,
+   "chestDeg": -0.8,
+   "shoulderDeg": 1.5,
+   "headDeg": -0.8,
+   "belly": 0.01
+  },
+  "period": 2.4
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 1.68
+  },
+  {
+   "type": "blink",
+   "t": 3.94
+  }
+ ],
+ "drift": {
+  "amp": 0.6,
+  "seed": 11,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.35
+   ]
+  },
+  "bones": {
+   "head": 0.3
+  }
+ },
+ "qa": {
+  "curl": {
+   "sides": [
+    "near",
+    "far"
+   ],
+   "min": 8
+  }
+ }
+}

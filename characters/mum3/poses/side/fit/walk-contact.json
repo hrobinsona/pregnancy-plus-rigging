@@ -1,0 +1,65 @@
+{
+ "name": "side/fit/walk-contact",
+ "note": "fitted to characters/mum3/refs/pose/s_walk_contact_1.json (MediaPipe landmarks, base rest); pose_dirs: upperArm.near=76,forearm.near=58,hand.near=70,upperArm.far=118,forearm.far=108,hand.far=96; pose_dirs: foot.far=38,foot.near=99,toe.near=4,thigh.far=82,shin.far=90,thigh.near=100,shin.near=138",
+ "hands": {
+  "near": "idle",
+  "far": "idle"
+ },
+ "fx": {
+  "skirtSwing": 0.1,
+  "fingersIn": 0.8,
+  "turn": 0.4,
+  "show.far.arm": 1
+ },
+ "root": [
+  0.0502,
+  0.2352
+ ],
+ "bones": {
+  "pelvis": 0,
+  "spineLower": 2.2,
+  "spineUpper": -1.1,
+  "chest": -3.4,
+  "neck": -6.3,
+  "head": 2.9,
+  "belly": 0,
+  "clavicle.near": 8.5,
+  "shoulderAbd.near": 2.3,
+  "upperArm.near": 26,
+  "armAbd.near": -0.1,
+  "armRot.near": 2.6,
+  "forearm.near": 6.8,
+  "foreRot.near": 0.5,
+  "hand.near": -4,
+  "thigh.near": -7.1,
+  "shin.near": -39.7,
+  "foot.near": 6.6,
+  "hipAbd.near": -1.4,
+  "clavicle.far": -22,
+  "shoulderAbd.far": 0.6,
+  "upperArm.far": -50.7,
+  "armAbd.far": 0,
+  "armRot.far": -1.6,
+  "forearm.far": -1.4,
+  "foreRot.far": -1.6,
+  "hand.far": 20,
+  "thigh.far": 12.7,
+  "shin.far": -10.6,
+  "foot.far": 7.5,
+  "hipAbd.far": 0,
+  "toe.near": 31.9
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_walk_contact_1.json",
+  "scale": 1.054,
+  "rms": 0.1127,
+  "worst": [
+   "pinkyL 0.217",
+   "wristL 0.213",
+   "shoulderL 0.194",
+   "thumbL 0.188",
+   "indexR 0.174"
+  ]
+ },
+ "fitFrom": "side/fit/walk-contact"
+}

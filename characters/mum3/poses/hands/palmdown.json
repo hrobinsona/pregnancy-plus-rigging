@@ -1,0 +1,36 @@
+{
+ "name": "palmdown",
+ "f1": [
+  15,
+  25,
+  15
+ ],
+ "f2": [
+  17,
+  27,
+  17
+ ],
+ "f3": [
+  17,
+  27,
+  17
+ ],
+ "f4": [
+  19,
+  29,
+  19
+ ],
+ "s": [
+  -3,
+  -1,
+  1,
+  3
+ ],
+ "t": [
+  40,
+  40
+ ],
+ "to": 30,
+ "ts": -30,
+ "_note": "a palm laid DOWN on a worktop or the floor, seen side-on: the back of the hand a low dome, the fingers a little apart and curling enough that the tips rest on the surface (the hand drawn sloping ~10\u00b0 down from the wrist to them), the thumb under the hand out of sight. With fx.fingersIn 0.7 and the hand's width squashed edge-on (pose.scale hand: [1, 0.6]). 'press' (fingers straight, thumb up) on the worktop read as 'the wrong way around', its fingers out in the air (Harry, round 8)"
+}

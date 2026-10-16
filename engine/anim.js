@@ -78,7 +78,11 @@ function flatten(pose) {
   if (pose.root) { c['root.0'] = pose.root[0]; c['root.1'] = pose.root[1]; }   // translation is a channel (seated drop, walk bob)
   return c;
 }
-const DEFAULTS = (key) => (key.startsWith('scale.') ? 1 : 0);
+// a channel a key's pose leaves out takes the DRAWING's default: 0, a scale 1, and fx.turn 1 (engine/rig.js: how far
+// she is turned to us, the master's ¾; the side-on library sets 0.4). At 0, a move from the standing pose n-rest into
+// side/sit-chair swung her far hip onto the near one, her far foot 0.3 H back, as she started (round 16, lesson 76).
+const FX_DEFAULTS = { 'fx.turn': 1 };
+const DEFAULTS = (key) => (key.startsWith('scale.') ? 1 : FX_DEFAULTS[key] ?? 0);
 function flattenRaw(pose) {          // only the channels the pose actually sets (for channel-group tracks)
   const c = {};
   for (const [ch, w] of Object.entries(pose.face || {})) for (const [k, v] of Object.entries(w)) c[`face.${ch}.${k}`] = v;
@@ -132,20 +136,38 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   const opts = { quiet };
   if (!rig || !C) throw new Error('makeAnim(spec, lib, { rig, C }): the rig and character are required');
   const solve = rig.solve, J = C.joints, BONE = rig.BONE;
+  const WORLD = { M: [1, 0, 0, 1, 0, 0], rot: 0, pos: [0, 0] };   // the frame of a contact 'on' the world (pins, reach)
   const fps = spec.fps, D = spec.duration, loop = !!spec.loop;
   const wrapT = (t) => (loop ? ((t % D) + D) % D : t);
+  // PROPS stay put in the WORLD through a shot: a character places its furniture from her posed body (a chair's seat under
+  // her buttocks, a worktop under her forearms), so placed per frame a counter rose and fell with her breath and a chair
+  // would follow her as she sat down. They are placed ONCE, from spec.propsFrom (a pose; default the first key whose pose
+  // has props), each item pinned where that pose put it (the parts carry their placement: part.place), and held all shot.
+  const propsAt = (() => {
+    const nm = spec.propsFrom ?? spec.keys.map((k) => k.pose).find((n) => lib[n]?.props?.items?.length);
+    if (!nm || spec.propsFrom === null) return null;
+    const seen = new Set(), items = [];
+    for (const p of rig.build(lib[nm])) if (p.place && !seen.has(p.place)) { seen.add(p.place); items.push({ ...p.place }); }
+    return items.length ? { items } : null;
+  })();
   // key lists: the main pose track (spec.keys) plus optional channel-group tracks (spec.tracks, e.g. {"face": [...]})
   // that own every channel under their prefix — so the eyes can be keyed on their own timing.
   // key.kind "breakdown": the curve passes THROUGH it (Catmull-Rom tangent, cubic Hermite in angle space) instead of
   // stopping on it, so a move can travel a different path out and back without a hitch.
   const buildKeys = (arr, raw) => {
     for (const k of arr) if (!lib[k.pose]) throw new Error(`missing pose ${k.pose}`);
-    const ks = arr.map((k) => ({ ...k, ch: raw ? flattenRaw(lib[k.pose]) : flatten(lib[k.pose]), ease: easeFn(k.ease) }));
+    // key.set = {channel: value}: sets channels on top of the key's pose (a contact pin, fx.pinNear: 1, without editing a
+    // fitted pose that refs/fit_side.sh rewrites)
+    const ks = arr.map((k) => ({ ...k, ch: { ...(raw ? flattenRaw(lib[k.pose]) : flatten(lib[k.pose])), ...(k.set || {}) }, ease: easeFn(k.ease) }));
     if (loop) ks.push({ ...ks[0], kind: undefined, t: ks[0].t + D, ease: easeFn(spec.wrapEase || 'inOut') });
     for (let i = 1; i < ks.length; i++) if (ks[i].t <= ks[i - 1].t) throw new Error(`keys out of order at ${ks[i].t}`);
     return ks;
   };
   const keys = buildKeys(spec.keys, false);
+  // spec.cyclic (a loop: a walk, a rock): the main keys are ALL passed through on one smooth periodic curve (Catmull-Rom
+  // tangents, the seam's too), not eased to a stop on each: eased, a walk cycle halted on every contact and passing
+  // position, a robot's step
+  if (spec.cyclic) { if (!loop) throw new Error('spec.cyclic needs spec.loop'); keys.cyclic = true; }
   // a track is either [keys] (owns channels under its name) or {channels: [prefixes], keys: [...]}
   const groups = Object.entries(spec.tracks || {}).map(([name, tr]) => Array.isArray(tr)
     ? { prefixes: [name], keys: buildKeys(tr, true) } : { prefixes: tr.channels, keys: buildKeys(tr.keys, true) });
@@ -161,7 +183,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // a prefix ending in '*' matches raw ('bone.hand.near.*' = the fingers and thumb, not the wrist 'bone.hand.near')
     const star = (p) => p.endsWith('*') && ch.startsWith(p.slice(0, -1));
     const hit = (p) => star(p) || ch === p || ch.startsWith(p + '.') || ch === 'bone.' + p || ch.startsWith('bone.' + p + '.');
+    const cyc = ks.cyclic;
     ks = ks.filter((k) => (!k.only || k.only.some((p) => star(p) || ch === p || ch.startsWith(p + '.'))) && !(k.except && k.except.some(hit)));
+    ks.cyclic = cyc;
     keyCache.set(ch, ks);
     return ks;
   };
@@ -196,6 +220,10 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     if (loop) { t = ((t - T(ks[0])) % D + D) % D + T(ks[0]); }
     if (t <= T(ks[0])) return v(ks[0]);
     const tan = (i) => {           // Catmull-Rom tangent (value per second) at a breakdown, 0 at a key
+      if (ks.cyclic) {             // (periodic: the last entry is the first key one loop on)
+        const n = ks.length - 1, ip = i === 0 ? n - 1 : i - 1, inx = i === n ? 1 : i + 1;
+        return (v(ks[inx]) - v(ks[ip])) / (T(ks[inx]) + (i === n ? D : 0) - T(ks[ip]) + (i === 0 ? D : 0));
+      }
       if (ks[i].kind !== 'breakdown') return 0;
       const p = ks[i - 1], n = ks[i + 1];
       return (v(n) - v(p)) / (T(n) - T(p));
@@ -204,7 +232,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       const a = ks[i], b = ks[i + 1];
       if (t < T(b)) {
         const L = T(b) - T(a), u = (t - T(a)) / L;
-        if (a.kind !== 'breakdown' && b.kind !== 'breakdown') return v(a) + (v(b) - v(a)) * b.ease(u);   // eased, angle space
+        if (!ks.cyclic && a.kind !== 'breakdown' && b.kind !== 'breakdown') return v(a) + (v(b) - v(a)) * b.ease(u);   // eased, angle space
         const u2 = u * u, u3 = u2 * u;
         return (2 * u3 - 3 * u2 + 1) * v(a) + (u3 - 2 * u2 + u) * tan(i) * L + (-2 * u3 + 3 * u2) * v(b) + (u3 - u2) * tan(i + 1) * L;
       }
@@ -291,6 +319,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // discrete properties held from the active key (swaps land ON keys)
     const act = (() => { let k = keys[0]; for (const kk of keys) if (kk.t <= tt + 1e-9) k = kk; return lib[k.pose]; })();
     for (const prop of ['handView', 'zBias']) if (act?.[prop] !== undefined) pose[prop] = act[prop];
+    // ... and the pose's own SHAPE settings that are not numbers (fx.clothTry: the skirt's shape fitted to its still,
+    // tools/cloth_fit.py; fx.legTry): channels carry numbers only, so every side-on breathing loop drew the default cloth,
+    // not its pose's fitted one, from round 13 to 16 (the squat's hem crossing 0.2 not 0.5, all fours' hem 0.25 below the
+    // bump, kneel-pick's back pulled in 0.27 H), while the critic sheets drew the fitted one (qa_checks 'keyfx')
+    for (const [k, v] of Object.entries(act?.fx || {})) if (v && typeof v === 'object') pose.fx[k] = v;
+    if (propsAt) pose.props = propsAt;
     // SWAPS (spec.swaps = [{t, handView, zBias}]): drawing swaps timed on their own — when a limb is clear of the body
     // (a far hand passing the bump's edge), not on whichever body key happens to be active. The latest one ≤ t holds.
     { let sw = null; for (const s of spec.swaps || []) if (s.t <= tt + 1e-9) sw = s; if (!sw && loop && spec.swaps?.length) sw = spec.swaps[spec.swaps.length - 1];
@@ -385,21 +419,23 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     return { z: fr.depthOf(A.wr), phi: swivelOf(A.el, A.wr), straight }; })());
   function contact(st, side, e, P_) {
     const ref = reachRef(e.pose), ha = 'hand.' + side, on = e.on;
-    let loc = apM(inv(ref[on].M), ref[ha].pos);
+    // on 'world': the hand stays where the pose put it on the floor, a worktop, a chair or a ball (props stay put: propsAt)
+    const F = (S_) => (on === 'world' ? WORLD : S_[on]);
+    let loc = apM(inv(F(ref).M), ref[ha].pos);
     // a contact on a WARPED bone (C.warps: the nodding head) moves with the warped drawing: carry the point by the
     // difference between the warp now and the warp in the contact's own pose
     if (C.warps?.[on] && P_) { const j = J[BONE[on].joint], v = [loc[0] + j[0], loc[1] + j[1]], a = C.warps[on](P_)(v), b = C.warps[on](lib[e.pose])(v); loc = [loc[0] + a[0] - b[0], loc[1] + a[1] - b[1]]; }
-    const c = { p: apM(st[on].M, loc), rot: st[on].rot + (ref[ha].rot - ref[on].rot) };
+    const c = { p: apM(F(st).M, loc), rot: F(st).rot + (ref[ha].rot - F(ref).rot) };
     if (e.keyedArm) c.keyedArm = true;   // see reachArm: the arm stays the keys', only the damped solve moves the wrist
     if (is3(side)) {
       // the contact's DEPTH rides the bone it touches too: when she bows her head into her hand the face comes forward,
       // and the hand with it (otherwise the face passes in front of the hand and the hand is drawn behind it)
-      const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(S_[on].pos)); };
+      const i3 = info3(e.pose, side), dMid = (S_) => { const fr_ = armFrame(rig, S_, side); return fr_.depthOf(fr_.fromScreenMid(F(S_).pos)); };
       c.z = (e.z ?? i3.z) + dMid(st) - dMid(ref); c.phi = e.phi !== undefined ? e.phi * Math.PI / 180 : i3.phi; c.straight = e.phi === undefined && i3.straight;
     }
     // an OFFSET via (e.dp screen H, e.dz depth H, e.dphi deg): a waypoint defined from a key's contact — e.g. LIFT-OFF: the
     // hand first comes away from the surface it rested on (round the bump's silhouette edge, never through the bump)
-    if (e.dp) { const r = (st[on].rot - ref[on].rot) * Math.PI / 180; c.p = [c.p[0] + Math.cos(r) * e.dp[0] - Math.sin(r) * e.dp[1], c.p[1] + Math.sin(r) * e.dp[0] + Math.cos(r) * e.dp[1]]; }
+    if (e.dp) { const r = (F(st).rot - F(ref).rot) * Math.PI / 180; c.p = [c.p[0] + Math.cos(r) * e.dp[0] - Math.sin(r) * e.dp[1], c.p[1] + Math.sin(r) * e.dp[0] + Math.cos(r) * e.dp[1]]; }
     if (e.dz !== undefined && c.z !== undefined) c.z += e.dz;
     // e.surface: the hand LIES ON that body proxy's near surface at this point of the screen (sliding round the front of
     // the bump instead of passing through it): depth = where the camera ray through the point enters the proxy, + e.gap
@@ -472,7 +508,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       p = L_(B1, B2, t1_, t2_);
     }
     const sH = mj(warp(u - (b.handLag ?? 2) / fps / (t1 - t0)));
-    const [kh, vh] = seg(sH), loc = (e) => lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
+    // (stop.local: the wrist's bend at that stop, when not its pose's: a via whose pose presses on something the hand only
+    // passes, sit-down-1's reach back, bent the wrist back 30° and forward again mid-move: qa_checks hands, round 16)
+    const [kh, vh] = seg(sH), loc = (e) => e.local ?? lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
     const ea = E[kh], eb = E[Math.min(E.length - 1, kh + 1)];
     let local = loc(ea) + vh * (loc(eb) - loc(ea)), roll = rl(ea) + vh * (rl(eb) - rl(ea));
     // mid-flight the wrist relaxes toward straight: the hand is CARRIED, not posed. Not while it stays on the same body part
@@ -885,16 +923,18 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   };
   function pinArm(pose, keyed, side, w, P) {
     const ua = 'upperArm.' + side, fa = 'forearm.' + side, ha = 'hand.' + side, on = P.on;
+    // on 'world': the hand is planted on the floor, a worktop, a chair (the props stay put in the world: propsAt)
+    const F = (S_) => (on === 'world' ? WORLD : S_[on]);
     // the contact comes from the PLANT pose when the pin names one (P.plant): the hand stays where it was put on the surface
     // while the torso keys change under it (gag, hunch, breaths); otherwise from the reference (keyed) pose itself.
     const kst = solve({ ...pose, bones: { ...pose.bones, ...keyed.bones }, scale: keyed.scale }), ref = plantRef(P) || kst, cur = solve(pose);
     if (ref !== kst && P.release) {   // optional: a plant holds only while the KEYED hand is at it (lets go as the keys lift it off)
-      const a = apM(inv(kst[on].M), kst[ha].pos), b = apM(inv(ref[on].M), ref[ha].pos), [d0, d1] = P.release;
+      const a = apM(inv(F(kst).M), kst[ha].pos), b = apM(inv(F(ref).M), ref[ha].pos), [d0, d1] = P.release;
       w *= 1 - smooth01((Math.hypot(a[0] - b[0], a[1] - b[1]) - d0) / (d1 - d0));
       if (w <= 0) return;
     }
-    const L0 = apM(inv(ref[on].M), ref[ha].pos), sx = pose.fx['slide.' + side + '.x'] ?? 0, sy = pose.fx['slide.' + side + '.y'] ?? 0;
-    const T = apM(cur[on].M, [L0[0] + sx, L0[1] + sy]);          // planted wrist, carried with the surface (+ a stroke's slide)
+    const L0 = apM(inv(F(ref).M), ref[ha].pos), sx = pose.fx['slide.' + side + '.x'] ?? 0, sy = pose.fx['slide.' + side + '.y'] ?? 0;
+    const T = apM(F(cur).M, [L0[0] + sx, L0[1] + sy]);          // planted wrist, carried with the surface (+ a stroke's slide)
     const h = 0.5, at = (b, d, P) => { const p = { ...P, bones: { ...P.bones, [b]: (P.bones[b] || 0) + d } }; return solve(p)[ha].pos; };
     const target = { ...pose, bones: { ...pose.bones } };
     for (let it = 0; it < 3; it++) {                                        // three Newton steps: a fixed cost, no state
@@ -909,7 +949,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       pose.bones[ua] = (pose.bones[ua] || 0) + w * du; pose.bones[fa] = (pose.bones[fa] || 0) + w * df;
     }
     // hand: restore its keyed world angle relative to the surface (one secant step on the hand bone)
-    const c2 = solve(pose), want = ref[ha].rot + (cur[on].rot - ref[on].rot), e0 = ((want - c2[ha].rot + 540) % 360) - 180;
+    const c2 = solve(pose), want = ref[ha].rot + (F(cur).rot - F(ref).rot), e0 = ((want - c2[ha].rot + 540) % 360) - 180;
     const hp = { ...pose, bones: { ...pose.bones, [ha]: (pose.bones[ha] || 0) + h } }, slope = (((solve(hp)[ha].rot - c2[ha].rot) + 540) % 360 - 180) / h;
     if (Math.abs(slope) > 1e-6) pose.bones[ha] = (pose.bones[ha] || 0) + w * Math.max(-20, Math.min(20, e0 / slope));
   }
@@ -985,7 +1025,70 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   };
 
   let footRest = null, footRef = null;
+  // spec.plantFeetSteps (plantFeet 'ik'): a planted foot that STEPS, [{ side: 'far', t0, t1, to: <pose>, lift: 0.035 }]:
+  // planted where plantFeetRef puts it until t0, carried on a min-jerk arc (lifted `lift` H at its middle) to where pose
+  // `to` puts it by t1, planted there after (a later step starts from there). Without it a move between poses whose feet
+  // differ drags one foot along the floor or leaves it hanging: mum3 sit-down's standing far foot is 0.63 H ahead of
+  // sit-chair's, and its straight leg can't reach the seated spot (round 16, lesson 76). Pure in t.
+  const stepPose = {};
+  const stanceAt = (sd, t) => {
+    let a = (footRef ||= solve(lib[spec.plantFeetRef || spec.keys[0].pose]));
+    for (const s of (spec.plantFeetSteps || []).filter((s_) => s_.side === sd)) {
+      const b = (stepPose[s.to] ||= solve(lib[s.to]));
+      if (t <= s.t0) break;
+      if (t < s.t1) { const u = mj((t - s.t0) / (s.t1 - s.t0)); return { a, b, u, lift: (s.lift ?? 0.035) * Math.sin(Math.PI * u) }; }
+      a = b;
+    }
+    return { a, b: a, u: 0, lift: 0 };
+  };
+  const footGoal = (sd, bone, j, t) => { const S = stanceAt(sd, t), p = rig.carry(S.a, bone, j), q = rig.carry(S.b, bone, j); return [p[0] + (q[0] - p[0]) * S.u, p[1] + (q[1] - p[1]) * S.u - S.lift]; };
+  const footRot = (sd, t) => { const S = stanceAt(sd, t), f = C.roles.legs[sd].foot, r0 = S.a[f].rot; return r0 + ((((S.b[f].rot - r0) + 540) % 360) - 180) * S.u; };
+  // WALK (spec.walk = {}): the feet stay planted while she walks and the camera travels with her at her mean speed, so a
+  // walk loops in place (on screen the planted foot slides back steadily, at her pace: a treadmill). The ground contact is
+  // whichever sole points are lowest (both feet's: heel strike, flat, push-off on the toe, both in double support), and
+  // the body moves so those points don't slide: a ROLLING contact, so not one fixed point (pinning the first point
+  // touched, the heel, threw the body back a foot's length as the weight rolled onto the ball). The forward travel is that
+  // no-slip condition integrated once over the loop into a table (2 samples a frame), then read per frame; vertically, the
+  // lowest sole point is on the floor, closed form. The shoe's sole points (rest H) are roles.legs[side].sole: its foot
+  // list on the foot bone, its toe list on the toe bone.
+  const walkPts = (st, sd) => { const L_ = C.roles.legs[sd], on = (b, p) => { const j = J[BONE[b].joint]; return apM(st[b].M, [p[0] - j[0], p[1] - j[1]]); };
+    return [...L_.sole.foot.map((p) => on(L_.foot, p)), ...L_.sole.toe.map((p) => on(L_.toe, p))]; };
+  const soleAll = (st) => [...walkPts(st, 'near'), ...walkPts(st, 'far')];
+  let walkTab = null;
+  // the planted travel by time t: how far her stance foot has carried her since t = 0 (H), read off the table
+  const walkX = (tt) => {
+    if (!walkTab) {
+      const n = Math.max(8, Math.round(D * fps * 2)), sg = spec.walk.sharp ?? 0.01, Ps = [];
+      for (let i = 0; i <= n; i++) Ps.push(soleAll(solve(poseRaw((i * D) / n))));
+      // (a point not moving BACKWARD in her frame at half her pace or more isn't planted, however low: a swinging foot
+      // skimming the floor (weighed by lowness alone, the swinging toe 0.02 H off the floor carried her backward, 0.4 H a
+      // step for 2.4), or a heel landing before it has stopped in the world (her travel stalled for a frame each step). Her
+      // pace is from a first pass, then the table again)
+      const pass = (v) => { const X = [0];
+        for (let i = 1; i <= n; i++) {
+          const P0 = Ps[i - 1], P1 = Ps[i], y = Math.max(...P1.map((q, k) => (q[1] + P0[k][1]) / 2));
+          const w = P1.map((q, k) => Math.exp(-(y - (q[1] + P0[k][1]) / 2) / sg - Math.max(0, q[0] - P0[k][0] + 0.5 * v) / 0.002)), W = w.reduce((a, b) => a + b, 0);
+          X.push(X[i - 1] - w.reduce((a, wk, k) => a + wk * (P1[k][0] - P0[k][0]), 0) / W);
+        }
+        return X; };
+      let X = pass(0); X = pass(X[n] / n);
+      walkTab = { X, n, S: X[n] };
+      if (!opts.quiet) console.log(`walk ${spec.name}: ${X[n].toFixed(3)} H per loop, ${(X[n] / D).toFixed(3)} H/s`);
+    }
+    const u = (wrapT(tt) / D) * walkTab.n, i = Math.min(walkTab.n - 1, Math.floor(u)), f = u - i;
+    return walkTab.X[i] + (walkTab.X[i + 1] - walkTab.X[i]) * f;
+  };
+  const walkRoot = (pose, tt) => {
+    const dx = walkX(tt) - walkTab.S * (wrapT(tt) / D);
+    const st = solve(pose), dy = -Math.max(...soleAll(st).map((p) => p[1]));
+    pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) + dy];
+  };
   function poseAt(t) {
+    const pose = poseRaw(t);
+    if (spec.walk) walkRoot(pose, wrapT(t));
+    return pose;
+  }
+  function poseRaw(t) {
     const tt = wrapT(t);
     const pose = basePose(tt);
     const bk = blinkAt(tt);
@@ -1017,9 +1120,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // closed form, pure in t. (The arm contacts above ride the body, so they move with the root as they should.)
     if (spec.plantFeet && C.roles?.legs) {
       const st = solve(pose), Lg = C.roles.legs, pts = ['near', 'far'].flatMap((sd) => [[Lg[sd].foot, Lg[sd].ankle], [Lg[sd].foot, Lg[sd].ball]]);
-      const now = pts.map(([b, j]) => rig.carry(st, b, j)), rest = (footRest ||= (() => { const s0 = spec.plantFeet === 'ik' ? solve(lib[spec.plantFeetRef || spec.keys[0].pose]) : solve({}); return pts.map(([b, j]) => rig.carry(s0, b, j)); })());
+      const now = pts.map(([b, j]) => rig.carry(st, b, j)), rest = spec.plantFeetSteps ? pts.map(([b, j], i) => footGoal(i < 2 ? 'near' : 'far', b, j, t)) : (footRest ||= (() => { const s0 = spec.plantFeet === 'ik' ? solve(lib[spec.plantFeetRef || spec.keys[0].pose]) : solve({}); return pts.map(([b, j]) => rig.carry(s0, b, j)); })());
       const dx = rest.reduce((a, q, i) => a + q[0] - now[i][0], 0) / pts.length, dy = Math.max(...now.map((q) => q[1])) - Math.max(...rest.map((q) => q[1]));
-      pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) - dy];
+      // spec.plantFeetRoot false (plantFeet 'ik'): the hips keep the keys' path and only the legs reach the planted feet.
+      // The shift follows the blended LEG angles, not the hips: sitting down from standing it carried her hips 0.6 H back
+      // while they fell 0.07 H, and she tipped back over straight legs like a plank (side-sit-down, round 16)
+      if (spec.plantFeetRoot !== false || spec.plantFeet !== 'ik') pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) - dy];
       // plantFeet "ik": the root shift only fixes the feet on AVERAGE — when the legs bend differently (a crouch, a 3/4
       // stance) each sock still slides against the floor (critic R11: "both socks sliding inward"). Each leg then gets
       // its own two-bone solve (thigh, shin: three fixed Newton steps) bringing its ankle back to its rest spot, and the
@@ -1029,7 +1135,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         const s0 = (footRef ||= solve(lib[spec.plantFeetRef || spec.keys[0].pose])), h = 0.5, lam = 2e-5;
         const clampB = (b, v) => Math.max(BONE[b].min ?? -180, Math.min(BONE[b].max ?? 180, v));
         for (const sd of ['near', 'far']) {
-          const L_ = C.roles.legs[sd], ank = (P_) => rig.carry(solve(P_), L_.shin, L_.ankle), goal = rig.carry(s0, L_.shin, L_.ankle);
+          const L_ = C.roles.legs[sd], ank = (P_) => rig.carry(solve(P_), L_.shin, L_.ankle), goal = spec.plantFeetSteps ? footGoal(sd, L_.shin, L_.ankle, t) : rig.carry(s0, L_.shin, L_.ankle);
           for (let it = 0; it < 7; it++) {   // damped least squares, inside the joint limits (a knee never hyperextends to reach)
             const W0 = ank(pose), ex = goal[0] - W0[0], ey = goal[1] - W0[1]; if (Math.hypot(ex, ey) < 1e-5) break;
             // three joints for a 2D ankle: hip abduction (a sock sliding sideways), thigh and shin — Δ = Jᵀ(JJᵀ + λI)⁻¹e,
@@ -1043,7 +1149,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
             Bs.forEach((b, k) => { pose.bones[b] = clampB(b, (pose.bones[b] || 0) + dl[k]); });
           }
           for (let it = 0; it < 2; it++) {   // the sole back to its angle in the stance pose
-            const c0 = solve(pose)[L_.foot].rot, e0 = ((s0[L_.foot].rot - c0 + 540) % 360) - 180;
+            const c0 = solve(pose)[L_.foot].rot, e0 = (((spec.plantFeetSteps ? footRot(sd, t) : s0[L_.foot].rot) - c0 + 540) % 360) - 180;
             const c1 = solve({ ...pose, bones: { ...pose.bones, [L_.foot]: (pose.bones[L_.foot] || 0) + h } })[L_.foot].rot, sl = (((c1 - c0) + 540) % 360 - 180) / h;
             if (Math.abs(sl) > 1e-6) pose.bones[L_.foot] = (pose.bones[L_.foot] || 0) + Math.max(-20, Math.min(20, e0 / sl));
           }
@@ -1053,12 +1159,14 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         // sway, 2.5 px into it at the back one). The hips move instead, by what the foot nearest the floor still lacks, so
         // no foot goes through it (ease-sway: ankles within 0.6 px all shot). Opt-in: earlier shots keep their frames.
         if (spec.plantFeetSink) {
-          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return rig.carry(s0, L_.shin, L_.ankle)[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
+          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return (spec.plantFeetSteps ? footGoal(sd, L_.shin, L_.ankle, t) : rig.carry(s0, L_.shin, L_.ankle))[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
           pose.root = [pose.root[0], pose.root[1] + lift];
         }
       }
     }
     return pose;
   }
-  return { fps, duration: D, loop, frames: Math.round(D * fps), poseAt, basePose, breathAt, hairAt, blinkAt, phaseAt };
+  // (walk: the planted travel by time and per loop, tools/side_walk.mjs times its keys by it)
+  const walk = spec.walk ? { X: walkX, S: () => (walkX(0), walkTab.S) } : null;
+  return { fps, duration: D, loop, frames: Math.round(D * fps), poseAt, basePose, breathAt, hairAt, blinkAt, phaseAt, walk };
 }

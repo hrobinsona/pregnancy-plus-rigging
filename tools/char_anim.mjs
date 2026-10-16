@@ -20,13 +20,15 @@ const poseNames = [...new Set([...[...spec.keys, ...Object.values(spec.tracks ||
 const lib = Object.fromEntries(poseNames.map((p) => [p, expandHands(JSON.parse(fs.readFileSync(`${D}poses/${p}.json`)), handLib, C.handSides)]));
 const A = makeAnim(spec, lib, { rig, C });
 const N = Math.round(spec.duration * spec.fps), every = +arg('every', 1), FROM = +arg('from', 0), LAST = arg('to') !== undefined ? +arg('to') : spec.loop ? N - 1 : N;   // --from/--to: re-render just one move (keeps the other frames)
+// spec.view.bbox (H): the shot's own framing in the 1080×1920 frame (a side-on loop frames its pose: tools/side_loop.mjs)
+const VB = spec.view?.bbox ? `&bbox=${encodeURIComponent(JSON.stringify(spec.view.bbox))}` : '';
 const dir = `out/frames/${char}_${name}`, fast = flag('tracks-only');   // --tracks-only: joint tracks + speed report, no frames (timing passes)
 let hashes = {};
 if (!fast) {
 if (arg('from') === undefined && arg('to') === undefined) fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
 const { srv, base } = await serve();
 const browser = await chromium.launch();
-const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still`); await pg.waitForFunction(() => window.__ready === true); return pg; };
+const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still${VB}`); await pg.waitForFunction(() => window.__ready === true); return pg; };
 const page = await open();
 const shot = async (pg, i, file) => { await pg.evaluate((p) => window.renderPose(p), A.poseAt(i / spec.fps)); const b = await pg.locator('#stage svg').screenshot({ path: file }); return crypto.createHash('sha1').update(b).digest('hex'); };
 for (let i = FROM; i <= LAST; i += every) hashes[i] = await shot(page, i, `${dir}/f${String(i).padStart(4, '0')}.png`);
@@ -35,7 +37,7 @@ if (vk) { const pg2 = await open(); let bad = 0; for (let i = FROM; i <= LAST; i
 await browser.close(); srv.close();
 }
 // joint tracks in output px (for arcs / spacing / metrics in the review pack)
-const sc = (p) => rig.toScreen(p, { frame: 'still' }), tracks = [];
+const sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox }), tracks = [];
 const ALL = spec.loop ? N - 1 : N, partial = FROM !== 0 || LAST !== ALL;
 for (let i = 0; i <= ALL; i++) {
   const t = i / spec.fps, pose = A.poseAt(t), st = rig.solve(pose), farP = pose.handView?.far === 'back' ? 'hand.farB' : 'hand.far';

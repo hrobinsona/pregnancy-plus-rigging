@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """mask_overlay.py <char> <pose | anim@t> --still <name> --box x0,y0,x1,y1 [--scale 5] [--rgb 253,184,136] [--tol 45]
-   [--rgb2 r,g,b] [--hands near=cradle,far=hold] [--out out/mask_<pose>.png]
+   [--rgb2 r,g,b] [--hands near=cradle,far=hold] [--out out/mask_<pose>.png] [--edge right|left [--rows y0,y1,step]]
 
 Overlay one colour's mask (default: skin) of a pose and of its still, in the same box of the still's pixels: grey where
 both have it, RED where only the still does, BLUE where only the render does; prints both areas in the still's px. Then
@@ -13,7 +13,13 @@ bump's edge, 1682 px of mismatch. Each fix (a longer slimmer thumb, slimmer fing
 showed in the two numbers at once: 1166 (lesson 56). Overlay before tuning anything a reviewer names; rows and points
 can match while a thumb's length, a tip's spacing or a curve between them doesn't.
 anim@t (e.g. look-up@0): the SHOT's pose at t s (keys, reaches, fidgets applied), not a key: v18's cradling hand matched
-the still as a key (939 px) and sat 26 px behind it on the film, where n-down's trunk and the reach had put it (lesson 58)."""
+the still as a key (939 px) and sat 26 px behind it on the film, where n-down's trunk and the reach had put it (lesson 58).
+--edge right|left: also the colour's outermost edge on that side, row by row (still px, every --rows step), the still's
+against the render's, and their rms. An OUTLINE a reviewer names ("a mitten", "a club") is an edge, not an area: mum3q's
+far arm overlaid with 2219 px of mismatch either side, yet only its outer edge, row by row, showed why: 8° too upright,
++17 px at the shoulder to −11 px at the elbow (lesson 61). Fitted to 1.1 px at the still's one frame it lost blind (v27):
+the lower shoulder hid the arm through the look up. Run it at every key of the shot, not only the still's.
+A '-' row has none of the colour on that side in the box (the arm hidden behind the bust)."""
 import argparse, json, os, subprocess, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -24,6 +30,7 @@ ap.add_argument('char'); ap.add_argument('pose')
 ap.add_argument('--still', required=True); ap.add_argument('--box', required=True)
 ap.add_argument('--scale', type=float, default=5); ap.add_argument('--rgb', default='253,184,136'); ap.add_argument('--rgb2')
 ap.add_argument('--tol', type=float, default=45); ap.add_argument('--hands'); ap.add_argument('--out')
+ap.add_argument('--edge', choices=['right', 'left']); ap.add_argument('--rows', help='y0,y1,step in still px (default the box, every 10)')
 a = ap.parse_args()
 os.chdir(R)
 D = f'characters/{a.char}'
@@ -68,3 +75,18 @@ d.text((4, 2), f'still {a.still}', fill=(200, 0, 0), font=F); d.text((W0 + 10, 2
 d.text((4, H0 + 28), f'still only (red) {so} px   render only (blue) {oo} px', fill=(200, 0, 0), font=F)
 out = a.out or f'out/mask_{a.pose.replace("@", "_")}.png'; sheet.save(out); os.remove(tmp)
 print(f'{out}: still only {so} px, render only {oo} px, total {so + oo}')
+if a.edge:
+    y0, y1, dy = [int(v) for v in a.rows.split(',')] if a.rows else (bx[1], bx[3] - 1, 10)
+    def edge(M, row):
+        xs = np.where(M[row])[0]
+        return None if not len(xs) else bx[0] + (xs.max() if a.edge == 'right' else xs.min()) / a.scale
+    ds = []
+    print(f'  {a.edge} edge (still px): y  still  render  render−still')
+    for y in range(y0, y1 + 1, dy):
+        row = int((y - bx[1]) * a.scale)
+        if not 0 <= row < H0: continue
+        e1, e2 = edge(A, row), edge(B, row)
+        if e1 is not None and e2 is not None: ds.append(e2 - e1)
+        f = lambda e: '    -  ' if e is None else f'{e:7.1f}'
+        print(f'  {y:5d} {f(e1)} {f(e2)}  ' + (f'{e2 - e1:+6.1f}' if e1 is not None and e2 is not None else '     -'))
+    if ds: print(f'  {a.edge} edge rms {np.sqrt(np.mean(np.square(ds))):.1f} px over {len(ds)} rows')

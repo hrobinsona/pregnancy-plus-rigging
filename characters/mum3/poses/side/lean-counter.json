@@ -1,0 +1,82 @@
+{
+ "name": "side/fit/lean-counter",
+ "note": "fitted to characters/mum3/refs/pose/s_lean_counter_1.json (MediaPipe landmarks, base rest); pose_dirs: thigh.near=94,shin.near=108,thigh.far=80,shin.far=95; floor_pose: shoe.near:ball, shoe.near:heel, shoe.far:ball, shoe.far:heel on the floor; floor_pose:  on the floor",
+ "hands": {
+  "near": "palmdown",
+  "far": "palmdown"
+ },
+ "fx": {
+  "fingersIn": 0.2,
+  "turn": 0.4,
+  "show.far.arm": 1
+ },
+ "props": {
+  "items": [
+   {
+    "type": "counter"
+   }
+  ]
+ },
+ "root": [
+  -0.8723,
+  0.1375
+ ],
+ "bones": {
+  "pelvis": 25,
+  "spineLower": 7.7,
+  "spineUpper": -0.9,
+  "chest": -12,
+  "neck": -14.1,
+  "head": 0.8,
+  "belly": 0,
+  "clavicle.near": -22,
+  "shoulderAbd.near": -4.8,
+  "upperArm.near": 19.5,
+  "armAbd.near": 3.2,
+  "armRot.near": 3.5,
+  "forearm.near": 55.3,
+  "foreRot.near": 0,
+  "hand.near": -2,
+  "thigh.near": 21.4,
+  "shin.near": -14.1,
+  "foot.near": 11.6,
+  "hipAbd.near": -5.2,
+  "clavicle.far": -22,
+  "shoulderAbd.far": -5.8,
+  "upperArm.far": -5.0,
+  "armAbd.far": 3.1,
+  "armRot.far": -1.2,
+  "forearm.far": 96.3,
+  "foreRot.far": 0,
+  "hand.far": -19.4,
+  "thigh.far": 46.2,
+  "shin.far": -16,
+  "foot.far": -0.4,
+  "hipAbd.far": 5.7,
+  "toe.near": 1.3,
+  "toe.far": -0.6
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_lean_counter_1.json",
+  "scale": 1.0208,
+  "rms": 0.0787,
+  "worst": [
+   "indexL 0.186",
+   "pinkyL 0.175",
+   "thumbL 0.162",
+   "hipL 0.157",
+   "shoulderL 0.117"
+  ]
+ },
+ "scale": {
+  "hand.near": [
+   1,
+   0.6
+  ],
+  "hand.far": [
+   1,
+   0.6
+  ]
+ },
+ "fitFrom": "side/fit/lean-counter"
+}

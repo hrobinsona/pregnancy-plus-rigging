@@ -1,0 +1,73 @@
+{
+ "name": "side/fit/all-fours",
+ "note": "fitted to characters/mum3/refs/pose/s_all_fours_1.json (MediaPipe landmarks, base rest); pose_dirs: neck=-58,head=-66,upperArm.near=88,forearm.near=88,upperArm.far=86,forearm.far=86",
+ "hands": {
+  "near": "press",
+  "far": "press"
+ },
+ "fx": {
+  "farUp": 0.162,
+  "turn": 0.4,
+  "show.far.arm": 1
+ },
+ "root": [
+  -1.4144,
+  1.9502
+ ],
+ "bones": {
+  "pelvis": 79.6,
+  "spineLower": 5.4,
+  "spineUpper": -6.4,
+  "chest": -12,
+  "neck": -47.1,
+  "head": 4.4,
+  "belly": 0,
+  "clavicle.near": -22,
+  "shoulderAbd.near": -12.6,
+  "upperArm.near": 37.4,
+  "armAbd.near": -31.1,
+  "armRot.near": -36.5,
+  "forearm.near": -5,
+  "foreRot.near": -66.1,
+  "hand.near": -50,
+  "thigh.near": 80.7,
+  "shin.near": -87.1,
+  "foot.near": -36.5,
+  "hipAbd.near": 1.9,
+  "clavicle.far": -19.3,
+  "shoulderAbd.far": -0.8,
+  "upperArm.far": 51,
+  "armAbd.far": 18.2,
+  "armRot.far": -4.1,
+  "forearm.far": -5,
+  "foreRot.far": -8.3,
+  "hand.far": 40,
+  "thigh.far": 78.7,
+  "shin.far": -82.6,
+  "foot.far": -46,
+  "hipAbd.far": 0.9
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_all_fours_1.json",
+  "scale": 0.5961,
+  "rms": 0.1541,
+  "worst": [
+   "wristL 0.359",
+   "shoulderL 0.280",
+   "elbowL 0.253",
+   "hipL 0.246",
+   "pinkyR 0.243"
+  ]
+ },
+ "scale": {
+  "hand.near": [
+   1,
+   0.6
+  ],
+  "hand.far": [
+   1,
+   0.6
+  ]
+ },
+ "fitFrom": "side/fit/all-fours"
+}

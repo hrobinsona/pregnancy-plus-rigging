@@ -1,0 +1,70 @@
+{
+ "name": "side/fit/lean-counter",
+ "note": "fitted to characters/mum3/refs/pose/s_lean_counter_1.json (MediaPipe landmarks, base rest); floor_pose: shoe.near:low, shoe.far:low on the floor",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "show.far.arm": 1
+ },
+ "props": {
+  "items": [
+   {
+    "type": "counter"
+   }
+  ]
+ },
+ "root": [
+  -0.8115,
+  0.1342
+ ],
+ "bones": {
+  "pelvis": 23.8,
+  "spineLower": 6.7,
+  "spineUpper": -5.8,
+  "chest": -8.4,
+  "neck": -7.1,
+  "head": 6.1,
+  "belly": 0,
+  "clavicle.near": -22,
+  "shoulderAbd.near": 20,
+  "upperArm.near": 44,
+  "armAbd.near": -2,
+  "armRot.near": 9.3,
+  "forearm.near": 44,
+  "foreRot.near": 0,
+  "hand.near": -0.2,
+  "thigh.near": 17.8,
+  "shin.near": 1.2,
+  "foot.near": 6.1,
+  "hipAbd.near": -1.6,
+  "clavicle.far": 3.4,
+  "shoulderAbd.far": -3.1,
+  "upperArm.far": 42.3,
+  "armAbd.far": 2.3,
+  "armRot.far": -2,
+  "forearm.far": 40,
+  "foreRot.far": 0,
+  "hand.far": -0.1,
+  "thigh.far": 23.5,
+  "shin.far": 4.5,
+  "foot.far": -17.7,
+  "hipAbd.far": 0.1,
+  "toe.near": 1.1,
+  "toe.far": -9.9
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_lean_counter_1.json",
+  "scale": 1.0208,
+  "rms": 0.0542,
+  "worst": [
+   "hipL 0.156",
+   "shoulderR 0.102",
+   "heelL 0.098",
+   "earR 0.087",
+   "elbowR 0.076"
+  ]
+ },
+ "fitFrom": "side/fit/lean-counter"
+}

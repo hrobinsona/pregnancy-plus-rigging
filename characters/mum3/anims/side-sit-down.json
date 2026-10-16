@@ -1,0 +1,290 @@
+{
+ "name": "side-sit-down",
+ "fps": 30,
+ "duration": 7,
+ "loop": false,
+ "view": {
+  "bbox": [
+   [
+    -1.44,
+    -7.47
+   ],
+   [
+    2.54,
+    0.82
+   ]
+  ],
+  "note": "every key's bounds with the furniture + 0.35 H (tools/side_move.mjs)"
+ },
+ "story": "sit-down in profile: n-rest → n-rest → side/move/sit-down-1 → side/move/sit-down-2 → side/sit-chair, her feet planted, the furniture still, each hand moving from what it rests on to the next; she lands with parted lips and sighs. Made by tools/side_move.mjs.",
+ "intensity": "calm and careful: a pregnant woman moving slowly, her weight controlled",
+ "propsFrom": "side/move/sit-down/k4",
+ "plantFeet": "ik",
+ "plantFeetRef": "side/move/sit-down/k0",
+ "plantFeetSteps": [
+  {
+   "side": "far",
+   "t0": 0.95,
+   "t1": 1.5,
+   "to": "side/move/sit-down/k4",
+   "lift": 0.035,
+   "note": "the far foot steps 0.64 H back to where side/sit-chair stands it"
+  }
+ ],
+ "plantFeetRoot": false,
+ "plantFeetSink": true,
+ "keys": [
+  {
+   "t": 0,
+   "pose": "side/move/sit-down/k0",
+   "ease": "inOut",
+   "note": "n-rest"
+  },
+  {
+   "t": 0.9,
+   "pose": "side/move/sit-down/k1",
+   "ease": "inOut",
+   "note": "n-rest"
+  },
+  {
+   "t": 2,
+   "pose": "side/move/sit-down/k2",
+   "ease": "inOut",
+   "kind": "breakdown",
+   "note": "side/move/sit-down-1 (still s_sit_down_1_1)"
+  },
+  {
+   "t": 2.8,
+   "pose": "side/move/sit-down/k3",
+   "ease": "inOut",
+   "note": "side/move/sit-down-2 (still s_sit_down_2_0)"
+  },
+  {
+   "t": 4.1,
+   "pose": "side/move/sit-down/k4",
+   "ease": "inOut",
+   "note": "side/sit-chair (still s_sit_chair_1)"
+  }
+ ],
+ "reach": {
+  "near": [
+   {
+    "t": 0,
+    "pose": "side/move/sit-down/k0",
+    "on": "pelvis",
+    "dphi": -25,
+    "note": "n-rest: on pelvis"
+   },
+   {
+    "t": 0.9,
+    "pose": "side/move/sit-down/k1",
+    "on": "pelvis",
+    "dphi": -25,
+    "note": "n-rest: on pelvis"
+   },
+   {
+    "t": 2.65,
+    "pose": "side/move/sit-down/k3",
+    "on": "thigh.near",
+    "note": "side/move/sit-down-2: on thigh.near"
+   },
+   {
+    "t": 3.4,
+    "pose": "side/move/sit-down/k3",
+    "on": "thigh.near",
+    "note": "held"
+   },
+   {
+    "t": 4.1,
+    "pose": "side/move/sit-down/k4",
+    "on": "belly",
+    "dphi": 5,
+    "note": "side/sit-chair: on belly"
+   }
+  ]
+ },
+ "fidget": [
+  {
+   "t0": 4.3,
+   "t1": 5.785,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1a": 3,
+    "hand.near.f2a": 3,
+    "hand.near.f3a": 3,
+    "hand.near.f4a": 3,
+    "hand.near": 5
+   },
+   "note": "near: the fingers settle onto what they rest on"
+  },
+  {
+   "t0": 5.515,
+   "t1": 7,
+   "cycles": 1,
+   "bones": {
+    "hand.near.f1s": -3,
+    "hand.near.f3s": 1.5,
+    "hand.near.f4s": 4,
+    "hand.near.t0": 4,
+    "hand.near": -4.5
+   },
+   "note": "near: the fingers fan a little, the thumb eases out"
+  }
+ ],
+ "qa": {
+  "handed": [
+   {
+    "side": "far",
+    "why": "the far arm is hidden all shot (tools/side_move.mjs)"
+   }
+  ],
+  "curl": {
+   "sides": [
+    "near"
+   ]
+  },
+  "wristTurn": {
+   "near": {
+    "max": 10,
+    "note": "the hanging hand trails her hips as they set off, then swings forward (tools/side_move.mjs)"
+   }
+  }
+ },
+ "tracks": {
+  "face": {
+   "channels": [
+    "face.gaze",
+    "face.lid",
+    "face.mouth",
+    "face.brow"
+   ],
+   "keys": [
+    {
+     "t": 0,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 0.9,
+     "pose": "face-calm",
+     "ease": "inOut"
+    },
+    {
+     "t": 1.3,
+     "pose": "face-gaze",
+     "ease": "inOut",
+     "note": "the eyes go down toward the seat as she starts down"
+    },
+    {
+     "t": 2.5999999999999996,
+     "pose": "face-gaze",
+     "ease": "inOut"
+    },
+    {
+     "t": 2.9499999999999997,
+     "pose": "face-ease",
+     "ease": "inOut",
+     "note": "lips part as her weight lands"
+    },
+    {
+     "t": 3.4,
+     "pose": "face-out",
+     "ease": "inOut",
+     "note": "the sigh: eyes softly shut"
+    },
+    {
+     "t": 4.5,
+     "pose": "face-release",
+     "ease": "inOut"
+    },
+    {
+     "t": 5.199999999999999,
+     "pose": "face-calm",
+     "ease": "inOut",
+     "note": "the eyes open, a soft smile"
+    }
+   ]
+  }
+ },
+ "breath": {
+  "period": 4,
+  "phase0": 0.15,
+  "amp": [
+   {
+    "t": 0,
+    "amp": 0.6
+   }
+  ],
+  "shape": {
+   "inhale": 0.55,
+   "exhale": 0.35,
+   "pause": 0.1,
+   "inEase": [
+    0.42,
+    0,
+    0.9,
+    1
+   ],
+   "outEase": [
+    0.15,
+    0,
+    0.65,
+    1
+   ]
+  },
+  "delays": {
+   "belly": 0,
+   "chest": 3,
+   "shoulders": 5,
+   "head": 7
+  },
+  "gain": {
+   "chestAlong": 0.032,
+   "chestAcross": 0.03,
+   "chestDeg": -1,
+   "shoulderDeg": 2.2,
+   "headDeg": -1.2,
+   "belly": 0.012
+  }
+ },
+ "blink": {
+  "close": 3,
+  "hold": 1,
+  "open": 5
+ },
+ "events": [
+  {
+   "type": "blink",
+   "t": 5.8999999999999995
+  }
+ ],
+ "drift": {
+  "amp": 1,
+  "seed": 7,
+  "harmonics": [
+   1,
+   2,
+   3
+  ],
+  "chain": {
+   "bones": [
+    "spineLower",
+    "spineUpper",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "lagFrames": 3,
+   "deg": [
+    0.12,
+    0.2,
+    0.25,
+    0.3,
+    0.45
+   ]
+  },
+  "bones": {
+   "head": 0.4
+  }
+ }
+}

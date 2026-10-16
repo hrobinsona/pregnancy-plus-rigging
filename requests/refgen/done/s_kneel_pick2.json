@@ -1,0 +1,16 @@
+{
+  "char": "mum3",
+  "name": "s_kneel_pick2",
+  "prompt_file": "docs/prompts/s_kneel_pick2.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/s_kneel_pick2_0.png",
+    "characters/mum3/refs/images/s_kneel_pick2_1.png",
+    "characters/mum3/refs/images/s_kneel_pick2_2.png"
+  ],
+  "finished": "2026-10-15 18:53:53"
+}

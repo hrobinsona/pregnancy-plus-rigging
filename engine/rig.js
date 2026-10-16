@@ -111,7 +111,24 @@ export function createRig(C) {
       const ps = b.parent ? st[b.parent] : null;
       if (b.param) { st[b.id] = { ...ps, param: d }; continue; }   // a parameter (3D arm DOF), not a drawn transform
       if (!ps) { const r0 = pose.root || [0, 0]; pos = [J[b.joint][0] + r0[0], J[b.joint][1] + r0[1]]; }
-      else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
+      else if (b.depthFrom) {
+        // a FAR-SIDE root joint (the far hip, the far clavicle) of a near-profile figure: its offset from the near one is
+        // the body's DEPTH seen a little from the front (the master is turned ~20° to us), a picture-space offset that
+        // does not turn with the trunk. Carried rigidly, pitching her onto all fours stood the near hip 0.3 H above the far
+        // one (her near knee floated off the floor). So the near joint is carried and the offset added unrotated.
+        // pose.fx.turn (default 1) scales that offset: how far she is turned toward us. The side-on library is drawn nearer a
+        // true profile, as its stills are (0.4: their far hip 0.12 H ahead of the near one, the master's 0.3); at 1 the far
+        // knee led a squat and the far shoulder stood up behind the near one as a knob (side-on round 1)
+        // pose.fx.farUp (H, default 0): the far side seen a little from ABOVE, its roots raised that much on screen, for a
+        // pose whose far knee, shoe and hand rest on the far floor line (0.162 H up: kneeling, on all fours): with the far
+        // hip level with the near one, the far thigh had to slant back 30° to put its knee there, the far arm 30° forward
+        // pose.fx.farUpLegs (H): the far HIP's own lift, when the far foot stands on the far floor line but the far arm
+        // should not rise with it (seated, squatting: the far leg parallel to the near one, both shoes on their lines; the
+        // far shoulder raised as well stood up behind her back as a knob, side-on round 5, lesson 65)
+        const legUp = b.id.startsWith('hipAbd') ? pose.fx?.farUpLegs : undefined;
+        const q = ap(ps.M, sub(J[b.depthFrom], J[BONE[b.parent].joint])), tn = pose.fx?.turn ?? 1, up = legUp ?? pose.fx?.farUp ?? 0;
+        pos = [q[0] + tn * (J[b.joint][0] - J[b.depthFrom][0]), q[1] + tn * (J[b.joint][1] - J[b.depthFrom][1]) - up];
+      } else pos = ap(ps.M, sub(J[b.joint], J[BONE[b.parent].joint]));
       if (b.plane === 'arm3') {
         const a3 = arm3(b, d, ps, bonesIn), parentSame = BONE[b.parent].plane === 'arm3';
         const base = parentSame ? ps.baseRot : ps.rot;
@@ -125,23 +142,35 @@ export function createRig(C) {
         const parentSame = ps && BONE[b.parent].plane === b.plane;
         anat = parentSame ? ps.anat + (r0 - (BONE[b.parent].restAnat ?? 0)) + d : r0 + d;
         const base = parentSame ? ps.baseRot : (ps ? ps.rot : 0);
-        const H3 = pl && typeof pl === 'object' && st[pl.from]?.a3;
-        if (H3?.ncam) {
-          // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
-          // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
-          // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
-          // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
-          // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
-          // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
-          const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
-          const dA = dir(anat), d0 = dir(r0), ang = (q) => Math.atan2(q[1], q[0]) / DEG;
-          rot = base + wrap(ang(dA) - ang(d0));
-          along = Math.max(0.05, Math.hypot(dA[0], dA[1]));
-        } else {
-          const f = planeFx(b);
-          rot = base + wrap(scrAng(anat, f) - scrAng(r0, f));
-          along = projLen(anat, f) / projLen(r0, f);
-        }
+        const viaPlane = (q) => {   // → [screen turn from rest, drawn length factor] of this bone in plane q
+          const H3 = q && typeof q === 'object' && st[q.from]?.a3;
+          if (H3?.ncam) {
+            // 3D FINGERS (design.planes[plane] = {from: 'hand.far'}): the finger turns in the plane of its hand's 3D
+            // direction and palm normal (arm3's a3.cam / a3.ncam), projected like the hand itself: its screen angle
+            // turns and its drawn length is the in-picture part (a straight finger foreshortens exactly as the palm
+            // does). A fixed fx can't draw a hand pointing at us whose fingers curl down into the picture over the bump:
+            // they must LENGTHEN and turn as they curl (mum3q v5's straight "mitten", Harry: "creepy and lifeless";
+            // the stills curl them over the dome). Spread (the f{i}s bones) stays a picture-plane turn.
+            const dir = (t) => { const c = Math.cos(t * DEG), s_ = Math.sin(t * DEG); return [c * H3.cam[0] + s_ * H3.ncam[0], c * H3.cam[1] + s_ * H3.ncam[1]]; };
+            const dA = dir(anat), d0 = dir(r0), ang = (u) => Math.atan2(u[1], u[0]) / DEG;
+            return [wrap(ang(dA) - ang(d0)), Math.max(0.05, Math.hypot(dA[0], dA[1]))];
+          }
+          const f = typeof q === 'number' ? q : (b.plane === 'sagittal' ? fx : (b.fx ?? fx));
+          return [wrap(scrAng(anat, f) - scrAng(r0, f)), projLen(anat, f) / projLen(r0, f)];
+        };
+        let [dr, al] = viaPlane(pl);
+        // pose.fx.fingersIn (0..1): blend to C.design.planesIn[plane] (an fx, or {from} for 3D fingers) for this pose only:
+        // the fingers curl IN the picture. A palm laid DOWN and seen side-on (a hand draped over a chair's back) curls them
+        // in the picture plane, which mum3's fixed out-of-plane fx (0.1, right for the standing shot's back-of-hand view)
+        // can only shorten: the squat's draped hand hovered past the post "like a paddle" (side-on round 5, lesson 64). A
+        // blend weight, not a switch, so an anim crossing poses with and without it never pops. Per hand: fx.fingersInNear /
+        // fx.fingersInFar (a hand plane '<…>.near.flex' or '.far.flex') over fx.fingersIn: a relaxed hand hanging or
+        // swinging curls its fingers half in the picture (its palm turned back), "a little curled… gaps, curling" (Harry,
+        // side-on round 8), while the other hand lies flat on a worktop
+        const sideIn = /\.(near|far)\./.exec(b.plane)?.[1], fIn = pose.fx?.[`fingersIn${sideIn === 'near' ? 'Near' : sideIn === 'far' ? 'Far' : ''}`] ?? pose.fx?.fingersIn ?? 0;
+        const qIn = C.design.planesIn?.[b.plane], wIn = qIn !== undefined ? Math.max(0, Math.min(1, fIn)) : 0;
+        if (wIn > 0) { const [d3, l3] = viaPlane(qIn); dr += wIn * wrap(d3 - dr); al += wIn * (l3 - al); }
+        rot = base + dr; along = al;
         st[b.id] = { baseRot: base };
       } else {
         rot = (ps ? ps.rot : 0) + d;
@@ -289,8 +318,9 @@ export function createRig(C) {
       return { W: rw, Ht: rh, vb: [-g[0], -g[1], rw, rh] };
     }
     const W = opts.width || 1080, Ht = opts.height || 1920;
-    const [[x0, y0], [x1, y1]] = C.frame.bbox;
-    const s = (opts.fill || C.frame.fill || 0.8) * Ht / ((y1 - y0) * Hpx);
+    // opts.bbox (H): a shot's own framing (spec.view.bbox: all fours is wider than she is tall), fitted inside the frame
+    const [[x0, y0], [x1, y1]] = opts.bbox || C.frame.bbox, fl = opts.fill || C.frame.fill || 0.8;
+    const s = opts.bbox ? fl * Math.min(Ht / ((y1 - y0) * Hpx), W / ((x1 - x0) * Hpx)) : fl * Ht / ((y1 - y0) * Hpx);
     const cx = (x0 + x1) / 2 * Hpx, cy = (y0 + y1) / 2 * Hpx + (C.frame.dy || 0) * Hpx;
     return { W, Ht, vb: [cx - W / s / 2, cy - Ht / s / 2, W / s, Ht / s] };
   }
@@ -311,7 +341,7 @@ export function createRig(C) {
     const bg = opts.bg ?? '#ffffff', sil = opts.silhouette;
     let out = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${Ht}" viewBox="${vb.map(f2).join(' ')}" shape-rendering="geometricPrecision">`;
     if (bg !== 'none') out += `<rect x="${f2(vb[0])}" y="${f2(vb[1])}" width="${f2(vb[2])}" height="${f2(vb[3])}" fill="${bg}"/>`;
-    if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx);
+    if (opts.ground && !sil && C.ground) out += C.ground(pose, opts.ground, Hpx, parts);   // (parts: the posed drawing, for a shadow under whatever touches the floor)
     out += `<g id="${C.name}">`;
     const tfOf = (m) => `matrix(${[m[0], m[1], m[2], m[3], m[4] * Hpx, m[5] * Hpx].map(f2).join(' ')})`;
     const byId = Object.fromEntries(parts.map((p) => [p.id, p])), outDefs = new Set();
@@ -377,9 +407,21 @@ export function createRig(C) {
       const path = `<path id="${p.id}" d="${pathD(p.geom, Hpx)}" ${paint} transform="${tfOf(p.M)}"${op}/>`;
       // clip: a part may be masked by one or more other parts (cut-out "masking": shading/cast shadows can never
       // leak past the form they sit on, whatever the pose). Clip sources are posed exactly like the part itself.
-      const clips = (Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean);
-      if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
+      // p.clipGeom: extra clip shapes that are not parts (posed like the part itself): a region a part may also show in
+      // p.clipAnd: shapes (posed like the part) it must ALSO lie inside: each one intersects (clip and clipGeom are a union)
+      const clips = [...(Array.isArray(p.clip) ? p.clip : p.clip ? [p.clip] : []).map((id) => byId[id]).filter(Boolean), ...(p.clipGeom || []).map((geom) => ({ geom, M: p.M }))];
       const cid = `clip-${p.id.replace(/[^\w-]/g, '_')}`;
+      if (p.clipAnd?.length) {
+        const pre = out.length; let tail = '';
+        p.clipAnd.forEach((g, i) => { out += `<clipPath id="${cid}-and${i}"><path d="${pathD(g, Hpx)}" transform="${tfOf(p.M)}"/></clipPath><g clip-path="url(#${cid}-and${i})">`; tail += '</g>'; });
+        const mid = out.length; emitClipped(p, path, clips, cid, op);
+        if (out.length === mid) out = out.slice(0, pre); else out += tail;
+        return;
+      }
+      emitClipped(p, path, clips, cid, op);
+    }
+    function emitClipped(p, path, clips, cid, op) {
+      if (!clips.length) { if (!p.stroke) out += path; return; }   // an outline with nothing behind it is never drawn
       out += `<clipPath id="${cid}">${clips.map((c) => `<path d="${pathD(c.geom, Hpx)}" transform="${tfOf(c.M)}"/>`).join('')}</clipPath>`;
       let mk = '';
       if (p.clipOcc && !p.fade) {   // visible-region mask: the material parts white, the parts covering them black, in z order

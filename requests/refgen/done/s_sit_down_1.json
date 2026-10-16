@@ -1,0 +1,16 @@
+{
+  "char": "mum3",
+  "name": "s_sit_down_1",
+  "prompt_file": "docs/prompts/s_sit_down_1.txt",
+  "refs": [
+    "characters/mum3/ref/master.png"
+  ],
+  "n": 3,
+  "status": "ok",
+  "outputs": [
+    "characters/mum3/refs/images/s_sit_down_1_0.png",
+    "characters/mum3/refs/images/s_sit_down_1_1.png",
+    "characters/mum3/refs/images/s_sit_down_1_2.png"
+  ],
+  "finished": "2026-10-15 08:08:44"
+}

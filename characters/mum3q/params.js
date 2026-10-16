@@ -113,7 +113,11 @@ export const P = {
   //    v25: its line only the short hook where the back of the hand folds into the wrist, [205, 150]: v24's [235, 150] ran
   //    on over the mass's top as a second hump beside the hand's top edge, "a mitten… its top edge wavy" (blind A/B v24,
   //    natural lens v22); the still draws one hook (q_k4_down_0, mask_overlay at 0 and 4.5 s)
-  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, -0.03], front: true, cut: 'dress', lines: [[205, 150]] }, w: [{ front: 0.12, back: 0.15 }, { front: 0.12, back: 0.15 }, { front: 0.105, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
+  //    v26: the upper arm's FRONT (body side) 0.05 H slimmer on its first three segments: q_k4_down_0 draws the far arm
+  //    coming down past her bust as a slim even strip (14–18 px of still visible, row by row) where ours showed 26–31 px,
+  //    a club ending in the wrist's round mass ("a mitten", blind A/B v25). The rest drawing hides that side (IoU 0.9645)
+  //    and v26 beat v25 blind (6.5 vs 6): "a slim wedge… reads as a woman's wrist and lets the hand read as a hand"
+  armFar: { capA: 1.0, fill: 'skin', endOn: { axis: 'upper', r: 0.85, len: 0.5, shift: [-0.02, -0.03], front: true, cut: 'dress', lines: [[205, 150]] }, w: [{ front: 0.07, back: 0.15 }, { front: 0.07, back: 0.15 }, { front: 0.055, back: 0.14 }, { front: 0.096, back: 0.144 }, { front: 0.083, back: 0.107 }] },
   // legs: the shin's half-widths at every measured station; above the knee, read off the still's rows (hem → knee): the near
   // thigh 0.28 in front / 0.19 behind at y −2.3, its knee 0.24 / 0.21; the far thigh 0.20 / 0.25, its knee 0.155 / 0.245
   legStations: LEG_ST,

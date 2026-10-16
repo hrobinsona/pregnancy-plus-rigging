@@ -1,0 +1,76 @@
+{
+ "name": "walk-02",
+ "note": "tools/side_walk.mjs: 7.0% of the gait cycle from the far heel strike, at 8.3% of the loop's time (measured gait angles, the hip's swing ×0.9, pelvis tilt 10°, timed by travel ×0.85); trunk, head and hands from side/walk-contact, side/walk-down, side/walk-pass; the far leg at the near one's length",
+ "hands": {
+  "near": "idle",
+  "far": "idle"
+ },
+ "fx": {
+  "skirtSwing": 0.15,
+  "fingersIn": 0.8,
+  "turn": 0.4,
+  "show.far.arm": 1
+ },
+ "root": [
+  0.0502,
+  0.2493
+ ],
+ "bones": {
+  "pelvis": 0.4,
+  "spineLower": 3.07,
+  "spineUpper": 0.1,
+  "chest": -2.47,
+  "neck": -9.43,
+  "head": -2.3,
+  "belly": 0,
+  "clavicle.near": 8.5,
+  "shoulderAbd.near": 2.3,
+  "upperArm.near": 25.83,
+  "armAbd.near": -0.1,
+  "armRot.near": 2.6,
+  "forearm.near": 6.77,
+  "foreRot.near": 0.5,
+  "hand.near": -4.53,
+  "thigh.near": -8.88,
+  "shin.near": -29.56,
+  "foot.near": -14.99,
+  "hipAbd.near": 0,
+  "clavicle.far": -22,
+  "shoulderAbd.far": 0.6,
+  "upperArm.far": -50.53,
+  "armAbd.far": 0,
+  "armRot.far": -1.6,
+  "forearm.far": -1.37,
+  "foreRot.far": -1.6,
+  "hand.far": 20.53,
+  "thigh.far": 18.13,
+  "shin.far": -14.27,
+  "foot.far": -0.39,
+  "hipAbd.far": 0,
+  "toe.near": 53.03,
+  "toe.far": 2.78
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_walk_contact_1.json",
+  "scale": 1.054,
+  "rms": 0.1127,
+  "worst": [
+   "pinkyL 0.217",
+   "wristL 0.213",
+   "shoulderL 0.194",
+   "thumbL 0.188",
+   "indexR 0.174"
+  ]
+ },
+ "fitFrom": "side/fit/walk-contact",
+ "scale": {
+  "thigh.far": [
+   1.0315,
+   1
+  ],
+  "shin.far": [
+   1.0733,
+   1
+  ]
+ }
+}

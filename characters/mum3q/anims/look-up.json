@@ -596,17 +596,6 @@
  "wrapEase": "inOut",
  "fidget": [
   {
-   "t0": 0.2,
-   "t1": 1.7,
-   "cycles": 1,
-   "bones": {
-    "hand.near.ts": -13,
-    "hand.near.t1": 7,
-    "hand.near": 4
-   },
-   "note": "the near thumb strokes the bump's lower front, out and back (the cradling hand's life is in its thumb, the one digit we see on the bump) (v7: amplitudes ×1.5–1.7; at the old size both fresh reviewers saw the hands \"identical in every frame\" at phone size, lesson 52) v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
-  },
-  {
    "t0": 2.3,
    "t1": 4.4,
    "cycles": 1,
@@ -619,51 +608,6 @@
     "hand.near": 4
    },
    "note": "as she lifts her eyes to us the cradling fingers gather under the bump ('holding you', bringing the baby with her) and release (v7: starts with the look up, 1.5× larger: 'nothing happens with the hands when she looks up at us') v24: the hand cups up (turns 4°, its fan kept) and the END joints gather, graded: bent at the knuckles (f*a +10–13) the cradling fingers, palm up toward us, flattened 6° and lengthened 9% on the film, straight and parallel, 'a rake' at 3–4 s (blind A/B v22, natural lens v22); with the knuckle bend simply dropped (v23) the hand froze 3–5 s (QA alive; 'almost frozen', blind A/B v23). QA fingers every 0.5 s (lesson 59)"
-  },
-  {
-   "t0": 4.6,
-   "t1": 6.0,
-   "cycles": 1,
-   "bones": {
-    "hand.near.ts": -10,
-    "hand.near": 4
-   },
-   "note": "a second, smaller thumb stroke as the smile eases v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
-  },
-  {
-   "t0": 5.6,
-   "t1": 6.9,
-   "cycles": 1,
-   "bones": {
-    "hand.near.f1a": -4,
-    "hand.near.f1s": -2
-   },
-   "note": "as her gaze comes back the near fingers re-settle, index first"
-  },
-  {
-   "t0": 5.68,
-   "t1": 6.98,
-   "cycles": 1,
-   "bones": {
-    "hand.near.f2a": -4
-   }
-  },
-  {
-   "t0": 5.76,
-   "t1": 7.06,
-   "cycles": 1,
-   "bones": {
-    "hand.near.f3a": -4
-   }
-  },
-  {
-   "t0": 5.84,
-   "t1": 7.14,
-   "cycles": 1,
-   "bones": {
-    "hand.near.f4a": -4,
-    "hand.near.f4s": 2
-   }
   },
   {
    "t0": 0.9,
@@ -786,17 +730,6 @@
    "note": "as her eyes come back to the bump the top hand's fingers lift a little and settle back onto it, index first"
   },
   {
-   "t0": 7.0,
-   "t1": 7.95,
-   "cycles": 1,
-   "bones": {
-    "hand.near.ts": -8,
-    "hand.near.t1": 4,
-    "hand.near": 4
-   },
-   "note": "a small thumb stroke over the loop's seam (v6: both hands dead still from 7.4 s round to 0.4 s) v18: the thumb's swing halved (ts −26 → −13) and the whole hand turning ~4° with it: the full swing alone read 'a thumb tic… a straight stalk' (blind A/Bs v17, v18 vs v14); v19's curl instead was too small to see and lost to this (6 vs 6.5)"
-  },
-  {
    "t0": 7.35,
    "t1": 7.95,
    "cycles": 1,
@@ -804,6 +737,17 @@
     "hand.far": 7
    },
    "note": "and the top hand eases round on the dome with it, into the loop"
+  },
+  {
+   "t0": 6.6,
+   "t1": 9.0,
+   "cycles": 1,
+   "bones": {
+    "hand.near.ts": -10,
+    "hand.near.t1": 5,
+    "hand.near": 3
+   },
+   "note": "ONE slow thumb caress while she looks at her bump, across the loop's seam (6.6 → 9.0 s: a loop's fidget wraps, so it runs on through 0–1.0 s), the hand turning 3° with it. v29: the cradling hand's other re-poses go (thumb strokes at 0.2, 4.6 and 7.0 s, the fingers' re-settle at 5.6 s): with the gather at the look up it re-posed every 1–2 s, 'a pulsing or kneading grip rather than a calm cradle', 'the thumb lifts as a separate flat bar' at 1.0 and 6.0 s (blind A/Bs v27, v28). They were added when reviewers saw only sparse frames and called the hands 'frozen' (v7, lesson 52); the packs now show what moves (motion sheets, lesson 57), so the hand keeps one caress per private beat, the gather with the look up, and the breath"
   }
  ],
  "qa": {
@@ -860,7 +804,16 @@
     "tol": 4,
     "note": "the top hand's fingers draped over the dome as the still q_k4_down_0 (lesson 54) Its fan is NOT gated all shot: v23 gated it and turned the fidget spreads round so the fan kept the still's convergence while the fingers lift; the blind A/B saw the top fingers 'stay bunched together' where v22's 'lift and fan, small gaps opening between them' (lesson 59)"
    }
-  ]
+  ],
+  "still": {
+   "near": [
+    [
+     0.2,
+     2.5,
+     "a resting cradle while she looks down: v29 dropped the thumb caress here and beat v26 blind, the hand drifting ~3 px on her ('a resting cradle that is still alive'; v26's caress, its third lift-and-return of the shot, read 'fidgeting'). The far hand moves throughout."
+    ]
+   ]
+  }
  },
  "preflight": {
   "1": "both arms placed on still q_k4_down_0 by hand_place --natural (elbows at her sides, the far arm coming down past her bust and round the bump's side), on the look-down key's trunk",

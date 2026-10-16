@@ -34,7 +34,7 @@ or composited.
    mattered. Use F as the gate, C as a technical lint.
 6. **Lint the rig, not just the picture.** Hidden failures found the hard way:
    - joint limits silently CLAMP keyed values (clavicle ±10° ate every shrug for three rounds);
-   - sign conventions differ per side (+ lowers the far clavicle);
+   - sign conventions differ per side (+ lowers the far clavicle; check with `tools/bone_signs.mjs`, lesson 61);
    - normalised blend weights (`{lid: {open: 0.75}}` renders fully open);
    - per-key shifts that differ between neighbouring keys squeeze a channel's segment to 1 frame (a pop) —
      `makeAnim` now warns;
@@ -628,6 +628,289 @@ or composited.
    look at something needs the iris showing. A knee BENDS with a NEGATIVE shin angle (mum3's `shin` limits: min −150,
    max 5; v1's `shin.near=+3` "soft knee" is a clamped hyperextension): read a bone's limits before choosing a sign.
    A reviewer's prescriptions are hypotheses: each one goes through its own A/B.
+61. **Fit a form at every key, not only at the still's frame; check a bone's sign before claiming a direction.** mum3q
+   look-up v26–v28 (2026-10-14). The far arm read "a mitten… a club". Overlaid on q_k4_down_0 its mismatch was ~2200 px
+   either side, which says nothing about shape; its OUTER EDGE row by row (`mask_overlay.py … --edge right`) did: 8° more
+   upright than the still's straight diagonal, +17 px at a hump above the strap, −11 px where it met the wrist's mass at a
+   corner. v26 slimmed its outer side (beat v25 blind: "a slim wedge… lets the hand read as a hand"). v27 fitted the edge
+   at the still's frame to 1.1 px rms (the shoulder 10 px lower and in via `clavicle.far` before `hand_place`, no deltoid
+   cap, the arm widening toward the elbow while the forearm is end-on) and LOST blind (6 vs 6.5): through the look up
+   the lower shoulder hid the arm above the bust, "the arm only appears below the bust… an upright wedge that gets wider
+   toward the wrist… a mitten on a post", where v26's small shoulder cap let the eye follow "shoulder to arm to hand".
+   The edge at 2.75, 4.5 and 6.4 s had said so (the strip hidden at 2–5 rows, more than v26) before the A/B. Meanwhile
+   n-up's `clavicle.far=2` "shoulders up a touch" had LOWERED the far shoulder 2.4 px since v17: + lowers the far clavicle
+   (already in lesson 6's lint list, and still missed); raising it as the comment meant (v28) was a blind tie leaning to
+   the lower shoulder, so the frames stay and the recipe now says what +2 does. Rules: run an edge or overlay at every key of the shot,
+   not only the still's frame; a far limb's path from the body (shoulder → arm → hand) must stay readable in every
+   pose; before writing `--add bone=…` with a direction, run `node tools/bone_signs.mjs <char> <pose> --bones <bone>`.
+62. **A side-on library is fitted by POSTURE, put on the floor, and drawn in posed space: the still's proportions are its
+   own.** mum3 side-on, rounds 1–5 (2026-10-14/15). Harry: every side-on pose "incredibly high quality and natural",
+   legs, dress and bump like a real woman, not "on hinges". Fitting a still's landmark POSITIONS bent the rig to make up
+   the still's own proportions (a bigger head, a trunk 15% shorter on the bend still): fit each segment's DIRECTION
+   (`fit_pose.mjs --dirs 0.5`), place her by the still's floor row (`--floor`), a truer profile (`--turn 0.4`: at 1 the
+   far knee led a squat and the far shoulder stood up as a knob), then put every contact on what it rests on with one
+   solve (`floor_pose.mjs --touch shoe.near:vamp,…`; feet as `--bones foot`, the toes left out or she stands on tiptoe).
+   Where the still can't be copied, write the posture as screen directions (`pose_dirs.mjs`). One script rebuilds all
+   of it (`refs/fit_side.sh`): re-run after any rig change. A side pose bends the body far past the standing shot, so
+   the soft forms are drawn in POSED space from the posed skeleton, not skinned from rest: the leg as one outline with a
+   filleted knee and the calf pressing the hamstring (`engine/leg.js`), its widths MEASURED on the stills
+   (`leg_widths.py`: their shins were 1.2× ours, round 5), both knees forward in a fold, the near one on top (a hidden
+   near thigh read as one ball knee on a post); the skirt as cloth hung by gravity over the posed legs, seat and props
+   (`engine/drape.js`); the furniture placed from her posed body (`parts/props.js`). Scores went 3–7 (round 1) to
+   4.5–6.5 (round 5) with the critics agreeing every round on the same few faults: the dress as an outline, legs as
+   posts, stripe hands. Rules: fit directions, not positions; measure a form on the stills before reshaping it;
+   draw what folds in posed space; check every pose against its still (`side_match.py`) and with three fresh critics
+   (`critic_F.py <char> --side`), then fix the fault they agree on across poses, not one pose at a time.
+63. **A walk is measured gait, not the stills keyed in a row.** mum3 side-walk (2026-10-15). Keyed from the walk stills,
+   each still drew its own stride and leg lengths: the back toe slid 0.5 H along the floor between contact and down,
+   the swinging leg had no pose between push-off and heel strike, and three "passing" prompts came back as contacts.
+   `side_walk.mjs` drives the legs by published adult gait angles (hip, knee, the sole to the floor, the toes, every 5%
+   of the cycle; the other leg half a cycle behind), a shorter stride for a pregnant pace, the trunk, head and arm swing
+   from the stills, the lowest sole points planted (`spec.walk`) on one smooth periodic curve (`spec.cyclic`). It prints
+   the step, pace, hip bob and toe clearance: check them, not only the frames. Rules: for a cyclic move take the TIMING
+   and joint angles from measured human motion and the posture from the stills.
+64. **Fix a hand by its SHAPE and PLACE on each pose, and test a drawing change on the standing shot too.** Side-on
+   rounds 1–5: every lens called the hands "stripe paddles", 4.5–6 five rounds running. `side_zoom.py` put each pose's
+   hand beside its still's at 1:1 and at film size (a whole-figure sheet draws a hand at 30 px). Redrawn fuller,
+   shorter and joined (short lines only near the tips), the fingers matched one still and LOST blind on breathe-stroke
+   (5.5 vs 6.5: "a knobbly clump gripping the bump's edge"); a shorter thumb lost too (6 vs 6.5, "stubby"). The faults
+   were shape and place: on the bump the still's spot ran our fingers 0.26 H past our smaller bump into the air
+   (`contact_pose.mjs --inside`: the wrist slides back until every tip is over the surface); a far hand cupped under the
+   bump curled into a row of knobs at its edge (hide it behind the bump, as the stills do: `--back`); a palm laid down
+   side-on curls its fingers IN the picture (`fx.fingersIn`, the squat's hand over a chair's back). Rules: a drawing
+   setting is shared by every shot, so A/B it on the standing shot before keeping it; fix a side pose's hand with a
+   library shape (`poses/hands/`), its spot and `--inside`, judged beside the still at film size.
+65. **The far leg is the near one's TWIN: parallel, offset, its knee a sliver.** Side-on round 5, every lens: "a second
+   full knee beside the near one", the seated shins an X. The stills keep the thighs and the shins parallel (within
+   ~4°), the far knee showing only as a 15–30 px sliver past the near one; seated the far leg a little behind, kneeling
+   and on all fours up on the far floor line and a little forward. `far_leg.mjs <char> side/<pose>` prints the offsets
+   and the angles between the legs; `fx.farUpLegs` raises the far HIP alone (raising the whole far side with `farUp`
+   stood the far shoulder up behind her back as a knob when seated). Rules: set the far leg from the near one's angles,
+   gate it with `far_leg.mjs` (thighs and shins within 2–4°), and lift the far side only where its contact is.
+66. **Cloth fitted to the body hangs only below where the body stops holding it.** Side-on rounds 5–6 (2026-10-15). Hung
+   from the back waist, the taut skirt ran straight to the seat's tangent: "a ruler from the waist to the hem" in every
+   pose, and the walks flared from the armpit (22° against the stills' ~10°). The cloth now HUGS her (`parts/skirt.js`
+   `hugOf`, `engine/drape.js` `hug`): a cubic from the waist, in at the small of the back, into the buttocks' outline and
+   round it while it still turns out, then free; the rest pose's back meets the master's within 0.01 H. Its upper seat
+   outline must be the master's (ry 0.6): on the support ellipse the cubic dived in, a wasp waist. On all fours a thigh
+   standing out past the seat cut a notch in the hug, so the hug tautens past any support it would fold into
+   (`hugFrom`). The same rule placed four more pieces: kneeling, each thigh wraps the hem by its own reach (one shared
+   reach bowled the hem round the near thigh); seated, the cloth tucked under the bump into the lap isn't spent along
+   the thigh (the skirt reaches near the knee) and a side panel covers the thigh back from the lap's diagonal (else a
+   white wedge, neither cloth nor skin); where the bump meets the skirt the cloth runs on along the bump's underside (a
+   soft tuck, not a hard inner corner); the back of the shoulder moves with the clavicle (`body.strapBack`: else a
+   spike behind the strap when the arm lifts). Rules: fit cloth to the body where the body holds it and hang it from
+   where it leaves; measure the result against the master standing before judging any pose.
+67. **Find an outline fault by its ANCHORS, and carry a hidden point by the frame of the edge beside it.** Side-on round
+   6. A white sliver at the waist when leaning, a pale tab behind the shoulder, spikes at the strap, a notch on all
+   fours: each was two parts' outlines meeting where their anchors came from different bones. `side_zoom.py <char>
+   <pose> --at <bone>@dx:dy --marks dress,dress.skirt` draws the parts' anchors numbered over the crop, so the fault
+   names the anchor (the skirt's hidden top point carried by the pelvis beside the bodice's corner carried by the
+   chest: the hips swung and the gap opened). Rules: before tuning a shape, zoom the fault with `--marks` and name the
+   anchors on either side; a hidden point that must stay inside a neighbour is carried in that neighbour's frame;
+   clip a skin part to the cloth's POSED line, not its rest one; `corner_audit.py` and `detail_audit.py` list the
+   rest across the library.
+68. **Measure where cloth meets a seat, the floor or a fold on the still, and check the posture AFTER every solve.**
+   Side-on rounds 6–7 (2026-10-15, Fable critics). Four cloth faults, each fixed by a number read off its still, not by
+   taste: squatting, the skirt hung plumb from the knees ballooned behind her ("a balloon"): it falls in a TAIL to a point
+   0.15 H behind and 0.39 H below where the thighs cross (`drape.js` `SQ.tail`), a shaded curtain between the thighs;
+   kneeling on one knee, the plumb back hem was "a cape": the free side is pulled 0.27 H forward (`KP.pull`); on a birth
+   ball the hem hung through the ball: a prop's floors follow its top (`props.js` `ball()` arc bands) and a seated hem
+   within 0.45 H of a seat rests ON it (`SEATED.drop`); on all fours the bump sagged as "a wedge": each dress anchor
+   sags by its own vector and the handles around it are re-aimed along their chords so the dome stays round
+   (`body.js` `SAG_W`). A bending back rounds: the standing lordosis is off when she leans down (`fx.lumbar=0`,
+   kneel-pick "a cape" of a back). The solves after a fit move limbs while every contact holds, so the posture drifts:
+   `side_dirs.mjs` found the seated and kneeling elbows 11–17° behind the stills' (set with the elbow's swivel, `bumphands`
+   6th argument); a foot's screen direction is 59° when flat, so "heel raised 30°" is about 89, not 58 (walk-down's
+   heel was flat for two rounds); a kneeling foot's toes left free bent 34–60° to reach the floor and curled the shoe
+   over the foot as a hook with white inside it (`floor_pose --bones shin,foot`, toes in line as every still draws them).
+   Hands: starting the finger lines at the knuckles lost blind on breathe-stroke too (6 vs 6.5, "a mitten-shaped lump"),
+   so lesson 64 holds. Rules: read a cloth fold's length and a foot's or elbow's angle off the still, in H or degrees,
+   before drawing it; run `side_dirs.mjs` and `far_leg.mjs` after every `fit_side.sh` change; zoom every foot that
+   touches the floor (`side_zoom.py --at toe.far@-0.1:0`).
+69. **Show every pose's hands and feet at 1:1 beside the still's, and read the far leg off the still, not off a rule.**
+   Side-on round 8 (2026-10-15): Harry's first look at the library, notes on seven poses and "two really key takeaways…
+   across many poses": "the hands often look stiff and not relaxed. Fingers always pointed directly out at a specific
+   angle… rather than a little curled like most people naturally hold their hands when walking, sitting etc." and "One
+   shoe always looks really thin/cut off". Seven rounds of three critics at film size had named neither: a whole figure
+   at 225 px/H draws a hand at 30 px and a shoe at 25. The thin shoe: the far shoe was drawn with the near one's opening
+   from its own, lower counter, 0.064 H deep at mid-foot where the master's is 0.11 (36%), in every pose, as the library
+   shows the far foot whole; each shoe now has its own traced opening (`params.shoe.near/far.open`, `skin`), 81–83%
+   everywhere, measured on the posed outline by `tools/shoe_gauge.mjs` and gated by `qa_checks` `shoes` (≥ 75%). The stiff
+   hands: every pose used straight library shapes (one angle for every finger, the curl drawn out of the picture). New
+   shapes picked beside the stills at 1:1 (`side_zoom.py --try`): `idle` (hanging or walking: a graded curl, index to
+   little finger, the thumb along the index), `softrest` (on the bump or a thigh), `palmdown` (on a worktop: the backs a
+   low dome, the thumbs under; drawn thumb up with straight fingers they were "the wrong way around on the counter"),
+   `hold` (a chair's back gripped, the wrist in line; draped off the post it was "not holding the chair"); `fx.fingersIn`,
+   now per hand (`fingersInNear`/`Far`), turns the curl into the picture: 0.8 for a walking hand (0.5 still read straight,
+   more curl hooked the tips like claws), and a walking hand trails its forearm's swing (`side_walk.mjs --lag 0.06`, "the
+   hand should follow the arm with a slight flop"). The shoulder: lifted past 30°, the strap lay exactly on the arm's round
+   end, hooked into the neckline in front of the arm, and the bodice's shoulder points and the trapezius' end (carried by
+   the clavicle and the chest) stood out past it as an ear, a sliver and a skin wedge, "jagged and rough where as the
+   reference still is small and clean". Raised, the strap is the armhole's edge, one even band on the arm's own contour
+   from its back over the round end and down its front, tapering out (`arms.js` strap); `arms.strapDress` pulls a
+   bodice shoulder point that pokes past the strap onto it in any pose and, raised, tucks them and the trapezius' end
+   inside the band (each found by its anchors, lesson 67); the standing shots move ≤ 0.0055 H, A/B'd blind. The far leg:
+   lesson 65's twin is right standing and kneeling, but round 7 had put every seated far foot "ahead and up" from
+   landmarks that take a hidden far toe for the near one. Read by eye at 1:1: a squat stands its feet wide (the far
+   ankle +0.3, −0.4 H, the shins parting in a V under a far knee hidden behind the near one: "the legs aren't separated
+   enough which means the knee then forms at a wierd place/angle"); a chair's far foot is set back (−0.25, −0.07, its
+   heel behind the near heel: "far away knee/leg at the wrong position"); a ball's ahead and up (+0.3, −0.24).
+   `far_leg.mjs --set knee=…,ankle=…` places them by direction and drawn length (`farleg` in `fit_side.sh`; the drawn
+   length isn't rest × scale, the profile turn foreshortens it, so it corrects over passes). Rules: every side pack shows
+   each pose's hands and feet at 1:1 beside the still's (`critic_F.py --side` close-up sheets); a resting hand is curled
+   and a working one grips or presses (HARRY_EYE 31, 35; gate `qa_checks` curl: the fingers' mean curl in the picture
+   ≥ 4°, 8° swinging, where the straight shapes measured −3°); measure a part's VOLUME as well as its outline (`shoe_gauge`);
+   read the far knee and ankle off the still for every pose (HARRY_EYE 33); a lifted arm's shoulder is checked at 1:1
+   with the anchors marked (HARRY_EYE 34).
+70. **A close-up judges a hand's SHAPE; only the film judges its DRAWING. Shape a hand for what it holds, and place the
+   prop from the hand.** Side-on round 9 (2026-10-15). With round 8's 1:1 close-ups every critic lens called every hand
+   "a flat paddle carrying four long parallel lines… the stills' fingers are one mass with two or three short tip
+   separations". Beside the stills, fuller fingers 10% shorter with the lines from the middle phalanx matched; on the
+   film it lost blind for the THIRD time (6 vs 6.5): "a short bunched cluster of nubs… a doll's mitten", where the kept
+   drawing "reads as a hand with fingers" at phone size (rounds 5 and 7 lost the same way, lesson 64). A 1:1 crop beside
+   a soft painted still rewards mass; the film rewards separate fingers. So the drawing (`params.handSpecs`) changes only
+   on a blind win on the standing shot, and a close-up fault is cured by the hand's SHAPE (`poses/hands/`): `idle` and
+   `softrest` hold the fingers together (spread −1…2 and −0.5…1: −3…6 fanned into a rake), `hold` hooks at the knuckles
+   (85°, the middle and end joints 20° and 0°: curled 50–63° at every joint the fingers bunched into "paws on a stick"),
+   a new `ball` follows a small ball's curve (about 80° over three joints for a 0.24 H ball, spread a little: `grip`, a
+   cylinder's 155°, closed into a fist on top of it). The prop is placed FROM the hand: the chair's rail under the
+   palm's underside where the rail is (not the palm's lowest point, its heel by the wrist: the rail stood 0.03 H under
+   the hand), its far edge just past the knuckles so the fingers go over it (at +0.06 they hung down its near face);
+   the held ball under the palm's crown. And a pinned resting hand only fans: on a thigh its fingers alone moved 4–5 px
+   in 2 s (QA alive: frozen); a hand on a leg now slides a little with the breath, drawn back as the shoulder rises and
+   down again on the breath out (`side_loop.mjs`: reach stops with `dp` and `slide`), 7 px at the wrist, 13 at the tips.
+   Rules: blind A/B any hand-drawing change on breathe-stroke before keeping it, whatever a close-up shows; pick shapes
+   beside the stills with `side_zoom.py --try` (`lib` inline); place a held prop from the posed hand's contact, not its
+   bounding box.
+71. **At a joint, match the CONTOUR, not the depth; and read a pose script's notes before re-trying its fix.** Side-on
+   round 10 (2026-10-15). Every lens, rounds 7–9, read the legs as "even tubes: no calf belly, no kneecap plane" and the
+   neck as "long and thin with a hook at the throat". Measured station by station (`leg_widths.py`) the legs' depths
+   were already the stills' (×0.97–1.03): the fault was the SHAPE where the forms meet. Bent, the knee's fillet reached
+   0.3–0.4 H along each bone and ended on an even tube of the knee's half-width, proud of the tapered front it joined (a
+   ball of a knee with a waist under it), and the master's shin narrows under the patella, which bent read as the same
+   waist; folded to 90° and past, the calf ran a straight ramp into a corner on the thigh's back (a hinge). Now the
+   fillet ends ON each bone's own front line (`P.knee.onProfile`, `engine/leg.js`), a bent shin's front runs straight down
+   from the knee over the tendon (`fill`, faded in from 15° to 50° of bend) and a folded calf rounds over into the crease
+   (`calfIn`, from 45° to 90°): the stills' knee dome flowing into the shin, their calf peaking a third of the way down.
+   The throat: the master's skin runs from the chin's underside back almost LEVEL to the throat, then straight down (a
+   short full neck under a jaw shelf); ours ended under the jawbone's rising line, 0.08 H higher and further back, and
+   the white under the jaw cut in as the hook. The neck now runs forward under the jaw to inside the chin, that soft
+   tissue skinned to the HEAD (a skin region), so a nod folds it and a look up stretches it; the nape runs on down into
+   the shoulder under the strap (it ended in a round corner, a knob at the back of the neck as she bent forward). The
+   squat's skirt tail: the back's cloth and the inside's lower edge met at ~40°, a point, "a sack with a tail"; the back
+   now leaves the tail turned toward level (`skirt` `tailRound`, 0.75) and the inside continues it, one round with a
+   crisp inner fold, as the still draws it. And kneel-pick's toy: a deep bend reached the floor but was the hunched,
+   bump-hidden pose rounds 1–4 had rejected, written in `fit_side.sh`'s own notes above that line; the arms are shorter
+   than the stills', so the toy stays lifted and casts a small soft shadow under it, fainter the higher it is ("floating
+   in mid-air" with none). Rules: compare a joint's outline with the still's at 1:1 before measuring widths, and try a
+   shape on one pose first (`side_zoom.py --try` with `fx.legTry` / `fx.clothTry`); draw soft tissue that moves with the
+   head on the head's bone (a skin region); a prop held off the floor gets a floor shadow; read the notes in a pose's
+   build line before trying a fix there again.
+72. **When a fix keeps failing across poses, measure the character against a real body: a reach the library asks for
+   may be a proportion the master never had.** Side-on round 11 (2026-10-15). Kneel-pick's reference stills rounded
+   her back like a second bump (the lenses read the back as the bump, rounds 7–10): a new still asked for the bump in
+   front and a straight back fixed the reference, not the rig (`s_kneel_pick2`). Refitted to it, her hand still
+   couldn't reach a toy on the floor: lifted, "floating"; leaned 20°, the seat swung back into a second mass and the
+   arm covered the bump; a floor ball grown to meet the palm (`toy reach=1`) read "a beach ball… rest a hand on a
+   ball, not pick up a toy" (every lens). The same shortfall ran through the squat (a level rod of an arm to the
+   chair), lean-counter (the forearm resting where the still presses on a straight arm) and all-fours (vertical
+   posts). Measured against a real arm: in the master her fingertips hang at 43% of her height (a real woman's ~38%,
+   so ~0.4 H, 9 cm, higher): her arm is ~90% of a real one, her hand (wrist to fingertip 0.63 H) ~80% of a real
+   hand's 0.108 × stature; the stills draw the arm ~105% of real, 0.5 H beyond hers. The master draws her so, and the
+   critic prompt excluded "her arms" from scoring, but the lenses scored everything they forced. Three rounds of
+   cloth and prop changes left the scores flat (lesson 15: explore, don't tune). Rules: before working round a reach,
+   check the limb against a real body's ratios (fingertips hang at ~0.38 of stature, the shoulder's top at ~0.82, the
+   hand 0.108 of stature, the knee at ~0.285) and against the stills; a proportion of the master is the client's
+   call, so put it to him with what it costs (every shot re-rendered, a blind A/B on the standing film) rather than
+   tune props round it; a prop's size is part of the story (a ball sized to her reach changed "pick up a toy" into
+   "rest on a ball"). Smaller round-11 rules: a seated hem resting on a prop takes a corner there (`seatCorner`), and
+   a walking skirt's front flares by the stride (`frontWalk`), the hem's front near plumb under the bump as the
+   stills hang it. Tested in round 12 on a copy (arms 12% longer, hand 15%): the side-on stills liked it (kneel-pick's
+   ball shrank, all-fours' shoulders rose to the still's line), but the standing shot's own still (`m3_k_bump_1`)
+   draws her arm at the master's length. Overlaid on it (`mask_overlay.py mum3 breathe-stroke@4.0 --still
+   m3_k_bump_1`), her arm today is off by 11.5k px; the longer arm, its hand on the same spot, pushed its elbow out
+   behind her back (25.7k); turned toward the camera (`dphi` −55) it matched (8.0k) only by drawing the forearm at
+   62–83% of its length, the "arm shrinks" fault the `limbs` gate keeps out; at a swivel the gate allows (−45) it was
+   still worse (15.6k). So the proportion stays and the reach is made with the body. Rule: before changing a
+   proportion, overlay every shot's keys on their own stills with the change, at a swivel the `limbs` gate passes:
+   stills from different prompts can disagree about the same limb, and the shipped shots' stills win.
+73. **When a shape has been set by eye for rounds and still reads wrong, fit its few numbers to the still by
+   measurement.** Side-on rounds 6–12 (2026-10-15). The folded poses' skirts (the squat's tail, kneel-pick's back
+   corner, the hem on the ball, the all-fours hem) were tuned one constant at a time from the critics' words, and the
+   lenses read "a sack… a sail… a flap… the bump below the hem" four rounds running. Round 13 kept the drape procedural
+   and fitted only its shape numbers (`engine/drape.js`'s SQ, KP, AF, SEATED and `parts/skirt.js`'s CLOTH, per pose
+   in `fx.clothTry`) to the still's dress outline below the hip: `tools/cloth_fit.py` maps the still into rig units by
+   the pose's fit, as `side_match.py` does, renders each trial and keeps the best dress IoU, a coordinate search with
+   the range halved each pass. Squat 0.64 → 0.79, kneel-pick 0.51 → 0.58, all-fours 0.74 → 0.80, sit-ball 0.80 → 0.82.
+   The first run scored the squat 0.39: the chair's wood and the orange toy sat within the colour distance of the
+   dress, so a prop counted as skirt; the props' colours are now background in both classifiers. Rules: when a shape
+   has failed by eye twice, find the few numbers that make it and fit them to the still (the still is measured, never
+   drawn); score only the region the shape owns (below the hip for a skirt), so the posture's other differences don't
+   pull the fit; give every classifier the props' colours as not-her; read the before/after sheet
+   (`out/cloth_fit_<pose>.png`) before taking a fit, since IoU can rise by a shape no illustrator would draw, and set a
+   knob the score is flat in by eye at 1:1 (the squat's tail scored the same rounded or not: the fit left a sharp point,
+   0.75 drew a knob, 0.25 the still's soft point, `side_zoom.py --try`). Round 12
+   also reached kneel-pick's toy by hinging her forward from the hips (pelvis −72): every lens read "hunched". She now
+   sits back toward her heel with an upright trunk, as the still sits; a reach made with the body keeps the back long.
+74. **A review crop must show what the still shows: check the pack before trusting a request every lens repeats.** Side-on
+   round 13 (2026-10-15). All three lenses asked for "the far hand where the still shows it" on kneel, sit-chair,
+   sit-ball and the squat, as the round's second fix. Cropped at 1:1 round each still's hands, those four stills draw ONE
+   hand; the far one is behind the bump, the thigh or the post, as ours. The close-up's far row cropped the still where
+   OUR far hand would be (the still had no second hand mark, or MediaPipe's two marks sat 0.19 H apart on one hand), so it
+   showed the still's near hand beside our grey "hidden" panel, and the critics read a second hand in the still. Round 9
+   had fixed the same fault on OUR side of the row (a hidden far hand cropped as the near one, lesson 70). Only
+   lean-counter's still draws its far hand (behind the near one on the worktop, 0.3 H back, 0.16 H up), so only there was
+   the ask real: its far hand is now placed there. Rules: when every lens asks for the same thing round after round,
+   look at the pack's own crop of the still before changing the character; a pose whose still hides a hand says so
+   (`fx.stillHidesFar`, set in `fit_side.sh` after checking the still at 1:1) and the close-up shows it on the still's
+   side too; a still's hand marks closer than ~0.25 H are one hand found twice. Also round 14: a resting hand's fingers
+   bend off the palm TOGETHER, one angle at every knuckle (`softrest` 12°), with the grading at the middle joints: graded
+   at the knuckles (12–20°) they diverged from the knuckle line into what every lens called "a fan", where the stills'
+   fingers leave the hand parallel and drape over the form; level knuckles (2°) left too little curl in the picture
+   (QA `curl` 2–3°, the gate for Harry's "pointed directly out").
+75. **Measure the critic's ceiling before chasing its bar: score a sibling still through the same protocol.** Side-on
+   round 14 (2026-10-15). Fourteen rounds held the library at 4.5–7.5 against a bar of 8 on every lens. The pack was
+   rebuilt with a SECOND still of each pose (another sample of the same prompt: an illustration with no rig in it) in the
+   "RENDER" panel beside the reference still, and two fresh critics on the same model scored it with the same prompts
+   (natural, craft; no history, no close-ups). The siblings scored 5.5–7.5 (natural mean 6.85, craft 6.55), none 8, and
+   the critics found our faults in them ("a flat paddle with four stripes", "the far shoe a thin wedge", "the skirt a
+   sack"). Ours that round: 6.0 and 6.15, sit-chair above its sibling on both lenses. A score measures distance from ONE
+   still through a prompt that says the image is a rig, not naturalness on its own; 8 was out of reach for the stills'
+   own artist, and every round past the ceiling was spent on the protocol's noise. Rules: before setting or chasing a
+   score bar, run `tools/critic_ceiling.py` once and read the bar against it (e.g. a pose passes when it scores at least
+   its sibling still on every lens); a ceiling below the bar goes to the client as a result and a decision, not as
+   another round; and the test stays out of the critics' history (`critic_F.py` drops a feel-log block between
+   `<!-- not for critics -->` and `<!-- /not for critics -->`), or its numbers anchor the next round's scores.
+76. **A move is the library's poses as keys, ALIGNED on her planted foot, the hips on the keys' path and the legs reaching
+   the floor; and a pose setting that is not a number must still reach the film.** Side-on round 16 (2026-10-16), the
+   first move (sitting down, `tools/side_move.mjs`: n-rest → two fitted in-between stills → sit-chair). What it took:
+   - **Channels carry numbers only.** `fx.clothTry` (the skirt shape `cloth_fit.py` fitted to each still) is an object,
+     so every breathing loop since round 13 drew the DEFAULT skirt (the squat's hem crossing at 0.2 not 0.5, all fours'
+     hem 0.25 H below the bump, kneel-pick's back 0.27 H out) while the critic sheets, drawn from the pose, showed the
+     fitted one. `basePose` now carries a key's object-valued fx from the active key; QA `keyfx` fails when a key's
+     setting is not in the pose at its time. Same family: a channel a key leaves out took 0, but `fx.turn`'s drawing
+     default is 1 (the master's ¾): from n-rest into sit-chair (turn 0.4) her far hip swung onto the near one, the far
+     foot 0.3 H back, as she started (`FX_DEFAULTS` in `engine/anim.js`).
+   - **Align each key on the props pose's near foot** (`:hips` aligns a landing key on its hip instead: sit-down-2's
+     still sits her 0.3 H behind the seat when aligned on her feet), so the chair is under her in every key.
+   - **The feet stand where the FIRST key stands them, and a foot that stands elsewhere at the end STEPS there**
+     (`spec.plantFeetSteps`: a min-jerk arc lifted 0.035 H, as a woman steps back to the chair). Planted on the seated
+     pose, the standing key's straight far leg could not reach its spot 0.63 H back: it hung 12 px up, then dropped.
+   - **The hips follow the keys, the legs reach the floor** (`spec.plantFeetRoot: false`). The usual foot lock shifts the
+     root by the feet's AVERAGE miss, so the hips follow the blended LEG angles: sitting down they went 0.6 H back while
+     falling 0.07 H, and she tipped back over straight legs like a plank. With the keys' hip path the knees bend first.
+   - **Her short arms can't press the seat** (lesson 72): the shoulder is 443 px above the seat at landing, the arm 458
+     px long, so a hand on the seat is a straight arm, where the 3D arm's angles are undefined and flip (elbow pops
+     11–53 px a frame; `keyedArm` swapped in the key's own arm angles, a pop of its own). The hand goes from her side to
+     her thigh as her hips come down (a pregnant woman lowering herself with a hand on her thigh), then to the bump.
+   - A hand that rides her hips trails ~7° as they set off: carried, not flapping (`spec.qa.wristTurn`, a stated
+     exception); a via's wrist bend comes from its neighbours (`stop.local`), not its pose's press; the hanging hand is
+     the library's relaxed `idle`, not breathe-stroke's `hang`; the resting hand gets the loops' life after landing
+     (QA `alive` read it FROZEN 4.1–7 s); each key's note names its still so `ref_match.py` puts the film beside it.
+   Rules: build a move with `side_move.mjs` from library poses and fitted in-between stills; check the feet with
+   `feet_probe.mjs` (the near foot within 1 px; a step only where the end pose stands a foot elsewhere) and the hips'
+   path on a contact sheet before any critic; never ask a short arm to bear weight on furniture it can barely reach.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

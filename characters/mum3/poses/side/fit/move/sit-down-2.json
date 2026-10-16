@@ -1,0 +1,60 @@
+{
+ "name": "side/fit/move/sit-down-2",
+ "note": "fitted to characters/mum3/refs/pose/s_sit_down_2_0.json (MediaPipe landmarks, base rest)",
+ "hands": {
+  "near": "relaxed",
+  "far": "relaxed"
+ },
+ "fx": {
+  "farUpLegs": 0.162,
+  "turn": 0.4
+ },
+ "props": {
+  "items": [
+   {
+    "type": "chair"
+   }
+  ]
+ },
+ "root": [
+  -0.8105,
+  1.1709
+ ],
+ "bones": {
+  "pelvis": 9.7,
+  "spineLower": 4.1,
+  "spineUpper": 1.7,
+  "chest": -0.3,
+  "neck": -5,
+  "head": -3.7,
+  "belly": 0,
+  "clavicle.near": -21.8,
+  "shoulderAbd.near": 4.9,
+  "upperArm.near": -4.9,
+  "armAbd.near": 0,
+  "armRot.near": 2.3,
+  "forearm.near": 34.3,
+  "foreRot.near": 0.1,
+  "hand.near": 6.4,
+  "thigh.near": 82.1,
+  "shin.near": -76.4,
+  "foot.near": 5.5,
+  "hipAbd.near": -5.1,
+  "thigh.far": 77,
+  "shin.far": -75.1,
+  "foot.far": 6.2,
+  "hipAbd.far": -0.1
+ },
+ "_fit": {
+  "ref": "characters/mum3/refs/pose/s_sit_down_2_0.json",
+  "scale": 1.0462,
+  "rms": 0.0664,
+  "worst": [
+   "hipL 0.253",
+   "kneeR 0.160",
+   "footL 0.067",
+   "heelL 0.063",
+   "kneeL 0.057"
+  ]
+ }
+}

@@ -519,3 +519,68 @@ Results on v18:
   widens toward the wrist (a cone), so the round mass sits on the end of a club. Next: measure the far arm's edges on the
   still (angle and width every 20 px) and fit `upperArm.far` and `armFar.w` to them; then the lower hand's thumb swing at
   0.5–1.5 s ("a twitch", 10 px in a second).
+
+## v26 — the far upper arm slim on its body side
+
+- Measured row by row on q_k4_down_0, the far arm shows 14–18 px of still past her bust, on a ~31° diagonal; v25 showed
+  26–31 px, widening down into the wrist's round mass, so the mass sat on the end of a club. v26 slims the arm's FRONT
+  (its body side, which the bust hides at rest, so the rest drawing is unchanged) by 0.05 H on its first three segments
+  (`armFar.w`).
+- **Blind v26 vs v25: v26 6.5, v25 6** (about 60/40). The pixel diff touched only the arm's strip. v26's forearm "a slim
+  wedge… reads as a woman's wrist and lets the hand read as a hand"; v25's "flares into the wrist… the forearm and the
+  hand's outer knob merge into one lump", "a stiff cone with no elbow". v26 "implies a bent arm reaching around the
+  bump". One reservation: at 0–1.5 s and 5–8 s v26's strip pinches at the widest point of the bust "thin enough that the
+  strip looks like a thread on a phone". Kept. QA PASS; mum2 and mum3 SVG unchanged.
+- Still wrong in both: the top hand's outer knob a "mitten-like lump past the bump's silhouette"; its four fingers
+  near-parallel and evenly spaced; it hardly changes shape as it moves ("stiff rather than resting"); the lower fingers
+  a rake at 3.0–4.5 s and re-shaping at 2–3 s and 5–6 s.
+- Next: the strip's width at the bust against the still's (not under 14 px); the far shoulder lower and further in
+  (≈10 px and 22 px of still), which needs a refit of the arm so the hand stays on the still's tips.
+
+## v27 (lost) — the far arm's outer edge fitted to the still
+
+- Measured with the new `mask_overlay.py --edge right` (rows 400–520, every 10 px) at 0 s: v26's outer edge +17 px at
+  a hump above the strap down to −11 px where it meets the wrist's mass; 8° more upright than the still's straight
+  diagonal (6.5 px rms). Sweeping the far shoulder (`clavicle.far` −14 … +9, the arm refit to the hand's points each
+  time) and the arm's widths: + LOWERS the far clavicle; moving the joint alone hid the arm behind the bust. v27: the
+  shoulder 10 px lower and in (`clavicle.far` 1), no deltoid cap and the arm widening toward the elbow while the forearm
+  is end-on (new `endOn.w`, `endOn.capA`): 1.1 px rms at 0 s, 3142 px of mismatch (was 4171). QA PASS.
+- **Blind v27 vs v26: v26 6.5, v27 6.** "X's far arm reads as one arm, running from a visible far shoulder down to the
+  top hand. In Y the arm appears only below her bust, as an upright wedge… a mitten on a post"; v26's "visible shoulder
+  cap and arm strip lift with the shoulders, so the far side of her body visibly joins in the look up". Dropped (the
+  diff is kept outside the repo). The edge at 2.75, 4.5 and 6.4 s had shown v27's strip hidden at more rows than v26's.
+- Found on the way: n-up's `clavicle.far=2` ("the shoulders up a touch") lowered the far shoulder 2.4 px since v17.
+  v28 tries the fix alone (`clavicle.far=-2`): the far shoulder 5 px higher at the look-up.
+
+## v28 (tie, not kept) — the far shoulder up with the near one
+
+- v26 with n-up's `clavicle.far=-2` (was +2): the far shoulder 5 px higher at 4.5 s; nothing else differs. QA PASS.
+- **Blind v28 vs v26: tie, 6 vs 6, leaning v26** "by a hair": at 3–6 s v28's far shoulder cap "stays a slightly rounder
+  hump… 1–2 px higher", v26's "tucks into a slimmer sliver… a touch less hunched behind the strap". "A viewer will not see
+  a difference." Kept v26's frames; derive_lookup.sh now says what +2 does (the far shoulder a touch DOWN).
+- Still wrong in both: the top hand's end "a rounded lump that reads as a mitten", its fingers "parallel stripes rather
+  than separate fingers draped over the bump"; the lower hand re-poses every second or two (0–1, 2–3, 5–6, 7–8 s: the
+  fingers fan out again, the thumb lifts "as a separate flat bar" at 1.0 and 6.0 s), "fidgeting or sliding rather than a
+  resting cradle"; the head tips back a little past level at 3.0–3.3 s before settling.
+- Next: the lower hand's fidgets (calm the cradle: fewer, smaller re-poses, the thumb with the fingers); then the top
+  hand's fingers as separate fingers draped over the dome.
+- Still wrong in both (reviewer): the lower thumb and fingers curl and uncurl at 0–1, 2–3, 5–6 and 7–8 s ("a pulsing or
+  kneading grip rather than a calm cradle"); the top hand's outer knob past the bump's outline; at 6.1–6.3 s the lids
+  drop and the eyes go down while the head still faces us ("a sidelong or coy glance").
+- Tools: `mask_overlay.py --edge`, `bone_signs.mjs` (lesson 61).
+
+## v29 — a resting cradle (FROZEN here: the ¾ shot pauses for the side-on library)
+
+- Both reviewers of v27 and v28 called the lower hand "a pulsing or kneading grip rather than a calm cradle": it
+  re-posed six times in 8 s (thumb strokes at 0.2, 4.6 and 7.0 s, the gather and thumb press with the look up, the
+  fingers' re-settle at 5.6 s), added when reviewers saw only sparse frames and called the hands "frozen" (v7). v29 keeps
+  two: the gather as she looks up and one slow thumb caress across the loop's seam (6.6 → 9.0 s, wrapping).
+- **Blind v29 vs v26: v29 6.5, v26 6** (about 65%): "a resting cradle that is still alive"; v26 "re-poses the hand while
+  nothing else in her moves, so it reads as fidgeting… the third lift-and-return of the shot… a pattern". QA: the
+  alive gate flagged the near hand 0.2–2.5 s (it drifts ~3 px there); recorded as a deliberate hold
+  (`spec.qa.still.near`, the far hand moves throughout). Then PASS. Render `renders/mum3q_look-up_v29.mp4`.
+- Still wrong in both: the top hand's outer edge "one rounded lobe with no knuckle shape… a lump", its fingers
+  "near-parallel stripes"; the lower hand slides ~15 px up the bump during the look up (2–3 s) with a big change of
+  shape; the breath close to invisible while she looks down (1–2 s).
+- Harry (2026-10-14 20:36) moved the rig to a side-on library first; ¾ comes back later with a 3D rig for front views.
+  Look-up stays at v29 until then.

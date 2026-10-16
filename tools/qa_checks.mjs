@@ -1,13 +1,16 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs,fingers] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,keyfx,handed,frames,hands,alive,limbs,fingers,shoes,curl] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
 //     channels every channel a track keys reaches the pose under its whole name, and a contact shadow gated on a keyed
 //             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
+//     keyfx   each key pose's settings that are not numbers (fx.clothTry, fx.legTry) reach the pose at that key: the side-on
+//             loops drew the default skirt, not each pose's fitted one, rounds 13–16 (lesson 76)
 //     handed  each hand the right way round in every frame: its thumb drawn on the side its 3D arm puts it (tools/handed.mjs;
-//             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53)
+//             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53); a hand out
+//             of sight is excused by spec.qa.handed [{side, why}] (side_loop.mjs: a hand on the bump's far side, or ≥ 95% hidden by her body)
 //     frames  pixel jumps (a frame changing > 1.8× its neighbours, inside --box) and still stretches > 1 s
 //             (tools/qa_frames.py; the film should always be alive)
 //     hands   per hand: palm-area pops (a swap or scale jump between frames), near/far size ratio, the closest the two
@@ -28,6 +31,15 @@
 //             fan: {every: 0.5, tol: 3} also the fan's SHAPE all shot (finger_angles --fan: a whole-hand turn passes,
 //             a change of shape doesn't): a fidget between the key frames bent the cradling fingers at the knuckles into "a
 //             rake", and the top hand's spreads, still the right hand's, closed its fan into "a paw" (lesson 59)
+//     shoes   each drawn shoe's side, from its opening to its sole across the middle of the foot, ≥ 0.75 of the near shoe's at
+//             rest in every frame (tools/shoe_gauge.mjs): the far shoe had been drawn 36% deep, "cut off at the bottom making the
+//             foot look very thin", in every side-on pose (Harry, round 8, lesson 69)
+//     curl    spec.qa.curl {sides, min (°, default 4)}: a RESTING hand's fingers curl in the picture: the four fingers' mean
+//             angle off the hand's own line (wrist → middle knuckle) ≥ min on every 3rd frame. The straight shapes ('relaxed',
+//             'siderest': a fan about −3°) read "stiff… fingers always pointed directly out at a specific angle, rather than a
+//             little curled like most people naturally hold their hands" (Harry, side-on round 8, lesson 69); 'idle',
+//             'softrest', 'palmdown' with fx.fingersIn measure 9–25°. side_loop.mjs and side_walk.mjs ask it of every hand
+//             that rests or swings free (not one pressing or gripping, nor one out of sight)
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -37,6 +49,7 @@ import { createRig } from '../engine/rig.js';
 import { makeAnim } from '../engine/anim.js';
 import { expandHands } from '../engine/handlib.js';
 import { ap } from '../engine/geom.js';
+import { shoeDepth, restDepth } from './shoe_gauge.mjs';
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const char = arg('char', 'mum2'), name = arg('anim', 'nausea-to-belly'), D = `characters/${char}/`, skip = new Set((arg('skip', '')).split(','));
 const C = (await import(`../${D}character.js`)).default, rig = createRig(C);
@@ -52,7 +65,9 @@ let ok = true; const gate = (pass, line) => { console.log(`  ${pass ? '✓' : '�
 
 if (!skip.has('order') || !skip.has('leak')) {
   const { srv, base } = await serve(), browser = await chromium.launch();
-  const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still`); await pg.waitForFunction(() => window.__ready === true); return pg; };
+  // (the shot's own framing, as char_anim.mjs renders it: spec.view.bbox; without it a framed shot never matched)
+  const VB = spec.view?.bbox ? `&bbox=${encodeURIComponent(JSON.stringify(spec.view.bbox))}` : '';
+  const open = async () => { const pg = await browser.newPage({ viewport: { width: 1080, height: 1920 } }); await pg.goto(`${base}/engine/view.html?char=${char}&frame=still${VB}`); await pg.waitForFunction(() => window.__ready === true); return pg; };
   const markup = (pg, pose) => pg.evaluate((p) => { window.renderPose(p); return document.querySelector('#stage svg').outerHTML; }, pose);
   if (!skip.has('order')) {
     console.log('order: frames rendered out of order match the render');
@@ -105,20 +120,32 @@ if (!skip.has('channels')) {
   }
 }
 
+if (!skip.has('keyfx')) {
+  // a key pose's SHAPE settings that are not numbers (fx.clothTry: the skirt fitted to its still; fx.legTry) must reach the
+  // pose at that key: channels carry numbers only, and every side-on breathing loop drew the default cloth, not its pose's
+  // fitted one, from round 13 to 16 while the critic sheets drew the fitted one (lesson 76)
+  console.log('keyfx: each key\'s non-number settings reach the pose at its time');
+  const A = fresh(), miss = [];
+  for (const k of spec.keys) for (const [f, v] of Object.entries(lib[k.pose]?.fx || {})) if (v && typeof v === 'object' && JSON.stringify(A.poseAt(k.t + 1e-6).fx?.[f]) !== JSON.stringify(v)) miss.push(`${k.pose} fx.${f} at ${k.t} s`);
+  gate(!miss.length, miss.length ? `not in the pose: ${miss.join(', ')}` : 'every key\'s settings reach the pose');
+}
+
 if (!skip.has('handed')) {
   // HANDEDNESS (tools/handed.mjs, lesson 53): every frame, each hand's thumb on the side its 3D arm puts it. mum3q v1–v7 lay
   // a RIGHT hand on her left arm on the bump (its spec copied from the near hand); every gate passed and four critic rounds
   // tuned its curl, wrist and lines before Harry saw "it looks like it's the wrong way round"
   console.log('handed: each hand the right way round (thumb where its 3D arm puts it)');
   const { handedness, excuse, explain } = await import('./handed.mjs');
+  // excuses: the character's (C.qa.handed) and the shot's (spec.qa.handed: a hand out of sight, e.g. on the bump's far side)
+  const EX = { qa: { handed: [...(C.qa?.handed || []), ...(spec.qa?.handed || [])] } };
   const A = fresh(), bad = {}, exc = {};
   for (let i = 0; i <= ALL; i++) {
     const pose = A.poseAt(i / spec.fps);
-    for (const r of handedness(C, rig.solve(pose), expandHands(pose, lib, C.handSides))) if (!r.ok) ((excuse(C, r) ? exc : bad)[r.side] ??= []).push([i, r]);
+    for (const r of handedness(C, rig.solve(pose), expandHands(pose, lib, C.handSides))) if (!r.ok) ((excuse(EX, r) ? exc : bad)[r.side] ??= []).push([i, r]);
   }
   for (const side of ['near', 'far']) {
     const b = bad[side] || [], e = exc[side] || [];
-    if (e.length) console.log(`  · ${side}: ${e.length} frames excused by C.qa.handed (${excuse(C, e[0][1]).why})`);
+    if (e.length) console.log(`  · ${side}: ${e.length} frames excused by qa.handed (${excuse(EX, e[0][1]).why})`);
     gate(!b.length, `${side} hand the right way round${b.length ? `: wrong in ${b.length} frames from ${(b[0][0] / spec.fps).toFixed(2)} s — ${explain(b[0][1])}` : ''}`);
   }
 }
@@ -132,7 +159,9 @@ if (!skip.has('frames')) {
 
 if (!skip.has('hands')) {
   console.log('hands: size, gap, one-way wrist turn');
-  const A = fresh(), sc = (p) => rig.toScreen(p, { frame: 'still' });
+  // film px of THIS shot: a side-on loop frames its own pose (spec.view.bbox), so its hands are drawn larger or smaller
+  // than in the standing frame; measured in the standing frame a kneeling hand moving 10 px on the film read as frozen
+  const A = fresh(), sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox });
   const area = (P) => Math.abs(P.reduce((a, v, i) => { const w = P[(i + 1) % P.length]; return a + v[0] * w[1] - w[0] * v[1]; }, 0)) / 2;
   const hull = (pts) => { const s = [...pts].sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); const lo = [], up = [];
     for (const p of s) { while (lo.length > 1 && cr(lo.at(-2), lo.at(-1), p) <= 0) lo.pop(); lo.push(p); }
@@ -174,9 +203,14 @@ if (!skip.has('hands')) {
       const ang = S[side].slice(i0 - 1, i1 + 1).map((s) => s.ang); for (let k = 1; k < ang.length; k++) ang[k] = ang[k - 1] + ((ang[k] - ang[k - 1] + 540) % 360 - 180);
       const net = Math.sign(ang.at(-1) - ang[0]); let ext = ang[0], worst = 0, at = i0;
       ang.forEach((v, k) => { if (net * (v - ext) > 0) ext = v; else if (net * (ext - v) > worst) { worst = net * (ext - v); at = i0 - 1 + k; } });
-      if (worst > 4) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
+      // spec.qa.wristTurn[side] = {max, note}: a stated exception, the hand CARRIED by her body rather than flapping at the
+      // wrist (side-sit-down: her hanging hand trails 7° as her hips start back, then swings to her thigh, round 16)
+      const wmax = spec.qa?.wristTurn?.[side]?.max ?? 4;
+      if (worst > wmax) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
     }
-    gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
+    // (a cycle's arm swings to and fro without a stop, a walk's: its wrist turns back at each end of the swing by design)
+    if (spec.cyclic) console.log(`  · ${side} wrist angle one way: not checked, a cyclic shot (spec.cyclic) swings to and fro`);
+    else gate(!bad.length, `${side} wrist angle one way through each move${spec.qa?.wristTurn?.[side] ? ` (≤ ${spec.qa.wristTurn[side].max}°: ${spec.qa.wristTurn[side].note})` : ''}: ${bad.length ? bad.join('; ') : 'yes'}`);
   }
   if (!skip.has('alive')) {
     // a frozen hand: every point we track (wrist, middle fingertip, the hand's outline box) moves < min px in a window
@@ -213,7 +247,7 @@ if (!skip.has('limbs')) {
   if (segs.length) {
     console.log(`limbs: drawn length of each 3D arm segment (want ≥ ${lim} of its length all shot)`);
     const A = fresh(), lo = Object.fromEntries(segs.map((b) => [b, [Infinity, 0]])), hi = Object.fromEntries(segs.map((b) => [b, 0]));
-    const sc = (p) => rig.toScreen(p, { frame: 'still' }), sides = [...new Set(segs.map((b) => b.split('.')[1]))], EW = Object.fromEntries(sides.map((s_) => [s_, []]));
+    const sc = (p) => rig.toScreen(p, { frame: 'still', bbox: spec.view?.bbox }), sides = [...new Set(segs.map((b) => b.split('.')[1]))], EW = Object.fromEntries(sides.map((s_) => [s_, []]));
     for (let i = 0; i <= ALL; i++) { const st = rig.solve(A.poseAt(i / spec.fps)); for (const b of segs) { if (st[b].a3.len < lo[b][0]) lo[b] = [st[b].a3.len, i / spec.fps]; hi[b] = Math.max(hi[b], st[b].a3.len); }
       for (const s_ of sides) EW[s_].push([sc(st[`forearm.${s_}`].pos), sc(st[`hand.${s_}`].pos)]); }
     // ELBOW POPS: the elbow jumps while its wrist stays put — the arm solve hopped to another arm that puts the hand in the
@@ -261,5 +295,28 @@ if (!skip.has('fingers') && spec.qa?.fingers?.length) {
       gate(p2, `${f.side} fingers' fan every ${f.fan.every ?? 0.5} s within ${ft}° of the still's: ${o2.trim().split('\n').pop()}${p2 ? '' : ` at ${bad.join(', ')} s — a fidget or a spread changes the hand's shape there: move the fingers together (the fan kept), check spread signs on a mirrored hand`}`);
     }
   }
+}
+if (!skip.has('shoes')) {
+  const ref = restDepth(rig);
+  if (ref) {
+    console.log(`shoes: each shoe's side at mid-foot ≥ 0.75 of the near shoe's at rest (${ref.toFixed(3)} H) every frame (tools/shoe_gauge.mjs)`);
+    const A = fresh(), lo = {};
+    for (let i = 0; i <= ALL; i += 3) for (const p of rig.build(A.poseAt(i / spec.fps))) if (/^shoe\.(near|far)$/.test(p.id)) { const d = shoeDepth(p).depth / ref; if (!(p.id in lo) || d < lo[p.id][0]) lo[p.id] = [d, i / spec.fps]; }
+    for (const [id, [d, t]] of Object.entries(lo)) gate(d >= 0.75, `${id}: slimmest ${(100 * d).toFixed(0)}% at ${t.toFixed(2)} s${d < 0.75 ? ' — the shoe reads cut off, the foot thin: trace its opening on the master (params P.shoe.<side>.open), or ease the toe bend that squashes it' : ''}`);
+  }
+}
+if (!skip.has('curl') && spec.qa?.curl) {
+  const q = spec.qa.curl, min = q.min ?? 4, J = C.joints, A = fresh(), lo = {};
+  const dg = (v) => Math.atan2(v[1], v[0]) * 180 / Math.PI, wr = (d) => ((d + 540) % 360) - 180;
+  console.log(`curl: each resting hand's fingers curl in the picture, their mean angle off the hand's line ≥ ${min}° every 3rd frame`);
+  for (let i = 0; i <= ALL; i += 3) {
+    const st = rig.solve(A.poseAt(i / spec.fps));
+    for (const s of q.sides || []) {
+      const id = `hand.${s}`, W = st[id].pos, k2 = st[`${id}.f2a`].pos, hd = dg([k2[0] - W[0], k2[1] - W[1]]);
+      const m = ['f1', 'f2', 'f3', 'f4'].map((f) => { const a = st[`${id}.${f}a`].pos, d = J[`${id}.${f}d`], t = ap(st[`${id}.${f}c`].M, [J[`${id}.${f}t`][0] - d[0], J[`${id}.${f}t`][1] - d[1]]); return wr(dg([t[0] - a[0], t[1] - a[1]]) - hd); }).reduce((x, y) => x + y, 0) / 4;
+      if (!(s in lo) || m < lo[s][0]) lo[s] = [m, i / spec.fps];
+    }
+  }
+  for (const [s, [m, t]] of Object.entries(lo)) gate(m >= min, `${s} hand: least curl ${m.toFixed(0)}° at ${t.toFixed(2)} s${m < min ? ' — the fingers point straight out: a resting shape (idle, softrest, palmdown) and fx.fingersIn (the curl in the picture)' : ''}`);
 }
 console.log(ok ? 'PASS' : 'FAIL'); process.exit(ok ? 0 : 1);

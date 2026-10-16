@@ -13,7 +13,8 @@ from PIL import Image
 CLASSES = ['bg', 'skin', 'hair', 'top', 'bottoms', 'cardigan', 'sock', 'ignore']
 def palette_classes(pal):
     m = {'skin': 1, 'skinShade': 1, 'skinLine': 1, 'cheek': 1, 'nail': 1, 'mouth': 1, 'sick': 1, 'hair': 2, 'hairShade': 2, 'top': 3, 'topShade': 3,
-         'bottoms': 4, 'bottomsShade': 4, 'cardigan': 5, 'cardiganShade': 5, 'sock': 6, 'sockShade': 6, 'eye': 7}
+         'bottoms': 4, 'bottomsShade': 4, 'cardigan': 5, 'cardiganShade': 5, 'sock': 6, 'sockShade': 6, 'eye': 7,
+         'skinFar': 1, 'earIn': 1, 'dress': 3, 'dressShade': 3, 'shoe': 2, 'shoeShade': 2, 'brow': 2}   # mum3 (engine/raster.js CLASS_OF_PALETTE)
     return [(k, v, m.get(k, 7)) for k, v in pal.items()]
 def hex2rgb(h): h = h.lstrip('#'); return [int(h[i:i + 2], 16) for i in (0, 2, 4)]
 def lab(rgb):
@@ -23,15 +24,22 @@ def lab(rgb):
     return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
 def segment(img, pal):
     A = np.asarray(img.convert('RGB')).astype(float); L = lab(A)
-    seeds = palette_classes(pal); S = lab(np.array([hex2rgb(v) for _, v, _ in seeds], float)); cls = np.array([c for _, _, c in seeds])
+    seeds = [q for q in palette_classes(pal) if q[0] != 'nail']   # (a nail is a few pixels of near-white: a pale counter took its class)
+    S = lab(np.array([hex2rgb(v) for _, v, _ in seeds], float)); cls = np.array([c for _, _, c in seeds])
     fg = (A.min(-1) < 238) | (L[..., 1] ** 2 + L[..., 2] ** 2 > 60)
     X = L[fg]
+    # a colour far from every material of the PALETTE (a chair, a ball, a kitchen counter in a side-on still) is not her:
+    # 'ignore', not background (it may hide her, as a chair's leg hides her shin). Judged against the palette itself, not
+    # the adapted seeds: adapting first, the skin seed drifted onto a beige counter and called it skin
+    near = np.sqrt(((X[:, None, :] - S[None]) ** 2).sum(-1).min(1)) < 20
     for _ in range(2):   # adapt seeds to the reference's colours
         d = ((X[:, None, :] - S[None]) ** 2).sum(-1); a = d.argmin(1)
         for k in range(len(S)):
-            if (a == k).sum() > 50: S[k] = 0.5 * S[k] + 0.5 * X[a == k].mean(0)
+            m = (a == k) & near
+            if m.sum() > 50: S[k] = 0.5 * S[k] + 0.5 * X[m].mean(0)
     d = ((X[:, None, :] - S[None]) ** 2).sum(-1); a = d.argmin(1)
-    out = np.zeros(A.shape[:2], np.uint8); out[fg] = cls[a]
+    c = cls[a].astype(np.uint8); c[~near] = 7
+    out = np.zeros(A.shape[:2], np.uint8); out[fg] = c
     return out
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); ap.add_argument('char'); ap.add_argument('ref'); ap.add_argument('targets'); ap.add_argument('out')
@@ -43,7 +51,7 @@ if __name__ == '__main__':
     ys, xs = np.mgrid[0:h, 0:w]; Xr = x0 + (xs + 0.5) * a.res; Yr = y0 + (ys + 0.5) * a.res
     cpx = Xr * X['Hpx'] + X['ground'][0]; cpy = Yr * X['Hpx'] + X['ground'][1]
     nx = (cpx - X['cx']) / X['s'] + X['sx']; ny = (cpy - X['cy']) / X['s'] + X['sy']
-    rx = (nx * X['W'] / X['sizePx'][0]).astype(int); ry = (ny * X['H'] / X['sizePx'][1]).astype(int)
+    rx = (nx / X['kx'] if 'kx' in X else nx * X['W'] / X['sizePx'][0]).astype(int); ry = (ny / X['ky'] if 'ky' in X else ny * X['H'] / X['sizePx'][1]).astype(int)
     ok = (rx >= 0) & (rx < seg.shape[1]) & (ry >= 0) & (ry < seg.shape[0])
     C = np.zeros((h, w), np.uint8); C[ok] = seg[ry[ok], rx[ok]]
     json.dump({'box': [x0, y0, x1, y1], 'res': a.res, 'w': w, 'h': h, 'classes': C.flatten().tolist(), 'names': CLASSES}, open(a.out, 'w'))

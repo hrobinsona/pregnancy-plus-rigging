@@ -1,0 +1,36 @@
+{
+ "name": "idle",
+ "f1": [
+  10,
+  16,
+  10
+ ],
+ "f2": [
+  16,
+  24,
+  14
+ ],
+ "f3": [
+  22,
+  30,
+  18
+ ],
+ "f4": [
+  28,
+  38,
+  22
+ ],
+ "s": [
+  -0.5,
+  0,
+  0.5,
+  1
+ ],
+ "t": [
+  20,
+  22
+ ],
+ "to": 5,
+ "ts": -10,
+ "_note": "a hand doing nothing (walking, standing, hanging at her side), side-on: each finger a little curled, more from the index to the little finger, the tips a little apart, the thumb resting along the side of the index. Used with fx.fingersIn 0.8 (most of the curl shows in the picture: the walk stills draw a soft C). 'relaxed' (8–18°, straight and together) read 'stiff… fingers always pointed directly out at a specific angle, rather than a little curled like most people naturally hold their hands when walking, sitting' (Harry, side-on round 8). Picked beside the walk stills with tools/side_zoom.py --try. Round 9: the fingers closer together (spread −1…2°): at −2…4° the hanging hand 'spread apart like a rake' beside the walk stills' fingers hanging together (round 8, body lens) Round 9 (kept finger drawing): spread −0.5…1, the fingers together as the walking stills hang them; at −1…2 the swinging far hand read 'a splayed fan of four fingers' (natural), at −3…6 a rake; a deeper curl hooked the little finger into a claw (side_zoom.py --try, walk-pass and walk-contact)"
+}

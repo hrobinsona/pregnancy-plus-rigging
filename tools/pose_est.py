@@ -56,6 +56,11 @@ if __name__ == '__main__':
         print(f'{a.src}: {i} frames @ {fps:.2f} fps, pose found in {sum(1 for f in frames if f["pose"])}/{len(frames)}, hands in {sum(1 for f in frames if f["hands"])}')
     else:
         pose, hands = mk(False); rgb = cv2.cvtColor(cv2.imread(a.src), cv2.COLOR_BGR2RGB); res = analyse(rgb, pose, hands, None, True)
+        # the FLOOR: the lowest row holding the figure (or a prop standing on the floor) against the plain background.
+        # A side-on pose off her feet (kneeling, all fours, sitting) is placed by it (tools/fit_pose.mjs --floor)
+        bg = np.median(np.concatenate([rgb[:5, :5], rgb[:5, -5:], rgb[-5:, :5], rgb[-5:, -5:]]).reshape(-1, 3), axis=0)
+        rows = np.where((np.abs(rgb.astype(int) - bg).sum(2) > 60).sum(1) >= 3)[0]
+        if len(rows): res['groundY'] = int(rows.max())
         print(a.src, 'pose' if res['pose'] else 'NO POSE', f"{len(res['hands'])} hands")
         if a.viz: cv2.imwrite(a.viz, draw(rgb, res))
     if a.out: json.dump(res, open(a.out, 'w'))

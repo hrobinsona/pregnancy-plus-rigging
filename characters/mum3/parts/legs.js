@@ -1,46 +1,101 @@
-// legs.js — mum3's bare legs (one skin tube hip → knee → ankle each, skinned across the knee; the thighs disappear
-// under the skirt), the foot's top above the shoe, and ballet flats (skinned foot → toe at the ball). Far leg behind the
-// near one, one step darker, as in the master.
-import { tube, loop } from '../../../engine/shapes.js';
+// legs.js — mum3's bare legs, drawn in POSED space (engine/leg.js): one outline per leg from the hip (hidden under the
+// skirt) down the thigh, round the knee, down the shin into the instep and back up the Achilles, calf and hamstring. The
+// knee folds like a real one (a broad fillet in front, the calf pressing on the hamstring behind, a crease when deep),
+// so a kneeling, sitting or all-fours leg reads as a leg, not two tubes on a pin (Harry 2026-10-14: "legs on hinges").
+// Straight, it is the old tube (measured shin widths, the master's thigh below the hem). Ballet flats ride the foot and
+// toe bones on top. Far leg behind the near one, one step darker, as in the master.
+import { loop } from '../../../engine/shapes.js';
 import { ensureCW } from '../../../engine/hand.js';
-import { add, sub, lerp, norm, mulS } from '../../../engine/geom.js';
+import { legOutline, carryPt, carryBlend } from '../../../engine/leg.js';
 
-export const ANCHORS = { 'leg.near': 18, 'leg.far': 18, 'foot.near': 9, 'foot.far': 9, 'shoe.near': 8, 'shoe.far': 8 };
+export const ANCHORS = { 'leg.near': 27, 'leg.far': 27, 'leg.near.crease': 4, 'leg.far.crease': 4, 'shoe.near': 15, 'shoe.far': 15 };
 
-export function build({ P: C, C: char }) {
-  const J = char.joints, X = char.params.P, out = [];
+/** one leg's posed outline and its samplers (engine/leg.js), for the drawing here and the skirt's supports (drape.js) */
+// the back of the ankle just above the shoe (rest H), and where the leg's back line (it → the heel inside the shoe) crosses
+// the shoe's top: the heel counter sits ON that line
+const achillesRest = (char, side) => { const ank = char.joints[side === 'near' ? 'ankleNear' : 'ankleFar'], LP = char.params.P.legProfile[side]; return [ank[0] - LP.shin.at(1).back * 0.92, ank[1] - 0.02]; };
+const heelRest = (sh) => [sh.heel[0] + 0.08, sh.heel[1] - 0.04];
+const counterX = (char, side) => { const sh = char.params.P.shoe[side], a = achillesRest(char, side), b = heelRest(sh), u = (sh.top - a[1]) / (b[1] - a[1]); return a[0] + u * (b[0] - a[0]); };
+
+export function legFor({ C: char, st, rig, pose }, side) {
+  const J = char.joints, X = char.params.P, BONE = rig.BONE, S = side === 'near' ? 'Near' : 'Far';
+  const ank = J['ankle' + S], sh = X.shoe[side], h = sh.heel, t = sh.toe, L = t[0] - h[0], LP = X.legProfile[side];
+  const onFoot = (p) => carryPt(st, J, BONE, `foot.${side}`, p), onToe = (p) => carryPt(st, J, BONE, `toe.${side}`, p);
+  // the foot, carried by its bones: the instep (measured, P.instep) into the shoe's opening; inside the shoe the toe
+  // box, the sole and the heel; the instep and the back of the ankle blend between the shin and the foot (they bend)
+  const back = achillesRest(char, side);
+  const foot = {
+    instep: [...X.instep[side].map(([dx, dy], i) => carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, [ank[0] + dx, ank[1] + dy], [0.35, 0.65, 0.9][i])), onFoot([h[0] + 0.75 * L + 0.01, sh.top + sh.skin])],
+    shoe: [onToe([t[0] - 0.14, sh.sole - 0.06]), onFoot([h[0] + 0.2, sh.sole - 0.1])],
+    heel: onFoot(heelRest(sh)),
+    achilles: carryBlend(st, J, BONE, `shin.${side}`, `foot.${side}`, back, 0.5),
+  };
+  // FLESH HANGS: a thigh held level (sitting, squatting, bending) is deeper than a hanging one, its underside sagging and
+  // spreading (on a seat, squashed): every sitting and squatting still draws the thigh ≈ 1.3× the standing one's depth
+  // (side-on round 1: "the near thigh a thin, straight-sided tube… spindly under that torso and bump"). By how far the
+  // thigh points from straight down (30° → 80°): the underside (back) up to +30 %, the top +10 %; a hanging thigh
+  // (standing, kneeling, on all fours) keeps the drawn one. (pose.fx.legTry.hangBack / .hangFront try other amounts: round
+  // 16 tried 0.5 / 0.15 and 0.7 / 0.2 beside the stills, and the fuller thigh's underside pushed the lap's cloth down past
+  // the chair's seat and the ball as a spike, while the squat's bare thigh barely changed)
+  const H = st[`thigh.${side}`].pos, K = st[`shin.${side}`].pos, dv = [K[0] - H[0], K[1] - H[1]];
+  const T = { ...X.knee, ...(pose?.fx?.legTry || {}) };
+  const a = Math.acos(Math.max(-1, Math.min(1, dv[1] / Math.hypot(...dv)))) * 180 / Math.PI, s1 = Math.max(0, Math.min(1, (a - 30) / 50)), k = s1 * s1 * (3 - 2 * s1);
+  const thigh = LP.thigh.P.map(([f, fr, bk]) => [f, fr * (1 + (T.hangFront ?? 0.1) * k * (1 - f * 0.6)), bk * (1 + (T.hangBack ?? 0.3) * k * (1 - f * 0.5))]);
+  const A = st[`foot.${side}`].pos, v = [A[0] - K[0], A[1] - K[1]];
+  const bend = Math.atan2(dv[0] * v[1] - dv[1] * v[0], dv[0] * v[0] + dv[1] * v[1]) * 180 / Math.PI;
+  const sm = (e0, e1, x) => { const q = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return q * q * (3 - 2 * q); };
+  // THE BENT KNEE (side-on round 10, beside the stills at 1:1: every lens read our legs as "even tubes, no calf belly, no
+  // kneecap plane"; measured, their depths were already the stills' at every station, x0.97–1.03, so it is the SHAPE):
+  //  · the shin's front runs straight down from the knee's front, over the patellar tendon and the tibia's tuberosity
+  //    (P.knee.fill): the master's straight shin narrows just under the patella, and bent that narrowing read as a ball
+  //    of a knee with a waist under it (sit-chair, sit-ball, squat: the stills' knee dome flows into the shin's front)
+  //  · folded to 90° and past (kneeling, on all fours, sitting), the calf rounds over into the crease (P.knee.calfIn, its
+  //    back eased in toward the knee over the first calfInTo of the shin): the calf presses on the hamstring and flattens,
+  //    where ours ran a straight ramp up into a corner on the thigh's back, a hinge (the kneel and all-fours stills' calf
+  //    peaks a third of the way down and curves down into the crease)
+  // (pose.fx.legTry overrides P.knee for one pose: tools/side_zoom.py --try candidates)
+  const kb = (T.fill ?? 0) * sm(15, 50, bend), kd = (T.calfIn ?? 0) * sm(45, 90, bend), fz = T.fz ?? 0.45, fr0 = LP.shin.P[0][1], frz = LP.shin.at(fz).front;
+  const shin = LP.shin.P.map(([f, fr, bk]) => [f,
+    f < fz ? fr + kb * Math.max(0, fr0 + (frz - fr0) * Math.pow(f / fz, T.fp ?? 1.6) - fr) : fr,
+    bk * (1 - kd * Math.max(0, 1 - f / (T.calfInTo ?? 0.45)) ** 2)]);
+  return legOutline({ hip: H, knee: K, ankle: A, thigh, shin, foot, kneeRound: X.knee.round, top: 0.18, onProfile: T.onProfile });
+}
+
+export function build(ctx) {
+  const { P: C, C: char } = ctx, X = char.params.P, out = [];
   for (const side of ['far', 'near']) {
-    const S = side === 'near' ? 'Near' : 'Far', z = side === 'near' ? 20 : 16, fill = side === 'near' ? C.skin : C.skinFar, w = X.leg[side];
-    const hip = J['hip' + S], knee = J['knee' + S], ank = J['ankle' + S];
-    // axis down the leg: r = the tube's +normal (screen right on a downward axis) = the leg's FRONT; l = its back (calf)
-    // the tube runs on PAST the ankle into the shoe at the ankle's width, so its round end is hidden in the shoe: the back
-    // of the ankle is one straight line into the heel (v4 ended it in a cap at the ankle: a pinch in front, a knob behind)
-    const dn = norm(sub(ank, knee)), fr = [dn[1], -dn[0]];   // down the shin; its front normal
-    const axis = [add(hip, [0, -0.15]), lerp(hip, knee, 0.5), knee, lerp(knee, ank, 0.23), lerp(knee, ank, 0.5), lerp(knee, ank, 0.77), ank, add(ank, mulS(dn, 0.24))];
-    const thigh = side === 'near' ? { front: 0.21, back: 0.22 } : { front: 0.22, back: 0.2 }, ankW = { front: w.ankle.front, back: w.ankle.back * 0.95 };
-    const ws = [thigh, thigh, { front: w.knee.front * 1.05, back: w.knee.back * 0.92 }, w.calf, { front: (w.calf.front + w.low.front) / 2, back: (w.calf.back + w.low.back) / 2 }, w.low, ankW, { front: ankW.front, back: ankW.back * 1.04 }]
-      .map((v) => ({ r: v.front, l: v.back }));
-    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill, geom: ensureCW(tube(axis, ws, { capK: 0.6 })),
-      skin: { parent: `thigh.${side}`, child: `shin.${side}`, zone: 0.25 } });
-    // the foot's top, visible above the low-cut shoe: its front edge LEAVES the shin's front line tangentially above the
-    // ankle and bends into the instep in one curve (measured, P.instep), on to the toes; the rest hides in the shoe and leg
-    const sh = X.shoe[side], h = sh.heel, t = sh.toe, onShin = add(add(ank, mulS(dn, -0.1)), mulS(fr, ankW.front)), dA = Math.atan2(dn[1], dn[0]) * 180 / Math.PI;
-    out.push({ id: `foot.${side}`, bone: `toe.${side}`, z: z + 0.3, fill, geom: ensureCW(loop([
-      [onShin[0], onShin[1], { a: dA }], ...X.instep[side].map(([dx, dy]) => [ank[0] + dx, ank[1] + dy]), [h[0] + 0.75 * (t[0] - h[0]) + 0.01, sh.top + 0.177, { a: 30 }],   // into the shoe just under the opening's front end (0.75 L, top + 0.165), still sloping like the instep
-      [t[0] - 0.14, sh.sole - 0.06], [h[0] + 0.2, sh.sole - 0.1], [h[0] + 0.08, h[1] - 0.04], add(add(ank, mulS(dn, -0.1)), mulS(fr, -0.4 * ankW.back))])),
-      skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
-    // ballet flat: heel counter → the low opening (steep at the heel, flattening to the vamp) → toe box → tip → a sole
-    // that rises toward the heel (the master's flats rock up at the back) → round heel
-    const L = t[0] - h[0];
-    out.push({ id: `shoe.${side}`, bone: `toe.${side}`, z: z + 0.6, fill: C.shoe, geom: ensureCW(loop([
-      [h[0] + 0.035, sh.top, { c: true, ai: 250, ao: 40, ti: 0.5, to: 0.7 }],
-      [h[0] + 0.4 * L, sh.top + 0.125, { a: 14 }],
-      [h[0] + 0.75 * L, sh.top + 0.165, { c: true, ai: 190, ao: 5, ti: 0.7, to: 0.6 }],   // the opening's front end meets the toe box
-      [(h[0] + 0.75 * L + t[0]) / 2, (sh.top + 0.165 + t[1]) / 2 - 0.03, { a: 22 }],   // the toe box's top: below the line vamp → tip (no hump)
-      [t[0], t[1], { a: 90, t: 0.9 }],
-      [t[0] - 0.16, sh.sole, { a: 180 }],
-      [h[0] + 0.2, sh.sole - 0.045, { a: 190 }],
-      [h[0] + 0.02, h[1] + 0.1, { a: 245 }]])),
+    const z = side === 'near' ? 20 : 16, fill = side === 'near' ? C.skin : C.skinFar;
+    const sh = X.shoe[side], h = sh.heel, t = sh.toe, L = t[0] - h[0];
+    // a POINTED foot (kneeling, on all fours: 55–70° from the shin) draws the shoe's heel slimmer, its back tucked in by up
+    // to 0.045 H: the round heel stood up past the leg's line as "a dark cap", round 6; the stills taper it into the calf
+    const fr = Math.max(0, Math.min(1, ((ctx.st[`foot.${side}`].rot - ctx.st[`shin.${side}`].rot) - 25) / 35)), hk = 0.045 * fr * fr * (3 - 2 * fr);
+    const lg = legFor(ctx, side);
+    out.push({ id: `leg.${side}`, bone: `shin.${side}`, z, fill, world: true, geom: ensureCW(lg.geom) });
+    out.push({ id: `leg.${side}.crease`, bone: `shin.${side}`, z: z + 0.1, fill: C.skinLine, world: true, geom: lg.crease, opacity: lg.crease.k * (side === 'near' ? 0.9 : 0.6) });
+    // ballet flat, traced from the master's (characters/mum3/ref/master.png, its dark outline in H): the heel counter →
+    // the OPENING, a deep scoop that falls steeply from the heel and runs low along the foot (0.22 H below the counter's
+    // top at mid-foot) → the vamp → a slim toe box → the tip → the sole, which rocks up toward the heel → a round heel
+    // that leans back. (Drawn before as a straight opening from the counter to the vamp over a fat toe box and a slab of a
+    // heel, 0.07 H too high mid-foot: "thick, high-backed clogs or booties", side-on round 5, every lens.) The named
+    // anchors are the floor contacts (tools/floor_pose.mjs --touch shoe.near:vamp): kneeling, the vamp and the tip lie
+    // on the floor; standing or sitting, the ball and the heel
+    const N = { vamp: 5, tip: 8, ball: 10, heel: 12 };
+    out.push({ id: `shoe.${side}`, bone: `toe.${side}`, z: z + 0.6, fill: C.shoe, names: N, geom: ensureCW(loop([
+      [counterX(char, side), sh.top, { c: true, ai: 112, ao: 48, ti: 0.5, to: 0.6 }],    // the heel counter's top, ON the leg's back line (0.04 H behind it, it stood up behind the ankle as a pointed tab, "a snag", round 6 blind A/B)
+      [h[0] + 0.137 * L, sh.top + sh.open[0], { a: 40 }],                              // the opening falls steeply…
+      [h[0] + 0.313 * L, sh.top + sh.open[1], { a: 24 }],
+      [h[0] + 0.53 * L, sh.top + sh.open[2], { a: 2 }],                                // …and runs low along the foot (P.shoe.*.open, each shoe its own)
+      [h[0] + 0.7 * L, sh.top + sh.open[3], { a: -24 }],
+      [h[0] + 0.758 * L, sh.top + sh.open[4], { c: true, ai: 140, ao: 21, ti: 0.6, to: 0.6 }],   // the vamp
+      [t[0] - 0.086, t[1] - 0.081, { a: 30 }],                                          // the toe box's top
+      [t[0] - 0.006, t[1] - 0.03, { a: 72 }],
+      [t[0] + 0.002, t[1] + 0.01, { a: 100 }],                                          // the tip
+      [t[0] - 0.04, sh.sole - 0.012, { a: 162 }],
+      [t[0] - 0.215, sh.sole, { a: 180 }],                                               // the ball
+      [h[0] + 0.433, sh.sole - 0.019, { a: 188 }],
+      [h[0] + 0.067 + hk / 2, h[1] + 0.095, { a: 205 }],                                // the sole rocks up to the heel
+      [h[0] + 0.006 + hk, h[1] + 0.05, { a: 250 }],
+      [h[0] + hk, h[1] - 0.02, { a: 278 }]])),                                           // the heel's round back
       skin: { parent: `foot.${side}`, child: `toe.${side}`, zone: 0.35 } });
   }
   return out;

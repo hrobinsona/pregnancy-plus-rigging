@@ -14,7 +14,7 @@ R = Image.open(rend).convert('RGB').resize((W, H)); ref = Image.open(a.ref).conv
 ys, xs = np.mgrid[0:H, 0:W]; Xr = x0 + (xs + 0.5) / W * (x1 - x0); Yr = y0 + (ys + 0.5) / H * (y1 - y0)
 cpx = Xr * X['Hpx'] + X['ground'][0]; cpy = Yr * X['Hpx'] + X['ground'][1]
 nx = (cpx - X['cx']) / X['s'] + X['sx']; ny = (cpy - X['cy']) / X['s'] + X['sy']
-rx = nx * X['W'] / X['sizePx'][0]; ry = ny * X['H'] / X['sizePx'][1]
+rx = nx / X['kx'] if 'kx' in X else nx * X['W'] / X['sizePx'][0]; ry = ny / X['ky'] if 'ky' in X else ny * X['H'] / X['sizePx'][1]   # kx/ky: one scale for both axes (fit_pose.mjs)
 A = np.asarray(ref); ok = (rx >= 0) & (rx < A.shape[1] - 1) & (ry >= 0) & (ry < A.shape[0] - 1)
 M = np.full((H, W, 3), 255, np.uint8); M[ok] = A[ry[ok].astype(int), rx[ok].astype(int)]
 refm = Image.fromarray(M)
