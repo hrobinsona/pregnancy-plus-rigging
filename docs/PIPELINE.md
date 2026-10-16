@@ -882,6 +882,35 @@ or composited.
    its sibling still on every lens); a ceiling below the bar goes to the client as a result and a decision, not as
    another round; and the test stays out of the critics' history (`critic_F.py` drops a feel-log block between
    `<!-- not for critics -->` and `<!-- /not for critics -->`), or its numbers anchor the next round's scores.
+76. **A move is the library's poses as keys, ALIGNED on her planted foot, the hips on the keys' path and the legs reaching
+   the floor; and a pose setting that is not a number must still reach the film.** Side-on round 16 (2026-10-16), the
+   first move (sitting down, `tools/side_move.mjs`: n-rest → two fitted in-between stills → sit-chair). What it took:
+   - **Channels carry numbers only.** `fx.clothTry` (the skirt shape `cloth_fit.py` fitted to each still) is an object,
+     so every breathing loop since round 13 drew the DEFAULT skirt (the squat's hem crossing at 0.2 not 0.5, all fours'
+     hem 0.25 H below the bump, kneel-pick's back 0.27 H out) while the critic sheets, drawn from the pose, showed the
+     fitted one. `basePose` now carries a key's object-valued fx from the active key; QA `keyfx` fails when a key's
+     setting is not in the pose at its time. Same family: a channel a key leaves out took 0, but `fx.turn`'s drawing
+     default is 1 (the master's ¾): from n-rest into sit-chair (turn 0.4) her far hip swung onto the near one, the far
+     foot 0.3 H back, as she started (`FX_DEFAULTS` in `engine/anim.js`).
+   - **Align each key on the props pose's near foot** (`:hips` aligns a landing key on its hip instead: sit-down-2's
+     still sits her 0.3 H behind the seat when aligned on her feet), so the chair is under her in every key.
+   - **The feet stand where the FIRST key stands them, and a foot that stands elsewhere at the end STEPS there**
+     (`spec.plantFeetSteps`: a min-jerk arc lifted 0.035 H, as a woman steps back to the chair). Planted on the seated
+     pose, the standing key's straight far leg could not reach its spot 0.63 H back: it hung 12 px up, then dropped.
+   - **The hips follow the keys, the legs reach the floor** (`spec.plantFeetRoot: false`). The usual foot lock shifts the
+     root by the feet's AVERAGE miss, so the hips follow the blended LEG angles: sitting down they went 0.6 H back while
+     falling 0.07 H, and she tipped back over straight legs like a plank. With the keys' hip path the knees bend first.
+   - **Her short arms can't press the seat** (lesson 72): the shoulder is 443 px above the seat at landing, the arm 458
+     px long, so a hand on the seat is a straight arm, where the 3D arm's angles are undefined and flip (elbow pops
+     11–53 px a frame; `keyedArm` swapped in the key's own arm angles, a pop of its own). The hand goes from her side to
+     her thigh as her hips come down (a pregnant woman lowering herself with a hand on her thigh), then to the bump.
+   - A hand that rides her hips trails ~7° as they set off: carried, not flapping (`spec.qa.wristTurn`, a stated
+     exception); a via's wrist bend comes from its neighbours (`stop.local`), not its pose's press; the hanging hand is
+     the library's relaxed `idle`, not breathe-stroke's `hang`; the resting hand gets the loops' life after landing
+     (QA `alive` read it FROZEN 4.1–7 s); each key's note names its still so `ref_match.py` puts the film beside it.
+   Rules: build a move with `side_move.mjs` from library poses and fitted in-between stills; check the feet with
+   `feet_probe.mjs` (the near foot within 1 px; a step only where the end pose stands a foot elsewhere) and the hips'
+   path on a contact sheet before any critic; never ask a short arm to bear weight on furniture it can barely reach.
 ## From the reels rig (merged 2026-10-12)
 
 The reels rig (`pregnancy-plus-reels`, `kits/rig`) traced one illustration into a one-piece arm bent along its bones and

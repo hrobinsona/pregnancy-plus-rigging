@@ -1,11 +1,13 @@
 // QA gate for a rendered shot (ported from reels tools/rig/checks.py + engine/qa/motion.py, plus the hands check reels
 // specified but never built). Run after char_anim.mjs; exit 1 if a gate fails.
-//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,handed,frames,hands,alive,limbs,fingers,shoes,curl] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
+//   node tools/qa_checks.mjs --char mum2 --anim nausea-to-belly [--box x0,y0,x1,y1] [--skip order,leak,channels,keyfx,handed,frames,hands,alive,limbs,fingers,shoes,curl] [--alive-win 2 --alive-min 5] [--limb-min 0.85]
 //     order   frames rendered OUT OF ORDER, by a fresh anim in a fresh page, match the rendered frames byte for byte
 //     leak    no hidden state: poseAt(t) from a fresh anim == poseAt(t) after every frame before it, and the page's SVG
 //             markup for a pose alone == after rendering every frame before it
 //     channels every channel a track keys reaches the pose under its whole name, and a contact shadow gated on a keyed
 //             channel draws while it is on (a keyed fx.contact.near was silently dropped: no shadow ever drew, lesson 52)
+//     keyfx   each key pose's settings that are not numbers (fx.clothTry, fx.legTry) reach the pose at that key: the side-on
+//             loops drew the default skirt, not each pose's fitted one, rounds 13–16 (lesson 76)
 //     handed  each hand the right way round in every frame: its thumb drawn on the side its 3D arm puts it (tools/handed.mjs;
 //             a spec copied from the other hand drew a right hand on mum3q's left arm for seven versions, lesson 53); a hand out
 //             of sight is excused by spec.qa.handed [{side, why}] (side_loop.mjs: a hand on the bump's far side, or ≥ 95% hidden by her body)
@@ -118,6 +120,16 @@ if (!skip.has('channels')) {
   }
 }
 
+if (!skip.has('keyfx')) {
+  // a key pose's SHAPE settings that are not numbers (fx.clothTry: the skirt fitted to its still; fx.legTry) must reach the
+  // pose at that key: channels carry numbers only, and every side-on breathing loop drew the default cloth, not its pose's
+  // fitted one, from round 13 to 16 while the critic sheets drew the fitted one (lesson 76)
+  console.log('keyfx: each key\'s non-number settings reach the pose at its time');
+  const A = fresh(), miss = [];
+  for (const k of spec.keys) for (const [f, v] of Object.entries(lib[k.pose]?.fx || {})) if (v && typeof v === 'object' && JSON.stringify(A.poseAt(k.t + 1e-6).fx?.[f]) !== JSON.stringify(v)) miss.push(`${k.pose} fx.${f} at ${k.t} s`);
+  gate(!miss.length, miss.length ? `not in the pose: ${miss.join(', ')}` : 'every key\'s settings reach the pose');
+}
+
 if (!skip.has('handed')) {
   // HANDEDNESS (tools/handed.mjs, lesson 53): every frame, each hand's thumb on the side its 3D arm puts it. mum3q v1–v7 lay
   // a RIGHT hand on her left arm on the bump (its spec copied from the near hand); every gate passed and four critic rounds
@@ -191,11 +203,14 @@ if (!skip.has('hands')) {
       const ang = S[side].slice(i0 - 1, i1 + 1).map((s) => s.ang); for (let k = 1; k < ang.length; k++) ang[k] = ang[k - 1] + ((ang[k] - ang[k - 1] + 540) % 360 - 180);
       const net = Math.sign(ang.at(-1) - ang[0]); let ext = ang[0], worst = 0, at = i0;
       ang.forEach((v, k) => { if (net * (v - ext) > 0) ext = v; else if (net * (ext - v) > worst) { worst = net * (ext - v); at = i0 - 1 + k; } });
-      if (worst > 4) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
+      // spec.qa.wristTurn[side] = {max, note}: a stated exception, the hand CARRIED by her body rather than flapping at the
+      // wrist (side-sit-down: her hanging hand trails 7° as her hips start back, then swings to her thigh, round 16)
+      const wmax = spec.qa?.wristTurn?.[side]?.max ?? 4;
+      if (worst > wmax) bad.push(`${tt(i0)}–${tt(i1)} s turns back ${worst.toFixed(0)}° at ${tt(at)} s`);
     }
     // (a cycle's arm swings to and fro without a stop, a walk's: its wrist turns back at each end of the swing by design)
     if (spec.cyclic) console.log(`  · ${side} wrist angle one way: not checked, a cyclic shot (spec.cyclic) swings to and fro`);
-    else gate(!bad.length, `${side} wrist angle one way through each move: ${bad.length ? bad.join('; ') : 'yes'}`);
+    else gate(!bad.length, `${side} wrist angle one way through each move${spec.qa?.wristTurn?.[side] ? ` (≤ ${spec.qa.wristTurn[side].max}°: ${spec.qa.wristTurn[side].note})` : ''}: ${bad.length ? bad.join('; ') : 'yes'}`);
   }
   if (!skip.has('alive')) {
     // a frozen hand: every point we track (wrist, middle fingertip, the hand's outline box) moves < min px in a window

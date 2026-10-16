@@ -34,13 +34,16 @@ export function legFor({ C: char, st, rig, pose }, side) {
   // spreading (on a seat, squashed): every sitting and squatting still draws the thigh ≈ 1.3× the standing one's depth
   // (side-on round 1: "the near thigh a thin, straight-sided tube… spindly under that torso and bump"). By how far the
   // thigh points from straight down (30° → 80°): the underside (back) up to +30 %, the top +10 %; a hanging thigh
-  // (standing, kneeling, on all fours) keeps the drawn one.
+  // (standing, kneeling, on all fours) keeps the drawn one. (pose.fx.legTry.hangBack / .hangFront try other amounts: round
+  // 16 tried 0.5 / 0.15 and 0.7 / 0.2 beside the stills, and the fuller thigh's underside pushed the lap's cloth down past
+  // the chair's seat and the ball as a spike, while the squat's bare thigh barely changed)
   const H = st[`thigh.${side}`].pos, K = st[`shin.${side}`].pos, dv = [K[0] - H[0], K[1] - H[1]];
+  const T = { ...X.knee, ...(pose?.fx?.legTry || {}) };
   const a = Math.acos(Math.max(-1, Math.min(1, dv[1] / Math.hypot(...dv)))) * 180 / Math.PI, s1 = Math.max(0, Math.min(1, (a - 30) / 50)), k = s1 * s1 * (3 - 2 * s1);
-  const thigh = LP.thigh.P.map(([f, fr, bk]) => [f, fr * (1 + 0.1 * k * (1 - f * 0.6)), bk * (1 + 0.3 * k * (1 - f * 0.5))]);
+  const thigh = LP.thigh.P.map(([f, fr, bk]) => [f, fr * (1 + (T.hangFront ?? 0.1) * k * (1 - f * 0.6)), bk * (1 + (T.hangBack ?? 0.3) * k * (1 - f * 0.5))]);
   const A = st[`foot.${side}`].pos, v = [A[0] - K[0], A[1] - K[1]];
   const bend = Math.atan2(dv[0] * v[1] - dv[1] * v[0], dv[0] * v[0] + dv[1] * v[1]) * 180 / Math.PI;
-  const T = { ...X.knee, ...(pose?.fx?.legTry || {}) }, sm = (e0, e1, x) => { const q = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return q * q * (3 - 2 * q); };
+  const sm = (e0, e1, x) => { const q = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return q * q * (3 - 2 * q); };
   // THE BENT KNEE (side-on round 10, beside the stills at 1:1: every lens read our legs as "even tubes, no calf belly, no
   // kneecap plane"; measured, their depths were already the stills' at every station, x0.97–1.03, so it is the SHAPE):
   //  · the shin's front runs straight down from the knee's front, over the patellar tendon and the tibia's tuberosity

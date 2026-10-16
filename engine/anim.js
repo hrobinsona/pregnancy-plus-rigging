@@ -78,7 +78,11 @@ function flatten(pose) {
   if (pose.root) { c['root.0'] = pose.root[0]; c['root.1'] = pose.root[1]; }   // translation is a channel (seated drop, walk bob)
   return c;
 }
-const DEFAULTS = (key) => (key.startsWith('scale.') ? 1 : 0);
+// a channel a key's pose leaves out takes the DRAWING's default: 0, a scale 1, and fx.turn 1 (engine/rig.js: how far
+// she is turned to us, the master's ¾; the side-on library sets 0.4). At 0, a move from the standing pose n-rest into
+// side/sit-chair swung her far hip onto the near one, her far foot 0.3 H back, as she started (round 16, lesson 76).
+const FX_DEFAULTS = { 'fx.turn': 1 };
+const DEFAULTS = (key) => (key.startsWith('scale.') ? 1 : FX_DEFAULTS[key] ?? 0);
 function flattenRaw(pose) {          // only the channels the pose actually sets (for channel-group tracks)
   const c = {};
   for (const [ch, w] of Object.entries(pose.face || {})) for (const [k, v] of Object.entries(w)) c[`face.${ch}.${k}`] = v;
@@ -315,6 +319,11 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // discrete properties held from the active key (swaps land ON keys)
     const act = (() => { let k = keys[0]; for (const kk of keys) if (kk.t <= tt + 1e-9) k = kk; return lib[k.pose]; })();
     for (const prop of ['handView', 'zBias']) if (act?.[prop] !== undefined) pose[prop] = act[prop];
+    // ... and the pose's own SHAPE settings that are not numbers (fx.clothTry: the skirt's shape fitted to its still,
+    // tools/cloth_fit.py; fx.legTry): channels carry numbers only, so every side-on breathing loop drew the default cloth,
+    // not its pose's fitted one, from round 13 to 16 (the squat's hem crossing 0.2 not 0.5, all fours' hem 0.25 below the
+    // bump, kneel-pick's back pulled in 0.27 H), while the critic sheets drew the fitted one (qa_checks 'keyfx')
+    for (const [k, v] of Object.entries(act?.fx || {})) if (v && typeof v === 'object') pose.fx[k] = v;
     if (propsAt) pose.props = propsAt;
     // SWAPS (spec.swaps = [{t, handView, zBias}]): drawing swaps timed on their own — when a limb is clear of the body
     // (a far hand passing the bump's edge), not on whichever body key happens to be active. The latest one ≤ t holds.
@@ -499,7 +508,9 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
       p = L_(B1, B2, t1_, t2_);
     }
     const sH = mj(warp(u - (b.handLag ?? 2) / fps / (t1 - t0)));
-    const [kh, vh] = seg(sH), loc = (e) => lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
+    // (stop.local: the wrist's bend at that stop, when not its pose's: a via whose pose presses on something the hand only
+    // passes, sit-down-1's reach back, bent the wrist back 30° and forward again mid-move: qa_checks hands, round 16)
+    const [kh, vh] = seg(sH), loc = (e) => e.local ?? lib[e.pose].bones?.['hand.' + side] ?? 0, rl = (e) => e.roll ?? lib[e.pose].scale?.['hand.' + side]?.[1] ?? 1;
     const ea = E[kh], eb = E[Math.min(E.length - 1, kh + 1)];
     let local = loc(ea) + vh * (loc(eb) - loc(ea)), roll = rl(ea) + vh * (rl(eb) - rl(ea));
     // mid-flight the wrist relaxes toward straight: the hand is CARRIED, not posed. Not while it stays on the same body part
@@ -1014,6 +1025,24 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
   };
 
   let footRest = null, footRef = null;
+  // spec.plantFeetSteps (plantFeet 'ik'): a planted foot that STEPS, [{ side: 'far', t0, t1, to: <pose>, lift: 0.035 }]:
+  // planted where plantFeetRef puts it until t0, carried on a min-jerk arc (lifted `lift` H at its middle) to where pose
+  // `to` puts it by t1, planted there after (a later step starts from there). Without it a move between poses whose feet
+  // differ drags one foot along the floor or leaves it hanging: mum3 sit-down's standing far foot is 0.63 H ahead of
+  // sit-chair's, and its straight leg can't reach the seated spot (round 16, lesson 76). Pure in t.
+  const stepPose = {};
+  const stanceAt = (sd, t) => {
+    let a = (footRef ||= solve(lib[spec.plantFeetRef || spec.keys[0].pose]));
+    for (const s of (spec.plantFeetSteps || []).filter((s_) => s_.side === sd)) {
+      const b = (stepPose[s.to] ||= solve(lib[s.to]));
+      if (t <= s.t0) break;
+      if (t < s.t1) { const u = mj((t - s.t0) / (s.t1 - s.t0)); return { a, b, u, lift: (s.lift ?? 0.035) * Math.sin(Math.PI * u) }; }
+      a = b;
+    }
+    return { a, b: a, u: 0, lift: 0 };
+  };
+  const footGoal = (sd, bone, j, t) => { const S = stanceAt(sd, t), p = rig.carry(S.a, bone, j), q = rig.carry(S.b, bone, j); return [p[0] + (q[0] - p[0]) * S.u, p[1] + (q[1] - p[1]) * S.u - S.lift]; };
+  const footRot = (sd, t) => { const S = stanceAt(sd, t), f = C.roles.legs[sd].foot, r0 = S.a[f].rot; return r0 + ((((S.b[f].rot - r0) + 540) % 360) - 180) * S.u; };
   // WALK (spec.walk = {}): the feet stay planted while she walks and the camera travels with her at her mean speed, so a
   // walk loops in place (on screen the planted foot slides back steadily, at her pace: a treadmill). The ground contact is
   // whichever sole points are lowest (both feet's: heel strike, flat, push-off on the toe, both in double support), and
@@ -1091,9 +1120,12 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
     // closed form, pure in t. (The arm contacts above ride the body, so they move with the root as they should.)
     if (spec.plantFeet && C.roles?.legs) {
       const st = solve(pose), Lg = C.roles.legs, pts = ['near', 'far'].flatMap((sd) => [[Lg[sd].foot, Lg[sd].ankle], [Lg[sd].foot, Lg[sd].ball]]);
-      const now = pts.map(([b, j]) => rig.carry(st, b, j)), rest = (footRest ||= (() => { const s0 = spec.plantFeet === 'ik' ? solve(lib[spec.plantFeetRef || spec.keys[0].pose]) : solve({}); return pts.map(([b, j]) => rig.carry(s0, b, j)); })());
+      const now = pts.map(([b, j]) => rig.carry(st, b, j)), rest = spec.plantFeetSteps ? pts.map(([b, j], i) => footGoal(i < 2 ? 'near' : 'far', b, j, t)) : (footRest ||= (() => { const s0 = spec.plantFeet === 'ik' ? solve(lib[spec.plantFeetRef || spec.keys[0].pose]) : solve({}); return pts.map(([b, j]) => rig.carry(s0, b, j)); })());
       const dx = rest.reduce((a, q, i) => a + q[0] - now[i][0], 0) / pts.length, dy = Math.max(...now.map((q) => q[1])) - Math.max(...rest.map((q) => q[1]));
-      pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) - dy];
+      // spec.plantFeetRoot false (plantFeet 'ik'): the hips keep the keys' path and only the legs reach the planted feet.
+      // The shift follows the blended LEG angles, not the hips: sitting down from standing it carried her hips 0.6 H back
+      // while they fell 0.07 H, and she tipped back over straight legs like a plank (side-sit-down, round 16)
+      if (spec.plantFeetRoot !== false || spec.plantFeet !== 'ik') pose.root = [(pose.root?.[0] ?? 0) + dx, (pose.root?.[1] ?? 0) - dy];
       // plantFeet "ik": the root shift only fixes the feet on AVERAGE — when the legs bend differently (a crouch, a 3/4
       // stance) each sock still slides against the floor (critic R11: "both socks sliding inward"). Each leg then gets
       // its own two-bone solve (thigh, shin: three fixed Newton steps) bringing its ankle back to its rest spot, and the
@@ -1103,7 +1135,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         const s0 = (footRef ||= solve(lib[spec.plantFeetRef || spec.keys[0].pose])), h = 0.5, lam = 2e-5;
         const clampB = (b, v) => Math.max(BONE[b].min ?? -180, Math.min(BONE[b].max ?? 180, v));
         for (const sd of ['near', 'far']) {
-          const L_ = C.roles.legs[sd], ank = (P_) => rig.carry(solve(P_), L_.shin, L_.ankle), goal = rig.carry(s0, L_.shin, L_.ankle);
+          const L_ = C.roles.legs[sd], ank = (P_) => rig.carry(solve(P_), L_.shin, L_.ankle), goal = spec.plantFeetSteps ? footGoal(sd, L_.shin, L_.ankle, t) : rig.carry(s0, L_.shin, L_.ankle);
           for (let it = 0; it < 7; it++) {   // damped least squares, inside the joint limits (a knee never hyperextends to reach)
             const W0 = ank(pose), ex = goal[0] - W0[0], ey = goal[1] - W0[1]; if (Math.hypot(ex, ey) < 1e-5) break;
             // three joints for a 2D ankle: hip abduction (a sock sliding sideways), thigh and shin — Δ = Jᵀ(JJᵀ + λI)⁻¹e,
@@ -1117,7 +1149,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
             Bs.forEach((b, k) => { pose.bones[b] = clampB(b, (pose.bones[b] || 0) + dl[k]); });
           }
           for (let it = 0; it < 2; it++) {   // the sole back to its angle in the stance pose
-            const c0 = solve(pose)[L_.foot].rot, e0 = ((s0[L_.foot].rot - c0 + 540) % 360) - 180;
+            const c0 = solve(pose)[L_.foot].rot, e0 = (((spec.plantFeetSteps ? footRot(sd, t) : s0[L_.foot].rot) - c0 + 540) % 360) - 180;
             const c1 = solve({ ...pose, bones: { ...pose.bones, [L_.foot]: (pose.bones[L_.foot] || 0) + h } })[L_.foot].rot, sl = (((c1 - c0) + 540) % 360 - 180) / h;
             if (Math.abs(sl) > 1e-6) pose.bones[L_.foot] = (pose.bones[L_.foot] || 0) + Math.max(-20, Math.min(20, e0 / sl));
           }
@@ -1127,7 +1159,7 @@ export function makeAnim(spec, lib, { rig, C, quiet } = {}) {
         // sway, 2.5 px into it at the back one). The hips move instead, by what the foot nearest the floor still lacks, so
         // no foot goes through it (ease-sway: ankles within 0.6 px all shot). Opt-in: earlier shots keep their frames.
         if (spec.plantFeetSink) {
-          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return rig.carry(s0, L_.shin, L_.ankle)[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
+          const s1 = solve(pose), lift = Math.min(...['near', 'far'].map((sd) => { const L_ = C.roles.legs[sd]; return (spec.plantFeetSteps ? footGoal(sd, L_.shin, L_.ankle, t) : rig.carry(s0, L_.shin, L_.ankle))[1] - rig.carry(s1, L_.shin, L_.ankle)[1]; }));
           pose.root = [pose.root[0], pose.root[1] + lift];
         }
       }

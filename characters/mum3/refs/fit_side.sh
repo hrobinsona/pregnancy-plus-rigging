@@ -148,7 +148,11 @@ floor all-fours --touch leg.near:4,leg.near:7,leg.far:4@-0.162,leg.far:7@-0.162,
 nudge all-fours shin.far=-1.5,foot.far=-8
 # (round 13: the skirt FITTED to the still's dress below the hip, tools/cloth_fit.py: dress IoU 0.74 → 0.80. The hem
 # lower and level along the thigh, a wider flare at the back; "the bump below the hem", rounds 10–12)
-cloth all-fours '{"af":{"drop":-0.025,"back":0.6,"edge":0.325,"flare":0.45}}'
+# (round 16: the hem's front corner 0.1 H below the bump's lowest point, not level with it: level, the hem met the bump's
+# underside in a notch, "the bump hanging out under the hem" (natural, craft, rounds 13–15); the still's hem hangs below
+# and behind the bump's round bottom. Dress IoU 0.651 → 0.64, the silhouette 0.613 → 0.614: the fit's IoU is set by her
+# shorter arms (the still's shoulders and back ~0.3 H higher, lesson 72), not by the hem)
+cloth all-fours '{"af":{"drop":0.1,"back":0.6,"edge":0.325,"flare":0.45}}'
 
 # sitting on a kitchen chair, both feet flat (the far shoe at the standing rest pose's height, 0.162 H up: the floor seen a
 # little from above, as on every pose)
@@ -244,7 +248,11 @@ fxset squat show.far.arm=0
 # 0.79. The side panel leaves more of the near thigh bare (top 0.5), the tail hangs just under the seat (0.06 behind,
 # 0.3 below the hem's crossing); set by eye over rounds 6–11, "a sack… a tail" every round. The IoU is flat in the
 # tail's rounding (0 to 1 all 0.794): 0 drew a sharp point, 0.75 a knob; 0.25 is the still's soft point at 1:1)
-cloth squat '{"sq":{"top":0.5,"bot":0.1,"bow":0.1175,"tail":[-0.0625,0.3]},"tailRound":0.25}'
+# (round 16: the hem crosses the near thigh's top further along (top 0.35): at 0.5 its edge ran straight down the thigh's
+# root and met the tail's fold in a notch at the underside, "the thigh cut off by a ruler line"; at 0.35 it runs from the
+# knee's top diagonally back to the inner hem in one line, as the still's at film size. Dress IoU 0.779 → 0.76: the
+# still's thigh sits higher and deeper than ours in the fit's mapping, so the IoU can't see the edge's shape)
+cloth squat '{"sq":{"top":0.35,"bot":0.1,"bow":0.1175,"tail":[-0.0625,0.3]},"tailRound":0.25}'
 
 # leaning her forearms on a kitchen counter: the forearms and hands laid level on its top (the fit left them sloping down
 # to the hands, the forearms off the worktop)
@@ -363,3 +371,21 @@ floor walk-pass --touch shoe.near:low --bones foot,toe
 # still's hands. The critic pack's far-hand row says so beside ours: cropped where our hidden far hand would be, it showed
 # the still's near hand, and every lens asked for "the far hand where the still shows it", round 13, lesson 74)
 for p in kneel sit-chair sit-ball squat; do fxset $p stillHidesFar=1; done
+
+# ---------------------------------------------------------------- MOVES
+# The in-betweens of a MOVE between library poses, fitted from their own stills into side/move/ (not library poses: no
+# breathing loop, not in the critic pack). tools/side_move.mjs strings them into a shot, each aligned on her planted feet,
+# the furniture fixed in the world. Pick each still by side_match.py among its siblings, as a library pose's.
+
+# SITTING DOWN onto the kitchen chair (anims/side-sit-down.json: n-rest → sit-down-1 → sit-down-2 → sit-chair). The hinge:
+# her knees bent over her toes, her hips pushed back toward the seat a hand's width above it, the trunk ~30° forward, the
+# near hand reaching back to the seat's front edge (silhouette 0.83 against s_sit_down_1_1; its siblings 0.59 and 0.62,
+# their landmarks off: a hip 0.47 H out)
+fit move/sit-down-1 s_sit_down_1_1 --far-hidden --props chair --hand near=press --fix fx.farUpLegs=0.162
+floor move/sit-down-1 --touch shoe.near:ball,shoe.near:heel@-0.1,shoe.far:ball@-0.162,shoe.far:heel@-0.248 --bones foot,toe
+# ... landing: her bottom just on the back of the seat, the trunk ~15° forward, the near hand on the front of her thigh
+# (silhouette 0.73 against s_sit_down_2_0, s_sit_down_2_1 0.69)
+fit move/sit-down-2 s_sit_down_2_0 --far-hidden --props chair --fix fx.farUpLegs=0.162
+floor move/sit-down-2 --touch shoe.near:ball,shoe.near:heel@-0.1,shoe.far:ball@-0.162,shoe.far:heel@-0.248 --bones foot,toe
+# (the near hand on the thigh's top where the fit put its wrist, softly curled over it toward the knee, as sit-ball's)
+onthigh move/sit-down-2 near 0.358,-2.928 45

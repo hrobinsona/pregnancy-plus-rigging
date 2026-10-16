@@ -11,7 +11,7 @@
   "show.far.arm": 1,
   "clothTry": {
    "af": {
-    "drop": -0.025,
+    "drop": 0.1,
     "back": 0.6,
     "edge": 0.325,
     "flare": 0.45
